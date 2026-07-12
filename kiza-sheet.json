@@ -1,0 +1,43 @@
+{
+  "_type": "char-session",
+  "_updated": 1783890784803,
+  "characters": [
+    {
+      "id": 157,
+      "name": "Kiza",
+      "hpCurrent": 74,
+      "hpMax": 74,
+      "hpTemp": 0,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "trackers": [
+        {
+          "key": "cls_chaos_knight_lay_on_hands",
+          "label": "Lay on Hands",
+          "cur": 35,
+          "max": 35
+        },
+        {
+          "key": "cls_chaos_knight_channel_divinity",
+          "label": "Channel Divinity",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_chaos_knight_chaotic_wound_die",
+          "label": "Chaotic Wound Die",
+          "cur": 0,
+          "max": 4
+        },
+        {
+          "key": "cls_chaos_knight_aura_of_chaos",
+          "label": "Aura of Chaos",
+          "cur": 18,
+          "max": 18
+        }
+      ],
+      "_concentratingOn": null
+    }
+  ]
+}

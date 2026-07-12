@@ -1,0 +1,171 @@
+{
+  "_type": "char-session",
+  "_updated": 1783888158860,
+  "characters": [
+    {
+      "id": 157,
+      "name": "Kiza",
+      "hpCurrent": 74,
+      "hpMax": 74,
+      "hpTemp": 0,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "trackers": [
+        {
+          "key": "cls_chaos_knight_lay_on_hands",
+          "label": "Lay on Hands",
+          "cur": 35,
+          "max": 35
+        },
+        {
+          "key": "cls_chaos_knight_channel_divinity",
+          "label": "Channel Divinity",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_chaos_knight_chaotic_wound_die",
+          "label": "Chaotic Wound Die",
+          "cur": 0,
+          "max": 4
+        },
+        {
+          "key": "cls_chaos_knight_aura_of_chaos",
+          "label": "Aura of Chaos",
+          "cur": 18,
+          "max": 18
+        }
+      ],
+      "_concentratingOn": null
+    },
+    {
+      "id": 259,
+      "name": "Schmiff",
+      "hpCurrent": 38,
+      "hpMax": 38,
+      "hpTemp": 0,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "trackers": [
+        {
+          "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_illusory_echo",
+          "label": "Chaos: Illusory Echo",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_cloak",
+          "label": "Chaos: Cloak",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_sorcerer_innate_sorcery",
+          "label": "Innate Sorcery",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_sorcerer_sorcery_points",
+          "label": "Sorcery Points",
+          "cur": 0,
+          "max": 6
+        },
+        {
+          "key": "cls_sorcerer_sorcerous_restoration",
+          "label": "Sorcerous Restoration",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_sojourner_spirits",
+          "label": "Spirits",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_wild_magic_sorcery_tides_of_chaos",
+          "label": "Tides of Chaos",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "race_gnome_speak_with_animals_(free)",
+          "label": "Speak With Animals (Free)",
+          "cur": 0,
+          "max": 3
+        }
+      ],
+      "_concentratingOn": null
+    },
+    {
+      "id": 261,
+      "name": "Ves ",
+      "hpCurrent": 52,
+      "hpMax": 52,
+      "hpTemp": 0,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "trackers": [
+        {
+          "key": "custom_owl_1780435425887",
+          "label": "Owl",
+          "cur": 1,
+          "max": 1
+        },
+        {
+          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+          "label": "Blessing of the E. Cleric",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
+          "label": "Chaos: Anchor",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
+          "label": "Chaos: Movement",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_druid_wild_shape",
+          "label": "Wild Shape",
+          "cur": 0,
+          "max": 3
+        },
+        {
+          "key": "cls_druid_wild_resur:_regain_spell_slot",
+          "label": "Wild Resur: Regain Spell Slot",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
+          "label": "Nat.Recovery: Recover Spell Slots",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
+          "label": "Nat.Recovery: Cast Circle Spell",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "race_dwarf_stonecunning",
+          "label": "Stonecunning",
+          "cur": 0,
+          "max": 3
+        }
+      ],
+      "_concentratingOn": null
+    }
+  ]
+}

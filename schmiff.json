@@ -1,0 +1,75 @@
+{
+  "_type": "char-session",
+  "_updated": 1783939900896,
+  "characters": [
+    {
+      "id": 259,
+      "name": "Schmiff",
+      "hpCurrent": 38,
+      "hpMax": 38,
+      "hpTemp": 0,
+      "ac": 13,
+      "passivePerception": 12,
+      "passiveInsight": 15,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3,
+        "3": 3
+      },
+      "trackers": [
+        {
+          "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_illusory_echo",
+          "label": "Chaos: Illusory Echo",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_cloak",
+          "label": "Chaos: Cloak",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_sorcerer_innate_sorcery",
+          "label": "Innate Sorcery",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_sorcerer_sorcery_points",
+          "label": "Sorcery Points",
+          "cur": 0,
+          "max": 6
+        },
+        {
+          "key": "cls_sorcerer_sorcerous_restoration",
+          "label": "Sorcerous Restoration",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_sojourner_spirits",
+          "label": "Spirits",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_wild_magic_sorcery_tides_of_chaos",
+          "label": "Tides of Chaos",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "race_gnome_speak_with_animals_(free)",
+          "label": "Speak With Animals (Free)",
+          "cur": 0,
+          "max": 3
+        }
+      ],
+      "_concentratingOn": null
+    }
+  ]
+}

@@ -1,19 +1,25 @@
 {
   "_type": "char-session",
-  "_updated": 1783939973570,
+  "_updated": 1783976313226,
   "characters": [
     {
       "id": 259,
       "name": "Schmiff",
-      "hpCurrent": 38,
+      "hpCurrent": 18,
       "hpMax": 38,
       "hpTemp": 0,
       "ac": 13,
       "passivePerception": 12,
       "passiveInsight": 15,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {},
+      "conditions": [
+        "Paralyzed"
+      ],
+      "exhaustionLevel": 1,
+      "_slotUsed": {
+        "259-L1": 3,
+        "259-L2": 2,
+        "259-L3": 1
+      },
       "_slotTotal": {
         "1": 4,
         "2": 3,
@@ -41,7 +47,7 @@
         {
           "key": "cls_sorcerer_sorcery_points",
           "label": "Sorcery Points",
-          "cur": 0,
+          "cur": 3,
           "max": 6
         },
         {

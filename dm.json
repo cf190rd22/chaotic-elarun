@@ -1,23 +1,19 @@
 {
   "_type": "char-session",
-  "_updated": 1783957695593,
+  "_updated": 1783968469060,
   "characters": [
     {
-      "id": 261,
-      "name": "Ves ",
-      "hpCurrent": 32,
+      "id": 152,
+      "name": "Ves",
       "hpMax": 52,
       "hpTemp": 0,
-      "ac": 19,
+      "ac": 16,
       "passivePerception": 14,
       "passiveInsight": 17,
       "conditions": [],
       "exhaustionLevel": 0,
       "_slotUsed": {
-        "261-L2": 1,
-        "261-L4": 1,
-        "261-L3": 2,
-        "261-L1": 1
+        "152-L1": 0
       },
       "_slotTotal": {
         "1": 4,
@@ -27,21 +23,21 @@
       },
       "trackers": [
         {
+          "key": "custom_blessing_of_e_cleric_1780431373459",
+          "label": "Blessing of E. Cleric",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "custom_chaos_other_movement_1780431404569",
+          "label": "Chaos: Other Movement",
+          "cur": 0,
+          "max": 1
+        },
+        {
           "key": "custom_owl_1780435425887",
           "label": "Owl",
           "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-          "label": "Blessing of the E. Cleric",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
-          "label": "Chaos: Movement",
-          "cur": 0,
           "max": 1
         },
         {
@@ -49,6 +45,12 @@
           "label": "Wild Shape",
           "cur": 0,
           "max": 3
+        },
+        {
+          "key": "cls_druid_wild_resur:_regain_spell_slot",
+          "label": "Wild Resur: Regain Spell Slot",
+          "cur": 0,
+          "max": 1
         },
         {
           "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
@@ -67,17 +69,155 @@
           "label": "Stonecunning",
           "cur": 0,
           "max": 3
+        }
+      ],
+      "_concentratingOn": null
+    },
+    {
+      "id": 157,
+      "name": "Kiza",
+      "hpCurrent": 74,
+      "hpMax": 74,
+      "hpTemp": 0,
+      "ac": 21,
+      "passivePerception": 14,
+      "passiveInsight": 10,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3
+      },
+      "trackers": [
+        {
+          "key": "cls_chaos_knight_lay_on_hands",
+          "label": "Lay on Hands",
+          "cur": 35,
+          "max": 35
         },
         {
-          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
-          "label": "Chaos: Anchor",
-          "cur": 1,
+          "key": "cls_chaos_knight_channel_divinity",
+          "label": "Channel Divinity",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_chaos_knight_chaotic_wound_die",
+          "label": "Chaotic Wound Die",
+          "cur": 0,
+          "max": 4
+        },
+        {
+          "key": "cls_chaos_knight_aura_of_chaos",
+          "label": "Aura of Chaos",
+          "cur": 18,
+          "max": 18
+        }
+      ],
+      "_concentratingOn": null
+    },
+    {
+      "id": 159,
+      "name": "Schmiff",
+      "hpMax": 38,
+      "hpTemp": 0,
+      "ac": 13,
+      "passivePerception": 12,
+      "passiveInsight": 15,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3,
+        "3": 3
+      },
+      "trackers": [
+        {
+          "key": "sub_wild_magic_sorcery_tides_of_chaos",
+          "label": "Tides of Chaos",
+          "cur": 0,
           "max": 1
         },
         {
-          "key": "cls_druid_wild_resur:_regain_spell_slot",
-          "label": "Wild Resur: Regain Spell Slot",
+          "key": "sub_wild_magic_sorcery_tamed_surge",
+          "label": "Tamed Surge",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "race_gnome_speak_with_animals_(free)",
+          "label": "Speak With Animals (Free)",
+          "cur": 0,
+          "max": 3
+        },
+        {
+          "key": "cls_sorcerer_innate_sorcery",
+          "label": "Innate Sorcery",
+          "cur": 2,
+          "max": 2
+        },
+        {
+          "key": "cls_sorcerer_sorcery_points",
+          "label": "Sorcery Points",
+          "cur": 7,
+          "max": 7
+        },
+        {
+          "key": "cls_sorcerer_sorcerous_restoration",
+          "label": "Sorcerous Restoration",
           "cur": 1,
+          "max": 1
+        }
+      ],
+      "_concentratingOn": null
+    },
+    {
+      "id": 241,
+      "name": "Sat",
+      "hpMax": 47,
+      "hpTemp": 0,
+      "ac": 16,
+      "passivePerception": 9,
+      "passiveInsight": 12,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3,
+        "3": 2
+      },
+      "trackers": [
+        {
+          "key": "race_human_heroic_inspiration",
+          "label": "Heroic Inspiration",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "custom_luck_1781206402943",
+          "label": "Luck",
+          "cur": 0,
+          "max": 3
+        },
+        {
+          "key": "cls_sorcerer_sorcery_points",
+          "label": "Sorcery Points",
+          "cur": 0,
+          "max": 5
+        },
+        {
+          "key": "cls_sorcerer_innate_sorcery",
+          "label": "Innate Sorcery",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_sorcerer_sorcerous_restoration",
+          "label": "Sorcerous Restoration",
+          "cur": 0,
           "max": 1
         }
       ],

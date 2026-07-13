@@ -1,6 +1,6 @@
 {
   "_type": "char-session",
-  "_updated": 1783892675273,
+  "_updated": 1783935034001,
   "characters": [
     {
       "id": 157,
@@ -8,9 +8,16 @@
       "hpCurrent": 74,
       "hpMax": 74,
       "hpTemp": 0,
+      "ac": 21,
+      "passivePerception": 13,
+      "passiveInsight": 10,
       "conditions": [],
       "exhaustionLevel": 0,
       "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3
+      },
       "trackers": [
         {
           "key": "cls_chaos_knight_lay_on_hands",
@@ -45,9 +52,17 @@
       "hpCurrent": 38,
       "hpMax": 38,
       "hpTemp": 0,
+      "ac": 13,
+      "passivePerception": 12,
+      "passiveInsight": 15,
       "conditions": [],
       "exhaustionLevel": 0,
       "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3,
+        "3": 3
+      },
       "trackers": [
         {
           "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_illusory_echo",
@@ -106,9 +121,18 @@
       "hpCurrent": 52,
       "hpMax": 52,
       "hpTemp": 0,
+      "ac": 17,
+      "passivePerception": 14,
+      "passiveInsight": 17,
       "conditions": [],
       "exhaustionLevel": 0,
       "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 1
+      },
       "trackers": [
         {
           "key": "custom_owl_1780435425887",

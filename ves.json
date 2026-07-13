@@ -1,0 +1,82 @@
+{
+  "_type": "char-session",
+  "_updated": 1783939900897,
+  "characters": [
+    {
+      "id": 261,
+      "name": "Ves ",
+      "hpCurrent": 52,
+      "hpMax": 52,
+      "hpTemp": 0,
+      "ac": 17,
+      "passivePerception": 14,
+      "passiveInsight": 17,
+      "conditions": [],
+      "exhaustionLevel": 0,
+      "_slotUsed": {},
+      "_slotTotal": {
+        "1": 4,
+        "2": 3,
+        "3": 3,
+        "4": 1
+      },
+      "trackers": [
+        {
+          "key": "custom_owl_1780435425887",
+          "label": "Owl",
+          "cur": 1,
+          "max": 1
+        },
+        {
+          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+          "label": "Blessing of the E. Cleric",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
+          "label": "Chaos: Anchor",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
+          "label": "Chaos: Movement",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_druid_wild_shape",
+          "label": "Wild Shape",
+          "cur": 0,
+          "max": 3
+        },
+        {
+          "key": "cls_druid_wild_resur:_regain_spell_slot",
+          "label": "Wild Resur: Regain Spell Slot",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
+          "label": "Nat.Recovery: Recover Spell Slots",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
+          "label": "Nat.Recovery: Cast Circle Spell",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "race_dwarf_stonecunning",
+          "label": "Stonecunning",
+          "cur": 0,
+          "max": 3
+        }
+      ],
+      "_concentratingOn": null
+    }
+  ]
+}

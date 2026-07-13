@@ -1,13 +1,13 @@
 {
   "_type": "char-session",
-  "_updated": 1783948032203,
+  "_updated": 1783950135270,
   "characters": [
     {
       "id": 261,
       "name": "Ves ",
-      "hpCurrent": 52,
+      "hpCurrent": 32,
       "hpMax": 52,
-      "hpTemp": 0,
+      "hpTemp": 5,
       "ac": 17,
       "passivePerception": 14,
       "passiveInsight": 17,
@@ -28,18 +28,6 @@
           "max": 1
         },
         {
-          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-          "label": "Blessing of the E. Cleric",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
-          "label": "Chaos: Anchor",
-          "cur": 0,
-          "max": 1
-        },
-        {
           "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
           "label": "Chaos: Movement",
           "cur": 0,
@@ -48,7 +36,7 @@
         {
           "key": "cls_druid_wild_shape",
           "label": "Wild Shape",
-          "cur": 0,
+          "cur": 2,
           "max": 3
         },
         {
@@ -72,8 +60,20 @@
         {
           "key": "race_dwarf_stonecunning",
           "label": "Stonecunning",
-          "cur": 0,
+          "cur": 2,
           "max": 3
+        },
+        {
+          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+          "label": "Blessing of the E. Cleric",
+          "cur": 1,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
+          "label": "Chaos: Anchor",
+          "cur": 1,
+          "max": 1
         }
       ],
       "_concentratingOn": null

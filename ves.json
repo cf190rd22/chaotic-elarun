@@ -1,12 +1,13 @@
 {
   "_type": "char-session",
-  "_updated": 1784060402015,
+  "_updated": 1784063661114,
   "characters": [
     {
       "id": 261,
       "name": "Ves",
       "hpCurrent": 27,
       "hpMax": 52,
+      "hpAdjust": 0,
       "hpTemp": 0,
       "ac": 17,
       "passivePerception": 14,

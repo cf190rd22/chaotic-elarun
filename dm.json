@@ -1,6 +1,6 @@
 {
   "_type": "char-session",
-  "_updated": 1784058786725,
+  "_updated": 1784058874971,
   "characters": [
     {
       "id": 157,
@@ -43,6 +43,12 @@
           "label": "Aura of Chaos",
           "cur": 18,
           "max": 18
+        },
+        {
+          "key": "custom_repulsion_shield_1784058820657",
+          "label": "Repulsion Shield",
+          "cur": 0,
+          "max": 4
         }
       ],
       "_concentratingOn": null,
@@ -197,6 +203,5 @@
       "_concentratingOn": null,
       "activeModes": []
     }
-  ],
-  "_unchanged": true
+  ]
 }

@@ -1,12 +1,13 @@
 {
   "_type": "char-session",
-  "_updated": 1784059506760,
+  "_updated": 1784060056497,
   "characters": [
     {
       "id": 157,
       "name": "Kiza",
       "hpCurrent": 74,
       "hpMax": 74,
+      "hpAdjust": 0,
       "hpTemp": 0,
       "ac": 21,
       "passivePerception": 13,
@@ -43,12 +44,6 @@
           "label": "Aura of Chaos",
           "cur": 18,
           "max": 18
-        },
-        {
-          "key": "custom_repulsion_shield_1784058820657",
-          "label": "Repulsion Shield",
-          "cur": 0,
-          "max": 4
         }
       ],
       "_concentratingOn": null,
@@ -59,6 +54,7 @@
       "name": "Schmiff",
       "hpCurrent": 38,
       "hpMax": 38,
+      "hpAdjust": 0,
       "hpTemp": 0,
       "ac": 13,
       "passivePerception": 12,
@@ -127,9 +123,10 @@
     },
     {
       "id": 261,
-      "name": "Ves",
+      "name": "Ves ",
       "hpCurrent": 52,
       "hpMax": 52,
+      "hpAdjust": 0,
       "hpTemp": 0,
       "ac": 17,
       "passivePerception": 14,
@@ -203,6 +200,5 @@
       "_concentratingOn": null,
       "activeModes": []
     }
-  ],
-  "_unchanged": true
+  ]
 }

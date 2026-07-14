@@ -1,19 +1,24 @@
 {
   "_type": "char-session",
-  "_updated": 1784023260294,
+  "_updated": 1784023320942,
   "characters": [
     {
       "id": 261,
       "name": "Ves ",
-      "hpCurrent": 52,
+      "hpCurrent": 32,
       "hpMax": 52,
-      "hpTemp": 0,
+      "hpTemp": 4,
       "ac": 17,
       "passivePerception": 14,
       "passiveInsight": 17,
       "conditions": [],
       "exhaustionLevel": 0,
-      "_slotUsed": {},
+      "_slotUsed": {
+        "1": 2,
+        "2": 2,
+        "3": 3,
+        "4": 1
+      },
       "_slotTotal": {
         "1": 4,
         "2": 3,
@@ -34,21 +39,9 @@
           "max": 1
         },
         {
-          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
-          "label": "Chaos: Anchor",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
-          "label": "Chaos: Movement",
-          "cur": 0,
-          "max": 1
-        },
-        {
           "key": "cls_druid_wild_shape",
           "label": "Wild Shape",
-          "cur": 0,
+          "cur": 1,
           "max": 3
         },
         {
@@ -74,6 +67,18 @@
           "label": "Stonecunning",
           "cur": 0,
           "max": 3
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
+          "label": "Chaos: Anchor",
+          "cur": 1,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
+          "label": "Chaos: Movement",
+          "cur": 1,
+          "max": 1
         }
       ],
       "_concentratingOn": null

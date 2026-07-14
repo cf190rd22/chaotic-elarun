@@ -1,6 +1,6 @@
 {
   "_type": "char-session",
-  "_updated": 1784057685088,
+  "_updated": 1784057726412,
   "characters": [
     {
       "id": 157,
@@ -71,5 +71,6 @@
       "_concentratingOn": "Shining Smite",
       "activeModes": []
     }
-  ]
+  ],
+  "_unchanged": true
 }

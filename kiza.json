@@ -1,91 +1,24 @@
 {
   "_type": "char-session",
-  "_updated": 1784052959593,
+  "_updated": 1784053187740,
   "characters": [
-    {
-      "id": 152,
-      "name": "Ves",
-      "hpMax": 52,
-      "hpTemp": 0,
-      "ac": 16,
-      "passivePerception": 14,
-      "passiveInsight": 17,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {
-        "1": 0
-      },
-      "_slotTotal": {
-        "1": 4,
-        "2": 3,
-        "3": 3,
-        "4": 1
-      },
-      "trackers": [
-        {
-          "key": "custom_blessing_of_e_cleric_1780431373459",
-          "label": "Blessing of E. Cleric",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "custom_chaos_other_movement_1780431404569",
-          "label": "Chaos: Other Movement",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "cls_druid_wild_shape",
-          "label": "Wild Shape",
-          "cur": 0,
-          "max": 3
-        },
-        {
-          "key": "custom_owl_1780435425887",
-          "label": "Owl",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "race_dwarf_stonecunning",
-          "label": "Stonecunning",
-          "cur": 0,
-          "max": 3
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
-          "label": "Nat.Recovery: Recover Spell Slots",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
-          "label": "Nat.Recovery: Cast Circle Spell",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "cls_druid_wild_resur:_regain_spell_slot",
-          "label": "Wild Resur: Regain Spell Slot",
-          "cur": 0,
-          "max": 1
-        }
-      ],
-      "_concentratingOn": null,
-      "activeModes": []
-    },
     {
       "id": 157,
       "name": "Kiza",
-      "hpCurrent": 74,
+      "hpCurrent": 52,
       "hpMax": 74,
-      "hpTemp": 0,
+      "hpTemp": 4,
       "ac": 21,
-      "passivePerception": 14,
+      "passivePerception": 13,
       "passiveInsight": 10,
-      "conditions": [],
+      "conditions": [
+        "Grappled"
+      ],
       "exhaustionLevel": 0,
-      "_slotUsed": {},
+      "_slotUsed": {
+        "1": 3,
+        "2": 1
+      },
       "_slotTotal": {
         "1": 4,
         "2": 3
@@ -94,7 +27,7 @@
         {
           "key": "cls_chaos_knight_lay_on_hands",
           "label": "Lay on Hands",
-          "cur": 35,
+          "cur": 18,
           "max": 35
         },
         {
@@ -106,218 +39,21 @@
         {
           "key": "cls_chaos_knight_chaotic_wound_die",
           "label": "Chaotic Wound Die",
-          "cur": 0,
+          "cur": 4,
           "max": 4
         },
         {
           "key": "cls_chaos_knight_aura_of_chaos",
           "label": "Aura of Chaos",
-          "cur": 18,
+          "cur": 7,
           "max": 18
         }
       ],
       "_concentratingOn": null,
-      "activeModes": []
-    },
-    {
-      "id": 159,
-      "name": "dfsdf",
-      "hpMax": 0,
-      "hpTemp": 0,
-      "ac": 0,
-      "passivePerception": 10,
-      "passiveInsight": 10,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {},
-      "_slotTotal": {
-        "1": 4,
-        "2": 3,
-        "3": 3
-      },
-      "trackers": [
-        {
-          "key": "sub_wild_magic_sorcery_tides_of_chaos",
-          "label": "Tides of Chaos",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "cls_sorcerer_innate_sorcery",
-          "label": "Innate Sorcery",
-          "cur": 2,
-          "max": 2
-        },
-        {
-          "key": "cls_sorcerer_sorcery_points_(!)",
-          "label": "Sorcery Points (!)",
-          "cur": 2,
-          "max": 2
-        },
-        {
-          "key": "cls_sorcerer_sorcerous_restoration",
-          "label": "Sorcerous Restoration",
-          "cur": 1,
-          "max": 1
-        }
-      ],
-      "_concentratingOn": null,
-      "activeModes": []
-    },
-    {
-      "id": 160,
-      "name": "w1",
-      "hpCurrent": 0,
-      "hpMax": 0,
-      "hpTemp": 0,
-      "ac": 0,
-      "passivePerception": 10,
-      "passiveInsight": 10,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {},
-      "_slotTotal": {
-        "5": 4,
-        "6": 1,
-        "7": 1,
-        "8": 1,
-        "9": 1
-      },
-      "trackers": [
-        {
-          "key": "sub_great_old_one_patron_clairvoyant_combatant",
-          "label": "Clairvoyant Combatant",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "cls_warlock_magical_cunning",
-          "label": "Magical Cunning",
-          "cur": 0,
-          "max": 1
-        }
-      ],
-      "_concentratingOn": null,
-      "activeModes": []
-    },
-    {
-      "id": 161,
-      "name": "Ves (Rebuilt)",
-      "hpMax": 52,
-      "hpTemp": 0,
-      "ac": 16,
-      "passivePerception": 14,
-      "passiveInsight": 17,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {},
-      "_slotTotal": {
-        "1": 4,
-        "2": 3,
-        "3": 3,
-        "4": 1
-      },
-      "trackers": [
-        {
-          "key": "custom_blessing_of_e_cleric_1780431373459",
-          "label": "Blessing of E. Cleric",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "custom_chaos_other_movement_1780431404569",
-          "label": "Chaos: Other Movement",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "custom_owl_1780435425887",
-          "label": "Owl",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "cls_druid_wild_shape",
-          "label": "Wild Shape",
-          "cur": 3,
-          "max": 3
-        },
-        {
-          "key": "cls_druid_wild_resur:_regain_spell_slot",
-          "label": "Wild Resur: Regain Spell Slot",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
-          "label": "Nat.Recovery: Recover Spell Slots",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
-          "label": "Nat.Recovery: Cast Circle Spell",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "race_dwarf_stonecunning",
-          "label": "Stonecunning",
-          "cur": 3,
-          "max": 3
-        }
-      ],
-      "_concentratingOn": null,
-      "activeModes": []
-    },
-    {
-      "id": 162,
-      "name": "fdhdf75467th",
-      "hpMax": 0,
-      "hpTemp": 0,
-      "ac": 0,
-      "passivePerception": 10,
-      "passiveInsight": 10,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {},
-      "_slotTotal": {
-        "1": 4,
-        "2": 3,
-        "3": 3,
-        "4": 3,
-        "5": 2,
-        "6": 1
-      },
-      "trackers": [
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
-          "label": "Nat.Recovery: Recover Spell Slots",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
-          "label": "Nat.Recovery: Cast Circle Spell",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "cls_druid_wild_shape",
-          "label": "Wild Shape",
-          "cur": 3,
-          "max": 3
-        },
-        {
-          "key": "cls_druid_wild_resur:_regain_spell_slot",
-          "label": "Wild Resur: Regain Spell Slot",
-          "cur": 1,
-          "max": 1
-        }
-      ],
-      "_concentratingOn": null,
-      "activeModes": []
+      "activeModes": [
+        "Chaotic Wounds",
+        "Aura of Chaos"
+      ]
     }
-  ],
-  "_unchanged": true
+  ]
 }

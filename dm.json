@@ -1,78 +1,7 @@
 {
   "_type": "char-session",
-  "_updated": 1783968469060,
+  "_updated": 1784021255198,
   "characters": [
-    {
-      "id": 152,
-      "name": "Ves",
-      "hpMax": 52,
-      "hpTemp": 0,
-      "ac": 16,
-      "passivePerception": 14,
-      "passiveInsight": 17,
-      "conditions": [],
-      "exhaustionLevel": 0,
-      "_slotUsed": {
-        "152-L1": 0
-      },
-      "_slotTotal": {
-        "1": 4,
-        "2": 3,
-        "3": 3,
-        "4": 1
-      },
-      "trackers": [
-        {
-          "key": "custom_blessing_of_e_cleric_1780431373459",
-          "label": "Blessing of E. Cleric",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "custom_chaos_other_movement_1780431404569",
-          "label": "Chaos: Other Movement",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "custom_owl_1780435425887",
-          "label": "Owl",
-          "cur": 1,
-          "max": 1
-        },
-        {
-          "key": "cls_druid_wild_shape",
-          "label": "Wild Shape",
-          "cur": 0,
-          "max": 3
-        },
-        {
-          "key": "cls_druid_wild_resur:_regain_spell_slot",
-          "label": "Wild Resur: Regain Spell Slot",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
-          "label": "Nat.Recovery: Recover Spell Slots",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
-          "label": "Nat.Recovery: Cast Circle Spell",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "race_dwarf_stonecunning",
-          "label": "Stonecunning",
-          "cur": 0,
-          "max": 3
-        }
-      ],
-      "_concentratingOn": null
-    },
     {
       "id": 157,
       "name": "Kiza",
@@ -80,7 +9,7 @@
       "hpMax": 74,
       "hpTemp": 0,
       "ac": 21,
-      "passivePerception": 14,
+      "passivePerception": 13,
       "passiveInsight": 10,
       "conditions": [],
       "exhaustionLevel": 0,
@@ -118,8 +47,9 @@
       "_concentratingOn": null
     },
     {
-      "id": 159,
+      "id": 259,
       "name": "Schmiff",
+      "hpCurrent": 38,
       "hpMax": 38,
       "hpTemp": 0,
       "ac": 13,
@@ -135,14 +65,44 @@
       },
       "trackers": [
         {
-          "key": "sub_wild_magic_sorcery_tides_of_chaos",
-          "label": "Tides of Chaos",
+          "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_illusory_echo",
+          "label": "Chaos: Illusory Echo",
           "cur": 0,
           "max": 1
         },
         {
-          "key": "sub_wild_magic_sorcery_tamed_surge",
-          "label": "Tamed Surge",
+          "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_cloak",
+          "label": "Chaos: Cloak",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_sorcerer_innate_sorcery",
+          "label": "Innate Sorcery",
+          "cur": 0,
+          "max": 2
+        },
+        {
+          "key": "cls_sorcerer_sorcery_points",
+          "label": "Sorcery Points",
+          "cur": 0,
+          "max": 6
+        },
+        {
+          "key": "cls_sorcerer_sorcerous_restoration",
+          "label": "Sorcerous Restoration",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_sojourner_spirits",
+          "label": "Spirits",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_wild_magic_sorcery_tides_of_chaos",
+          "label": "Tides of Chaos",
           "cur": 0,
           "max": 1
         },
@@ -151,74 +111,82 @@
           "label": "Speak With Animals (Free)",
           "cur": 0,
           "max": 3
-        },
-        {
-          "key": "cls_sorcerer_innate_sorcery",
-          "label": "Innate Sorcery",
-          "cur": 2,
-          "max": 2
-        },
-        {
-          "key": "cls_sorcerer_sorcery_points",
-          "label": "Sorcery Points",
-          "cur": 7,
-          "max": 7
-        },
-        {
-          "key": "cls_sorcerer_sorcerous_restoration",
-          "label": "Sorcerous Restoration",
-          "cur": 1,
-          "max": 1
         }
       ],
       "_concentratingOn": null
     },
     {
-      "id": 241,
-      "name": "Sat",
-      "hpMax": 47,
+      "id": 261,
+      "name": "Ves ",
+      "hpCurrent": 52,
+      "hpMax": 52,
       "hpTemp": 0,
-      "ac": 16,
-      "passivePerception": 9,
-      "passiveInsight": 12,
+      "ac": 17,
+      "passivePerception": 14,
+      "passiveInsight": 17,
       "conditions": [],
       "exhaustionLevel": 0,
       "_slotUsed": {},
       "_slotTotal": {
         "1": 4,
         "2": 3,
-        "3": 2
+        "3": 3,
+        "4": 1
       },
       "trackers": [
         {
-          "key": "race_human_heroic_inspiration",
-          "label": "Heroic Inspiration",
+          "key": "custom_owl_1780435425887",
+          "label": "Owl",
+          "cur": 1,
+          "max": 1
+        },
+        {
+          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+          "label": "Blessing of the E. Cleric",
           "cur": 0,
           "max": 1
         },
         {
-          "key": "custom_luck_1781206402943",
-          "label": "Luck",
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
+          "label": "Chaos: Anchor",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
+          "label": "Chaos: Movement",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "cls_druid_wild_shape",
+          "label": "Wild Shape",
           "cur": 0,
           "max": 3
         },
         {
-          "key": "cls_sorcerer_sorcery_points",
-          "label": "Sorcery Points",
-          "cur": 0,
-          "max": 5
-        },
-        {
-          "key": "cls_sorcerer_innate_sorcery",
-          "label": "Innate Sorcery",
-          "cur": 0,
-          "max": 2
-        },
-        {
-          "key": "cls_sorcerer_sorcerous_restoration",
-          "label": "Sorcerous Restoration",
+          "key": "cls_druid_wild_resur:_regain_spell_slot",
+          "label": "Wild Resur: Regain Spell Slot",
           "cur": 0,
           "max": 1
+        },
+        {
+          "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
+          "label": "Nat.Recovery: Recover Spell Slots",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
+          "label": "Nat.Recovery: Cast Circle Spell",
+          "cur": 0,
+          "max": 1
+        },
+        {
+          "key": "race_dwarf_stonecunning",
+          "label": "Stonecunning",
+          "cur": 0,
+          "max": 3
         }
       ],
       "_concentratingOn": null

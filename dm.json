@@ -1,6 +1,6 @@
 {
   "_type": "char-session",
-  "_updated": 1784055758161,
+  "_updated": 1784056840877,
   "characters": [
     {
       "id": 157,
@@ -43,24 +43,6 @@
           "label": "Aura of Chaos",
           "cur": 18,
           "max": 18
-        },
-        {
-          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-          "label": "Blessing of the E. Cleric",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_1/2_speed_deflect",
-          "label": "Chaos: 1/2 Speed Deflect",
-          "cur": 0,
-          "max": 1
-        },
-        {
-          "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_large",
-          "label": "Chaos: Large",
-          "cur": 0,
-          "max": 1
         }
       ],
       "_concentratingOn": null,
@@ -132,12 +114,6 @@
           "label": "Speak With Animals (Free)",
           "cur": 0,
           "max": 3
-        },
-        {
-          "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-          "label": "Blessing of the E. Cleric",
-          "cur": 0,
-          "max": 1
         }
       ],
       "_concentratingOn": null,

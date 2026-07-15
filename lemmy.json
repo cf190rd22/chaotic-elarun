@@ -145,7 +145,9 @@
                 "max": 1,
                 "type": "boxes",
                 "reset": "long",
-                "maxFormula": "CHA"
+                "maxFormula": "CHA",
+                "minLevel": 1,
+                "maxLevel": 4
               }
             ],
             "actions": [],
@@ -187,7 +189,9 @@
                 "max": 1,
                 "type": "boxes",
                 "reset": "short",
-                "maxFormula": "CHA"
+                "maxFormula": "CHA",
+                "minLevel": 5,
+                "maxLevel": 20
               }
             ]
           },
@@ -2163,7 +2167,8 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ]
+            ],
+            "_modeLabel": "Blessing of the E. Cleric"
           }
         ]
       },
@@ -18232,6 +18237,20 @@
             "_syncSourceId": 257
           },
           {
+            "key": "cls_bard_bardic_inspiration_(1-4)",
+            "label": "Bardic Inspiration (1-4)",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 65,
+            "maxFormula": "CHA",
+            "minLevel": 1,
+            "maxLevel": 4
+          },
+          {
             "key": "cls_bard_bardic_inspiration_(5+)",
             "label": "Bardic Inspiration (5+)",
             "max": 3,
@@ -18242,6 +18261,8 @@
             "_classSync": true,
             "_syncSourceId": 65,
             "maxFormula": "CHA",
+            "minLevel": 5,
+            "maxLevel": 20,
             "_catId": 1784152083378
           },
           {
@@ -18764,5 +18785,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784157654004
+  "_updated": 1784157693498
 }

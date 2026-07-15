@@ -2163,7 +2163,8 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ]
+            ],
+            "_modeLabel": "Blessing of the E. Cleric"
           }
         ]
       },
@@ -13081,8 +13082,8 @@
         "raceId": 34,
         "featIds": [
           169,
-          257,
-          400
+          400,
+          257
         ],
         "level": 7,
         "cls": "Bard",
@@ -18130,10 +18131,12 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": false,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": [],
             "_flag": true,
-            "_modeActive": true
+            "_modeActive": true,
+            "_libHasMode": true,
+            "_modeConsumesTracker": "Bardic Inspiration",
+            "_modeBonusAskField": "ac",
+            "_modeDuration": "turn"
           },
           {
             "name": "Flourish - Slashing",
@@ -18247,19 +18250,6 @@
             "_catId": 1784152058622
           },
           {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_origIdx": 2,
-            "_catId": 1784152058622
-          },
-          {
             "key": "cls_bard_bardic_inspiration_(1-4)",
             "label": "Bardic Inspiration (1-4)",
             "max": 3,
@@ -18269,9 +18259,7 @@
             "_custom": true,
             "_classSync": true,
             "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 1,
-            "maxLevel": 4
+            "maxFormula": "CHA"
           },
           {
             "key": "cls_bard_bardic_inspiration_(5+)",
@@ -18284,8 +18272,6 @@
             "_classSync": true,
             "_syncSourceId": 65,
             "maxFormula": "CHA",
-            "minLevel": 5,
-            "maxLevel": 20,
             "_catId": 1784152083378
           },
           {
@@ -18310,6 +18296,17 @@
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257
           }
         ],
         "_grantImmunities": [],
@@ -18808,5 +18805,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784157328106
+  "_updated": 1784157389455
 }

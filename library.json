@@ -14122,7 +14122,7 @@
         {
           "level": 7,
           "name": "Chaos: Size",
-          "description": "Once per Long Rest, you become 1 size larger for 1 minute.",
+          "description": "<p>Once per Long Rest, you become 1 size larger for 1 minute.</p>",
           "trackers": [
             {
               "label": "Chaos: Size",
@@ -14130,7 +14130,8 @@
               "type": "boxes",
               "reset": "long"
             }
-          ]
+          ],
+          "atype": "Additional Feature"
         }
       ]
     }
@@ -38580,16 +38581,11 @@
   ],
   "libItems": [
     {
-      "name": "1TestSync",
-      "subtype": "Tester",
+      "name": "1GNT1",
+      "subtype": "Test",
       "tags": [],
+      "magicBonus": 1,
       "proficient": false
-    },
-    {
-      "name": "Ammunition +1",
-      "subtype": "Weapon (Any Ammunition)",
-      "rarity": "uncommon",
-      "desc": "You have a bonus to attack rolls and damage rolls made with this piece of magic ammunition. The bonus is determined by the rarity of the ammunition. Once it hits a target, the ammunition is no longer magical.\nThis ammunition is typically found or sold in quantities of ten or twenty pieces. Ten pieces of this ammunition are equivalent in value to a potion of the same rarity."
     },
     {
       "name": "Ammunition +2",
@@ -40972,13 +40968,6 @@
       "cost": "25 GP",
       "weight": "1 lb.",
       "desc": "Ability: Dexterity\nUtilize: Pick a lock (DC 15), or disarm a trap (DC 15)\nNote: If you have proficiency with a tool, add your Proficiency Bonus to any ability check you make that uses the tool. If you have proficiency in a skill that's used with that check, you have Advantage on the check too. Your features might give you proficiency with a tool. A monster has proficiency with any tool in its stat block."
-    },
-    {
-      "name": "1GNT1",
-      "subtype": "Test",
-      "tags": [],
-      "magicBonus": 1,
-      "proficient": false
     }
   ],
   "libMisc": [

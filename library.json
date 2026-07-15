@@ -790,7 +790,9 @@
               "max": 1,
               "type": "boxes",
               "reset": "long",
-              "maxFormula": "CHA"
+              "maxFormula": "CHA",
+              "minLevel": 1,
+              "maxLevel": 4
             }
           ],
           "actions": [],
@@ -832,7 +834,9 @@
               "max": 1,
               "type": "boxes",
               "reset": "short",
-              "maxFormula": "CHA"
+              "maxFormula": "CHA",
+              "minLevel": 5,
+              "maxLevel": 20
             }
           ]
         },
@@ -14092,7 +14096,8 @@
               "type": "boxes",
               "reset": "long"
             }
-          ]
+          ],
+          "_modeLabel": "Blessing of the E. Cleric"
         }
       ]
     },

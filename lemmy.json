@@ -2163,8 +2163,7 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ],
-            "_modeLabel": "Blessing of the E. Cleric"
+            ]
           }
         ]
       },
@@ -17534,18 +17533,7 @@
           },
           {
             "name": "Power Word Heal",
-            "level": 9,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "effect": "Prone",
-            "desc": "A wave of healing energy washes over one creature you can see within range. The target regains all its Hit Points. If the creature has the Charmed, Frightened, Paralyzed, Poisoned, or Stunned condition, the condition ends. If the creature has the Prone condition, it can use its Reaction to stand up.",
-            "area": "",
-            "hit": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
+            "level": 20,
             "_assigned": false,
             "_classSync": true,
             "_syncSourceName": "Bard",
@@ -17554,18 +17542,7 @@
           },
           {
             "name": "Power Word Kill",
-            "level": 9,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "effect": "12d12 Psychic",
-            "desc": "You compel one creature you can see within range to die. If the target has 100 Hit Points or fewer, it dies. Otherwise, it takes 12d12 Psychic damage.",
-            "area": "",
-            "hit": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
+            "level": 20,
             "_assigned": false,
             "_classSync": true,
             "_syncSourceName": "Bard",
@@ -17998,7 +17975,7 @@
             "save": "",
             "kind": "weapon",
             "atype": "action",
-            "damage": "1d6",
+            "damage": "1d6 Slashing",
             "range": "",
             "hit": "",
             "source": "Scimitar",
@@ -18007,14 +17984,10 @@
             "desc": "In Darkness, the unsheathed blade of this weapon sheds moonlight, creating Bright Light in a 15-foot radius and Dim Light for an additional 15 feet.\nConceptopolis\nMoon-Touched Sword (Rapier)",
             "weaponType": "finesse",
             "damageType": "Slashing",
-            "proficient": true,
+            "proficient": false,
             "_grants": [],
             "_onRestTriggers": [],
-            "_playerSetMode": false,
-            "magicBonus": 1,
-            "_actionAdjDuration": "",
-            "_linkedTracker": "",
-            "_linkedTrackerLabel": ""
+            "_playerSetMode": false
           },
           {
             "name": "Potion of Healing",
@@ -18131,12 +18104,10 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": false,
+            "_modeAdvSaves": [],
+            "_modeAdvAbilChecks": [],
             "_flag": true,
-            "_modeActive": true,
-            "_libHasMode": true,
-            "_modeConsumesTracker": "Bardic Inspiration",
-            "_modeBonusAskField": "ac",
-            "_modeDuration": "turn"
+            "_modeActive": true
           },
           {
             "name": "Flourish - Slashing",
@@ -18250,16 +18221,15 @@
             "_catId": 1784152058622
           },
           {
-            "key": "cls_bard_bardic_inspiration_(1-4)",
-            "label": "Bardic Inspiration (1-4)",
-            "max": 3,
-            "cur": 0,
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA"
+            "_featSync": true,
+            "_syncSourceId": 257
           },
           {
             "key": "cls_bard_bardic_inspiration_(5+)",
@@ -18296,17 +18266,6 @@
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257
           }
         ],
         "_grantImmunities": [],
@@ -18805,5 +18764,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784157389455
+  "_updated": 1784157654004
 }

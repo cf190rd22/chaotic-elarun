@@ -2457,19 +2457,15 @@
     ],
     "libItems": [
       {
-        "name": "Pistol +3",
-        "itemType": "Weapon",
-        "subtype": "Pistol",
-        "rarity": "very rare",
-        "attackType": "Ranged",
-        "weaponType": "ranged",
-        "effect": "1d10+3",
-        "damageType": "Piercing",
-        "weight": "3 lb.",
-        "notes": "Ammunition (Range 30/90; Bullet), Loading · Ranged, Piercing",
-        "desc": "Range: 30/90\nMastery: Vex\nYou have a +3 bonus to attack and damage rolls made with this magic weapon.",
-        "magicBonus": 3,
-        "attackAbility": "DEX"
+        "name": "Wand of Magic Detection",
+        "rarity": "rarity: uncommon",
+        "itemType": "Wand",
+        "attune": "",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Wand",
+        "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
+        "chargeReset": "dawn",
+        "maxCharges": 3
       },
       {
         "name": "Ammunition +2",
@@ -20201,6 +20197,6 @@
       89
     ]
   },
-  "nextId": 400,
-  "_updated": 1784155026434
+  "nextId": 401,
+  "_updated": 1784155031810
 }

@@ -4715,7 +4715,8 @@
                 "reset": "long"
               }
             ],
-            "_modeLabel": "Blessing of the E. Cleric"
+            "_modeLabel": "Blessing of the Elandran Cleric",
+            "atype": "Additional Feature"
           }
         ]
       },
@@ -16562,10 +16563,10 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
+            "_singleUsed": false,
             "_dmAllow": true,
             "_dmAllowNote": "Mac-Fuirmidh Cittern",
-            "_dmAllowSource": "Class",
-            "_singleUsed": false
+            "_dmAllowSource": "Class"
           },
           {
             "name": "Delay",
@@ -20090,7 +20091,8 @@
             "desc": "Version: 1\nThis cloak has an icy, geometric pattern of a snowflake inside its warm lining. While wearing the cloak, you have resistance to cold damage and ignore difficult terrain created by ice or snow. As you walk, snowflakes drift behind you and vanish upon touching the ground.\nThe cloak has 5 charges and regains all expended charges daily at dawn. Once on each of your turns while wearing the cloak, you can expend 1, 2, or 3 charges from the cloak (no action required) by forfeiting 10, 20, or 30 feet of your walking speed for that turn, respectively, in order to spin in place instead. If your maximum walking speed is 25 feet, you can choose to forfeit 25 feet instead of 30. As you spin in place, a wave of bitter cold spreads out from the cloak, causing the ground in a 5-foot radius around you to become covered in thick snow. The radius increases by 5 feet for each additional charge you expend, up to 15 feet. Each other creature within the area must make a DC 15 Constitution saving throw or take 1d8 cold damage.\nThe snow is difficult terrain and remains for 1d4 rounds, disappearing at the start of your turn on the round that it would end.",
             "proficient": false,
             "_linkedTracker": "item_charges_frostfell_cloak",
-            "_linkedTrackerLabel": "Frostfell Cloak Charges"
+            "_linkedTrackerLabel": "Frostfell Cloak Charges",
+            "damageType": "Cold"
           },
           {
             "name": "Mac-Fuirmidh Cittern",
@@ -20109,7 +20111,8 @@
             "desc": "7 Charges\nBarkskin (2nd) (1 Charge), \nFly (3rd) (1 Charge), \nFog Cloud (1st) (1 Charge), \nProtection from Evil and Good (1st) (1 Charge), \nLevitate (2nd) (1 Charge), \nCure Wounds (1st) (1 Charge), \nInvisibility(2nd) (1 Charge)\n\nAn Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.\nYou can play the Mac-Fuirmidh Cittern to cast one of the following spells: Fly, Invisibility, Levitate, Protection from Evil and Good, Barkskin, Cure Wounds, and Fog Cloud. Once the Mac-Fuirmidh Cittern has been used to cast a spell, it can’t be used to cast that spell again until the next dawn. The spells use your spellcasting ability and spell save DC.",
             "proficient": false,
             "_linkedTracker": "item_charges_mac_fuirmidh_cittern",
-            "_linkedTrackerLabel": "Mac-Fuirmidh Cittern Charges"
+            "_linkedTrackerLabel": "Mac-Fuirmidh Cittern Charges",
+            "damageType": "Psychic"
           },
           {
             "name": "Barkskin",
@@ -20483,7 +20486,8 @@
             "_grants": [],
             "_onRestTriggers": [],
             "_playerSetMode": false,
-            "attackAbility": "DEX"
+            "attackAbility": "DEX",
+            "damageType": "Slashing"
           },
           {
             "name": "Potion of Healing",
@@ -20536,7 +20540,36 @@
             "_modeDcBonus": "",
             "_modeNotes": "",
             "_modeGrants": [],
-            "_modeActive": true
+            "_modeActive": false
+          },
+          {
+            "name": "Blessing of the Elandran Cleric",
+            "_libName": "Blessing of the Elandran Cleric",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Blessing of the Elandran Cleric",
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<details open=\"\"><summary>Once a day, roll a d4</summary><div class=\"det-body\"><p>Once per turn, for this many rounds, you can add 1d6 of Radiant damage to any target successfully hit with an attack roll. If this attack is an Area of Effect spell, the d6 applies to all targets. This resets at dawn.</p></div></details>",
+            "fav": false,
+            "used": false,
+            "_modeLabel": "Blessing of the Elandran Cleric",
+            "_modeNotes": "",
+            "_modeDcBonus": 0,
+            "_modeAcBonus": 0,
+            "_modeAttackBonus": 0,
+            "_modeDmgBonus": 0,
+            "_modeResistance": "",
+            "_modeAdvAll": false,
+            "_modeAdvSaves": [],
+            "_modeAdvAbilChecks": []
           },
           {
             "name": "Bardic Inspiration",
@@ -21237,9 +21270,7 @@
           "3": 3,
           "4": 1
         },
-        "activeModes": [
-          "Blessing of the Elandran Cleric"
-        ],
+        "activeModes": [],
         "acEffective": 17,
         "hpMax": 33,
         "_slotUsedCompact": {
@@ -21252,11 +21283,53 @@
         "_actQRCollapsed": false,
         "_restSub_notes_short": true,
         "_restSectionOpen_short": false,
-        "_modesBarCollapsed": true
+        "_modesBarCollapsed": false
       }
     ],
-    "_exportedAt": 1784198156917
+    "_exportedAt": 1784200762515,
+    "_playerTokenEnc": [
+      103,
+      104,
+      112,
+      95,
+      82,
+      118,
+      107,
+      98,
+      67,
+      121,
+      56,
+      88,
+      49,
+      56,
+      89,
+      50,
+      56,
+      87,
+      77,
+      102,
+      80,
+      104,
+      85,
+      66,
+      67,
+      49,
+      115,
+      100,
+      82,
+      98,
+      113,
+      122,
+      65,
+      78,
+      50,
+      68,
+      103,
+      116,
+      72,
+      89
+    ]
   },
   "nextId": 400,
-  "_updated": 1784198216649
+  "_updated": 1784200820356
 }

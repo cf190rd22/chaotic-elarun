@@ -15731,7 +15731,10 @@
         "attunements": [],
         "xp": 0,
         "exhaustion": 0,
-        "deathSaves": {},
+        "deathSaves": {
+          "pass": 2,
+          "fail": 1
+        },
         "inspiration": false,
         "overrides": {},
         "choices": {},
@@ -24278,7 +24281,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 16,
+        "hpCurrent": 0,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -24337,7 +24340,8 @@
           "1": 2,
           "2": 2,
           "3": 1
-        }
+        },
+        "_wasDying": true
       }
     ],
     "_exportedAt": 1784206187418,
@@ -24394,5 +24398,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784208364248
+  "_updated": 1784211805914
 }

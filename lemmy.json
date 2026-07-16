@@ -18263,7 +18263,7 @@
             "key": "race_orc_adrenaline_rush",
             "label": "Adrenaline Rush",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
@@ -18807,7 +18807,7 @@
             "key": "race_orc_adrenaline_rush",
             "label": "Adrenaline Rush",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
@@ -18886,6 +18886,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1784231890476,
-  "_unchanged": true
+  "_updated": 1784232021038
 }

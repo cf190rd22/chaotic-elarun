@@ -1891,7 +1891,8 @@
                 "reset": "long"
               }
             ],
-            "_modeLabel": "Blessing of the E. Cleric"
+            "_modeLabel": "Blessing of the Elandran Cleric",
+            "atype": "Additional Feature"
           }
         ]
       },
@@ -14076,7 +14077,7 @@
             "desc": "<details open=\"\"><summary>Once a day, roll a d4</summary><div class=\"det-body\"><p>Once per turn, for this many rounds, you can add 1d6 of Radiant damage to any target successfully hit with an attack roll. If this attack is an Area of Effect spell, the d6 applies to all targets. This resets at dawn.</p></div></details>",
             "fav": false,
             "used": false,
-            "_modeLabel": "Blessing of the E. Cleric",
+            "_modeLabel": "Blessing of the Elandran Cleric",
             "_modeNotes": "",
             "_modeDcBonus": 0,
             "_modeAcBonus": 0,
@@ -19604,7 +19605,7 @@
           }
         ],
         "_actFlatView": true,
-        "_actQRCollapsed": true,
+        "_actQRCollapsed": false,
         "_grantedSpells": [],
         "passivePerception": 14,
         "passiveInsight": 17,
@@ -19622,8 +19623,50 @@
         }
       }
     ],
-    "_exportedAt": 1784198147365
+    "_exportedAt": 1784200750384,
+    "_playerTokenEnc": [
+      103,
+      104,
+      112,
+      95,
+      82,
+      118,
+      107,
+      98,
+      67,
+      121,
+      56,
+      88,
+      49,
+      56,
+      89,
+      50,
+      56,
+      87,
+      77,
+      102,
+      80,
+      104,
+      85,
+      66,
+      67,
+      49,
+      115,
+      100,
+      82,
+      98,
+      113,
+      122,
+      65,
+      78,
+      50,
+      68,
+      103,
+      116,
+      72,
+      89
+    ]
   },
   "nextId": 262,
-  "_updated": 1784198244656
+  "_updated": 1784200831760
 }

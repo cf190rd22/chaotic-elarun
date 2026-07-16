@@ -15981,7 +15981,8 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_sourceBook": "PHB",
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_lastCastUpcast": 3
           },
           {
             "name": "Clue",
@@ -19992,7 +19993,11 @@
           "tempHp": 0
         },
         "_slotUsed": {
-          "152-L1": 0
+          "152-L1": 0,
+          "261-L1": 1,
+          "261-L2": 1,
+          "261-L3": 1,
+          "261-L4": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
@@ -20006,14 +20011,16 @@
           "languages": true,
           "proficiencies": true,
           "core": true,
-          "jump": true
+          "jump": true,
+          "progression": false,
+          "abilities": true
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 52,
+        "hpCurrent": 32,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -20077,7 +20084,14 @@
         "acEffective": 17,
         "hpMax": 52,
         "_slotUsedCompact": {
-          "1": 0
+          "1": 1,
+          "2": 1,
+          "3": 1,
+          "4": 1
+        },
+        "_qsHdOpen": false,
+        "_hitDiceUsed": {
+          "d8": 2
         }
       }
     ],
@@ -20135,5 +20149,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784200996440
+  "_updated": 1784201278986
 }

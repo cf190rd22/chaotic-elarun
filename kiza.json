@@ -15974,7 +15974,9 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "conditions": [],
+        "conditions": [
+          "Grappled"
+        ],
         "_actFlatView": true,
         "_trackerCats": [
           {
@@ -16058,8 +16060,10 @@
         "desc": "A spellcaster can transfer a spell to a scroll and create a Spell Scroll, using the rules below.\n\nTime and Cost\nScribing a scroll takes an amount of time and money based on the level of the spell, as shown in the Spell Scroll Costs table. For each day of inscription, you must work for 8 hours. If a scroll requires multiple days, those days needn’t be consecutive.\n\nPrerequisites for the Scribe\nTo scribe a scroll, you must have proficiency in the Arcana skill or with Calligrapher’s Supplies and have the spell prepared on each day of the inscription. You must also have at hand any Material components required by the spell; if the spell consumes its Material components, they are consumed only when you complete the scroll. The scroll’s spell uses your spell save DC and spell attack bonus.\n\nCantrips\nIf the scribed spell is a cantrip, the version on the scroll works as if the caster were your level.\n\nSpell Scroll Costs\nSpell Level | Time | Cost\nCantrip | 1 day | 15 GP\n1 | 1 day | 25 GP\n2 | 3 days | 100 GP\n3 | 5 days | 150 GP\n4 | 10 days | 1,000 GP\n5 | 25 days | 1,500 GP\n6 | 40 days | 10,000 GP\n7 | 50 days | 12,500 GP\n8 | 60 days | 15,000 GP\n9 | 120 days | 50,000 GP",
         "tags": []
       }
-    ]
+    ],
+    "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1784207331318
+  "_updated": 1784207471841,
+  "_unchanged": true
 }

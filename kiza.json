@@ -15377,7 +15377,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 0,
+        "hpCurrent": 25,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -16007,10 +16007,10 @@
         "acEffective": 21,
         "hpMax": 74,
         "_slotUsedCompact": {},
-        "_wasDying": true,
+        "_wasDying": false,
         "deathSaves": {
-          "pass": 2,
-          "fail": 1
+          "pass": 0,
+          "fail": 0
         }
       }
     ],
@@ -16069,5 +16069,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1784215290338
+  "_updated": 1784215445841
 }

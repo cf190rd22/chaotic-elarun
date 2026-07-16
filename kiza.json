@@ -2666,8 +2666,7 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ],
-            "_modeLabel": "Blessing of the E. Cleric"
+            ]
           }
         ]
       },
@@ -2775,15 +2774,19 @@
     ],
     "libItems": [
       {
-        "name": "Wand of Magic Detection",
-        "rarity": "rarity: uncommon",
-        "itemType": "Wand",
-        "attune": "",
-        "source": "5.2 SRD (D&D 2024)",
-        "subtype": "Wand",
-        "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
-        "chargeReset": "dawn",
-        "maxCharges": 3
+        "name": "Pistol +3",
+        "itemType": "Weapon",
+        "subtype": "Pistol",
+        "rarity": "very rare",
+        "attackType": "Ranged",
+        "weaponType": "ranged",
+        "effect": "1d10+3",
+        "damageType": "Piercing",
+        "weight": "3 lb.",
+        "notes": "Ammunition (Range 30/90; Bullet), Loading · Ranged, Piercing",
+        "desc": "Range: 30/90\nMastery: Vex\nYou have a +3 bonus to attack and damage rolls made with this magic weapon.",
+        "magicBonus": 3,
+        "attackAbility": "DEX"
       },
       {
         "name": "Ammunition +2",
@@ -5456,6 +5459,14 @@
         "maxCharges": 7
       },
       {
+        "name": "Wand of Magic Detection",
+        "subtype": "Wand",
+        "rarity": "uncommon",
+        "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
+        "chargeReset": "dawn",
+        "maxCharges": 3
+      },
+      {
         "name": "Wand of Magic Missiles",
         "subtype": "Wand",
         "rarity": "uncommon",
@@ -6313,8 +6324,7 @@
         "rarity": "uncommon",
         "tags": [],
         "proficient": false,
-        "maxCharges": 7,
-        "damageType": "Psychic"
+        "maxCharges": 7
       },
       {
         "name": "Adamantine Armor, Hide Armor",
@@ -11017,6 +11027,47 @@
         "proficient": false
       },
       {
+        "name": "Folding Boat",
+        "rarity": "rarity: rare",
+        "itemType": "Wondrous Item",
+        "attune": "",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Wondrous Item",
+        "desc": "This object appears as a wooden box that measures 12 inches long, 6 inches wide, and 6 inches deep. It weighs 4 pounds and floats. It can be opened to store items inside. This item also has three command words, each requiring a Magic action to use: First Command Word. The box unfolds into a Rowboat. Second Command Word. The box unfolds into a Keelboat. Third Command Word. The Folding Boat folds back into a box if no creatures are aboard. Any objects in the vessel that can't fit inside the box remain outside the box as it folds. Any objects in the vessel that can fit inside the box do so. When the box becomes a vessel, its weight becomes that of a normal vessel its size, and anything that was stored in the box remains in the boat. Statistics for the Rowboat and Keelboat appear in \"Equipment.\" If either vessel is reduced to 0 Hit Points, the Folding Boat is destroyed."
+      },
+      {
+        "name": "Arrow-Catching Shield",
+        "rarity": "rarity: rare",
+        "itemType": "Armor",
+        "attune": "yes",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Armor",
+        "desc": "You gain a +2 bonus to Armor Class against ranged attack rolls while you wield this Shield. This bonus is in addition to the Shield's normal bonus to AC. Whenever an attacker makes a ranged attack roll against a target within 5 feet of you, you can take a Reaction to become the target of the attack instead.",
+        "magicBonus": 2,
+        "weaponType": "ranged",
+        "attackAbility": "DEX"
+      },
+      {
+        "name": "Glamoured Studded Leather",
+        "rarity": "rarity: rare",
+        "itemType": "Armor",
+        "attune": "",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Armor",
+        "desc": "While wearing this armor, you gain a +1 bonus to Armor Class. You can also take a Bonus Action to cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like—including color, style, and accessories—but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or doff the armor.",
+        "magicBonus": 1
+      },
+      {
+        "name": "Ring of Resistance",
+        "rarity": "rarity: rare",
+        "itemType": "Ring",
+        "attune": "",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Ring",
+        "desc": "You have Resistance to one damage type while wearing this ring. The gemstone in the ring indicates the type, which the GM chooses or determines randomly by rolling on the following table.\n| 1d10 | Damage Type | Gemstone\t |\n|------|-------------|------------|\n| 1\t | Acid\t | Pearl\t |\n| 2\t | Cold\t | Tourmaline |\n| 3\t | Fire\t | Garnet\t |\n| 4\t | Force\t | Sapphire\t |\n| 5\t | Lightning\t | Citrine\t |\n| 6\t | Necrotic\t | Jet\t |\n| 7\t | Poison\t | Amethyst\t |\n| 8\t | Psychic\t | Jade\t |\n| 9\t | Radiant\t | Topaz\t |\n| 10\t | Thunder\t | Spinel\t |",
+        "damageType": "Fire"
+      },
+      {
         "name": "Armor of Spite",
         "rarity": "rarity: rare",
         "itemType": "Heavy Armor",
@@ -11038,6 +11089,15 @@
         "magicBonus": 1
       },
       {
+        "name": "Cloak of Elvenkind",
+        "rarity": "rarity: uncommon",
+        "itemType": "Wondrous Item",
+        "attune": "yes",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Wondrous Item",
+        "desc": "While you wear this cloak, Wisdom (Perception) checks made to perceive you have Disadvantage, and you have Advantage on Dexterity (Stealth) checks."
+      },
+      {
         "name": "Air Charm",
         "rarity": "rarity: uncommon",
         "itemType": "Wondrous Item",
@@ -11045,6 +11105,16 @@
         "source": "Level Up Advanced 5e",
         "subtype": "Wondrous Item",
         "desc": "While wearing this charm you can hold your breath for an additional 10 minutes, or you can break the charm to release its power, destroying it to activate one of the following effects.\nFlight: Cast __fly ._\nFloat: Cast feather fall .\nWhirl: Cast __whirlwind kick_ (+7 spell attack bonus, spell save DC 15)."
+      },
+      {
+        "name": "Boots of the Winterlands",
+        "rarity": "rarity: uncommon",
+        "itemType": "Wondrous Item",
+        "attune": "yes",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Wondrous Item",
+        "desc": "These furred boots are snug and feel warm. While wearing them, you gain the following benefits. Cold Resistance. You have Resistance to Cold damage and can tolerate temperatures of 0 degrees Fahrenheit or lower without any additional protection. Winter Strider. You ignore Difficult Terrain created by ice or snow.",
+        "damageType": "Cold"
       },
       {
         "name": "Book of Storing",
@@ -11099,6 +11169,17 @@
         "source": "Vault of Magic",
         "subtype": "Wondrous Item",
         "desc": "While holding this silver pocketwatch, you can use an action to magically stop a single clockwork device or construct within 10 feet of you. If the target is an object, it freezes in place, even mid-air, for up to 1 minute or until moved. If the target is a construct, it must succeed on a DC 15 Wisdom saving throw or be paralyzed until the end of its next turn. The pocketwatch can't be used this way again until the next dawn. The pocketwatch must be wound at least once every 24 hours, just like a normal pocketwatch, or its magic ceases to function. If left unwound for 24 hours, the watch loses its magic, but the power returns 24 hours after the next time it is wound."
+      },
+      {
+        "name": "Wand of Magic Detection",
+        "rarity": "rarity: uncommon",
+        "itemType": "Wand",
+        "attune": "",
+        "source": "5.2 SRD (D&D 2024)",
+        "subtype": "Wand",
+        "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
+        "chargeReset": "dawn",
+        "maxCharges": 3
       }
     ],
     "libRules": [
@@ -13843,7 +13924,7 @@
         },
         "ac": "12",
         "hp": "74",
-        "speed": "35ft",
+        "speed": "35ft.",
         "initiative": "+2",
         "profBonus": "+3",
         "senses": [
@@ -14995,7 +15076,9 @@
             "_syncSourceId": 70,
             "_syncMinLevel": 2,
             "_freecast": true,
-            "_singleUse": false
+            "_singleUse": false,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Find Steed",
@@ -15017,7 +15100,9 @@
             "_syncSourceId": 70,
             "_syncMinLevel": 5,
             "_freecast": true,
-            "_singleUse": false
+            "_singleUse": false,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Armor of Agathys",
@@ -15037,7 +15122,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 3
+            "_syncMinLevel": 3,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Command",
@@ -15057,7 +15144,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 3
+            "_syncMinLevel": 3,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Hold Person",
@@ -15078,7 +15167,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 5
+            "_syncMinLevel": 5,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Spiritual Weapon",
@@ -15099,7 +15190,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 5
+            "_syncMinLevel": 5,
+            "_freecasted": false,
+            "_singleUsed": false
           }
         ],
         "actions": [
@@ -15273,8 +15366,7 @@
             "notes": "",
             "desc": "Version:\nA Grappling Gun can shoot a Grappling Hook attached to a rope up to 150 feet, and the hook catches with a successful DC 10 Dexterity (Acrobatics) check.\nAdditionally, if you are falling, you can use a Reaction to shoot the Grappling Gun at an attachable surface to stop your fall. You still must succeed on the check to ensure the Grappling Hook catches on a solid object. On a successful check, you stop your fall.",
             "fav": false,
-            "used": false,
-            "proficient": false
+            "used": false
           },
           {
             "name": "Potion of Healing (Greater)",
@@ -15290,8 +15382,7 @@
             "notes": "",
             "desc": "Charges\nYou regain 4d4 + 4 Hit Points when you drink this potion.\nWhatever its potency, the potion’s red liquid glimmers when agitated.",
             "fav": false,
-            "used": false,
-            "proficient": false
+            "used": false
           },
           {
             "name": "Repulsion Shield",
@@ -15355,8 +15446,7 @@
             "notes": "1D4 Bless to Intimidation Only",
             "desc": "Custom\nOrnate Metal file, with a mysterious symbol carved into it. What that symbol is, unsure as of yet.",
             "fav": false,
-            "used": false,
-            "proficient": false
+            "used": false
           },
           {
             "name": "Potion of Healing",
@@ -15390,8 +15480,7 @@
             "desc": "In Backpack\nWhen you take the Attack action, you can replace one of your attacks with throwing a flask of Holy Water. Target one creature you can see within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or take 2d8 Radiant damage if it is a Fiend or an Undead.",
             "fav": false,
             "used": false,
-            "damageType": "Radiant",
-            "proficient": false
+            "damageType": "Radiant"
           },
           {
             "name": "Holy Word",
@@ -15479,8 +15568,7 @@
             "desc": "In Backpack\nWhile you wear these boots, your Speed becomes 30 feet unless your Speed is higher, and your Speed isn’t reduced by you carrying weight in excess of your carrying capacity or wearing Heavy Armor.\nOnce on each of your turns, you can jump up to 30 feet by spending only 10 feet of movement.",
             "fav": false,
             "used": false,
-            "_flag": true,
-            "proficient": false
+            "_flag": true
           },
           {
             "name": "Chaos: Deflection",
@@ -15520,33 +15608,6 @@
             "desc": "<p>Once per Long Rest, you become 1 size larger for 1 minute.</p>",
             "fav": false,
             "used": false,
-            "_flag": true
-          },
-          {
-            "name": "Blessing of the Elandran Cleric",
-            "_libName": "Blessing of the Elandran Cleric",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Blessing of the Elandran Cleric",
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "<details open=\"\"><summary>Once a day, roll a d4</summary><div class=\"det-body\"><p>Once per turn, for this many rounds, you can add 1d6 of Radiant damage to any target successfully hit with an attack roll. If this attack is an Area of Effect spell, the d6 applies to all targets. This resets at dawn.</p></div></details>",
-            "fav": false,
-            "used": false,
-            "_modeLabel": "Blessing of the Elandran Cleric",
-            "_modeNotes": "",
-            "_modeDcBonus": 0,
-            "_modeAcBonus": 0,
-            "_modeAttackBonus": 0,
-            "_modeDmgBonus": 0,
-            "_modeResistance": "",
             "_flag": true
           },
           {
@@ -15656,6 +15717,7 @@
             "_groupLabel": "Channel Divinity",
             "_playerSetMode": true,
             "_modeConsumesTracker": "Chaotic Wounds",
+            "_modeActive": false,
             "_libHasMode": true
           },
           {
@@ -15744,6 +15806,7 @@
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
+            "_modeActive": false,
             "_flag": true
           },
           {
@@ -15844,6 +15907,33 @@
               "control"
             ],
             "_syncMinLevel": 1
+          },
+          {
+            "name": "Blessing of the Elandran Cleric",
+            "_libName": "Blessing of the Elandran Cleric",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Blessing of the Elandran Cleric",
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<details open=\"\"><summary>Once a day, roll a d4</summary><div class=\"det-body\"><p>Once per turn, for this many rounds, you can add 1d6 of Radiant damage to any target successfully hit with an attack roll. If this attack is an Area of Effect spell, the d6 applies to all targets. This resets at dawn.</p></div></details>",
+            "fav": false,
+            "used": false,
+            "_modeLabel": "Blessing of the E. Cleric",
+            "_modeNotes": "",
+            "_modeDcBonus": 0,
+            "_modeAcBonus": 0,
+            "_modeAttackBonus": 0,
+            "_modeDmgBonus": 0,
+            "_modeResistance": "",
+            "_flag": true
           }
         ],
         "trackers": [
@@ -15885,30 +15975,18 @@
             "_catId": 1784109406003
           },
           {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
+            "key": "cls_chaos_knight_chaotic_wound_die",
+            "label": "Chaotic Wound Die",
+            "max": 4,
             "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919
-          },
-          {
-            "key": "cls_chaos_knight_lay_on_hands",
-            "label": "Lay on Hands",
-            "max": 35,
-            "cur": 35,
-            "_trackerType": "hp",
-            "reset": "long",
-            "_custom": true,
             "_classSync": true,
             "_syncSourceId": 70,
-            "maxFormula": "LVL*5",
+            "maxFormula": "CON",
             "_catId": 1784109399736,
-            "actionLink": "Lay on Hands"
+            "actionLink": "CD: Channel Chaos (Chaotic Wounds)"
           },
           {
             "key": "cls_chaos_knight_channel_divinity",
@@ -15925,20 +16003,6 @@
             "actionLink": "CD:  Channel Chaos"
           },
           {
-            "key": "cls_chaos_knight_chaotic_wound_die",
-            "label": "Chaotic Wound Die",
-            "max": 4,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "CON",
-            "_catId": 1784109399736,
-            "actionLink": "CD: Channel Chaos (Chaotic Wounds)"
-          },
-          {
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 18,
@@ -15951,6 +16015,32 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
+          },
+          {
+            "key": "cls_chaos_knight_lay_on_hands",
+            "label": "Lay on Hands",
+            "max": 35,
+            "cur": 35,
+            "_trackerType": "hp",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 70,
+            "maxFormula": "LVL*5",
+            "_catId": 1784109399736,
+            "actionLink": "Lay on Hands"
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919
           }
         ],
         "_slotUsed": {},
@@ -16579,135 +16669,13 @@
             "collapsed": false
           }
         ],
-        "_actQRCollapsed": false,
-        "_grantedSpells": [],
-        "passivePerception": 13,
-        "passiveInsight": 10,
-        "_slotTotal": {
-          "1": 4,
-          "2": 3
-        },
-        "activeModes": [],
-        "acEffective": 21,
-        "hpMax": 74,
-        "_slotUsedCompact": {},
-        "deathSaves": {
-          "pass": 0,
-          "fail": 0
-        },
-        "_trackersForDm": [
-          {
-            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_deflection",
-            "label": "Chaos: Deflection",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 398,
-            "actionLink": "Chaos: Deflection",
-            "_catId": 1784109388919
-          },
-          {
-            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
-            "label": "Chaos: Size",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 398,
-            "actionLink": "Chaos: Size",
-            "_catId": 1784109388919
-          },
-          {
-            "key": "custom_repulsion_shield_1784105550080",
-            "label": "Repulsion Shield",
-            "cur": 0,
-            "max": 4,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "boxes",
-            "actionLink": "Repulsion Shield",
-            "_catId": 1784109406003
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919
-          },
-          {
-            "key": "cls_chaos_knight_lay_on_hands",
-            "label": "Lay on Hands",
-            "max": 35,
-            "cur": 35,
-            "_trackerType": "hp",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "LVL*5",
-            "_catId": 1784109399736,
-            "actionLink": "Lay on Hands"
-          },
-          {
-            "key": "cls_chaos_knight_channel_divinity",
-            "label": "Channel Divinity",
-            "max": 2,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "LVL>=11?3:LVL>=3?2:0",
-            "_catId": 1784109399736,
-            "actionLink": "CD:  Channel Chaos"
-          },
-          {
-            "key": "cls_chaos_knight_chaotic_wound_die",
-            "label": "Chaotic Wound Die",
-            "max": 4,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "CON",
-            "_catId": 1784109399736,
-            "actionLink": "CD: Channel Chaos (Chaotic Wounds)"
-          },
-          {
-            "key": "cls_chaos_knight_aura_of_chaos",
-            "label": "Aura of Chaos",
-            "max": 18,
-            "cur": 18,
-            "_trackerType": "hp",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "LVL*2+CON",
-            "_catId": 1784109399736,
-            "actionLink": "Aura of Chaos"
-          }
-        ],
-        "saveDcEffective": 14
+        "_actQRCollapsed": true,
+        "_grantedSpells": []
       }
     ],
-    "_exportedAt": 1784216628415
+    "_exportedAt": 1784153453514
   },
   "nextId": 158,
-  "_updated": 1784216951049,
+  "_updated": 1784217441701,
   "_unchanged": true
 }

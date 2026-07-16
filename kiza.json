@@ -2,118 +2,1028 @@
   "db": {
     "spellLists": [
       {
-        "classId": 148,
-        "className": "Artificer",
+        "classId": 70,
+        "className": "Chaos Knight",
         "spells": [
           {
-            "name": "Booming Blade",
-            "level": 0,
-            "school": "Evocation",
-            "source": "Artificer",
-            "time": "Action",
-            "range": "Self (5-foot radius)",
-            "components": "S, M (a melee weapon worth at least 1 sp)",
-            "duration": "1 round",
-            "desc": "You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects and then becomes sheathed in booming energy until the start of your next turn. If the target willingly moves 5 feet or more before then, the target takes 1d8 thunder damage, and the spell ends.\nThis spell's damage increases when you reach certain levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target on a hit, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).",
+            "name": "Assisted Aim",
+            "level": 1,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "30 feet",
+            "components": "V, S",
+            "duration": "1 min",
+            "desc": "You invigorate up to three creatures within range with improved accuracy. Each target gains a +1 bonus to attack rolls it makes with Ranged weapons. Additionally, the normal and long range of Ranged weapons wielded by a target are doubled for the spell’s duration.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
             "area": "",
             "hit": "",
-            "effect": "1d8 thunder",
-            "_sourceBook": "TCOE"
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "GH"
           },
           {
-            "name": "Green-Flame Blade",
-            "level": 0,
-            "school": "Evocation",
-            "source": "Artificer",
-            "time": "Action",
-            "range": "Self (5-foot radius)",
-            "components": "S, M (a melee weapon worth at least 1 sp)",
+            "name": "Bless",
+            "level": 1,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "30 feet",
+            "components": "V, S, M (a Holy Symbol worth 5+ GP)",
+            "duration": "Concentration, up to 1 min",
+            "desc": "You bless up to three creatures within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target adds 1d4 to the attack roll or save.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Command",
+            "level": 1,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "60 feet",
+            "components": "V",
             "duration": "Instantaneous",
-            "desc": "You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects, and you can cause green fire to leap from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.\nThis spell's damage increases when you reach certain levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).",
+            "hit": "WIS",
+            "effect": "Prone ↑",
+            "desc": "You speak a one-word command to a creature you can see within range. The target must succeed on a Wisdom saving throw or follow the command on its next turn. Choose the command from these options:\nApproach. The target moves toward you by the shortest and most direct route, ending its turn if it moves within 5 feet of you.\nDrop. The target drops whatever it is holding and then ends its turn.\nFlee. The target spends its turn moving away from you by the fastest available means.\nGrovel. The target has the Prone condition and then ends its turn.\nHalt. On its turn, the target doesn’t move and takes no action or Bonus Action.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can affect one additional creature for each spell slot level above 1.",
             "area": "",
-            "hit": "",
-            "effect": "1d8 fire",
-            "_sourceBook": "TCOE"
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
           },
           {
-            "name": "Intellect Fortress",
-            "level": 3,
-            "school": "Abjuration",
-            "source": "Artificer",
-            "time": "Action",
+            "name": "Compelled Duel",
+            "level": 1,
+            "school": "Enchantment",
+            "time": "BA",
             "range": "30 feet",
             "components": "V",
-            "duration": "Concentration, up to 1 hour",
-            "concentration": true,
-            "upcast": "When you cast this spell using a spell slot of 4th level or higher, you can target one additional creature for each slot level above 3rd. The creatures must be within 30 feet of each other when you target them.",
-            "desc": "For the duration, you or one willing creature you can see within range has resistance to psychic damage, as well as advantage on Intelligence, Wisdom, and Charisma saving throws.",
-            "area": "",
-            "hit": "CHA",
-            "effect": "psychic resistance",
-            "_sourceBook": "TCOE"
-          },
-          {
-            "name": "Lightning Lure",
-            "level": 0,
-            "school": "Evocation",
-            "source": "Artificer",
-            "time": "Action",
-            "range": "Self (15-foot radius)",
-            "components": "V",
-            "duration": "Instantaneous",
-            "desc": "You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.\nThis spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",
-            "area": "",
-            "hit": "STR",
-            "effect": "1d8 lightning, STR Save",
-            "_sourceBook": "TCOE"
-          },
-          {
-            "name": "Summon Construct",
-            "level": 4,
-            "school": "Conjuration",
-            "source": "Artificer",
-            "time": "A",
-            "range": "90 feet",
-            "components": "V, S, M (a lockbox worth 400+ GP)",
-            "duration": "Concentration, up to 1 h",
-            "concentration": true,
+            "duration": "Concentration, up to 1 min",
             "hit": "WIS",
-            "upcast": "When you cast this spell using a spell slot of 4th level or higher, use the higher level wherever the spell's level appears in the stat block. Construct Spirit Medium construct Armor Class | 13 + the level of the spell (natural armor)",
-            "desc": "You call forth the spirit of a Construct. It manifests in an unoccupied space that you can see within range and uses the Construct Spirit stat block. When you cast the spell, choose a material: Clay, Metal, or Stone. The creature resembles an animate statue (you determine the appearance) made of the chosen material, which determines certain details in its stat block. The creature disappears when it drops to 0 Hit Points or when the spell ends.\nThe creature is an ally to you and your allies. In combat, the creature shares your Initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don’t issue any, it takes the Dodge action and uses its movement to avoid danger.\n───────────────────\nCONSTRUCT SPIRIT\nMedium Construct, Neutral\nAC 13 + the spell’s level\nHP 40 + 15 for each spell level above 4\nSpeed 30 ft.\nMOD\tSAVE\nSTR\t18\t+4\t+4\nDEX\t10\t+0\t+0\nCON\t18\t+4\t+4\nMOD\tSAVE\nINT\t14\t+2\t+2\nWIS\t11\t+0\t+0\nCHA\t5\t−3\t−3\nResistances Poison\nImmunities Charmed, Exhaustion, Frightened, Paralyzed, Poisoned\nSenses Darkvision 60 ft.; Passive Perception 10\nLanguages Understands the languages you know\nCR None (XP 0; PB equals your Proficiency Bonus)\nTraits\nHeated Body (Metal Only). A creature that hits the spirit with a melee attack or that starts its turn in a grapple with the spirit takes 1d10 Fire damage.\nStony Lethargy (Stone Only). When a creature starts its turn within 10 feet of the spirit, the spirit can target it with magical energy if the spirit can see it. Wisdom Saving Throw: DC equals your spell save DC, the target. Failure: Until the start of its next turn, the target can’t make Opportunity Attacks, and its Speed is halved.\nActions\nMultiattack. The spirit makes a number of Slam attacks equal to half this spell’s level (round down).\nSlam. Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d8 + 4 + the spell’s level Bludgeoning damage.\nReactions\nBerserk Lashing (Clay Only). Trigger: The spirit takes damage from a creature. Response: The spirit makes a Slam attack against that creature if possible, or the spirit moves up to half its Speed toward that creature without provoking Opportunity Attacks.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
+            "desc": "You try to compel a creature into a duel. One creature that you can see within range makes a Wisdom saving throw. On a failed save, the target has Disadvantage on attack rolls against creatures other than you, and it can’t willingly move to a space that is more than 30 feet away from you.\nThe spell ends if you make an attack roll against a creature other than the target, if you cast a spell on an enemy other than the target, if an ally of yours damages the target, or if you end your turn more than 30 feet away from the target.",
+            "concentration": true,
             "area": "",
-            "effect": "1d10 Fire ↑",
-            "_sourceBook": "TCOE"
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
           },
           {
-            "name": "Sword Burst",
-            "level": 0,
-            "school": "Conjuration",
-            "source": "Artificer",
+            "name": "Cure Wounds",
+            "level": 1,
+            "school": "Abjuration",
             "time": "Action",
-            "range": "Self (5-foot radius)",
-            "components": "V",
+            "range": "Touch",
+            "components": "V, S",
             "duration": "Instantaneous",
-            "desc": "You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must each succeed on a Dexterity saving throw or take 1d6 force damage.\nThis spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",
-            "area": "",
-            "hit": "DEX",
-            "effect": "1d6 force, DEX Save",
-            "_sourceBook": "TCOE"
+            "desc": "<p>A creature you touch regains a number of Hit Points equal to 2d8 plus your spellcasting ability modifier.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 2d8 for each spell slot level above 1.</p>",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB",
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": false,
+            "_spellAdjDuration": "",
+            "_noScale": false
           },
           {
-            "name": "Tasha's Caustic Brew",
+            "name": "Detect Evil and Good",
+            "level": 1,
+            "school": "Divination",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "Concentration, up to 10 min",
+            "desc": "For the duration, you sense the location of any Aberration, Celestial, Elemental, Fey, Fiend, or Undead within 30 feet of yourself. You also sense whether the Hallow spell is active there and, if so, where.\nThe spell is blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Detect Magic",
+            "level": 1,
+            "school": "Divination",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "Concentration, up to 10 min",
+            "desc": "For the duration, you sense the presence of magical effects within 30 feet of yourself. If you sense such effects, you can take the Magic action to see a faint aura around any visible creature or object in the area that bears the magic, and if an effect was created by a spell, you learn the spell’s school of magic.\nThe spell is blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Detect Poison and Disease",
+            "level": 1,
+            "school": "Divination",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S, M (a yew leaf)",
+            "duration": "Concentration, up to 10 min",
+            "desc": "For the duration, you sense the location of poisons, poisonous or venomous creatures, and magical contagions within 30 feet of yourself. You sense the kind of poison, creature, or contagion in each case.\nThe spell is blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Divine Favor",
+            "level": 1,
+            "school": "Transmutation",
+            "time": "BA",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "1 min",
+            "effect": "1d4 Radiant",
+            "desc": "Until the spell ends, your attacks with weapons deal an extra 1d4 Radiant damage on a hit.",
+            "area": "",
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Divine Smite",
             "level": 1,
             "school": "Evocation",
-            "source": "Artificer",
-            "time": "Action",
-            "range": "Self (30-foot line)",
-            "components": "V, S, M (a bit of rotten food)",
-            "duration": "Concentration, up to 1 minute",
-            "concentration": true,
-            "upcast": "When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 2d4 for each slot level above 1st.",
-            "desc": "A stream of acid emanates from you in a line 30 feet long and 5 feet wide in a direction you choose. Each creature in the line must succeed on a Dexterity saving throw or be covered in acid for the spell's duration or until a creature uses its action to scrape or wash the acid off itself or another creature. A creature covered in the acid takes 2d4 acid damage at start of each of its turns.",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "effect": "2d8 Radiant ↑",
+            "desc": "The target takes an extra 2d8 Radiant damage from the attack. The damage increases by 1d8 if the target is a Fiend or an Undead.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1.",
             "area": "",
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Heroism",
+            "level": 1,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
+            "desc": "A willing creature you touch is imbued with bravery. Until the spell ends, the creature is immune to the Frightened condition and gains Temporary Hit Points equal to your spellcasting ability modifier at the start of each of its turns.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Hungering Blade",
+            "level": 1,
+            "school": "Necromancy",
+            "time": "BA",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "1 min",
+            "desc": "You imbue a weapon you are holding, or your Unarmed Strikes, with ravenous negative energy. For the duration, when you hit a creature with an attack using the empowered weapon or Unarmed Strike for the first time on a turn, the target takes Necrotic damage equal to your spellcasting ability modifier, and you gain a number of Temporary Hit Points equal to the Necrotic damage dealt.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Intaglio",
+            "level": 1,
+            "school": "Transmutation",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a quill or a vial of ink)",
+            "duration": "Concentration, up to 1 h",
+            "desc": "You create a duplicate of a text or image. During the spell’s duration, you can take a Magic action to trace your hand over any non-magical text or image on a surface within range. You copy the text or image onto a new medium that you provide, such as another book or parchement. This spell copies a single page with each Magic action. When copying a spellbook, you can do so using the same method as you would replace a spellbook, except the time and GP requirements are both halved.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "GH"
+          },
+          {
+            "name": "Neutralize Aura",
+            "level": 1,
+            "school": "Abjuration",
+            "time": "1 minute",
+            "range": "Touch",
+            "components": "V, S, M (a sprig of sage)",
+            "duration": "Concentration, up to 1 h",
+            "desc": "You touch a willing creature and neutralize its aura. Until the spell ends, the target can’t be perceived by Fey, Fiends, Celestials, and Undead.\nThe spell ends early immediately after the target makes an attack roll, deals damage, casts a spell, or moves within 5 feet of one of the creature types.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "GH"
+          },
+          {
+            "name": "Protection from Evil and Good",
+            "level": 1,
+            "school": "Abjuration",
+            "time": "Action",
+            "range": "Touch",
+            "components": "V, S, M (a flask of Holy Water worth 25+ GP, which the spell consumes)",
+            "duration": "Concentration up to 10 min",
+            "effect": "Charmed",
+            "desc": "<p>Until the spell ends, one willing creature you touch is protected against creatures that are Aberrations, Celestials, Elementals, Fey, Fiends, or Undead. The protection grants several benefits. Creatures of those types have Disadvantage on attack rolls against the target. The target also can’t be possessed by or gain the Charmed or Frightened conditions from them. If the target is already possessed, Charmed, or Frightened by such a creature, the target has Advantage on any new saving throw against the relevant effect.</p>",
+            "concentration": true,
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB",
+            "_effectManual": true,
+            "ritual": false,
+            "_spellAdjDuration": "",
+            "_noScale": false
+          },
+          {
+            "name": "Purify Food and Drink",
+            "level": 1,
+            "school": "Transmutation",
+            "time": "A",
+            "range": "10 feet",
+            "area": "5ft. radius Sphere",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "desc": "You remove poison and rot from nonmagical food and drink in a 5-foot-radius Sphere centered on a point within range.",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Searing Smite",
+            "level": 1,
+            "school": "Evocation",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "1 min",
+            "hit": "CON",
+            "effect": "1d6 Fire ↑",
+            "desc": "As you hit the target, it takes an extra 1d6 Fire damage from the attack. At the start of each of its turns until the spell ends, the target takes 1d6 Fire damage and then makes a Constitution saving throw. On a failed save, the spell continues. On a successful save, the spell ends.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. All the damage increases by 1d6 for each spell slot level above 1.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Shield of Faith",
+            "level": 1,
+            "school": "Abjuration",
+            "time": "BA",
+            "range": "60 feet",
+            "components": "V, S, M (a prayer scroll)",
+            "duration": "Concentration, up to 10 min",
+            "desc": "A shimmering field surrounds a creature of your choice within range, granting it a +2 bonus to AC for the duration.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Thunderous Smite",
+            "level": 1,
+            "school": "Evocation",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "hit": "STR",
+            "effect": "2d6 Thunder · Prone ↑",
+            "desc": "Your strike rings with thunder that is audible within 300 feet of you, and the target takes an extra 2d6 Thunder damage from the attack. Additionally, if the target is a creature, it must succeed on a Strength saving throw or be pushed 10 feet away from you and have the Prone condition.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Wrathful Smite",
+            "level": 1,
+            "school": "Necromancy",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "1 min",
+            "hit": "WIS",
+            "effect": "1d6 Necrotic · Frightened ↑",
+            "desc": "The target takes an extra 1d6 Necrotic damage from the attack, and it must succeed on a Wisdom saving throw or have the Frightened condition until the spell ends. At the end of each of its turns, the Frightened target repeats the save, ending the spell on itself on a success.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Aid",
+            "level": 2,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "30 feet",
+            "components": "V, S, M (a strip of white cloth)",
+            "duration": "8 h",
+            "desc": "Choose up to three creatures within range. Each target’s Hit Point maximum and current Hit Points increase by 5 for the duration.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. Each target’s Hit Points increase by 5 for each spell slot level above 2.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Bloodletter",
+            "level": 2,
+            "school": "Necromancy",
+            "time": "BA",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
+            "hit": "CON",
+            "effect": "2d6 Necrotic ↑",
+            "desc": "You touch a nonmagical weapon. Until the spell ends, the first creature hit by the weapon must succeed on a Constitution saving throw or receive a festering wound. A creature with a festering wound takes 2d6 Necrotic damage at the start of each of its turns for the spell’s duration. A creature can only have one festering wound at a time.\nIf the creature receives healing, the spell and recurring damage end.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot above 2.",
+            "concentration": true,
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "GH"
+          },
+          {
+            "name": "Chain of Conviction",
+            "level": 2,
+            "school": "Conjuration",
+            "time": "BA",
+            "range": "30 feet",
+            "components": "S",
+            "duration": "1 min",
+            "hit": "STR",
+            "effect": "2d6 Force ↑",
+            "desc": "You hurl a spectral, barbed chain at a creature that you can see within range. The target makes a Strength saving throw. On a failed save, the target takes 2d6 Force damage, is pulled up to 30 feet toward you, and is bound by the chain. While bound by the chain, the creature is tethered to you and can’t move or teleport to a space more than 30 feet away from you, and you have Advantage on attack rolls made against the creature.\nOn a successful save, the target takes half as much damage only. The bound target repeats the save at the end of each of its turns, ending the spell on itself on a success. If you are ever more than 30 feet away from the target, the spell ends.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 2.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Find Steed",
+            "level": 2,
+            "school": "Conjuration",
+            "time": "A",
+            "range": "30 feet",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "WIS",
+            "effect": "Frightened/Incapacitated ↑",
+            "desc": "You summon an otherworldly being that appears as a loyal steed in an unoccupied space of your choice within range. This creature uses the Otherworldly Steed stat block. If you already have a steed from this spell, the steed is replaced by the new one.\nThe steed resembles a Large, rideable animal of your choice, such as a horse, a camel, a dire wolf, or an elk. Whenever you cast the spell, choose the steed’s creature type—Celestial, Fey, or Fiend—which determines certain traits in the stat block.\nCombat. The steed is an ally to you and your allies. In combat, it shares your Initiative count, and it functions as a controlled mount while you ride it (as defined in the rules on mounted combat). If you have the Incapacitated condition, the steed takes its turn immediately after yours and acts independently, focusing on protecting you.\nDisappearance of the Steed. The steed disappears if it drops to 0 Hit Points or if you die. When it disappears, it leaves behind anything it was wearing or carrying. If you cast this spell again, you decide whether you summon the steed that disappeared or a different one.\n───────────────────\nOTHERWORLDLY STEED\nLarge Celestial, Fey, or Fiend (Your Choice), Neutral\nAC 10 + 1 per spell level\nHP 5 + 10 per spell level (the steed has a number of Hit Dice [d10s] equal to the spell’s level)\nSpeed 60 ft., Fly 60 ft. (requires level 4+ spell)\nMOD\tSAVE\nSTR\t18\t+4\t+4\nDEX\t12\t+1\t+1\nCON\t14\t+2\t+2\nMOD\tSAVE\nINT\t6\t−2\t−2\nWIS\t12\t+1\t+1\nCHA\t8\t−1\t−1\nSenses Passive Perception 11\nLanguages Telepathy 1 mile (works only with you)\nCR None (XP 0; PB equals your Proficiency Bonus)\nTraits\nLife Bond. When you regain Hit Points from a level 1+ spell, the steed regains the same number of Hit Points if you’re within 5 feet of it.\nActions\nOtherworldly Slam. Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d8 plus the spell’s level of Radiant (Celestial), Psychic (Fey), or Necrotic (Fiend) damage.\nBonus Actions\nFell Glare (Fiend Only; Recharges after a Long Rest). Wisdom Saving Throw: DC equals your spell save DC, one creature within 60 feet the steed can see. Failure: The target has the Frightened condition until the end of your next turn.\nFey Step (Fey Only; Recharges after a Long Rest). The steed teleports, along with its rider, to an unoccupied space of your choice up to 60 feet away from itself.\nHealing Touch (Celestial Only; Recharges after a Long Rest). One creature within 5 feet of the steed regains a number of Hit Points equal to 2d8 plus the spell’s level.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Gentle Repose",
+            "level": 2,
+            "school": "Necromancy",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (2 Copper Pieces, which the spell consumes)",
+            "duration": "10 d",
+            "desc": "You touch a corpse or other remains. For the duration, the target is protected from decay and can’t become Undead.\nThe spell also effectively extends the time limit on raising the target from the dead, since days spent under the influence of this spell don’t count against the time limit of spells such as Raise Dead.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Lesser Restoration",
+            "level": 2,
+            "school": "Abjuration",
+            "time": "BA",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "desc": "You touch a creature and end one condition on it: Blinded, Deafened, Paralyzed, or Poisoned.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Locate Object",
+            "level": 2,
+            "school": "Divination",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S, M (a forked twig)",
+            "duration": "Concentration, up to 10 min",
+            "desc": "Describe or name an object that is familiar to you. You sense the direction to the object’s location if that object is within 1,000 feet of you. If the object is in motion, you know the direction of its movement.\nThe spell can locate a specific object known to you if you have seen it up close—within 30 feet—at least once. Alternatively, the spell can locate the nearest object of a particular kind, such as a certain kind of apparel, jewelry, furniture, tool, or weapon.\nThis spell can’t locate an object if any thickness of lead blocks a direct path between you and the object.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Magic Weapon",
+            "level": 2,
+            "school": "Transmutation",
+            "time": "BA",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "1 h",
+            "desc": "You touch a nonmagical weapon. Until the spell ends, that weapon becomes a magic weapon with a +1 bonus to attack rolls and damage rolls. The spell ends early if you cast it again.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The bonus increases to +2 with a level 3–5 spell slot. The bonus increases to +3 with a level 6+ spell slot.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Prayer of Healing",
+            "level": 2,
+            "school": "Abjuration",
+            "time": "10 minutes",
+            "range": "30 feet",
+            "components": "V",
+            "duration": "Instantaneous",
+            "desc": "Up to five creatures of your choice who remain within range for the spell’s entire casting gain the benefits of a Short Rest and also regain 2d8 Hit Points. A creature can’t be affected by this spell again until that creature finishes a Long Rest.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 1d8 for each spell slot level above 2.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Protection from Poison",
+            "level": 2,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "1 h",
+            "effect": "Poisoned",
+            "desc": "You touch a creature and end the Poisoned condition on it. For the duration, the target has Advantage on saving throws to avoid or end the Poisoned condition, and it has Resistance to Poison damage.",
+            "area": "",
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Shining Smite",
+            "level": 2,
+            "school": "Transmutation",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Concentration, up to 1 min",
+            "effect": "2d6 Radiant ↑",
+            "desc": "The target hit by the strike takes an extra 2d6 Radiant damage from the attack. Until the spell ends, the target sheds Bright Light in a 5-foot radius, attack rolls against it have Advantage, and it can’t benefit from the Invisible condition.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 2.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Summer Winds",
+            "level": 2,
+            "school": "Evocation",
+            "time": "A",
+            "range": "Self",
+            "area": "15ft. Cone",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "CON",
+            "effect": "2d6 Radiant ↑",
+            "desc": "You unleash a blast of light and wind in a 15-foot Cone. Your allies in the Cone regain 2d6 Hit Points. Undead within the Cone that are Hostile to you must make a Constitution saving throw, taking 2d6 Radiant damage on a failed save, or half as much damage on a successful one.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage and healing increase by 2d6 for each spell slot level above 2.",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Warding Bond",
+            "level": 2,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a pair of platinum rings worth 50+ GP each, which you and the target must wear for the duration)",
+            "duration": "1 h",
+            "desc": "You touch another creature that is willing and create a mystic connection between you and the target until the spell ends. While the target is within 60 feet of you, it gains a +1 bonus to AC and saving throws, and it has Resistance to all damage. Also, each time it takes damage, you take the same amount of damage.\nThe spell ends if you drop to 0 Hit Points or if you and the target become separated by more than 60 feet. It also ends if the spell is cast again on either of the connected creatures.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Zone of Truth",
+            "level": 2,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "60 feet",
+            "area": "15ft. radius Sphere",
+            "components": "V, S",
+            "duration": "10 min",
+            "hit": "CHA",
+            "desc": "You create a magical zone that guards against deception in a 15-foot-radius Sphere centered on a point within range. Until the spell ends, a creature that enters the spell’s area for the first time on a turn or starts its turn there makes a Charisma saving throw. On a failed save, a creature can’t speak a deliberate lie while in the radius. You know whether a creature succeeds or fails on this save.\nAn affected creature is aware of the spell and can avoid answering questions to which it would normally respond with a lie. Such a creature can be evasive yet must be truthful.",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Aura of Vitality",
+            "level": 3,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Self",
+            "area": "30ft. Emanation",
+            "components": "V",
+            "duration": "Concentration, up to 1 min",
+            "desc": "An aura radiates from you in a 30-foot Emanation for the duration. When you create the aura and at the start of each of your turns while it persists, you can restore 2d6 Hit Points to one creature in it.",
+            "concentration": true,
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Blinding Smite",
+            "level": 3,
+            "school": "Evocation",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "1 min",
+            "hit": "CON",
+            "effect": "3d8 Radiant · Blinded ↑",
+            "desc": "The target hit by the strike takes an extra 3d8 Radiant damage from the attack, and the target has the Blinded condition until the spell ends. At the end of each of its turns, the Blinded target makes a Constitution saving throw, ending the spell on itself on a success.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The extra damage increases by 1d8 for each spell slot level above 3.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Create Food and Water",
+            "level": 3,
+            "school": "Conjuration",
+            "time": "A",
+            "range": "30 feet",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "desc": "You create 45 pounds of food and 30 gallons of fresh water on the ground or in containers within range—both useful in fending off the hazards of malnutrition and dehydration. The food is bland but nourishing and looks like a food of your choice, and the water is clean. The food spoils after 24 hours if uneaten.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Crusader’s Mantle",
+            "level": 3,
+            "school": "Evocation",
+            "time": "A",
+            "range": "Self",
+            "area": "30ft. Emanation",
+            "components": "V",
+            "duration": "Concentration, up to 1 min",
+            "effect": "1d4 Radiant",
+            "desc": "You radiate a magical aura in a 30-foot Emanation. While in the aura, you and your allies each deal an extra 1d4 Radiant damage when hitting with a weapon or an Unarmed Strike.",
+            "concentration": true,
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Daylight",
+            "level": 3,
+            "school": "Evocation",
+            "time": "A",
+            "range": "60 feet",
+            "area": "60ft. radius Sphere",
+            "components": "V, S",
+            "duration": "1 h",
+            "desc": "For the duration, sunlight spreads from a point within range and fills a 60-foot-radius Sphere. The sunlight’s area is Bright Light and sheds Dim Light for an additional 60 feet.\nAlternatively, you cast the spell on an object that isn’t being worn or carried, causing the sunlight to fill a 60-foot Emanation originating from that object. Covering that object with something opaque, such as a bowl or helm, blocks the sunlight.\nIf any of this spell’s area overlaps with an area of Darkness created by a spell of level 3 or lower, that other spell is dispelled.",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Dispel Magic",
+            "level": 3,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "120 feet",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "desc": "Choose one creature, object, or magical effect within range. Any ongoing spell of level 3 or lower on the target ends. For each ongoing spell of level 4 or higher on the target, make an ability check using your spellcasting ability (DC 10 plus that spell’s level). On a successful check, the spell ends.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You automatically end a spell on the target if the spell’s level is equal to or less than the level of the spell slot you use.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Elemental Weapon",
+            "level": 3,
+            "school": "Transmutation",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 h",
+            "desc": "A nonmagical weapon you touch becomes a magic weapon. Choose one of the following damage types: Acid, Cold, Fire, Lightning, or Thunder. For the duration, the weapon has a +1 bonus to attack rolls and deals an extra 1d4 damage of the chosen type when it hits.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. If you use a level 5–6 spell slot, the bonus to attack rolls increases to +2, and the extra damage increases to 2d4. If you use a level 7+ spell slot, the bonus increases to +3, and the extra damage increases to 3d4.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Magic Circle",
+            "level": 3,
+            "school": "Abjuration",
+            "time": "1 minute",
+            "range": "10 feet",
+            "area": "10ft. radius, 20ft. Cylinder",
+            "components": "V, S, M (salt and powdered silver worth 100+ GP, which the spell consumes)",
+            "duration": "1 h",
+            "hit": "CHA",
+            "effect": "Charmed ↑",
+            "desc": "You create a 10-foot-radius, 20-foot-tall Cylinder of magical energy centered on a point on the ground that you can see within range. Glowing runes appear wherever the Cylinder intersects with the floor or other surface.\nChoose one or more of the following types of creatures: Celestials, Elementals, Fey, Fiends, or Undead. The circle affects a creature of the chosen type in the following ways:\n* The creature can’t willingly enter the Cylinder by nonmagical means. If the creature tries to use teleportation or interplanar travel to do so, it must first succeed on a Charisma saving throw.\n* The creature has Disadvantage on attack rolls against targets within the Cylinder.\n* Targets within the Cylinder can’t be possessed by or gain the Charmed or Frightened condition from the creature.\nEach time you cast this spell, you can cause its magic to operate in the reverse direction, preventing a creature of the specified type from leaving the Cylinder and protecting targets outside it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The duration increases by 1 hour for each spell slot level above 3.",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Martyr",
+            "level": 3,
+            "school": "Necromancy",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a Dagger worth at least 1 CP)",
+            "duration": "Instantaneous",
+            "desc": "You touch a dead creature that died within the last minute and transfer your life essence into it. The target returns to life with Hit Points equal to your current Hit Point total. You immediately drop to 0 Hit Points (which nothing can prevent) with two failed Death Saving Throws, and you must immediately make a Death Save. You can’t regain Hit Points or become Stable until after you make this save.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Remove Curse",
+            "level": 3,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "desc": "At your touch, all curses affecting one creature or object end. If the object is a cursed magic item, its curse remains, but the spell breaks its owner’s Attunement to the object so it can be removed or discarded.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Revivify",
+            "level": 3,
+            "school": "Necromancy",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a diamond worth 300+ GP, which the spell consumes)",
+            "duration": "Instantaneous",
+            "desc": "You touch a creature that has died within the last minute. That creature revives with 1 Hit Point. This spell can’t revive a creature that has died of old age, nor does it restore any missing body parts.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Sanctum of the Flock",
+            "level": 3,
+            "school": "Transmutation",
+            "time": "1 minute",
+            "range": "5 feet",
+            "area": "20ft. radius Sphere",
+            "components": "V, S, M (powdered silver worth 25+ GP, which the spell consumes)",
+            "duration": "24 h",
+            "desc": "You create a 20-foot-radius Sphere of faint, shimmering light centered on a point within range. You and a number of creatures of your choice up to your spellcasting ability modifier (minimum of 1 other creature) can absorb empowering magic from the Sphere. When any of the chosen creatures finish a Long Rest in the area, the Sphere vanishes, and those creatures gain 2d10 Temporary Hit Points, and for the remainder of the duration, they have Advantage on Charisma checks that use one of their skill proficiencies. Chosen creatures who don’t finish a Long Rest in the Sphere gain no benefit.",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Scarlet Dawn",
+            "level": 3,
+            "school": "Evocation",
+            "time": "A",
+            "range": "120 feet",
+            "area": "20ft. radius, 60ft. Cylinder",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "CON",
+            "effect": "4d10 Necrotic ↑",
+            "desc": "Crimson light shines down in a 20-foot-radius, 60-foot-high Cylinder centered on a point within range. Each creature in that area that isn’t a Construct or Undead must make a Constitution saving throw, taking 4d10 Necrotic damage on a failed save or half as much damage on a successful one. Constructs and Undead in the area regain 4d10 Hit Points.\nIf any of this spell’s area overlaps with an area of Darkness created by a spell of level 3 or lower, that other spell is dispelled.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d10 and the level of spell that can be dispelled increases by 1 for each spell slot level above 3.",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Aura of Life",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Self",
+            "area": "30ft. Emanation",
+            "components": "V",
+            "duration": "Concentration, up to 10 min",
+            "desc": "An aura radiates from you in a 30-foot Emanation for the duration. While in the aura, you and your allies have Resistance to Necrotic damage, and your Hit Point maximums can’t be reduced. If an ally with 0 Hit Points starts its turn in the aura, that ally regains 1 Hit Point.",
+            "concentration": true,
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Aura of Purity",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Self",
+            "area": "30ft. Emanation",
+            "components": "V",
+            "duration": "Concentration, up to 10 min",
+            "effect": "Blinded/Charmed",
+            "desc": "An aura radiates from you in a 30-foot Emanation for the duration. While in the aura, you and your allies have Resistance to Poison damage and Advantage on saving throws to avoid or end effects that include the Blinded, Charmed, Deafened, Frightened, Paralyzed, Poisoned, or Stunned condition.",
+            "concentration": true,
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Banishment",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "30 feet",
+            "components": "V, S, M (a pentacle)",
+            "duration": "Concentration, up to 1 min",
+            "hit": "CHA",
+            "effect": "Incapacitated ↑",
+            "desc": "One creature that you can see within range must succeed on a Charisma saving throw or be transported to a harmless demiplane for the duration. While there, the target has the Incapacitated condition. When the spell ends, the target reappears in the space it left or in the nearest unoccupied space if that space is occupied.\nIf the target is an Aberration, a Celestial, an Elemental, a Fey, or a Fiend, the target doesn’t return if the spell lasts for 1 minute. The target is instead transported to a random location on a plane (DM’s choice) associated with its creature type.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
+            "concentration": true,
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Consuming Pyre",
+            "level": 4,
+            "school": "Evocation",
+            "time": "A",
+            "range": "90 feet",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
             "hit": "DEX",
-            "effect": "2d4 acid, DEX Save",
+            "effect": "2d8 Fire",
+            "desc": "You cause a creature that you can see within range to burst into consuming, relentless flames. The target must make a Dexterity saving throw. On a failed save, the target takes 2d8 Fire damage and 2d8 Necrotic or Radiant damage (choose when you cast the spell), and the radiant flames linger. On a successful save, it takes half as much damage only.\nWhile the flames linger, the creature takes the damage again at the start of each of its turns. The target, or another creature within reach of the target, can take an action to allow the target to repeat the saving throw, ending the spell on a success.\nA creature killed by the damage from this spell is reduced to ash, along with any nonmagical equipment it is wearing or carrying.",
+            "concentration": true,
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Death Ward",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "8 h",
+            "desc": "You touch a creature and grant it a measure of protection from death. The first time the target would drop to 0 Hit Points before the spell ends, the target instead drops to 1 Hit Point, and the spell ends.\nIf the spell is still in effect when the target is subjected to an effect that would kill it instantly without dealing damage, that effect is negated against the target, and the spell ends.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Locate Creature",
+            "level": 4,
+            "school": "Divination",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S, M (fur from a bloodhound)",
+            "duration": "Concentration, up to 1 h",
+            "desc": "Describe or name a creature that is familiar to you. You sense the direction to the creature’s location if that creature is within 1,000 feet of you. If the creature is moving, you know the direction of its movement.\nThe spell can locate a specific creature known to you or the nearest creature of a specific kind (such as a human or a unicorn) if you have seen such a creature up close—within 30 feet—at least once. If the creature you described or named is in a different form, such as under the effects of a Flesh to Stone or Polymorph spell, this spell doesn’t locate the creature.\nThis spell can’t locate a creature if any thickness of lead blocks a direct path between you and the creature.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Sacrificial Siphon",
+            "level": 4,
+            "school": "Necromancy",
+            "time": "A",
+            "range": "Touch",
+            "components": "S",
+            "duration": "Concentration, up to 1 min",
+            "hit": "CHA",
+            "desc": "You touch another creature and lay a curse that drains the target’s vitality and transfers it to you. The target must make a Charisma saving throw. On a failed save, the target is cursed for the duration. While cursed, the target must subtract 1d4 from its attack rolls and ability checks, and when the target takes damage, you can take a Reaction to gain 10 Temporary Hit Points. On a successful save, you gain 5 Temporary Hit Points, and the target must subtract 1d4 from its ability checks until the start of your next turn.",
+            "concentration": true,
+            "area": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Sanctum of the Shepherd",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "1 minute",
+            "range": "5 feet",
+            "area": "20ft. radius Sphere",
+            "components": "V, S, M (adamantine or diamond powder worth 200+ GP, which the spell consumes)",
+            "duration": "24 h",
+            "desc": "You create a 20-foot-radius Sphere of faint, shimmering light centered on a point within range. You and a number of creatures of your choice up to your spellcasting ability modifier (minimum of 1 other creature) can absorb protective magic from the Sphere. When any of the chosen creatures finish a Long Rest in the area, the Sphere vanishes, and those creatures gain a +1 bonus to AC for the remainder of the duration. Chosen creatures who don’t finish a Long Rest in the Sphere gain no benefit.",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Staggering Smite",
+            "level": 4,
+            "school": "Enchantment",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "hit": "WIS",
+            "effect": "4d6 Psychic · Stunned ↑",
+            "desc": "The target takes an extra 4d6 Psychic damage from the attack, and the target must succeed on a Wisdom saving throw or have the Stunned condition until the end of your next turn.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The extra damage increases by 1d6 for each spell slot level above 4.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Supernal Smite",
+            "level": 4,
+            "school": "Evocation",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "effect": "4d6 Force",
+            "desc": "Your strike cause ambient magic surrounded a creature to collapse and detonate. The target hit by the strike takes an extra 4d6 Force damage from the attack. If the creature is concentrating on a spell, that Concentration is broken.\nIn addition, each ongoing spell of level 3 or lower on the target ends. For each ongoing spell of level 4 or higher on the target, make an ability check using your spellcasting ability (DC 10 plus that spell’s level). On a successful check, the spell ends.",
+            "area": "",
+            "hit": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "GH"
+          },
+          {
+            "name": "Banishing Smite",
+            "level": 5,
+            "school": "Conjuration",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Concentration, up to 1 min",
+            "hit": "CHA",
+            "effect": "5d10 Force · Incapacitated",
+            "desc": "The target hit by the attack roll takes an extra 5d10 Force damage from the attack. If the attack reduces the target to 50 Hit Points or fewer, the target must succeed on a Charisma saving throw or be transported to a harmless demiplane for the duration. While there, the target has the Incapacitated condition. When the spell ends, the target reappears in the space it left or in the nearest unoccupied space if that space is occupied.",
+            "concentration": true,
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Circle of Power",
+            "level": 5,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Self",
+            "area": "30ft. Emanation",
+            "components": "V",
+            "duration": "Concentration, up to 10 min",
+            "desc": "An aura radiates from you in a 30-foot Emanation for the duration. While in the aura, you and your allies have Advantage on saving throws against spells and other magical effects. When an affected creature makes a saving throw against a spell or magical effect that allows a save to take only half damage, it takes no damage if it succeeds on the save.",
+            "concentration": true,
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Destructive Wave",
+            "level": 5,
+            "school": "Evocation",
+            "time": "A",
+            "range": "Self",
+            "area": "30ft. Emanation",
+            "components": "V",
+            "duration": "Instantaneous",
+            "hit": "CON",
+            "effect": "5d6 Thunder · Prone",
+            "desc": "Destructive energy ripples outward from you in a 30-foot Emanation. Each creature you choose in the Emanation makes a Constitution saving throw. On a failed save, a target takes 5d6 Thunder damage and 5d6 Radiant or Necrotic damage (your choice) and has the Prone condition. On a successful save, a target takes half as much damage only.",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Dispel Evil and Good",
+            "level": 5,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S, M (powdered silver and iron)",
+            "duration": "Concentration, up to 1 min",
+            "hit": "CHA",
+            "effect": "Charmed/Frightened",
+            "desc": "For the duration, Celestials, Elementals, Fey, Fiends, and Undead have Disadvantage on attack rolls against you. You can end the spell early by using either of the following special functions.\nBreak Enchantment. As a Magic action, you touch a creature that is possessed by or has the Charmed or Frightened condition from one or more creatures of the types above. The target is no longer possessed, Charmed, or Frightened by such creatures.\nDismissal. As a Magic action, you target one creature you can see within 5 feet of you that has one of the creature types above. The target must succeed on a Charisma saving throw or be sent back to its home plane if it isn’t there already. If they aren’t on their home plane, Undead are sent to the Shadowfell, and Fey are sent to the Feywild.",
+            "concentration": true,
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Geas",
+            "level": 5,
+            "school": "Enchantment",
+            "time": "1 minute",
+            "range": "60 feet",
+            "components": "V",
+            "duration": "30 d",
+            "hit": "WIS",
+            "effect": "5d10 Psychic · Charmed ↑",
+            "desc": "You give a verbal command to a creature that you can see within range, ordering it to carry out some service or refrain from an action or a course of activity as you decide. The target must succeed on a Wisdom saving throw or have the Charmed condition for the duration. The target automatically succeeds if it can’t understand your command.\nWhile Charmed, the creature takes 5d10 Psychic damage if it acts in a manner directly counter to your command. It takes this damage no more than once each day.\nYou can issue any command you choose, short of an activity that would result in certain death. Should you issue a suicidal command, the spell ends.\nA Remove Curse, Greater Restoration, or Wish spell ends this spell.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. If you use a level 7 or 8 spell slot, the duration is 365 days. If you use a level 9 spell slot, the spell lasts until it is ended by one of the spells mentioned above.",
+            "area": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Greater Restoration",
+            "level": 5,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (diamond dust worth 100+ GP, which the spell consumes)",
+            "duration": "Instantaneous",
+            "desc": "You touch a creature and magically remove one of the following effects from it:\n* 1 Exhaustion level\n* The Charmed or Petrified condition\n* A curse, including the target’s Attunement to a cursed magic item\n* Any reduction to one of the target’s ability scores\n* Any reduction to the target’s Hit Point maximum",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Lucky Charm",
+            "level": 5,
+            "school": "Transmutation",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a four-leaf clover and a shard of broken mirror)",
+            "duration": "Concentration, up to 1 h",
+            "desc": "You touch a Tiny, nonmagical object, infusing it with a portion of your own luck for the duration. While another creature carries the object, that creature has Advantage on D20 Tests, and you have Disadvantage on D20 Tests.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "TCM"
+          },
+          {
+            "name": "Raise Dead",
+            "level": 5,
+            "school": "Necromancy",
+            "time": "1 hour",
+            "range": "Touch",
+            "components": "V, S, M (a diamond worth 500+ GP, which the spell consumes)",
+            "duration": "Instantaneous",
+            "desc": "With a touch, you revive a dead creature if it has been dead no longer than 10 days and it wasn’t Undead when it died.\nThe creature returns to life with 1 Hit Point. This spell also neutralizes any poisons that affected the creature at the time of death.\nThis spell closes all mortal wounds, but it doesn’t restore missing body parts. If the creature is lacking body parts or organs integral for its survival—its head, for instance—the spell automatically fails.\nComing back from the dead is an ordeal. The target takes a −4 penalty to D20 Tests. Every time the target finishes a Long Rest, the penalty is reduced by 1 until it becomes 0.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
+            "_sourceBook": "PHB"
+          },
+          {
+            "name": "Summon Celestial",
+            "level": 5,
+            "school": "Conjuration",
+            "time": "A",
+            "range": "90 feet",
+            "components": "V, S, M (a reliquary worth 500+ GP)",
+            "duration": "Concentration, up to 1 h",
+            "desc": "You call forth a Celestial spirit. It manifests in an angelic form in an unoccupied space that you can see within range and uses the Celestial Spirit stat block. When you cast the spell, choose Avenger or Defender. Your choice determines certain details in its stat block. The creature disappears when it drops to 0 Hit Points or when the spell ends.\nThe creature is an ally to you and your allies. In combat, the creature shares your Initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don’t issue any, it takes the Dodge action and uses its movement to avoid danger.\n───────────────────\nCELESTIAL SPIRIT\nLarge Celestial, Neutral\nAC 11 + the spell’s level + 2 (Defender only)\nHP 40 + 10 for each spell level above 5\nSpeed 30 ft., Fly 40 ft.\nMOD\tSAVE\nSTR\t16\t+3\t+3\nDEX\t14\t+2\t+2\nCON\t16\t+3\t+3\nMOD\tSAVE\nINT\t10\t+0\t+0\nWIS\t14\t+2\t+2\nCHA\t16\t+3\t+3\nResistances Radiant\nImmunities Charmed, Frightened\nSenses Darkvision 60 ft.; Passive Perception 12\nLanguages Celestial, understands the languages you know\nCR None (XP 0; PB equals your Proficiency Bonus)\nActions\nMultiattack. The spirit makes a number of attacks equal to half this spell’s level (round down).\nRadiant Bow (Avenger Only). Ranged Attack Roll: Bonus equals your spell attack modifier, range 600 ft. Hit: 2d6 + 2 + the spell’s level Radiant damage.\nRadiant Mace (Defender Only). Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d10 + 3 + the spell’s level Radiant damage, and the spirit can choose itself or another creature it can see within 10 feet of the target. The chosen creature gains 1d10 Temporary Hit Points.\nHealing Touch (1/Day). The spirit touches another creature. The target regains Hit Points equal to 2d8 + the spell’s level.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Chaos Knight",
             "_sourceBook": "TCOE"
           }
         ]
@@ -696,330 +1606,6 @@
         "variants": null,
         "_type": "races",
         "id": 73
-      },
-      {
-        "name": "Dwarf",
-        "features": [
-          {
-            "level": 0,
-            "name": "Darkvision",
-            "description": "You have Darkvision with a range of 120 feet."
-          },
-          {
-            "level": 0,
-            "name": "Dwarven Resilience",
-            "description": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
-            "actions": [
-              {
-                "name": "Dwarven Resilience: Poison",
-                "atype": "Additional Feature",
-                "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition."
-              }
-            ]
-          },
-          {
-            "level": 0,
-            "name": "Dwarven Toughness",
-            "description": "Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level."
-          },
-          {
-            "level": 0,
-            "name": "Stonecunning",
-            "description": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
-            "actions": [],
-            "trackers": [
-              {
-                "label": "Stonecunning",
-                "max": 1,
-                "type": "boxes",
-                "reset": "long",
-                "maxFormula": "PROF"
-              }
-            ],
-            "atype": "Bonus Action"
-          }
-        ],
-        "variants": null,
-        "_type": "races",
-        "id": 3
-      },
-      {
-        "name": "Elf",
-        "features": [
-          {
-            "level": 0,
-            "name": "Drow",
-            "description": "Drow typically dwell in the Underdark and have been shaped by it. Some drow individuals and societies avoid the Underdark altogether yet carry its magic. In the Eberron setting, for example, drow dwell in rainforests and cyclopean ruins on the continent of Xen’drik."
-          },
-          {
-            "level": 0,
-            "name": "High Elves",
-            "description": "High elves have been infused with the magic of crossings between the Feywild and the Material Plane. On some worlds, high elves refer to themselves by other names. For example, they call themselves sun or moon elves in the Forgotten Realms setting, Silvanesti and Qualinesti in the Dragonlance setting, and Aereni in the Eberron setting."
-          },
-          {
-            "level": 0,
-            "name": "Wood Elves",
-            "description": "Wood elves carry the magic of primeval forests within themselves. They are known by many other names, including wild elves, green elves, and forest elves. Grugach are reclusive wood elves of the Greyhawk setting, while the Kagonesti and the Tairnadal are wood elves of the Dragonlance and Eberron settings, respectively."
-          },
-          {
-            "level": 0,
-            "name": "Darkvision",
-            "description": "You have Darkvision with a range of 60 feet."
-          },
-          {
-            "level": 0,
-            "name": "Elven Lineage",
-            "description": "You are part of a lineage that grants you supernatural abilities. Choose a lineage from the Elven Lineages table. You gain the level 1 benefit of that lineage.\nWhen you reach character levels 3 and 5, you learn a higher-level spell, as shown on the table. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have of the appropriate level.\nIntelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage).",
-            "spells": [
-              {
-                "name": "Faerie Fire",
-                "minLevel": 3,
-                "group": "Drow"
-              },
-              {
-                "name": "Darkness",
-                "minLevel": 5,
-                "group": "Drow"
-              },
-              {
-                "name": "Detect Magic",
-                "minLevel": 3,
-                "group": "High"
-              },
-              {
-                "name": "Misty Step",
-                "minLevel": 5,
-                "group": "High"
-              },
-              {
-                "name": "Longstrider",
-                "minLevel": 3,
-                "group": "Wood"
-              },
-              {
-                "name": "Pass without Trace",
-                "minLevel": 5,
-                "group": "Wood"
-              }
-            ]
-          },
-          {
-            "level": 0,
-            "name": "Fey Ancestry",
-            "description": "You have Advantage on saving throws you make to avoid or end the Charmed condition."
-          },
-          {
-            "level": 0,
-            "name": "Keen Senses",
-            "description": "You have proficiency in the Insight, Perception, or Survival skill."
-          },
-          {
-            "level": 0,
-            "name": "Trance",
-            "description": "You don’t need to sleep, and magic can’t put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.",
-            "actions": [
-              {
-                "name": "Trance",
-                "atype": "Other",
-                "desc": "You don’t need to sleep, and magic can’t put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness."
-              }
-            ]
-          }
-        ],
-        "variants": {
-          "tableName": "Elven Lineages",
-          "variants": [
-            {
-              "name": "Drow",
-              "description": "The range of your Darkvision increases to 120 feet. You also know the Dancing Lights cantrip. | Faerie Fire | Darkness"
-            },
-            {
-              "name": "High Elf",
-              "description": "You know the Prestidigitation cantrip. Whenever you finish a Long Rest, you can replace that cantrip with a different cantrip from the Wizard spell list. | Detect Magic | Misty Step"
-            },
-            {
-              "name": "Wood Elf",
-              "description": "Your Speed increases to 35 feet. You also know the Druidcraft cantrip. | Longstrider | Pass without Trace"
-            }
-          ],
-          "lineStart": 35,
-          "lineEnd": 39,
-          "count": 3
-        },
-        "_type": "races",
-        "id": 31
-      },
-      {
-        "name": "Gnome",
-        "features": [
-          {
-            "level": 0,
-            "name": "Darkvision",
-            "description": "You have Darkvision with a range of 60 feet."
-          },
-          {
-            "level": 0,
-            "name": "Gnomish Cunning",
-            "description": "You have Advantage on Intelligence, Wisdom, and Charisma saving throws."
-          },
-          {
-            "level": 0,
-            "name": "Gnomish Lineage",
-            "description": "You are part of a lineage that grants you supernatural abilities. Choose one of the following options; whichever one you choose, Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage):\n\nForest Gnome. You know the Minor Illusion cantrip. You also always have the Speak with Animals spell prepared. You can cast it without a spell slot a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest. You can also use any spell slots you have to cast the spell.\n\nRock Gnome. You know the Mending and Prestidigitation cantrips. In addition, you can spend 10 minutes casting Prestidigitation to create a Tiny clockwork device (AC 5, 1 HP), such as a toy, fire starter, or music box. When you create the device, you determine its function by choosing one effect from Prestidigitation; the device produces that effect whenever you or another creature takes a Bonus Action to activate it with a touch. If the chosen effect has options within it, you choose one of those options for the device when you create it. For example, if you choose the spell’s ignite-extinguish effect, you determine whether the device ignites or extinguishes fire; the device doesn’t do both. You can have three such devices in existence at a time, and each falls apart 8 hours after its creation or when you dismantle it with a touch as a Utilize action.",
-            "spells": [
-              {
-                "name": "Minor Illusion",
-                "minLevel": 1,
-                "group": "Forest"
-              },
-              {
-                "name": "Speak with Animals",
-                "minLevel": 1,
-                "group": "Forest",
-                "_freecast": true
-              },
-              {
-                "name": "Mending",
-                "minLevel": 1,
-                "group": "Rock"
-              },
-              {
-                "name": "Prestidigitation",
-                "minLevel": 1,
-                "group": "Rock"
-              }
-            ],
-            "trackers": [
-              {
-                "label": "Speak With Animals (Free)",
-                "max": 1,
-                "type": "boxes",
-                "reset": "long",
-                "maxFormula": "PROF"
-              }
-            ]
-          }
-        ],
-        "variants": null,
-        "_type": "races",
-        "id": 32
-      },
-      {
-        "name": "Goliath",
-        "features": [
-          {
-            "level": 0,
-            "name": "Giant Ancestry",
-            "description": "You are descended from Giants. Choose one of the following benefits—a supernatural boon from your ancestry; you can use the chosen benefit a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest:\n\nCloud’s Jaunt (Cloud Giant). As a Bonus Action, you magically teleport up to 30 feet to an unoccupied space you can see.\n\nFire’s Burn (Fire Giant). When you hit a target with an attack roll and deal damage to it, you can also deal 1d10 Fire damage to that target.\n\nFrost’s Chill (Frost Giant). When you hit a target with an attack roll and deal damage to it, you can also deal 1d6 Cold damage to that target and reduce its Speed by 10 feet until the start of your next turn.\n\nHill’s Tumble (Hill Giant). When you hit a Large or smaller creature with an attack roll and deal damage to it, you can give that target the Prone condition.\n\nStone’s Endurance (Stone Giant). When you take damage, you can take a Reaction to roll 1d12. Add your Constitution modifier to the number rolled and reduce the damage by that total.\nStorm’s Thunder (Storm Giant). When you take damage from a creature within 60 feet of you, you can take a Reaction to deal 1d8 Thunder damage to that creature."
-          },
-          {
-            "level": 0,
-            "name": "Large Form",
-            "description": "<p>Starting at character level 5, you can change your size to Large as a Bonus Action if you’re in a big enough space. This transformation lasts for 10 minutes or until you end it (no action required). For that duration, you have Advantage on Strength checks, and your Speed increases by 10 feet. Once you use this trait, you can’t use it again until you finish a Long Rest.</p>",
-            "actions": [],
-            "trackers": [
-              {
-                "label": "Large Form",
-                "max": 1,
-                "type": "boxes",
-                "reset": "long"
-              }
-            ],
-            "atype": "Bonus Action"
-          },
-          {
-            "level": 0,
-            "name": "Powerful Build",
-            "description": "<p>You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity.</p>",
-            "actions": [
-              {
-                "name": "Powerful Build",
-                "atype": "Other",
-                "desc": "You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity."
-              }
-            ],
-            "atype": "Additional Feature"
-          }
-        ],
-        "variants": null,
-        "_type": "races",
-        "id": 33
-      },
-      {
-        "name": "Human",
-        "features": [
-          {
-            "level": 0,
-            "name": "Resourceful",
-            "description": "You gain Heroic Inspiration whenever you finish a Long Rest.",
-            "trackers": [
-              {
-                "label": "Heroic Inspiration",
-                "max": 1,
-                "type": "boxes",
-                "reset": "long"
-              }
-            ]
-          },
-          {
-            "level": 0,
-            "name": "Skillful",
-            "description": "You gain proficiency in one skill of your choice."
-          },
-          {
-            "level": 0,
-            "name": "Versatile",
-            "description": "You gain an Origin feat of your choice."
-          }
-        ],
-        "variants": null,
-        "_type": "races",
-        "id": 35
-      },
-      {
-        "name": "Orc",
-        "features": [
-          {
-            "level": 0,
-            "name": "Adrenaline Rush",
-            "description": "<p>You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.</p><p>You can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.</p>",
-            "actions": [],
-            "trackers": [
-              {
-                "label": "Adrenaline Rush",
-                "max": 1,
-                "type": "boxes",
-                "reset": "short",
-                "maxFormula": "PROF"
-              }
-            ],
-            "atype": "Bonus Action"
-          },
-          {
-            "level": 0,
-            "name": "Darkvision",
-            "description": "You have Darkvision with a range of 120 feet.",
-            "atype": "Other"
-          },
-          {
-            "level": 0,
-            "name": "Relentless Endurance",
-            "description": "<p>When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.</p>",
-            "actions": [],
-            "trackers": [
-              {
-                "label": "Relentless Endurance",
-                "max": 1,
-                "type": "boxes",
-                "reset": "long"
-              }
-            ],
-            "atype": "Additional Feature"
-          }
-        ],
-        "variants": null,
-        "_type": "races",
-        "id": 34
       }
     ],
     "feats": [
@@ -2081,7 +2667,8 @@
                 "reset": "long"
               }
             ],
-            "_modeLabel": "Blessing of the E. Cleric"
+            "_modeLabel": "Blessing of the Elandran Cleric",
+            "atype": "Additional Feature"
           }
         ]
       },
@@ -15070,8 +15657,7 @@
             "_groupLabel": "Channel Divinity",
             "_playerSetMode": true,
             "_modeConsumesTracker": "Chaotic Wounds",
-            "_libHasMode": true,
-            "_modeActive": true
+            "_libHasMode": true
           },
           {
             "name": "CD:  Channel Chaos",
@@ -15159,8 +15745,7 @@
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
-            "_flag": true,
-            "_modeActive": true
+            "_flag": true
           },
           {
             "name": "Lvl 7: Fire Resistance",
@@ -15344,7 +15929,7 @@
             "key": "cls_chaos_knight_chaotic_wound_die",
             "label": "Chaotic Wound Die",
             "max": 4,
-            "cur": 3,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -15358,7 +15943,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 18,
-            "cur": 17,
+            "cur": 18,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -15379,8 +15964,8 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 38,
-        "hpTemp": 8,
+        "hpCurrent": 74,
+        "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
         "statblocks": [
@@ -16003,69 +16588,14 @@
           "1": 4,
           "2": 3
         },
-        "activeModes": [
-          "Chaotic Wounds",
-          "Aura of Chaos"
-        ],
+        "activeModes": [],
         "acEffective": 21,
         "hpMax": 74,
         "_slotUsedCompact": {}
       }
     ],
-    "_exportedAt": 1784206174852,
-    "_playerTokenEnc": [
-      103,
-      104,
-      112,
-      95,
-      82,
-      118,
-      107,
-      98,
-      67,
-      121,
-      56,
-      88,
-      49,
-      56,
-      89,
-      50,
-      56,
-      87,
-      77,
-      102,
-      80,
-      104,
-      85,
-      66,
-      67,
-      49,
-      115,
-      100,
-      82,
-      98,
-      113,
-      122,
-      65,
-      78,
-      50,
-      68,
-      103,
-      116,
-      72,
-      89
-    ],
-    "libMisc": [
-      {
-        "name": "Scribing Spell Scrolls",
-        "category": "all",
-        "subtype": "other",
-        "desc": "A spellcaster can transfer a spell to a scroll and create a Spell Scroll, using the rules below.\n\nTime and Cost\nScribing a scroll takes an amount of time and money based on the level of the spell, as shown in the Spell Scroll Costs table. For each day of inscription, you must work for 8 hours. If a scroll requires multiple days, those days needn’t be consecutive.\n\nPrerequisites for the Scribe\nTo scribe a scroll, you must have proficiency in the Arcana skill or with Calligrapher’s Supplies and have the spell prepared on each day of the inscription. You must also have at hand any Material components required by the spell; if the spell consumes its Material components, they are consumed only when you complete the scroll. The scroll’s spell uses your spell save DC and spell attack bonus.\n\nCantrips\nIf the scribed spell is a cantrip, the version on the scroll works as if the caster were your level.\n\nSpell Scroll Costs\nSpell Level | Time | Cost\nCantrip | 1 day | 15 GP\n1 | 1 day | 25 GP\n2 | 3 days | 100 GP\n3 | 5 days | 150 GP\n4 | 10 days | 1,000 GP\n5 | 25 days | 1,500 GP\n6 | 40 days | 10,000 GP\n7 | 50 days | 12,500 GP\n8 | 60 days | 15,000 GP\n9 | 120 days | 50,000 GP",
-        "tags": []
-      }
-    ],
-    "conditionDescs": {}
+    "_exportedAt": 1784206174852
   },
-  "nextId": 401,
-  "_updated": 1784212051300
+  "nextId": 158,
+  "_updated": 1784212553345
 }

@@ -15745,19 +15745,6 @@
         },
         "trackers": [
           {
-            "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_illusory_echo",
-            "label": "Chaos: Illusory Echo",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 255,
-            "actionLink": "Chaos: Illusory Echo",
-            "_catId": 1784109449025
-          },
-          {
             "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_cloak",
             "label": "Chaos: Cloak",
             "max": 1,
@@ -15769,19 +15756,6 @@
             "_syncSourceId": 255,
             "actionLink": "Chaos: Cloak of Chaos",
             "_catId": 1784109449025
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109449025,
-            "actionLink": "Blessing of the Elandran Cleric"
           },
           {
             "key": "cls_sorcerer_innate_sorcery",
@@ -15800,7 +15774,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 6,
-            "cur": 0,
+            "cur": 4,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -15862,6 +15836,34 @@
             "maxFormula": "PROF",
             "_catId": 1784109462850,
             "actionLink": "Speak with Animals"
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109449025,
+            "actionLink": "Blessing of the Elandran Cleric",
+            "_origIdx": 2
+          },
+          {
+            "key": "feat_blades_of_chaos:_path_of_shadow_chaos:_illusory_echo",
+            "label": "Chaos: Illusory Echo",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 255,
+            "actionLink": "Chaos: Illusory Echo",
+            "_catId": 1784109449025,
+            "_origIdx": 0
           }
         ],
         "actions": [
@@ -24246,7 +24248,11 @@
           "maxHp": 0,
           "tempHp": 0
         },
-        "_slotUsed": {},
+        "_slotUsed": {
+          "259-L1": 2,
+          "259-L2": 2,
+          "259-L3": 1
+        },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
@@ -24272,7 +24278,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 38,
+        "hpCurrent": 16,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -24327,7 +24333,11 @@
         "activeModes": [],
         "acEffective": 13,
         "hpMax": 38,
-        "_slotUsedCompact": {}
+        "_slotUsedCompact": {
+          "1": 2,
+          "2": 2,
+          "3": 1
+        }
       }
     ],
     "_exportedAt": 1784206187418,
@@ -24384,5 +24394,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784206566246
+  "_updated": 1784207365607
 }

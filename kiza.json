@@ -15158,7 +15158,8 @@
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
-            "_flag": true
+            "_flag": true,
+            "_modeActive": true
           },
           {
             "name": "Lvl 7: Fire Resistance",
@@ -15356,7 +15357,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 18,
-            "cur": 18,
+            "cur": 17,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -15377,8 +15378,8 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 53,
-        "hpTemp": 5,
+        "hpCurrent": 38,
+        "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
         "statblocks": [
@@ -15974,9 +15975,7 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "conditions": [
-          "Grappled"
-        ],
+        "conditions": [],
         "_actFlatView": true,
         "_trackerCats": [
           {
@@ -16003,7 +16002,9 @@
           "1": 4,
           "2": 3
         },
-        "activeModes": [],
+        "activeModes": [
+          "Aura of Chaos"
+        ],
         "acEffective": 21,
         "hpMax": 74,
         "_slotUsedCompact": {}
@@ -16064,5 +16065,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1784207550772
+  "_updated": 1784208349349
 }

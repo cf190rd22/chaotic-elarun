@@ -28177,12 +28177,11 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true,
-        "exhaustionLevel": 0
+        "_dmHidden": true
       }
     ],
     "_exportedAt": 1784299487242
   },
   "nextId": 401,
-  "_updated": 1784299565360
+  "_updated": 1784299800327
 }

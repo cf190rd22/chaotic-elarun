@@ -15953,7 +15953,8 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 257,
-            "_catId": 1784109388919
+            "_catId": 1784109388919,
+            "actionLink": "Blessing of the Elandran Cleric"
           },
           {
             "key": "cls_chaos_knight_lay_on_hands",
@@ -16724,7 +16725,8 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 257,
-            "_catId": 1784109388919
+            "_catId": 1784109388919,
+            "actionLink": "Blessing of the Elandran Cleric"
           },
           {
             "key": "cls_chaos_knight_lay_on_hands",
@@ -16832,5 +16834,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784297244621
+  "_updated": 1784297488840
 }

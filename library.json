@@ -38688,19 +38688,15 @@
   ],
   "libItems": [
     {
-      "name": "Pistol +3",
-      "itemType": "Weapon",
-      "subtype": "Pistol",
-      "rarity": "very rare",
-      "attackType": "Ranged",
-      "weaponType": "ranged",
-      "effect": "1d10+3",
-      "damageType": "Piercing",
-      "weight": "3 lb.",
-      "notes": "Ammunition (Range 30/90; Bullet), Loading · Ranged, Piercing",
-      "desc": "Range: 30/90\nMastery: Vex\nYou have a +3 bonus to attack and damage rolls made with this magic weapon.",
-      "magicBonus": 3,
-      "attackAbility": "DEX"
+      "name": "Wand of Magic Detection",
+      "rarity": "rarity: uncommon",
+      "itemType": "Wand",
+      "attune": "",
+      "source": "5.2 SRD (D&D 2024)",
+      "subtype": "Wand",
+      "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
+      "chargeReset": "dawn",
+      "maxCharges": 3
     },
     {
       "name": "Ammunition +2",
@@ -39523,10 +39519,12 @@
     {
       "name": "Boots of the Winterlands",
       "subtype": "Wondrous Item",
-      "rarity": "uncommon",
-      "attune": "yes",
       "desc": "These furred boots are snug and feel warm. While wearing them, you gain the following benefits.\nCold Resistance. You have Resistance to Cold damage and can tolerate temperatures of 0 degrees Fahrenheit or lower without any additional protection.\nWinter Strider. You ignore Difficult Terrain created by ice or snow.",
-      "damageType": "Cold"
+      "attune": "yes",
+      "rarity": "uncommon",
+      "tags": [],
+      "proficient": false,
+      "_actionAdjDuration": ""
     },
     {
       "name": "Bowl of Commanding Water Elementals",
@@ -40102,9 +40100,26 @@
     {
       "name": "Glamoured Studded Leather",
       "subtype": "Armor (Studded Leather Armor)",
-      "rarity": "rare",
       "desc": "While wearing this armor, you gain a +1 bonus to Armor Class. You can also take a Bonus Action to cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like—including color, style, and accessories—but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or doff the armor.",
-      "magicBonus": 1
+      "rarity": "rare",
+      "tags": [],
+      "magicBonus": 1,
+      "proficient": false,
+      "_actionAdj": {
+        "ac": ">=12+DEX+1",
+        "acDur": "",
+        "maxHp": "",
+        "maxHpDur": "",
+        "tempHp": "",
+        "tempHpDur": "",
+        "speed": "",
+        "speedDur": "",
+        "saveDc": "",
+        "saveDcDur": "",
+        "advSkills": [],
+        "advSkillsDur": ""
+      },
+      "_actionAdjDuration": ""
     },
     {
       "name": "Gloves of Missile Snaring",
@@ -41373,14 +41388,6 @@
       "maxCharges": 7
     },
     {
-      "name": "Wand of Magic Detection",
-      "subtype": "Wand",
-      "rarity": "uncommon",
-      "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
-      "chargeReset": "dawn",
-      "maxCharges": 3
-    },
-    {
       "name": "Wand of Magic Missiles",
       "subtype": "Wand",
       "rarity": "uncommon",
@@ -42238,7 +42245,8 @@
       "rarity": "uncommon",
       "tags": [],
       "proficient": false,
-      "maxCharges": 7
+      "maxCharges": 7,
+      "damageType": "Psychic"
     },
     {
       "name": "Adamantine Armor, Hide Armor",
@@ -46941,75 +46949,50 @@
       "proficient": false
     },
     {
-      "name": "Folding Boat",
-      "rarity": "rarity: rare",
-      "itemType": "Wondrous Item",
-      "attune": "",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Wondrous Item",
-      "desc": "This object appears as a wooden box that measures 12 inches long, 6 inches wide, and 6 inches deep. It weighs 4 pounds and floats. It can be opened to store items inside. This item also has three command words, each requiring a Magic action to use: First Command Word. The box unfolds into a Rowboat. Second Command Word. The box unfolds into a Keelboat. Third Command Word. The Folding Boat folds back into a box if no creatures are aboard. Any objects in the vessel that can't fit inside the box remain outside the box as it folds. Any objects in the vessel that can fit inside the box do so. When the box becomes a vessel, its weight becomes that of a normal vessel its size, and anything that was stored in the box remains in the boat. Statistics for the Rowboat and Keelboat appear in \"Equipment.\" If either vessel is reduced to 0 Hit Points, the Folding Boat is destroyed."
-    },
-    {
-      "name": "Arrow-Catching Shield",
-      "rarity": "rarity: rare",
-      "itemType": "Armor",
-      "attune": "yes",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Armor",
-      "desc": "You gain a +2 bonus to Armor Class against ranged attack rolls while you wield this Shield. This bonus is in addition to the Shield's normal bonus to AC. Whenever an attacker makes a ranged attack roll against a target within 5 feet of you, you can take a Reaction to become the target of the attack instead.",
-      "magicBonus": 2,
-      "weaponType": "ranged",
-      "attackAbility": "DEX"
-    },
-    {
-      "name": "Glamoured Studded Leather",
-      "rarity": "rarity: rare",
-      "itemType": "Armor",
-      "attune": "",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Armor",
-      "desc": "While wearing this armor, you gain a +1 bonus to Armor Class. You can also take a Bonus Action to cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like—including color, style, and accessories—but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or doff the armor.",
-      "magicBonus": 1
-    },
-    {
-      "name": "Ring of Resistance",
-      "rarity": "rarity: rare",
-      "itemType": "Ring",
-      "attune": "",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Ring",
-      "desc": "You have Resistance to one damage type while wearing this ring. The gemstone in the ring indicates the type, which the GM chooses or determines randomly by rolling on the following table.\n| 1d10 | Damage Type | Gemstone\t |\n|------|-------------|------------|\n| 1\t | Acid\t | Pearl\t |\n| 2\t | Cold\t | Tourmaline |\n| 3\t | Fire\t | Garnet\t |\n| 4\t | Force\t | Sapphire\t |\n| 5\t | Lightning\t | Citrine\t |\n| 6\t | Necrotic\t | Jet\t |\n| 7\t | Poison\t | Amethyst\t |\n| 8\t | Psychic\t | Jade\t |\n| 9\t | Radiant\t | Topaz\t |\n| 10\t | Thunder\t | Spinel\t |",
-      "damageType": "Fire"
-    },
-    {
       "name": "Armor of Spite",
-      "rarity": "rarity: rare",
-      "itemType": "Heavy Armor",
       "subtype": "Plate (AC 18, Disadvantage Stealth)",
-      "attune": "",
-      "source": "Vault of Magic",
       "desc": "Unholy glyphs engraved on this black iron magic armor burn with a faint, orange light. While wearing the armor, you gain a +1 bonus to your AC. At the start of your turn, you can choose to allow attack rolls against you to have advantage. If you do, the glyphs shed dim light in a 5-foot radius, and you can use a reaction when a creature hits you with an attack to force the attacker to take necrotic damage equal to twice your proficiency bonus.",
+      "tags": [],
       "magicBonus": 1,
-      "damageType": "Necrotic"
+      "proficient": false,
+      "_actionAdj": {
+        "ac": ">=18+1",
+        "acDur": "",
+        "maxHp": "",
+        "maxHpDur": "",
+        "tempHp": "",
+        "tempHpDur": "",
+        "speed": "",
+        "speedDur": "",
+        "saveDc": "",
+        "saveDcDur": "",
+        "advSkills": [],
+        "advSkillsDur": ""
+      },
+      "_actionAdjDuration": ""
     },
     {
       "name": "Commander's Plate",
-      "rarity": "rarity: uncommon",
-      "itemType": "Heavy Armor",
       "subtype": "Plate (AC 18, Disadvantage Stealth)",
-      "attune": "",
-      "source": "Vault of Magic",
       "desc": "This armor is typically emblazoned or decorated with imagery of lions, bears, griffons, eagles, or other symbols of bravery and courage. While wearing this +1 armor, your voice can be clearly heard by all friendly creatures within 300 feet of you if you so choose. Your voice doesn't carry in areas where sound is prevented, such as in the area of the silence spell. Each friendly creature that can see or hear you has advantage on saving throws against being frightened. You can use a bonus action to rally a friendly creature that can see or hear you. The target gains a +1 bonus to attack or damage rolls on its next turn. Once you have rallied a creature, you can't rally that creature again until it finishes a long rest.",
-      "magicBonus": 1
-    },
-    {
-      "name": "Cloak of Elvenkind",
-      "rarity": "rarity: uncommon",
-      "itemType": "Wondrous Item",
-      "attune": "yes",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Wondrous Item",
-      "desc": "While you wear this cloak, Wisdom (Perception) checks made to perceive you have Disadvantage, and you have Advantage on Dexterity (Stealth) checks."
+      "tags": [],
+      "magicBonus": 1,
+      "proficient": false,
+      "_actionAdj": {
+        "ac": ">=18+1",
+        "acDur": "",
+        "maxHp": "",
+        "maxHpDur": "",
+        "tempHp": "",
+        "tempHpDur": "",
+        "speed": "",
+        "speedDur": "",
+        "saveDc": "",
+        "saveDcDur": "",
+        "advSkills": [],
+        "advSkillsDur": ""
+      },
+      "_actionAdjDuration": ""
     },
     {
       "name": "Air Charm",
@@ -47019,16 +47002,6 @@
       "source": "Level Up Advanced 5e",
       "subtype": "Wondrous Item",
       "desc": "While wearing this charm you can hold your breath for an additional 10 minutes, or you can break the charm to release its power, destroying it to activate one of the following effects.\nFlight: Cast __fly ._\nFloat: Cast feather fall .\nWhirl: Cast __whirlwind kick_ (+7 spell attack bonus, spell save DC 15)."
-    },
-    {
-      "name": "Boots of the Winterlands",
-      "rarity": "rarity: uncommon",
-      "itemType": "Wondrous Item",
-      "attune": "yes",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Wondrous Item",
-      "desc": "These furred boots are snug and feel warm. While wearing them, you gain the following benefits. Cold Resistance. You have Resistance to Cold damage and can tolerate temperatures of 0 degrees Fahrenheit or lower without any additional protection. Winter Strider. You ignore Difficult Terrain created by ice or snow.",
-      "damageType": "Cold"
     },
     {
       "name": "Book of Storing",
@@ -47083,17 +47056,6 @@
       "source": "Vault of Magic",
       "subtype": "Wondrous Item",
       "desc": "While holding this silver pocketwatch, you can use an action to magically stop a single clockwork device or construct within 10 feet of you. If the target is an object, it freezes in place, even mid-air, for up to 1 minute or until moved. If the target is a construct, it must succeed on a DC 15 Wisdom saving throw or be paralyzed until the end of its next turn. The pocketwatch can't be used this way again until the next dawn. The pocketwatch must be wound at least once every 24 hours, just like a normal pocketwatch, or its magic ceases to function. If left unwound for 24 hours, the watch loses its magic, but the power returns 24 hours after the next time it is wound."
-    },
-    {
-      "name": "Wand of Magic Detection",
-      "rarity": "rarity: uncommon",
-      "itemType": "Wand",
-      "attune": "",
-      "source": "5.2 SRD (D&D 2024)",
-      "subtype": "Wand",
-      "desc": "This wand has 3 charges. While holding it, you can expend 1 charge to cast Detect Magic from it. The wand regains 1d3 expended charges daily at dawn.",
-      "chargeReset": "dawn",
-      "maxCharges": 3
     }
   ],
   "libMisc": [

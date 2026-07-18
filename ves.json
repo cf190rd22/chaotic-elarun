@@ -13779,7 +13779,7 @@
             },
             "_grants": [],
             "_actionAdjDuration": "",
-            "equipped": true
+            "equipped": false
           },
           {
             "name": "Studded Leather",
@@ -13803,7 +13803,7 @@
             },
             "_grants": [],
             "_actionAdjDuration": "",
-            "equipped": true
+            "equipped": false
           },
           {
             "name": "Rations",
@@ -13936,6 +13936,41 @@
             "cost": "1 gp",
             "source": "Player’s Handbook",
             "desc": "In Backpack\nA Robe has vocational or ceremonial significance. Some events and locations admit only people wearing a Robe bearing certain colors or symbols."
+          },
+          {
+            "name": "Glamoured Studded Leather",
+            "subtype": "Armor (Studded Leather Armor)",
+            "desc": "While wearing this armor, you gain a +1 bonus to Armor Class. You can also take a Bonus Action to cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like—including color, style, and accessories—but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or doff the armor.",
+            "rarity": "rare",
+            "magicBonus": 1,
+            "proficient": false,
+            "_actionAdj": {
+              "ac": ">=12+DEX+1",
+              "acDur": "",
+              "maxHp": "",
+              "maxHpDur": "",
+              "tempHp": "",
+              "tempHpDur": "",
+              "speed": "",
+              "speedDur": "",
+              "saveDc": "",
+              "saveDcDur": "",
+              "advSkills": [],
+              "advSkillsDur": ""
+            },
+            "equipped": true
+          },
+          {
+            "name": "Arrow-Catching Shield",
+            "subtype": "Armor (Shield)",
+            "desc": "You gain a +2 bonus to Armor Class against ranged attack rolls while you wield this Shield. This bonus is in addition to the Shield’s normal bonus to AC.\nWhenever an attacker makes a ranged attack roll against a target within 5 feet of you, you can take a Reaction to become the target of the attack instead.",
+            "attune": "attuned",
+            "rarity": "rare",
+            "weaponType": "ranged",
+            "attackAbility": "DEX",
+            "magicBonus": 2,
+            "proficient": false,
+            "equipped": true
           }
         ],
         "attunements": [],
@@ -19962,16 +19997,10 @@
             "_id": "itrow-261-1"
           },
           {
-            "src": "Shield",
-            "val": 2,
+            "src": "Glamoured Studded Leather",
+            "val": 3,
             "_tab": "item",
-            "_id": "itrow-261-11"
-          },
-          {
-            "src": "Studded Leather",
-            "val": 2,
-            "_tab": "item",
-            "_id": "itrow-261-12"
+            "_id": "itrow-261-25"
           }
         ],
         "_grantSourcesInit": [],
@@ -20021,7 +20050,7 @@
         "_modeAdvAttackActive": false,
         "_modeAdvInitiativeActive": false,
         "_passiveItemAdj": {
-          "ac": 5,
+          "ac": 4,
           "speed": 0,
           "saveDc": 0,
           "maxHp": 0,
@@ -20113,7 +20142,7 @@
           "4": 1
         },
         "activeModes": [],
-        "acEffective": 17,
+        "acEffective": 16,
         "hpMax": 52,
         "_slotUsedCompact": {
           "1": 0,
@@ -20298,6 +20327,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784377025744,
+  "_updated": 1784377145747,
   "_unchanged": true
 }

@@ -18125,7 +18125,7 @@
             "concentration": true,
             "area": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -18146,7 +18146,7 @@
             "area": "",
             "hit": "CON",
             "effect": "1d6 force, CON Save",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
@@ -20155,6 +20155,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784387526508,
+  "_updated": 1784387766491,
   "_unchanged": true
 }

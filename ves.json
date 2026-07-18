@@ -16407,7 +16407,7 @@
             "ritual": true,
             "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
             "tags": [],
-            "_assigned": true,
+            "_assigned": false,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -17683,7 +17683,7 @@
             "_spellAdjDuration": "",
             "_noScale": false,
             "_sourceBook": "PHB",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_freecasted": false,
@@ -20298,6 +20298,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784376000336,
+  "_updated": 1784376185817,
   "_unchanged": true
 }

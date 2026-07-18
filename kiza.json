@@ -13179,7 +13179,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 4,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -15382,7 +15382,7 @@
         "hpAdjust": 0,
         "speedAdjust": 0,
         "hpCurrent": 74,
-        "hpTemp": 0,
+        "hpTemp": 4,
         "_adjOpen": false,
         "_topOpen": false,
         "statblocks": [
@@ -16202,5 +16202,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784384109364
+  "_updated": 1784384656640
 }

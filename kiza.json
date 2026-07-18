@@ -13179,7 +13179,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 3,
+            "bonus": 4,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -16201,5 +16201,6 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784378882696
+  "_updated": 1784381291500,
+  "_unchanged": true
 }

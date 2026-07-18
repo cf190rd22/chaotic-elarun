@@ -18753,6 +18753,16 @@
             "rarity": "rarity: uncommon",
             "proficient": false,
             "equipped": true
+          },
+          {
+            "name": "Mithral Armor, Plate Armor",
+            "subtype": "Plate Armor",
+            "effect": "AC 18",
+            "notes": "Stealth Disadvantage, Str 15 required",
+            "desc": "Mithral is a light, flexible metal. Armor made of this substance can be worn under normal clothes. If the armor normally imposes Disadvantage on Dexterity (Stealth) checks or has a Strength requirement, the mithral version of the armor doesn’t.",
+            "rarity": "uncommon",
+            "proficient": false,
+            "equipped": false
           }
         ],
         "_collapsedActSubgroups": {},
@@ -18970,6 +18980,5 @@
     ]
   },
   "nextId": 400,
-  "_updated": 1784376618701,
-  "_unchanged": true
+  "_updated": 1784376713807
 }

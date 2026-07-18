@@ -13779,7 +13779,7 @@
             },
             "_grants": [],
             "_actionAdjDuration": "",
-            "equipped": false
+            "equipped": true
           },
           {
             "name": "Studded Leather",
@@ -14431,20 +14431,6 @@
             "used": false
           },
           {
-            "name": "Faerie Fire",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Evocation",
-            "hit": "DEX",
-            "damage": "Invisible",
-            "range": "60 feet",
-            "save": "",
-            "notes": "Concentration, up to 1 min",
-            "desc": "Objects in a 20-foot Cube within range are outlined in blue, green, or violet light (your choice). Each creature in the Cube is also outlined if it fails a Dexterity saving throw. For the duration, objects and affected creatures shed Dim Light in a 10-foot radius and can’t benefit from the Invisible condition.\nAttack rolls against an affected creature or object have Advantage if the attacker can see it.",
-            "fav": false,
-            "used": false
-          },
-          {
             "name": "Find Familiar",
             "kind": "spell",
             "atype": "action",
@@ -14973,6 +14959,20 @@
             "save": "",
             "notes": "",
             "desc": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Pass without Trace",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Abjuration",
+            "hit": "",
+            "damage": "",
+            "range": "Self",
+            "save": "",
+            "notes": "Concentration, up to 1 h",
+            "desc": "You radiate a concealing aura in a 30-foot Emanation for the duration. While in the aura, you and each creature you choose have a +10 bonus to Dexterity (Stealth) checks and leave no tracks.",
             "fav": false,
             "used": false
           }
@@ -20013,6 +20013,12 @@
             "_id": "itrow-261-1"
           },
           {
+            "src": "Shield",
+            "val": 2,
+            "_tab": "item",
+            "_id": "itrow-261-11"
+          },
+          {
             "src": "Glamoured Studded Leather",
             "val": 3,
             "_tab": "item",
@@ -20066,7 +20072,7 @@
         "_modeAdvAttackActive": false,
         "_modeAdvInitiativeActive": false,
         "_passiveItemAdj": {
-          "ac": 4,
+          "ac": 6,
           "speed": 0,
           "saveDc": 0,
           "maxHp": 0,
@@ -20153,7 +20159,7 @@
           "4": 1
         },
         "activeModes": [],
-        "acEffective": 16,
+        "acEffective": 18,
         "hpMax": 52,
         "_slotUsedCompact": {},
         "_trackersForDm": [
@@ -20341,6 +20347,5 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784383025806,
-  "_unchanged": true
+  "_updated": 1784383113324
 }

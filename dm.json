@@ -35952,7 +35952,14 @@
         "_grantFlatBonusDC": 0,
         "_grantFlatBonusMaxHp": 0,
         "_grantSourcesSpeed": [],
-        "_grantSourcesAC": [],
+        "_grantSourcesAC": [
+          {
+            "src": "Ring of Protection",
+            "val": 1,
+            "_tab": "item",
+            "_id": "itrow-152-1"
+          }
+        ],
         "_grantSourcesInit": [],
         "_grantSourcesDC": [],
         "_grantSourcesHit": [],
@@ -35963,7 +35970,7 @@
         "_modeAdvAttackActive": false,
         "_modeAdvInitiativeActive": false,
         "_passiveItemAdj": {
-          "ac": 0,
+          "ac": 1,
           "speed": 0,
           "saveDc": 0,
           "maxHp": 0,
@@ -35983,7 +35990,7 @@
         },
         "passivePerception": 14,
         "passiveInsight": 17,
-        "acEffective": 16,
+        "acEffective": 17,
         "hpMax": 52,
         "_slotTotal": {
           "1": 4,
@@ -56335,5 +56342,6 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1784389198538
+  "_updated": 1784390309228,
+  "_unchanged": true
 }

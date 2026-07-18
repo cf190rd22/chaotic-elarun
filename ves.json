@@ -14484,34 +14484,6 @@
             "desc": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
             "fav": false,
             "used": false
-          },
-          {
-            "name": "Tree Stride",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Conjuration",
-            "hit": "",
-            "damage": "",
-            "range": "Self",
-            "save": "",
-            "notes": "Concentration, up to 1 min",
-            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Water Walk",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Transmutation",
-            "hit": "",
-            "damage": "",
-            "range": "30 feet",
-            "save": "",
-            "notes": "1 h",
-            "desc": "This spell grants the ability to move across any liquid surface—such as water, acid, mud, snow, quicksand, or lava—as if it were harmless solid ground (creatures crossing molten lava can still take damage from the heat). Up to ten willing creatures of your choice within range gain this ability for the duration.\nAn affected target must take a Bonus Action to pass from the liquid’s surface into the liquid itself and vice versa, but if the target falls into the liquid, the target passes through the surface into the liquid below.",
-            "fav": false,
-            "used": false
           }
         ],
         "statblocks": [
@@ -15750,7 +15722,7 @@
             "desc": "Objects in a 20-foot Cube within range are outlined in blue, green, or violet light (your choice). Each creature in the Cube is also outlined if it fails a Dexterity saving throw. For the duration, objects and affected creatures shed Dim Light in a 10-foot radius and can’t benefit from the Invisible condition.\nAttack rolls against an affected creature or object have Advantage if the attacker can see it.",
             "concentration": true,
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -17377,7 +17349,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -19489,7 +19461,7 @@
             "effect": "",
             "source": "Ranger",
             "_sourceBook": "PHB",
-            "_assigned": true,
+            "_assigned": false,
             "_subclassSync": true,
             "_syncSourceName": "Circle of the Land",
             "_syncSourceId": 139,
@@ -19813,6 +19785,7 @@
     ],
     "_exportedAt": 1784299496686
   },
-  "nextId": 401,
-  "_updated": 1784299822048
+  "nextId": 262,
+  "_updated": 1784373967447,
+  "_unchanged": true
 }

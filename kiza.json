@@ -15271,36 +15271,6 @@
             "_syncMinLevel": 1
           },
           {
-            "name": "Adamantine Plate*",
-            "kind": "item",
-            "_fromItem": true,
-            "atype": "other",
-            "source": "Plate",
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "effect": "",
-            "notes": "Add 1D4 dice to all Stealth rolls.",
-            "desc": "Armor Class: 18\nThis suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you’re wearing it, any Critical Hit against you becomes a normal hit.",
-            "fav": false,
-            "used": false,
-            "_actionAdj": {
-              "ac": ">=18",
-              "acDur": "",
-              "maxHp": "",
-              "maxHpDur": "",
-              "tempHp": "",
-              "tempHpDur": "",
-              "speed": "",
-              "speedDur": "",
-              "saveDc": "",
-              "saveDcDur": "",
-              "advSkills": [],
-              "advSkillsDur": ""
-            }
-          },
-          {
             "name": "Claws",
             "_libName": "Claws",
             "kind": "feat",
@@ -15849,7 +15819,8 @@
             "weight": "4lb.",
             "notes": "Versatile (1d10), Topple · Melee, Reach 5ft., Slashing",
             "source": "Grim Hollow: Player Pack",
-            "desc": "In Backpack\nCharges\nBane(1st) • Legacy\n1 Charge\nBanishment(4th) • Legacy\n1 Charge\nBestow Curse(3rd) • Legacy\n1 Charge\nIncendiary Cloud(8th) • Legacy\n1 Charge\nBranding Smite(2nd) • Legacy\n1 Charge\nThe blades of this axe smolder with an inner light. The dark wooden handle is accented with silver.\nWhen the celestial realm turned back yet another assault from the forces of evil, a fiendish forge master received a vision, allowing them to craft a battleaxe like no other. With the might of Ardor, the fiends now possess a weapon capable of striking down the celestial forces.\nArdor now lies in the fiendish realm’s hidden vaults, waiting to be wielded when the forces of darkness make their ultimate strike to consume the world. The fiends don’t realize that an equally powerful weapon rests in the hands of the celestials who wage eternal war against them. The fates who inspired the forge master to craft Ardor also sent a vision to a smith of heaven in the interest of maintaining the balance of power.\nAxe of Hell. This magic battleaxe grants a +3 bonus to attack and damage rolls made with it. When you hit with an attack using it, the target takes an extra 3d10 necrotic damage.\nChampion of Evil. While holding the battleaxe, you are immune to the charmed, frightened, paralyzed, poisoned, and stunned conditions.\nArdor’s Pursuit. As a bonus action, you can release Ardor to hover magically in an unoccupied space within 5 feet of you. If you can see the battleaxe, you can mentally command it as a bonus action to fly up to 50 feet and either make one attack against a target or return to your hands. If any effect targets the hovering axe, you are considered to be holding it. The hovering axe falls if the attuned user dies.\nSpells. While the axe is on your person, you can use an action to cast one of the following spells (save DC 18): bane, banishment, bestow curse, branding smite, or incendiary cloud. Once you use the axe to cast a spell, that spell can’t be cast again from it until the next dawn.\nDestroying the Axe. The only thing capable of damaging the battleaxe is its celestial twin Zeal. A creature wielding Zeal can choose to attack Ardor, which has an AC of 21 and 300 hit points. No other creature or object can damage Ardor.\nMastery: Topple (Battleaxe)\nYour training with weapons allows you to use the mastery property of Battleaxes:\nTopple. If you hit a creature with a Battleaxe, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition."
+            "desc": "In Backpack\nCharges\nBane(1st) • Legacy\n1 Charge\nBanishment(4th) • Legacy\n1 Charge\nBestow Curse(3rd) • Legacy\n1 Charge\nIncendiary Cloud(8th) • Legacy\n1 Charge\nBranding Smite(2nd) • Legacy\n1 Charge\nThe blades of this axe smolder with an inner light. The dark wooden handle is accented with silver.\nWhen the celestial realm turned back yet another assault from the forces of evil, a fiendish forge master received a vision, allowing them to craft a battleaxe like no other. With the might of Ardor, the fiends now possess a weapon capable of striking down the celestial forces.\nArdor now lies in the fiendish realm’s hidden vaults, waiting to be wielded when the forces of darkness make their ultimate strike to consume the world. The fiends don’t realize that an equally powerful weapon rests in the hands of the celestials who wage eternal war against them. The fates who inspired the forge master to craft Ardor also sent a vision to a smith of heaven in the interest of maintaining the balance of power.\nAxe of Hell. This magic battleaxe grants a +3 bonus to attack and damage rolls made with it. When you hit with an attack using it, the target takes an extra 3d10 necrotic damage.\nChampion of Evil. While holding the battleaxe, you are immune to the charmed, frightened, paralyzed, poisoned, and stunned conditions.\nArdor’s Pursuit. As a bonus action, you can release Ardor to hover magically in an unoccupied space within 5 feet of you. If you can see the battleaxe, you can mentally command it as a bonus action to fly up to 50 feet and either make one attack against a target or return to your hands. If any effect targets the hovering axe, you are considered to be holding it. The hovering axe falls if the attuned user dies.\nSpells. While the axe is on your person, you can use an action to cast one of the following spells (save DC 18): bane, banishment, bestow curse, branding smite, or incendiary cloud. Once you use the axe to cast a spell, that spell can’t be cast again from it until the next dawn.\nDestroying the Axe. The only thing capable of damaging the battleaxe is its celestial twin Zeal. A creature wielding Zeal can choose to attack Ardor, which has an AC of 21 and 300 hit points. No other creature or object can damage Ardor.\nMastery: Topple (Battleaxe)\nYour training with weapons allows you to use the mastery property of Battleaxes:\nTopple. If you hit a creature with a Battleaxe, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
+            "equipped": true
           },
           {
             "name": "Boots of Striding and Springing",
@@ -16255,5 +16226,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784371204295
+  "_updated": 1784371305640
 }

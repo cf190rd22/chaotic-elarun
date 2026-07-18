@@ -38669,7 +38669,20 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true
+        "_dmHidden": true,
+        "_secCollapsed": {
+          "core": true,
+          "saves": true,
+          "skills": true,
+          "passives": true,
+          "senses": true,
+          "defenses": true,
+          "feats": true,
+          "languages": true,
+          "proficiencies": true,
+          "jump": true
+        },
+        "_collapsedActSubgroups": {}
       },
       {
         "id": 159,
@@ -44904,7 +44917,21 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true
+        "_dmHidden": true,
+        "_secCollapsed": {
+          "core": true,
+          "saves": true,
+          "skills": true,
+          "passives": true,
+          "senses": true,
+          "defenses": true,
+          "feats": true,
+          "languages": true,
+          "proficiencies": true,
+          "jump": true
+        },
+        "_collapsedActSubgroups": {},
+        "_hideUnassigned": true
       },
       {
         "id": 241,
@@ -56373,5 +56400,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1784402135737
+  "_updated": 1784402258553
 }

@@ -19887,7 +19887,7 @@
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
-          "saves": true,
+          "saves": false,
           "skills": false,
           "passives": true,
           "senses": true,
@@ -20155,6 +20155,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784387766491,
+  "_updated": 1784387886497,
   "_unchanged": true
 }

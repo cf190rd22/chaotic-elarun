@@ -17587,14 +17587,14 @@
             "kind": "spell",
             "_fromItemGrant": "Mac-Fuirmidh Cittern",
             "_grantReset": "longRest",
-            "atype": "bonus",
-            "source": "Transmutation",
+            "atype": "action",
+            "source": "Item Spell",
             "hit": "",
             "damage": "",
-            "range": "Touch",
+            "range": "",
             "save": "",
-            "notes": "1 h",
-            "desc": "<p>You touch a willing creature. Until the spell ends, the target’s skin assumes a bark-like appearance, and the target has an Armor Class of 17 if its AC is lower than that.</p>",
+            "notes": "",
+            "desc": "",
             "_singleUse": true,
             "fav": false,
             "used": false,
@@ -18751,7 +18751,8 @@
             "desc": "The days of wondering what the socialites across the room are chatting about have come to an end! This brass earring is sculpted into the shape of whispering maidens. Whenever a creature says your name while within 100 feet the earring activates, transmitting the creature’s words as a hushed whisper into your ears until it has gone at least 1 minute without saying your name.",
             "attune": "yes",
             "rarity": "rarity: uncommon",
-            "proficient": false
+            "proficient": false,
+            "equipped": true
           }
         ],
         "_collapsedActSubgroups": {},
@@ -18969,5 +18970,6 @@
     ]
   },
   "nextId": 400,
-  "_updated": 1784375765905
+  "_updated": 1784375865558,
+  "_unchanged": true
 }

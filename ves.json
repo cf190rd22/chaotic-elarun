@@ -14689,6 +14689,20 @@
             "used": false
           },
           {
+            "name": "Grasping Vine",
+            "kind": "spell",
+            "atype": "bonus",
+            "source": "Conjuration",
+            "hit": "Attack",
+            "damage": "4d8 Bludgeoning · Grappled ↑",
+            "range": "60 feet",
+            "save": "",
+            "notes": "Concentration, up to 1 min",
+            "desc": "You conjure a vine that sprouts from a surface in an unoccupied space that you can see within range. The vine lasts for the duration.\nMake a melee spell attack against a creature within 30 feet of the vine. On a hit, the target takes 4d8 Bludgeoning damage and is pulled up to 30 feet toward the vine; if the target is Huge or smaller, it has the Grappled condition (escape DC equal to your spell save DC). The vine can grapple only one creature at a time, and you can cause the vine to release a Grappled creature (no action required).\nAs a Bonus Action on your later turns, you can repeat the attack against a creature within 30 feet of the vine.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The number of creatures the vine can grapple increases by one for each spell slot level above 4.",
+            "fav": false,
+            "used": false
+          },
+          {
             "name": "Druidic",
             "_libName": "Druidic",
             "kind": "feat",
@@ -14918,20 +14932,6 @@
             "fav": false,
             "used": false,
             "_raceSync": true
-          },
-          {
-            "name": "Grasping Vine",
-            "kind": "spell",
-            "atype": "bonus",
-            "source": "Conjuration",
-            "hit": "Attack",
-            "damage": "4d8 Bludgeoning · Grappled ↑",
-            "range": "60 feet",
-            "save": "",
-            "notes": "Concentration, up to 1 min",
-            "desc": "You conjure a vine that sprouts from a surface in an unoccupied space that you can see within range. The vine lasts for the duration.\nMake a melee spell attack against a creature within 30 feet of the vine. On a hit, the target takes 4d8 Bludgeoning damage and is pulled up to 30 feet toward the vine; if the target is Huge or smaller, it has the Grappled condition (escape DC equal to your spell save DC). The vine can grapple only one creature at a time, and you can cause the vine to release a Grappled creature (no action required).\nAs a Bonus Action on your later turns, you can repeat the attack against a creature within 30 feet of the vine.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The number of creatures the vine can grapple increases by one for each spell slot level above 4.",
-            "fav": false,
-            "used": false
           }
         ],
         "statblocks": [
@@ -19827,7 +19827,8 @@
         },
         "_slotUsed": {
           "261-L2": 1,
-          "261-L3": 2
+          "261-L3": 2,
+          "261-L1": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
@@ -19912,6 +19913,7 @@
         "acEffective": 18,
         "hpMax": 52,
         "_slotUsedCompact": {
+          "1": 1,
           "2": 1,
           "3": 2
         },
@@ -20101,6 +20103,5 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784391009643,
-  "_unchanged": true
+  "_updated": 1784391030311
 }

@@ -13358,7 +13358,7 @@
           "Insight": 14
         },
         "ac": "12",
-        "hp": "33",
+        "hp": "45",
         "speed": "30ft",
         "initiative": "+2",
         "profBonus": "+3",
@@ -18415,15 +18415,17 @@
         },
         "_secCollapsed": {
           "core": true,
-          "saves": false,
-          "skills": false,
-          "passives": false,
-          "senses": false,
-          "defenses": false,
+          "saves": true,
+          "skills": true,
+          "passives": true,
+          "senses": true,
+          "defenses": true,
           "feats": true,
-          "languages": false,
+          "languages": true,
           "proficiencies": true,
-          "jump": true
+          "jump": true,
+          "progression": true,
+          "abilities": true
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
@@ -18819,7 +18821,7 @@
             "damage": "Cold"
           }
         ],
-        "heroicInspiration": true,
+        "heroicInspiration": false,
         "passivePerception": 17,
         "passiveInsight": 14,
         "_slotTotal": {
@@ -18830,7 +18832,7 @@
         },
         "activeModes": [],
         "acEffective": 17,
-        "hpMax": 33,
+        "hpMax": 45,
         "_slotUsedCompact": {},
         "_featAtypes": {
           "feat_257_Blessing of the Elandran Cleric": "action"
@@ -18935,7 +18937,7 @@
         "_hitDiceUsed": {},
         "_advDisadv": null,
         "_wasDying": false,
-        "_qsHdOpen": true,
+        "_qsHdOpen": false,
         "statsLocked": false
       }
     ],
@@ -18990,9 +18992,10 @@
       116,
       72,
       89
-    ]
+    ],
+    "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784388004967,
+  "_updated": 1784388125047,
   "_unchanged": true
 }

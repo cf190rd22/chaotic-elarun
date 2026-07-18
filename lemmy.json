@@ -16001,7 +16001,8 @@
             "_classListImport": true,
             "_syncSourceId": 65,
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_singleUse": true
           },
           {
             "name": "Freedom of Movement",
@@ -18988,6 +18989,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784388652996,
-  "_unchanged": true
+  "_updated": 1784388692737
 }

@@ -20290,7 +20290,8 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "_hitDiceUsed": {}
+        "_hitDiceUsed": {},
+        "heroicInspiration": true
       }
     ],
     "_exportedAt": 1784299496686,
@@ -20347,6 +20348,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784384100719,
+  "_updated": 1784384220747,
   "_unchanged": true
 }

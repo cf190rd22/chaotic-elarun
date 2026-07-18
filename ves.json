@@ -15617,7 +15617,7 @@
             "ritual": false,
             "desc": "You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.",
             "tags": [],
-            "_assigned": true,
+            "_assigned": false,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -16284,7 +16284,7 @@
             "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
             "tags": [],
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -18211,7 +18211,7 @@
             "area": "",
             "hit": "CON",
             "effect": "1d6 force, CON Save",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
@@ -20108,7 +20108,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": true,
+        "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -20284,7 +20284,7 @@
         "saveDcEffective": 15,
         "_dmHidden": true,
         "_collapsedSpLevels": {
-          "1": true
+          "1": false
         },
         "_panelAcAdj": 0,
         "_panelSpeedAdj": 0,
@@ -20347,6 +20347,5 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784383860718,
-  "_unchanged": true
+  "_updated": 1784383907722
 }

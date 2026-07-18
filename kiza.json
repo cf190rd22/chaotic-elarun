@@ -17,8 +17,7 @@
             "desc": "You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects and then becomes sheathed in booming energy until the start of your next turn. If the target willingly moves 5 feet or more before then, the target takes 1d8 thunder damage, and the spell ends.\nThis spell's damage increases when you reach certain levels. At 5th level, the melee attack deals an extra 1d8 thunder damage to the target on a hit, and the damage the target takes for moving increases to 2d8. Both damage rolls increase by 1d8 at 11th level (2d8 and 3d8) and again at 17th level (3d8 and 4d8).",
             "area": "",
             "hit": "",
-            "effect": "1d8 thunder",
-            "_sourceBook": "TCOE"
+            "effect": "1d8 thunder"
           },
           {
             "name": "Green-Flame Blade",
@@ -32,8 +31,7 @@
             "desc": "You brandish the weapon used in the spell's casting and make a melee attack with it against one creature within 5 feet of you. On a hit, the target suffers the weapon attack's normal effects, and you can cause green fire to leap from the target to a different creature of your choice that you can see within 5 feet of it. The second creature takes fire damage equal to your spellcasting ability modifier.\nThis spell's damage increases when you reach certain levels. At 5th level, the melee attack deals an extra 1d8 fire damage to the target on a hit, and the fire damage to the second creature increases to 1d8 + your spellcasting ability modifier. Both damage rolls increase by 1d8 at 11th level (2d8 and 2d8) and 17th level (3d8 and 3d8).",
             "area": "",
             "hit": "",
-            "effect": "1d8 fire",
-            "_sourceBook": "TCOE"
+            "effect": "1d8 fire"
           },
           {
             "name": "Intellect Fortress",
@@ -49,8 +47,7 @@
             "desc": "For the duration, you or one willing creature you can see within range has resistance to psychic damage, as well as advantage on Intelligence, Wisdom, and Charisma saving throws.",
             "area": "",
             "hit": "CHA",
-            "effect": "psychic resistance",
-            "_sourceBook": "TCOE"
+            "effect": "psychic resistance"
           },
           {
             "name": "Lightning Lure",
@@ -64,8 +61,7 @@
             "desc": "You create a lash of lightning energy that strikes at one creature of your choice that you can see within 15 feet of you. The target must succeed on a Strength saving throw or be pulled up to 10 feet in a straight line toward you and then take 1d8 lightning damage if it is within 5 feet of you.\nThis spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",
             "area": "",
             "hit": "STR",
-            "effect": "1d8 lightning, STR Save",
-            "_sourceBook": "TCOE"
+            "effect": "1d8 lightning, STR Save"
           },
           {
             "name": "Summon Construct",
@@ -81,8 +77,7 @@
             "upcast": "When you cast this spell using a spell slot of 4th level or higher, use the higher level wherever the spell's level appears in the stat block. Construct Spirit Medium construct Armor Class | 13 + the level of the spell (natural armor)",
             "desc": "You call forth the spirit of a Construct. It manifests in an unoccupied space that you can see within range and uses the Construct Spirit stat block. When you cast the spell, choose a material: Clay, Metal, or Stone. The creature resembles an animate statue (you determine the appearance) made of the chosen material, which determines certain details in its stat block. The creature disappears when it drops to 0 Hit Points or when the spell ends.\nThe creature is an ally to you and your allies. In combat, the creature shares your Initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don’t issue any, it takes the Dodge action and uses its movement to avoid danger.\n───────────────────\nCONSTRUCT SPIRIT\nMedium Construct, Neutral\nAC 13 + the spell’s level\nHP 40 + 15 for each spell level above 4\nSpeed 30 ft.\nMOD\tSAVE\nSTR\t18\t+4\t+4\nDEX\t10\t+0\t+0\nCON\t18\t+4\t+4\nMOD\tSAVE\nINT\t14\t+2\t+2\nWIS\t11\t+0\t+0\nCHA\t5\t−3\t−3\nResistances Poison\nImmunities Charmed, Exhaustion, Frightened, Paralyzed, Poisoned\nSenses Darkvision 60 ft.; Passive Perception 10\nLanguages Understands the languages you know\nCR None (XP 0; PB equals your Proficiency Bonus)\nTraits\nHeated Body (Metal Only). A creature that hits the spirit with a melee attack or that starts its turn in a grapple with the spirit takes 1d10 Fire damage.\nStony Lethargy (Stone Only). When a creature starts its turn within 10 feet of the spirit, the spirit can target it with magical energy if the spirit can see it. Wisdom Saving Throw: DC equals your spell save DC, the target. Failure: Until the start of its next turn, the target can’t make Opportunity Attacks, and its Speed is halved.\nActions\nMultiattack. The spirit makes a number of Slam attacks equal to half this spell’s level (round down).\nSlam. Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d8 + 4 + the spell’s level Bludgeoning damage.\nReactions\nBerserk Lashing (Clay Only). Trigger: The spirit takes damage from a creature. Response: The spirit makes a Slam attack against that creature if possible, or the spirit moves up to half its Speed toward that creature without provoking Opportunity Attacks.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
             "area": "",
-            "effect": "1d10 Fire ↑",
-            "_sourceBook": "TCOE"
+            "effect": "1d10 Fire ↑"
           },
           {
             "name": "Sword Burst",
@@ -96,8 +91,7 @@
             "desc": "You create a momentary circle of spectral blades that sweep around you. All other creatures within 5 feet of you must each succeed on a Dexterity saving throw or take 1d6 force damage.\nThis spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).",
             "area": "",
             "hit": "DEX",
-            "effect": "1d6 force, DEX Save",
-            "_sourceBook": "TCOE"
+            "effect": "1d6 force, DEX Save"
           },
           {
             "name": "Tasha's Caustic Brew",
@@ -113,8 +107,7 @@
             "desc": "A stream of acid emanates from you in a line 30 feet long and 5 feet wide in a direction you choose. Each creature in the line must succeed on a Dexterity saving throw or be covered in acid for the spell's duration or until a creature uses its action to scrape or wash the acid off itself or another creature. A creature covered in the acid takes 2d4 acid damage at start of each of its turns.",
             "area": "",
             "hit": "DEX",
-            "effect": "2d4 acid, DEX Save",
-            "_sourceBook": "TCOE"
+            "effect": "2d4 acid, DEX Save"
           }
         ]
       }
@@ -163,14 +156,12 @@
           {
             "level": 1,
             "name": "Weapon Mastery",
-            "description": "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Longswords and Javelins.\nWhenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Halberds and Flails.",
-            "atype": "Additional Feature"
+            "description": "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Longswords and Javelins.\nWhenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Halberds and Flails."
           },
           {
             "level": 2,
             "name": "Fighting Style",
-            "description": "You gain a Fighting Style feat of your choice (see chapter 5 for feats). Instead of choosing one of those feats, you can choose the option below.\nBlessed Warrior. You learn two Cleric cantrips of your choice (see the Cleric class’s section for a list of Cleric spells). Guidance and Sacred Flame are recommended. The chosen cantrips count as Paladin spells for you, and Charisma is your spellcasting ability for them. Whenever you gain a Paladin level, you can replace one of these cantrips with another Cleric cantrip.",
-            "atype": "Additional Feature"
+            "description": "You gain a Fighting Style feat of your choice (see chapter 5 for feats). Instead of choosing one of those feats, you can choose the option below.\nBlessed Warrior. You learn two Cleric cantrips of your choice (see the Cleric class’s section for a list of Cleric spells). Guidance and Sacred Flame are recommended. The chosen cantrips count as Paladin spells for you, and Charisma is your spellcasting ability for them. Whenever you gain a Paladin level, you can replace one of these cantrips with another Cleric cantrip."
           },
           {
             "level": 2,
@@ -183,13 +174,12 @@
                 "_freecast": true,
                 "_singleUse": false
               }
-            ],
-            "atype": "Additional Feature"
+            ]
           },
           {
             "level": 3,
             "name": "Channel Divinity",
-            "description": "<p>You can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.</p><details open=\"\"><summary>You can use this class’s Channel Divinity twice</summary><div class=\"det-body\"><p>You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.</p><p>If a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature.</p></div></details><details open=\"\"><summary>Channel Chaos</summary><div class=\"det-body\"><p>As a Bonus Action, you can imbue one weapon that you are holding with Chaotic energy, transforming it into a Chaos Weapon able to inflict Chaotic Wounds via a Chaotic Wound Die.&nbsp; It remains transformed in this way for 10 minutes or until you have the Incapacitated condition, use this feature again, you die, or the weapon is more than 5 feet away from you for 1 minute or more. You can end this effect early (no action required).</p><p>While transformed into a Chaos Weapon, a weapon emits Dim Light in a 5-foot Emanation, and whenever you deal damage with the weapon, it can deal your choice of Fire damage or its normal damage type.</p></div></details><details open=\"\"><summary>Chaotic Wound Die</summary><div class=\"det-body\"><p>You have one Chaos Wound Die, which is a d6 at level 3.</p></div></details><details open=\"\"><summary>Inflicting Chaotic Wounds</summary><div class=\"det-body\"><p>Once per turn when you hit a creature with your Chaos Weapon, you can deal extra Fire damage equal to one roll of your Chaotic Wound Die and give the target a Chaotic wound.</p><p>While wounded in this way, the target takes Fire damage equal to one roll of your Chaos Wound Die at the start of each of its turns. This effect lasts for 1 minute, until the target regains Hit Points, or until the target or a creature within 5 feet of the target takes an action to stanch the wound. A target can be affected by only one instance of this feature at a time.</p><p>You can use this feature a number of times equal to your Constitution modifier (minimum of once). You regain all expended uses when you finish a Long Rest.</p></div></details>",
+            "description": "You can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.\n\nYou can use this class’s Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.\n\nIf a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature.\n\nDivine Sense. As a Bonus Action, you can open your awareness to detect Celestials, Fiends, and Undead. For the next 10 minutes or until you have the Incapacitated condition, you know the location of any creature of those types within 60 feet of yourself, and you know its creature type. Within the same radius, you also detect the presence of any place or object that has been consecrated or desecrated, as with the Hallow spell.\n\nChannel Chaos. As a Bonus Action, you can imbue one weapon that you are holding with Chaotic energy, transforming it into a Chaos Weapon able to inflict Chaotic Wounds via a Chaotic Wound Die.  It remains transformed in this way for 10 minutes or until you have the Incapacitated condition, use this feature again, you die, or the weapon is more than 5 feet away from you for 1 minute or more. You can end this effect early (no action required).\n\nWhile transformed into a Chaos Weapon, a weapon emits Dim Light in a 5-foot Emanation, and whenever you deal damage with the weapon, it can deal your choice of Fire damage or its normal damage type.\n\nChaotic Wound Die. You have one Chaos Wound Die, which is a d6 at level 3.\n\nInflicting Chaotic Wounds. Once per turn when you hit a creature with your Chaos Weapon, you can deal extra Fire damage equal to one roll of your Chaotic Wound Die and give the target a Chaotic wound.\n\nWhile wounded in this way, the target takes Fire damage equal to one roll of your Chaos Wound Die at the start of each of its turns. This effect lasts for 1 minute, until the target regains Hit Points, or until the target or a creature within 5 feet of the target takes an action to stanch the wound. A target can be affected by only one instance of this feature at a time.\n\nYou can use this feature a number of times equal to your Constitution modifier (minimum of once). You regain all expended uses when you finish a Long Rest.",
             "trackers": [
               {
                 "label": "Channel Divinity",
@@ -210,19 +200,12 @@
               {
                 "name": "Channel Divinity: Channel Chaos (Chaotic Wounds)",
                 "atype": "Bonus Action",
-                "desc": "Chaotic Wound Die. You have one Chaos Wound Die, which is a d6 at level 3.\n\nInflicting Chaotic Wounds. Once per turn when you hit a creature with your Chaos Weapon, you can deal extra Fire damage equal to one roll of your Chaotic Wound Die and give the target a Chaotic wound.\n\nWhile wounded in this way, the target takes Fire damage equal to one roll of your Chaos Wound Die at the start of each of its turns. This effect lasts for 1 minute, until the target regains Hit Points, or until the target or a creature within 5 feet of the target takes an action to stanch the wound. A target can be affected by only one instance of this feature at a time.\n\nYou can use this feature a number of times equal to your Constitution modifier (minimum of once). You regain all expended uses when you finish a Long Rest.\n\n---\n\nYou can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.\n\nYou can use this class’s Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.\n\nIf a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature.",
-                "_modeLabel": "Chaotic Wounds",
-                "_modeDcBonus": "",
-                "_modeAcBonus": "",
-                "_modeAttackBonus": "",
-                "_modeDmgBonus": "",
-                "_modeSpeedBonus": "",
-                "_modeResistance": "",
-                "_modeNotes": "Uses Channel Divinity, adds to Aura of Chaos",
-                "_modeAdvAll": false,
-                "_modeAdvSaves": [],
-                "_modeAdvAbilChecks": [],
-                "_modeConsumesTracker": "Chaotic Wounds"
+                "desc": "Chaotic Wound Die. You have one Chaos Wound Die, which is a d6 at level 3.\n\nInflicting Chaotic Wounds. Once per turn when you hit a creature with your Chaos Weapon, you can deal extra Fire damage equal to one roll of your Chaotic Wound Die and give the target a Chaotic wound.\n\nWhile wounded in this way, the target takes Fire damage equal to one roll of your Chaos Wound Die at the start of each of its turns. This effect lasts for 1 minute, until the target regains Hit Points, or until the target or a creature within 5 feet of the target takes an action to stanch the wound. A target can be affected by only one instance of this feature at a time.\n\nYou can use this feature a number of times equal to your Constitution modifier (minimum of once). You regain all expended uses when you finish a Long Rest.\n\n---\n\nYou can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.\n\nYou can use this class’s Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.\n\nIf a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature."
+              },
+              {
+                "name": "Channel Divinity: Divine Sense",
+                "atype": "Bonus Action",
+                "desc": "Divine Sense. As a Bonus Action, you can open your awareness to detect Celestials, Fiends, and Undead. For the next 10 minutes or until you have the Incapacitated condition, you know the location of any creature of those types within 60 feet of yourself, and you know its creature type. Within the same radius, you also detect the presence of any place or object that has been consecrated or desecrated, as with the Hallow spell.\n\n---\n\nYou can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.\n\nYou can use this class’s Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.\n\nIf a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature."
               },
               {
                 "name": "Channel Divinity:  Channel Chaos",
@@ -263,13 +246,12 @@
                 "_freecast": true,
                 "_singleUse": false
               }
-            ],
-            "atype": "Additional Feature"
+            ]
           },
           {
             "level": 6,
             "name": "Aura of Chaos",
-            "description": "<p>You can tap into your connection with Elandra to weave an aura of Chaotic magic that lasts until you are Incapacitated or finish a Long Rest.</p><p>The aura has a Hit Point maximum equal to twice Paladin level plus your Constitution modifier.</p><p>When any ally you can see within 30ft takes damage, you can take a Reaction to cause your aura to absorb that damage, applying Resistances and Vulnerabilities before reducing the aura's Hit Points. If the aura is reduced to 0, you take any remaining damage.</p><p>When you inflict a Chaotic Wound, the aura regains Hit Points equal to one roll of your Chaos Wound Die. Alternatively, as a Bonus Action, you can expend a spell slot, and the ward regains a number of Hit Points equal to twice the level of the spell slot expended.</p>",
+            "description": "You can tap into your connection with Elandra to weave an aura of Chaotic magic that lasts until you are Incapacitated or finish a Long Rest.\nThe aura has a Hit Point maximum equal to twice Paladin level plus your Constitution modifier.\nWhen any ally you can see within 30ft takes damage, you can take a Reaction to cause your aura to absorb that damage, applying Resistances and Vulnerabilities before reducing the aura's Hit Points. If the aura is reduced to 0, you take any remaining damage.\nWhen you inflict a Chaotic Wound, the aura regains Hit Points equal to one roll of your Chaos Wound Die. Alternatively, as a Bonus Action, you can expend a spell slot, and the ward regains a number of Hit Points equal to twice the level of the spell slot expended.",
             "trackers": [
               {
                 "label": "Aura of Chaos",
@@ -279,9 +261,13 @@
                 "maxFormula": "LVL*2+CON"
               }
             ],
-            "actions": [],
-            "atype": "Reaction",
-            "_modeLabel": "Aura of Chaos"
+            "actions": [
+              {
+                "name": "Aura of Chaos",
+                "atype": "Reaction",
+                "desc": "You can tap into your connection with Elandra to weave an aura of Chaotic magic that lasts until you are Incapacitated or finish a Long Rest.\n\nThe aura has a Hit Point maximum equal to twice Paladin level plus your Constitution modifier.\n\nWhen any ally you can see within 30ft takes damage, you can take a Reaction to cause your aura to absorb that damage, applying Resistances and Vulnerabilities before reducing the aura's Hit Points. If the aura is reduced to 0, you take any remaining damage.\n\nWhen you inflict a Chaotic Wound, the aura regains Hit Points equal to one roll of your Chaos Wound Die. Alternatively, as a Bonus Action, you can expend a spell slot, and the ward regains a number of Hit Points equal to twice the level of the spell slot expended."
+              }
+            ]
           },
           {
             "level": 8,
@@ -666,9 +652,14 @@
           {
             "level": 0,
             "name": "Claws",
-            "description": "<p>Your claws are natural weapons, which you can use to make unarmed strikes. If you hit with them, you can deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike.</p>",
-            "actions": [],
-            "atype": "Action"
+            "description": "Your claws are natural weapons, which you can use to make unarmed strikes. If you hit with them, you can deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike.",
+            "actions": [
+              {
+                "name": "Claws",
+                "atype": "Action",
+                "desc": "Your claws are natural weapons, which you can use to make unarmed strikes. If you hit with them, you can deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike."
+              }
+            ]
           },
           {
             "level": 0,
@@ -725,8 +716,14 @@
           {
             "level": 0,
             "name": "Stonecunning",
-            "description": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
-            "actions": [],
+            "description": "You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
+            "actions": [
+              {
+                "name": "Tremorsense",
+                "atype": "Bonus Action",
+                "desc": "From Stonecunning. As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.\n\nYou can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest."
+              }
+            ],
             "trackers": [
               {
                 "label": "Stonecunning",
@@ -735,8 +732,7 @@
                 "reset": "long",
                 "maxFormula": "PROF"
               }
-            ],
-            "atype": "Bonus Action"
+            ]
           }
         ],
         "variants": null,
@@ -915,8 +911,14 @@
           {
             "level": 0,
             "name": "Large Form",
-            "description": "<p>Starting at character level 5, you can change your size to Large as a Bonus Action if you’re in a big enough space. This transformation lasts for 10 minutes or until you end it (no action required). For that duration, you have Advantage on Strength checks, and your Speed increases by 10 feet. Once you use this trait, you can’t use it again until you finish a Long Rest.</p>",
-            "actions": [],
+            "description": "Starting at character level 5, you can change your size to Large as a Bonus Action if you’re in a big enough space. This transformation lasts for 10 minutes or until you end it (no action required). For that duration, you have Advantage on Strength checks, and your Speed increases by 10 feet. Once you use this trait, you can’t use it again until you finish a Long Rest.",
+            "actions": [
+              {
+                "name": "Large Form",
+                "atype": "Bonus Action",
+                "desc": "Starting at character level 5, you can change your size to Large as a Bonus Action if you’re in a big enough space. This transformation lasts for 10 minutes or until you end it (no action required). For that duration, you have Advantage on Strength checks, and your Speed increases by 10 feet. Once you use this trait, you can’t use it again until you finish a Long Rest."
+              }
+            ],
             "trackers": [
               {
                 "label": "Large Form",
@@ -924,21 +926,19 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ],
-            "atype": "Bonus Action"
+            ]
           },
           {
             "level": 0,
             "name": "Powerful Build",
-            "description": "<p>You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity.</p>",
+            "description": "You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity.",
             "actions": [
               {
                 "name": "Powerful Build",
                 "atype": "Other",
                 "desc": "You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity."
               }
-            ],
-            "atype": "Additional Feature"
+            ]
           }
         ],
         "variants": null,
@@ -982,30 +982,39 @@
           {
             "level": 0,
             "name": "Adrenaline Rush",
-            "description": "<p>You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.</p><p>You can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.</p>",
-            "actions": [],
-            "trackers": [
+            "description": "You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.\nYou can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.",
+            "actions": [
               {
-                "label": "Adrenaline Rush",
-                "max": 1,
-                "type": "boxes",
-                "reset": "short",
-                "maxFormula": "PROF"
+                "name": "Adrenaline Rush",
+                "atype": "Bonus Action",
+                "desc": "You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.\nYou can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest."
               }
             ],
-            "atype": "Bonus Action"
+            "trackers": [
+              {
+                "label": "Adrenaline Rush (1)",
+                "max": 2,
+                "type": "boxes",
+                "reset": "short"
+              }
+            ]
           },
           {
             "level": 0,
             "name": "Darkvision",
-            "description": "You have Darkvision with a range of 120 feet.",
-            "atype": "Other"
+            "description": "You have Darkvision with a range of 120 feet."
           },
           {
             "level": 0,
             "name": "Relentless Endurance",
-            "description": "<p>When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.</p>",
-            "actions": [],
+            "description": "When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.",
+            "actions": [
+              {
+                "name": "Relentless Endurance",
+                "atype": "Other",
+                "desc": "When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest."
+              }
+            ],
             "trackers": [
               {
                 "label": "Relentless Endurance",
@@ -1013,8 +1022,7 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ],
-            "atype": "Additional Feature"
+            ]
           }
         ],
         "variants": null,
@@ -1084,24 +1092,9 @@
           {
             "level": 0,
             "name": "Magic Initiate",
-            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
-            "spells": [
-              {
-                "count": 2,
-                "spellLevel": 0,
-                "classList": "Cleric,Wizard,Druid"
-              },
-              {
-                "count": 1,
-                "spellLevel": 1,
-                "classList": "Cleric,Wizard,Druid",
-                "_freecast": true,
-                "_singleUse": true
-              }
-            ]
+            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
           }
-        ],
-        "casterType": "granted"
+        ]
       },
       {
         "id": 169,
@@ -1320,25 +1313,9 @@
           {
             "level": 0,
             "name": "Fey Touched",
-            "description": "Prerequisite: Level 4+\n\nAbility Score Increase. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.\nFey Magic. Choose one level 1 spell from the Divination or Enchantment school of magic. You always have that spell and the Misty Step spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either spell in this way, you can't cast that spell in this way again until you finish a Long Rest. You can also cast these spells using spell slots you have of the appropriate level. The spells' spellcasting ability is the ability increased by this feat.",
-            "spells": [
-              {
-                "count": 1,
-                "spellLevel": 1,
-                "school": "Divination,Enchantment",
-                "note": "Choose one level 1 spell from the Divination or Enchantment school of magic. You always have that spell and the Misty Step spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either spell in this way, you can't cast that spell in this way again until you finish a Long Rest. You can also cast these spells using spell slots you have of the appropriate level. The spells' spellcasting ability is the ability increased by this feat.",
-                "_freecast": true,
-                "_singleUse": true
-              },
-              {
-                "name": "Misty Step",
-                "spellLevel": 0,
-                "_freecast": true
-              }
-            ]
+            "description": "Prerequisite: Level 4+\n\nAbility Score Increase. Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.\nFey Magic. Choose one level 1 spell from the Divination or Enchantment school of magic. You always have that spell and the Misty Step spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either spell in this way, you can't cast that spell in this way again until you finish a Long Rest. You can also cast these spells using spell slots you have of the appropriate level. The spells' spellcasting ability is the ability increased by this feat."
           }
-        ],
-        "casterType": "granted"
+        ]
       },
       {
         "id": 186,
@@ -2189,13 +2166,11 @@
     ],
     "libItems": [
       {
-        "name": "Tick Stop Watch",
-        "rarity": "rarity: rare",
-        "itemType": "Wondrous Item",
-        "attune": "",
-        "source": "Vault of Magic",
-        "subtype": "Wondrous Item",
-        "desc": "While holding this silver pocketwatch, you can use an action to magically stop a single clockwork device or construct within 10 feet of you. If the target is an object, it freezes in place, even mid-air, for up to 1 minute or until moved. If the target is a construct, it must succeed on a DC 15 Wisdom saving throw or be paralyzed until the end of its next turn. The pocketwatch can't be used this way again until the next dawn. The pocketwatch must be wound at least once every 24 hours, just like a normal pocketwatch, or its magic ceases to function. If left unwound for 24 hours, the watch loses its magic, but the power returns 24 hours after the next time it is wound."
+        "name": "Thieves' Tools",
+        "subtype": "Other Tools",
+        "cost": "25 GP",
+        "weight": "1 lb.",
+        "desc": "Ability: Dexterity\nUtilize: Pick a lock (DC 15), or disarm a trap (DC 15)\nNote: If you have proficiency with a tool, add your Proficiency Bonus to any ability check you make that uses the tool. If you have proficiency in a skill that's used with that check, you have Advantage on the check too. Your features might give you proficiency with a tool. A monster has proficiency with any tool in its stat block."
       },
       {
         "name": "Ammunition +2",
@@ -16226,5 +16201,6 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784371481564
+  "_updated": 1784376149497,
+  "_unchanged": true
 }

@@ -38669,7 +38669,8 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true
+        "_dmHidden": true,
+        "conditions": []
       },
       {
         "id": 159,
@@ -44904,7 +44905,8 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true
+        "_dmHidden": true,
+        "conditions": []
       },
       {
         "id": 241,
@@ -50374,7 +50376,8 @@
           }
         ],
         "saveDcEffective": 15,
-        "_dmHidden": true
+        "_dmHidden": true,
+        "conditions": []
       }
     ],
     "unassignedSpells": [],
@@ -56373,5 +56376,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1784401990204
+  "_updated": 1784402016691
 }

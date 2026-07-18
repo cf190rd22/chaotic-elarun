@@ -13603,7 +13603,7 @@
             "name": "Ring of Protection",
             "subtype": "Ring",
             "desc": "You gain a +1 bonus to Armor Class and saving throws while wearing this ring.",
-            "attune": "yes",
+            "attune": "attuned",
             "rarity": "rare",
             "tags": [],
             "proficient": false,
@@ -20298,6 +20298,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784376495643,
+  "_updated": 1784376545738,
   "_unchanged": true
 }

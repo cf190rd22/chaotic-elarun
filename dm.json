@@ -36085,7 +36085,8 @@
             "_catId": 1780574479773
           }
         ],
-        "saveDcEffective": 15
+        "saveDcEffective": 15,
+        "_dmHidden": true
       },
       {
         "id": 157,
@@ -38629,7 +38630,8 @@
             "maxFormula": "LVL*2+CON"
           }
         ],
-        "saveDcEffective": 14
+        "saveDcEffective": 14,
+        "_dmHidden": true
       },
       {
         "id": 159,
@@ -44863,7 +44865,8 @@
             "_classSync": true
           }
         ],
-        "saveDcEffective": 14
+        "saveDcEffective": 14,
+        "_dmHidden": true
       },
       {
         "id": 241,
@@ -50332,7 +50335,8 @@
             "actionLink": "Sorcerous Restoration"
           }
         ],
-        "saveDcEffective": 15
+        "saveDcEffective": 15,
+        "_dmHidden": true
       }
     ],
     "unassignedSpells": [],
@@ -56331,6 +56335,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1784388814600,
-  "_unchanged": true
+  "_updated": 1784388887491
 }

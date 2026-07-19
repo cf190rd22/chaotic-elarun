@@ -33418,7 +33418,7 @@
             "duration": "10 min",
             "desc": "You imbue plants in an immobile 30-foot Emanation with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.\nYou can also turn Difficult Terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into Difficult Terrain that lasts for the duration.\nThe spell doesn’t enable plants to uproot themselves and move about, but they can move their branches, tendrils, and stalks for you.\nIf a Plant creature is in the area, you can communicate with it as if you shared a common language.",
             "hit": "",
-            "_assigned": false,
+            "_assigned": true,
             "tags": [
               "communicate"
             ]
@@ -35389,34 +35389,6 @@
             "used": false,
             "_raceSync": true,
             "_syncMinLevel": 1
-          },
-          {
-            "name": "Stonecunning",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Race",
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Faerie Fire",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Evocation",
-            "hit": "DEX",
-            "damage": "Invisible",
-            "range": "60 feet",
-            "save": "",
-            "notes": "Concentration, up to 1 min",
-            "desc": "Objects in a 20-foot Cube within range are outlined in blue, green, or violet light (your choice). Each creature in the Cube is also outlined if it fails a Dexterity saving throw. For the duration, objects and affected creatures shed Dim Light in a 10-foot radius and can’t benefit from the Invisible condition.\nAttack rolls against an affected creature or object have Advantage if the attacker can see it.",
-            "fav": false,
-            "used": false
           }
         ],
         "trackers": [
@@ -36121,9 +36093,6 @@
           }
         ],
         "saveDcEffective": 15,
-        "_dmHidden": true,
-        "hpCurrent": 52,
-        "hpTemp": 0,
         "conditions": []
       },
       {
@@ -38669,7 +38638,6 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true,
         "conditions": []
       },
       {
@@ -44905,7 +44873,6 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true,
         "conditions": []
       },
       {
@@ -50376,7 +50343,6 @@
           }
         ],
         "saveDcEffective": 15,
-        "_dmHidden": true,
         "conditions": []
       }
     ],
@@ -56376,5 +56342,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1784468555204
+  "_updated": 1784471562772
 }

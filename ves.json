@@ -20039,14 +20039,16 @@
         "saveDcEffective": 15,
         "_dmHidden": true,
         "_collapsedSpLevels": {
-          "1": false
+          "1": true,
+          "4": true
         },
         "_panelAcAdj": 0,
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
         "_hitDiceUsed": {},
-        "heroicInspiration": false
+        "heroicInspiration": false,
+        "_spFiltersCollapsed": false
       }
     ],
     "_exportedAt": 1784299496686,
@@ -20103,6 +20105,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784548181723,
+  "_updated": 1784548319107,
   "_unchanged": true
 }

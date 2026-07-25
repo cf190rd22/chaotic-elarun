@@ -13365,7 +13365,7 @@
           "Insight": 14
         },
         "ac": "12",
-        "hp": "",
+        "hp": "45",
         "speed": "30ft",
         "initiative": "+2",
         "profBonus": "+3",
@@ -18415,7 +18415,7 @@
           "tempHp": 0
         },
         "_secCollapsed": {
-          "core": false,
+          "core": true,
           "saves": true,
           "skills": true,
           "passives": true,
@@ -18817,7 +18817,7 @@
         },
         "activeModes": [],
         "acEffective": 17,
-        "hpMax": 0,
+        "hpMax": 45,
         "_slotUsedCompact": {
           "2": 3,
           "4": 1
@@ -18982,5 +18982,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784983213757
+  "_updated": 1784983228300
 }

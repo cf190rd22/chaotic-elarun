@@ -18146,27 +18146,6 @@
             "_singleUsed": false
           },
           {
-            "name": "Polymorph",
-            "level": 4,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V, S, M (a caterpillar cocoon)",
-            "duration": "Concentration, up to 1 h",
-            "hit": "WIS",
-            "desc": "You attempt to transform a creature that you can see within range into a Beast. The target must succeed on a Wisdom saving throw or shape-shift into Beast form for the duration. That form can be any Beast you choose that has a Challenge Rating equal to or less than the target’s (or the target’s level if it doesn’t have a Challenge Rating). The target’s game statistics are replaced by the stat block of the chosen Beast, but the target retains its alignment, personality, creature type, Hit Points, and Hit Point Dice.\nThe target gains a number of Temporary Hit Points equal to the Hit Points of the Beast form. These Temporary Hit Points vanish if any remain when the spell ends. The spell ends early on the target if it has no Temporary Hit Points left.\nThe target is limited in the actions it can perform by the anatomy of its new form, and it can’t speak or cast spells.\nThe target’s gear melds into the new form. The creature can’t use or otherwise benefit from any of that equipment.",
-            "concentration": true,
-            "area": "",
-            "effect": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 66,
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
             "name": "Primordial Power",
             "level": 4,
             "school": "Transmutation",
@@ -18485,27 +18464,6 @@
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
-            "name": "Insect Plague",
-            "level": 5,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "300 feet",
-            "area": "20ft. radius Sphere",
-            "components": "V, S, M (a locust)",
-            "duration": "Concentration, up to 10 min",
-            "hit": "CON",
-            "effect": "4d10 Piercing ↑",
-            "desc": "Swarming locusts fill a 20-foot-radius Sphere centered on a point you choose within range. The Sphere remains for the duration, and its area is Lightly Obscured and Difficult Terrain.\nWhen the swarm appears, each creature in it makes a Constitution saving throw, taking 4d10 Piercing damage on a failed save or half as much damage on a successful one. A creature also makes this save when it enters the spell’s area for the first time on a turn or ends its turn there. A creature makes this save only once per turn.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d10 for each spell slot level above 5.",
-            "concentration": true,
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 66,
             "_freecasted": false,
             "_singleUsed": false
           },
@@ -19594,8 +19552,6 @@
             "level": 3,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 3,
             "group": "Temperate Land"
           },
@@ -19604,8 +19560,6 @@
             "level": 3,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 3,
             "group": "Temperate Land"
           },
@@ -19614,8 +19568,6 @@
             "level": 3,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 3,
             "group": "Temperate Land"
           },
@@ -19624,8 +19576,6 @@
             "level": 5,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 5,
             "group": "Temperate Land"
           },
@@ -19634,18 +19584,14 @@
             "level": 7,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 7,
             "group": "Temperate Land"
           },
           {
             "name": "Tree Stride",
             "level": 9,
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 9,
             "group": "Temperate Land"
           }
@@ -19788,7 +19734,7 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": true,
+        "_subSpellsCollapsed": false,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
@@ -20039,6 +19985,5 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784986561402,
-  "_unchanged": true
+  "_updated": 1784986610054
 }

@@ -31840,7 +31840,19 @@
           {
             "level": 0,
             "name": "Magic Initiate",
-            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
+            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
+            "spells": [
+              {
+                "count": 2,
+                "spellLevel": 0,
+                "classList": "Wizard,Cleric,Druid"
+              },
+              {
+                "count": 1,
+                "spellLevel": 1,
+                "classList": "Wizard,Cleric,Druid"
+              }
+            ]
           }
         ]
       },
@@ -34614,7 +34626,8 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Tremorsense",
@@ -34631,7 +34644,8 @@
             "desc": "From Stonecunning. As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.\n\nYou can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Faerie Fire",
@@ -35759,7 +35773,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "Action",
+            "time": "A",
             "range": "90 feet",
             "hit": "Attack",
             "_effectManual": false,
@@ -35781,7 +35795,9 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_sourceBook": "PHB",
-            "_singleUsed": false
+            "_singleUsed": false,
+            "effect": "",
+            "area": ""
           },
           {
             "name": "Clue",
@@ -37940,27 +37956,6 @@
             "_singleUsed": false
           },
           {
-            "name": "Polymorph",
-            "level": 4,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V, S, M (a caterpillar cocoon)",
-            "duration": "Concentration, up to 1 h",
-            "hit": "WIS",
-            "desc": "You attempt to transform a creature that you can see within range into a Beast. The target must succeed on a Wisdom saving throw or shape-shift into Beast form for the duration. That form can be any Beast you choose that has a Challenge Rating equal to or less than the target’s (or the target’s level if it doesn’t have a Challenge Rating). The target’s game statistics are replaced by the stat block of the chosen Beast, but the target retains its alignment, personality, creature type, Hit Points, and Hit Point Dice.\nThe target gains a number of Temporary Hit Points equal to the Hit Points of the Beast form. These Temporary Hit Points vanish if any remain when the spell ends. The spell ends early on the target if it has no Temporary Hit Points left.\nThe target is limited in the actions it can perform by the anatomy of its new form, and it can’t speak or cast spells.\nThe target’s gear melds into the new form. The creature can’t use or otherwise benefit from any of that equipment.",
-            "concentration": true,
-            "area": "",
-            "effect": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 66,
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
             "name": "Primordial Power",
             "level": 4,
             "school": "Transmutation",
@@ -38279,27 +38274,6 @@
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
-            "name": "Insect Plague",
-            "level": 5,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "300 feet",
-            "area": "20ft. radius Sphere",
-            "components": "V, S, M (a locust)",
-            "duration": "Concentration, up to 10 min",
-            "hit": "CON",
-            "effect": "4d10 Piercing ↑",
-            "desc": "Swarming locusts fill a 20-foot-radius Sphere centered on a point you choose within range. The Sphere remains for the duration, and its area is Lightly Obscured and Difficult Terrain.\nWhen the swarm appears, each creature in it makes a Constitution saving throw, taking 4d10 Piercing damage on a failed save or half as much damage on a successful one. A creature also makes this save when it enters the spell’s area for the first time on a turn or ends its turn there. A creature makes this save only once per turn.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d10 for each spell slot level above 5.",
-            "concentration": true,
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 66,
             "_freecasted": false,
             "_singleUsed": false
           },
@@ -39357,7 +39331,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "Action",
+            "time": "A",
             "range": "90 feet",
             "hit": "Attack",
             "_effectManual": false,
@@ -39379,123 +39353,137 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_singleUsed": false,
-            "_sourceBook": "PHB"
-          },
-          {
-            "name": "Fire Bolt",
-            "level": 0,
-            "school": "Evocation",
-            "time": "Action",
-            "range": "120 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "hit": "Attack",
-            "effect": "1d10 Fire ↑",
-            "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
-            "source": "Sorcerer",
-            "_effectManual": true,
-            "concentration": false,
-            "ritual": false,
-            "_spellAdjDuration": "",
-            "_noScale": false,
             "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
-            "_syncSourceId": 168,
-            "_syncSourceName": "Magic Initiate",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
-            "name": "Message",
-            "level": 0,
-            "school": "Transmutation",
-            "time": "Action",
-            "range": "120 feet",
-            "components": "S, M (a copper wire)",
-            "duration": "1 round",
-            "desc": "You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.",
-            "source": "Druid",
-            "_effectManual": false,
-            "concentration": false,
-            "ritual": false,
-            "_spellAdjDuration": "",
-            "_noScale": false,
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
-            "_syncSourceId": 168,
-            "_syncSourceName": "Magic Initiate",
-            "_freecasted": false,
-            "_singleUsed": false
+            "effect": "",
+            "area": ""
           },
           {
             "name": "Misty Step",
-            "level": 3,
+            "level": 2,
+            "school": "Conjuration",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 3,
             "group": "Temperate Land",
-            "_sourceBook": "PHB"
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Shocking Grasp",
-            "level": 3,
+            "level": 0,
+            "school": "Evocation",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "Attack",
+            "effect": "1d8 Lightning ↑",
+            "desc": "Lightning springs from you to a creature that you try to touch. Make a melee spell attack against the target. On a hit, the target takes 1d8 Lightning damage, and it can’t make Opportunity Attacks until the start of its next turn.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d8 when you reach levels 5 (2d8), 11 (3d8), and 17 (4d8).",
+            "area": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 3,
             "group": "Temperate Land",
-            "_sourceBook": "PHB"
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Sleep",
-            "level": 3,
+            "level": 1,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "60 feet",
+            "area": "5ft. radius Sphere",
+            "components": "V, S, M (a pinch of sand or rose petals)",
+            "duration": "Concentration, up to 1 min",
+            "hit": "WIS",
+            "effect": "Incapacitated/Unconscious",
+            "desc": "Each creature of your choice in a 5-foot-radius Sphere centered on a point within range must succeed on a Wisdom saving throw or have the Incapacitated condition until the end of its next turn, at which point it must repeat the save. If the target fails the second save, the target has the Unconscious condition for the duration. The spell ends on a target if it takes damage or someone within 5 feet of it takes an action to shake it out of the spell’s effect.\nCreatures that don’t sleep, such as elves, or that have Immunity to the Exhaustion condition automatically succeed on saves against this spell.",
+            "concentration": true,
+            "source": "Bard",
+            "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 3,
             "group": "Temperate Land",
-            "_sourceBook": "PHB"
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Lightning Bolt",
-            "level": 5,
+            "level": 3,
+            "school": "Evocation",
+            "time": "A",
+            "range": "Self",
+            "area": "5ft. Line",
+            "components": "V, S, M (a bit of fur and a crystal rod)",
+            "duration": "Instantaneous",
+            "hit": "DEX",
+            "effect": "8d6 Lightning ↑",
+            "desc": "A stroke of lightning forming a 100-foot-long, 5-foot-wide Line blasts out from you in a direction you choose. Each creature in the Line makes a Dexterity saving throw, taking 8d6 Lightning damage on a failed save or half as much damage on a successful one.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 3.",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 5,
             "group": "Temperate Land",
-            "_sourceBook": "PHB"
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Freedom of Movement",
-            "level": 7,
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a leather strap)",
+            "duration": "1 h",
+            "effect": "Paralyzed ↑",
+            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
+            "area": "",
+            "hit": "",
+            "source": "Bard",
+            "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 7,
             "group": "Temperate Land",
-            "_sourceBook": "PHB"
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Tree Stride",
-            "level": 9,
+            "level": 5,
+            "school": "Conjuration",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
+            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Ranger",
+            "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 9,
             "group": "Temperate Land",
-            "_sourceBook": "PHB"
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           }
         ],
         "_grantImmunities": [],
@@ -39637,19 +39625,14 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": false,
+        "_subSpellsCollapsed": true,
         "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
-          "grant_168_Magic_Initiate_1": [
-            "Chromatic Orb"
-          ],
-          "grant_168_Magic_Initiate_0": [
-            "Fire Bolt",
-            "Message"
-          ]
+          "grant_168_Magic_Initiate_1": [],
+          "grant_168_Magic_Initiate_0": []
         },
-        "_grantChoicesCollapsed": true,
+        "_grantChoicesCollapsed": false,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -39826,7 +39809,8 @@
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
         "_hitDiceUsed": {},
-        "heroicInspiration": false
+        "heroicInspiration": false,
+        "_qsAdjOpen": false
       },
       {
         "id": 157,
@@ -41945,21 +41929,10 @@
             "used": false,
             "_syncMinLevel": 3,
             "_syncSourceId": 70,
-            "_modeLabel": "Chaotic Wounds",
-            "_modeNotes": "Uses Channel Divinity, adds to Aura of Chaos",
-            "_modeDcBonus": 0,
-            "_modeAcBonus": 0,
-            "_modeAttackBonus": 0,
-            "_modeDmgBonus": 0,
-            "_modeResistance": "",
-            "_modeAdvAll": false,
             "tags": [
               "damage"
             ],
-            "_groupLabel": "Channel Divinity",
-            "_playerSetMode": true,
-            "_modeConsumesTracker": "Chaotic Wounds",
-            "_libHasMode": true
+            "_groupLabel": "Channel Divinity"
           },
           {
             "name": "CD:  Channel Chaos",
@@ -42034,20 +42007,11 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can tap into your connection with Elandra to weave an aura of Chaotic magic that lasts until you are Incapacitated or finish a Long Rest.</p><p>The aura has a Hit Point maximum equal to twice Paladin level plus your Constitution modifier.</p><p>When any ally you can see within 30ft takes damage, you can take a Reaction to cause your aura to absorb that damage, applying Resistances and Vulnerabilities before reducing the aura's Hit Points. If the aura is reduced to 0, you take any remaining damage.</p><p>When you inflict a Chaotic Wound, the aura regains Hit Points equal to one roll of your Chaos Wound Die. Alternatively, as a Bonus Action, you can expend a spell slot, and the ward regains a number of Hit Points equal to twice the level of the spell slot expended.</p>",
+            "desc": "You can tap into your connection with Elandra to weave an aura of Chaotic magic that lasts until you are Incapacitated or finish a Long Rest.\n\nThe aura has a Hit Point maximum equal to twice Paladin level plus your Constitution modifier.\n\nWhen any ally you can see within 30ft takes damage, you can take a Reaction to cause your aura to absorb that damage, applying Resistances and Vulnerabilities before reducing the aura's Hit Points. If the aura is reduced to 0, you take any remaining damage.\n\nWhen you inflict a Chaotic Wound, the aura regains Hit Points equal to one roll of your Chaos Wound Die. Alternatively, as a Bonus Action, you can expend a spell slot, and the ward regains a number of Hit Points equal to twice the level of the spell slot expended.",
             "fav": false,
             "used": false,
-            "_modeLabel": "Aura of Chaos",
-            "_modeNotes": "",
-            "_modeDcBonus": 0,
-            "_modeAcBonus": 0,
-            "_modeAttackBonus": 0,
-            "_modeDmgBonus": 0,
-            "_modeResistance": "",
-            "_modeAdvAll": false,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": [],
-            "_flag": true
+            "_flag": true,
+            "_classSync": true
           },
           {
             "name": "Lvl 7: Fire Resistance",
@@ -42162,9 +42126,10 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>Your claws are natural weapons, which you can use to make unarmed strikes. If you hit with them, you can deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike.</p>",
+            "desc": "Your claws are natural weapons, which you can use to make unarmed strikes. If you hit with them, you can deal slashing damage equal to 1d4 + your Strength modifier, instead of the bludgeoning damage normal for an unarmed strike.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_raceSync": true
           },
           {
             "name": "Adamantine Plate*",
@@ -42195,6 +42160,25 @@
               "advSkills": [],
               "advSkillsDur": ""
             }
+          },
+          {
+            "name": "Channel Divinity: Divine Sense",
+            "_libName": "Channel Divinity: Divine Sense",
+            "kind": "feat",
+            "atype": "bonus",
+            "source": "Chaos Knight",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Divine Sense. As a Bonus Action, you can open your awareness to detect Celestials, Fiends, and Undead. For the next 10 minutes or until you have the Incapacitated condition, you know the location of any creature of those types within 60 feet of yourself, and you know its creature type. Within the same radius, you also detect the presence of any place or object that has been consecrated or desecrated, as with the Hallow spell.\n\n---\n\nYou can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.\n\nYou can use this class’s Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.\n\nIf a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature.",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 70
           }
         ],
         "trackers": [
@@ -44316,7 +44300,7 @@
             "name": "Sorcerous Restoration",
             "_libName": "Sorcerous Restoration",
             "kind": "feat",
-            "atype": "feature",
+            "atype": "other",
             "source": "Sorcerer",
             "_syncSourceId": 61,
             "_syncMinLevel": 5,
@@ -44334,7 +44318,7 @@
             "name": "Harmonic Spirits",
             "_libName": "Harmonic Spirits",
             "kind": "feat",
-            "atype": "feature",
+            "atype": "bonus",
             "source": "Sojourner",
             "_syncSourceId": 158,
             "_syncMinLevel": 1,
@@ -44344,9 +44328,10 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You gain one spirit of your choice. A list of the available spirits can be found at the end of the class description. When you gain certain Sojourner levels, you gain additional spirits of your choice, as shown in the Spirits column of the Sojourner table.</p><p>Detailed under each spirit is a cantrip you learn, associated with that spirit. These cantrips are Sojourner cantrips for you, and don't count against the total number of cantrips you know.</p><hr><h3>Expanded Spells</h3><p>Each spirit has its own expanded list of spells you can choose from when you learn a Sojourner spell.<br><br></p><h3>Spiritual Drift</h3><p>Your spirits drift with you, meaning they share your space and move with you at all times. As a bonus action on your turn, you can have one of your spirits move to drift with a willing creature you can see within 120 feet of you. You can have any of your spirits return to drift with you on your turn (no action required). A spirit will also return to you if another creature they're drifting with is ever further than 120 feet away from you.</p><p>Each spirit has a benefit it provides to any creature it drifts with, detailed as part of each spirit’s description.<br><br></p><h3>Harmonic Form</h3><p>Your spirits are illusions; they count as neither creatures nor objects, but are visible to you and all other creatures. You decide on their forms, although they can be no larger than the space of a creature they're drifting with, and they don't obscure that creature's vision. They can't interact with any objects or creatures or move beyond the space of a creature they're drifting with, and a spirit drifting with an invisible or otherwise hidden creature will also be obscured from view.</p><div><br></div><div><hr></div><div><br></div><h2>Harmonic Spirits</h2><div><br></div><div><details><summary>The Companion</summary></details></div><div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Empyrean</summary></details></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Fallen</summary></details></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Hellion</summary></details></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Tectonic</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Torrent</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Verdant</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Wildfire</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Wrym</summary></details></div></div></div></div></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Zephyr</summary></details></div></div></div></div></div></div>",
+            "desc": "You gain one spirit of your choice. A list of the available spirits can be found at the end of the class description. When you gain certain Sojourner levels, you gain additional spirits of your choice, as shown in the Spirits column of the Sojourner table.Detailed under each spirit is a cantrip you learn, associated with that spirit. These cantrips are Sojourner cantrips for you, and don't count a",
             "fav": false,
-            "used": false
+            "used": false,
+            "_classSync": true
           },
           {
             "name": "Tides of Chaos",
@@ -44858,7 +44843,7 @@
             "name": "Fire Bolt",
             "level": 0,
             "school": "Evocation",
-            "time": "Action",
+            "time": "A",
             "range": "120 feet",
             "components": "V, S",
             "duration": "Instantaneous",
@@ -44876,7 +44861,8 @@
             "ritual": false,
             "_spellAdjDuration": "",
             "_noScale": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "area": ""
           },
           {
             "name": "Focus",
@@ -45965,7 +45951,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "Action",
+            "time": "A",
             "range": "90 feet",
             "components": "V, S, M (a diamond worth 50+ GP)",
             "duration": "Instantaneous",
@@ -45982,7 +45968,9 @@
             "ritual": false,
             "_spellAdjDuration": "",
             "_noScale": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": "",
+            "area": ""
           },
           {
             "name": "Color Spray",
@@ -46371,12 +46359,12 @@
             "name": "Fog Cloud",
             "level": 1,
             "school": "Conjuration",
-            "time": "Action",
+            "time": "A",
             "range": "120 feet",
             "area": "20ft. radius Sphere",
             "components": "V, S",
             "duration": "Concentration, up to 1 h",
-            "desc": "<p>You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.</p>",
+            "desc": "You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.",
             "concentration": true,
             "source": "Sorcerer",
             "_assigned": false,
@@ -46388,18 +46376,20 @@
             "_effectManual": false,
             "ritual": false,
             "_spellAdjDuration": "",
-            "_noScale": false
+            "_noScale": false,
+            "effect": "",
+            "hit": ""
           },
           {
             "name": "Fog Cloud",
             "level": 1,
             "school": "Conjuration",
-            "time": "Action",
+            "time": "A",
             "range": "120 feet",
             "area": "20ft. radius Sphere",
             "components": "V, S",
             "duration": "Concentration, up to 1 h",
-            "desc": "<p>You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.</p>",
+            "desc": "You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.",
             "concentration": true,
             "source": "Sojourner",
             "_assigned": false,
@@ -46411,7 +46401,9 @@
             "_effectManual": false,
             "ritual": false,
             "_spellAdjDuration": "",
-            "_noScale": false
+            "_noScale": false,
+            "effect": "",
+            "hit": ""
           },
           {
             "name": "Ghost Light",
@@ -46915,7 +46907,8 @@
             "_syncSourceId": 61,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": ""
           },
           {
             "name": "Alter Self",
@@ -46935,7 +46928,8 @@
             "_syncSourceId": 158,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": ""
           },
           {
             "name": "Arcane Vigor",
@@ -47295,7 +47289,8 @@
             "_syncSourceId": 61,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": ""
           },
           {
             "name": "Dragon’s Breath",
@@ -48878,11 +48873,11 @@
             "name": "Fly",
             "level": 3,
             "school": "Transmutation",
-            "time": "Action",
+            "time": "A",
             "range": "Touch",
             "components": "V, S, M (a feather)",
             "duration": "Concentration, up to 10 min",
-            "desc": "<p>You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.</p>",
+            "desc": "You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.",
             "concentration": true,
             "source": "Sorcerer",
             "_assigned": false,
@@ -48894,17 +48889,20 @@
             "_effectManual": false,
             "ritual": false,
             "_spellAdjDuration": "",
-            "_noScale": false
+            "_noScale": false,
+            "effect": "",
+            "area": "",
+            "hit": ""
           },
           {
             "name": "Fly",
             "level": 3,
             "school": "Transmutation",
-            "time": "Action",
+            "time": "A",
             "range": "Touch",
             "components": "V, S, M (a feather)",
             "duration": "Concentration, up to 10 min",
-            "desc": "<p>You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.</p>",
+            "desc": "You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.",
             "concentration": true,
             "source": "Wizard",
             "_assigned": false,
@@ -48916,7 +48914,10 @@
             "_effectManual": false,
             "ritual": false,
             "_spellAdjDuration": "",
-            "_noScale": false
+            "_noScale": false,
+            "effect": "",
+            "area": "",
+            "hit": ""
           },
           {
             "name": "Gaseous Form",
@@ -49531,7 +49532,8 @@
             "_syncSourceId": 158,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": ""
           },
           {
             "name": "Banishment",
@@ -50635,7 +50637,8 @@
             "_syncSourceId": 158,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": ""
           },
           {
             "name": "Magic Mirror",
@@ -52071,50 +52074,6 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_sourceBook": "PHB"
-          },
-          {
-            "name": "Teleport",
-            "level": 7,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "10 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "effect": "3d10 Force",
-            "desc": "This spell instantly transports you and up to eight willing creatures that you can see within range, or a single object that you can see within range, to a destination you select. If you target an object, it must be Large or smaller, and it can’t be held or carried by an unwilling creature.\nThe destination you choose must be known to you, and it must be on the same plane of existence as you. Your familiarity with the destination determines whether you arrive there successfully. The DM rolls 1d100 and consults the Teleportation Outcome table and the explanations after it.\nTeleportation Outcome\nFamiliarity\tMishap\tSimilar Area\tOff Target\tOn Target\nPermanent circle\t—\t—\t—\t01–00\nLinked object\t—\t—\t—\t01–00\nVery familiar\t01–05\t06–13\t14–24\t25–00\nSeen casually\t01–33\t34–43\t44–53\t54–00\nViewed once or described\t01–43\t44–53\t54–73\t74–00\nFalse destination\t01–50\t51–00\t—\t—\nFamiliarity. Here are the meanings of the terms in the table’s Familiarity column:\n* “Permanent circle” means a permanent teleportation circle whose sigil sequence you know.\n* “Linked object” means you possess an object taken from the desired destination within the last six months, such as a book from a wizard’s library.\n* “Very familiar” is a place you have visited often, a place you have carefully studied, or a place you can see when you cast the spell.\n* “Seen casually” is a place you have seen more than once but with which you aren’t very familiar.\n* “Viewed once or described” is a place you have seen once, possibly using magic, or a place you know through someone else’s description, perhaps from a map.\n* “False destination” is a place that doesn’t exist. Perhaps you tried to scry an enemy’s sanctum but instead viewed an illusion, or you are attempting to teleport to a location that no longer exists.\nMishap. The spell’s unpredictable magic results in a difficult journey. Each teleporting creature (or the target object) takes 3d10 Force damage, and the DM rerolls on the table to see where you wind up (multiple mishaps can occur, dealing damage each time).\nSimilar Area. You and your group (or the target object) appear in a different area that’s visually or thematically similar to the target area. You appear in the closest similar place. If you are heading for your home laboratory, for example, you might appear in another person’s laboratory in the same city.\nOff Target. You and your group (or the target object) appear 2d12 miles away from the destination in a random direction. Roll 1d8 for the direction: 1, east; 2, southeast; 3, south; 4, southwest; 5, west; 6, northwest; 7, north; or 8, northeast.\nOn Target. You and your group (or the target object) appear where you intended.",
-            "area": "",
-            "hit": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 15,
-            "_freecast": true,
-            "_singleUse": false
-          },
-          {
-            "name": "Plane Shift",
-            "level": 7,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S, M (a forked, metal rod worth 250+ GP and attuned to a plane of existence)",
-            "duration": "Instantaneous",
-            "desc": "You and up to eight willing creatures who link hands in a circle are transported to a different plane of existence. You can specify a target destination in general terms, such as the City of Brass on the Elemental Plane of Fire or the palace of Dispater on the second level of the Nine Hells, and you appear in or near that destination, as determined by the DM.\nAlternatively, if you know the sigil sequence of a teleportation circle on another plane of existence, this spell can take you to that circle. If the teleportation circle is too small to hold all the creatures you transported, they appear in the closest unoccupied spaces next to the circle.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 15,
-            "_freecast": true,
-            "_singleUse": false
           },
           {
             "name": "Minor Illusion",
@@ -53557,7 +53516,9 @@
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "effect": "",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Color Spray",
@@ -53594,7 +53555,9 @@
             "tags": [
               "control"
             ],
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Comprehend Languages",
@@ -54073,7 +54036,9 @@
               "self buff",
               "speed"
             ],
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Arcane Vigor",
@@ -54290,7 +54255,9 @@
             "tags": [
               "buff"
             ],
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Dragon’s Breath",
@@ -55201,7 +55168,9 @@
             "tags": [
               "control"
             ],
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Fireball",
@@ -55257,7 +55226,9 @@
             "tags": [
               "movement"
             ],
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Gaseous Form",
@@ -55649,7 +55620,9 @@
             "_subclassSync": true,
             "_syncMinLevel": 7,
             "effect": "",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Banishment",
@@ -55712,11 +55685,13 @@
             "effect": "Charmed ↑",
             "desc": "One creature you can see within range makes a Wisdom saving throw. It does so with Advantage if you or your allies are fighting it. On a failed save, the target has the Charmed condition until the spell ends or until you or your allies damage it. The Charmed creature is Friendly to you. When the spell ends, the target knows it was Charmed by you.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
             "area": "",
-            "source": "Druid",
+            "source": "Bard",
             "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 7,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Confusion",
@@ -56238,7 +56213,9 @@
             "_subclassSync": true,
             "_syncMinLevel": 9,
             "effect": "",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Magic Mirror",
@@ -56324,7 +56301,9 @@
             "_syncMinLevel": 18,
             "_freecast": true,
             "_singleUse": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Synaptic Static",
@@ -57330,9 +57309,10 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": true,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": [],
-            "_modeActive": false
+            "_modeActive": false,
+            "_libName": "Innate Sorcery",
+            "_syncSourceId": 61,
+            "_libHasMode": true
           },
           {
             "name": "Sorcerous Restoration",
@@ -57350,7 +57330,9 @@
             "used": false,
             "_classSync": true,
             "_syncMinLevel": 5,
-            "effect": "Regain SP"
+            "effect": "Regain SP",
+            "_libName": "Sorcerous Restoration",
+            "_syncSourceId": 61
           },
           {
             "name": "Font of Magic",
@@ -57829,7 +57811,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "maxFormula": "LVL>=2?LVL:0"
+            "maxFormula": "LVL>=2?LVL:0",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_innate_sorcery",
@@ -57840,7 +57823,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Innate Sorcery"
+            "actionLink": "Innate Sorcery",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcerous_restoration",
@@ -57851,7 +57835,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Sorcerous Restoration"
+            "actionLink": "Sorcerous Restoration",
+            "_syncSourceId": 61
           }
         ],
         "_slotUsed": {},
@@ -58084,7 +58069,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "maxFormula": "LVL>=2?LVL:0"
+            "maxFormula": "LVL>=2?LVL:0",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_innate_sorcery",
@@ -58095,7 +58081,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Innate Sorcery"
+            "actionLink": "Innate Sorcery",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcerous_restoration",
@@ -58106,10 +58093,25 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Sorcerous Restoration"
+            "actionLink": "Sorcerous Restoration",
+            "_syncSourceId": 61
           }
         ],
-        "saveDcEffective": 15
+        "saveDcEffective": 15,
+        "_secCollapsed": {
+          "core": true,
+          "saves": true,
+          "skills": true,
+          "passives": true,
+          "senses": true,
+          "defenses": true,
+          "feats": true,
+          "languages": true,
+          "proficiencies": true,
+          "jump": true
+        },
+        "_topOpen": false,
+        "_collapsedActSubgroups": {}
       },
       {
         "id": 242,
@@ -59284,7 +59286,7 @@
             "name": "Fog Cloud",
             "level": 1,
             "school": "Conjuration",
-            "time": "Action",
+            "time": "A",
             "range": "120 feet",
             "area": "20ft. radius Sphere",
             "_effectManual": false,
@@ -59293,7 +59295,7 @@
             "duration": "Concentration, up to 1 h",
             "concentration": true,
             "ritual": false,
-            "desc": "<p>You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.</p>",
+            "desc": "You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.",
             "tags": [],
             "_assigned": true,
             "_freecast": false,
@@ -59306,7 +59308,9 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": "",
+            "hit": ""
           },
           {
             "name": "Ghost Light",
@@ -60634,7 +60638,7 @@
             "name": "Fly",
             "level": 3,
             "school": "Transmutation",
-            "time": "Action",
+            "time": "A",
             "range": "Touch",
             "_effectManual": false,
             "_noScale": false,
@@ -60642,7 +60646,7 @@
             "duration": "Concentration, up to 10 min",
             "concentration": true,
             "ritual": false,
-            "desc": "<p>You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.</p>",
+            "desc": "You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.",
             "tags": [],
             "_assigned": true,
             "_freecast": false,
@@ -60655,7 +60659,10 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "effect": "",
+            "area": "",
+            "hit": ""
           },
           {
             "name": "Glyph of Warding",
@@ -63205,9 +63212,10 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can use musical notes or words of power to disrupt mind-influencing effects. If you or a creature within 30 feet of you fails a saving throw against an effect that applies the Charmed or Frightened condition, you can take a Reaction to cause the save to be rerolled, and the new roll has Advantage.</p>",
+            "desc": "You can use musical notes or words of power to disrupt mind-influencing effects. If you or a creature within 30 feet of you fails a saving throw against an effect that applies the Charmed or Frightened condition, you can take a Reaction to cause the save to be rerolled, and the new roll has Advantage.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_classSync": true
           },
           {
             "name": "Flourish - Defensive",
@@ -63227,19 +63235,7 @@
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 69,
-            "_modeLabel": "Defensive Flourish",
-            "_modeNotes": "",
-            "_modeDcBonus": 0,
-            "_modeAcBonus": 0,
-            "_modeAttackBonus": 0,
-            "_modeDmgBonus": 0,
-            "_modeResistance": "",
-            "_modeAdvAll": false,
             "_flag": true,
-            "_libHasMode": true,
-            "_modeConsumesTracker": "Bardic Inspiration",
-            "_modeBonusAskField": "ac",
-            "_modeDuration": "turn",
             "_modeActive": false
           },
           {
@@ -63333,9 +63329,10 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.</p><p>You can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.</p>",
+            "desc": "You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.\nYou can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_raceSync": true
           },
           {
             "name": "Darkvision",
@@ -63359,7 +63356,7 @@
             "name": "Relentless Endurance",
             "_libName": "Relentless Endurance",
             "kind": "feat",
-            "atype": "feature",
+            "atype": "other",
             "source": "Orc",
             "_syncSourceId": 34,
             "_syncMinLevel": 1,
@@ -63369,9 +63366,29 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.</p>",
+            "desc": "When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_raceSync": true
+          },
+          {
+            "name": "Bardic Inspiration (!)",
+            "_libName": "Bardic Inspiration (!)",
+            "kind": "feat",
+            "atype": "bonus",
+            "source": "Bard",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.\n\nUsing Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.\n\nOnce within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.\n\nNumber of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.\n\nAt Higher Levels. Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 65
           }
         ],
         "trackers": [
@@ -63420,49 +63437,6 @@
             "_syncSourceId": 257
           },
           {
-            "key": "cls_bard_bardic_inspiration_(1-4)",
-            "label": "Bardic Inspiration (1-4)",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 1,
-            "maxLevel": 4
-          },
-          {
-            "key": "cls_bard_bardic_inspiration_(5+)",
-            "label": "Bardic Inspiration (5+)",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 5,
-            "maxLevel": 20,
-            "_catId": 1784152083378,
-            "actionLink": "Bardic Inspiration"
-          },
-          {
-            "key": "race_orc_adrenaline_rush",
-            "label": "Adrenaline Rush",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF",
-            "_catId": 1784152083378,
-            "actionLink": "Adrenaline Rush"
-          },
-          {
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
@@ -63473,6 +63447,27 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "cls_bard_bardic_inspiration_(!)",
+            "label": "Bardic Inspiration (!)",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 65
+          },
+          {
+            "key": "race_orc_adrenaline_rush_(1)",
+            "label": "Adrenaline Rush (1)",
+            "max": 2,
+            "cur": 2,
+            "_trackerType": "boxes",
+            "reset": "short",
+            "_custom": true,
+            "_raceSync": true
           }
         ],
         "_grantImmunities": [],
@@ -63999,35 +63994,6 @@
             "_syncSourceId": 257
           },
           {
-            "key": "cls_bard_bardic_inspiration_(5+)",
-            "label": "Bardic Inspiration (5+)",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 5,
-            "maxLevel": 20,
-            "_catId": 1784152083378,
-            "actionLink": "Bardic Inspiration"
-          },
-          {
-            "key": "race_orc_adrenaline_rush",
-            "label": "Adrenaline Rush",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF",
-            "_catId": 1784152083378,
-            "actionLink": "Adrenaline Rush"
-          },
-          {
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
@@ -64038,6 +64004,27 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "cls_bard_bardic_inspiration_(!)",
+            "label": "Bardic Inspiration (!)",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 65
+          },
+          {
+            "key": "race_orc_adrenaline_rush_(1)",
+            "label": "Adrenaline Rush (1)",
+            "max": 2,
+            "cur": 2,
+            "_trackerType": "boxes",
+            "reset": "short",
+            "_custom": true,
+            "_raceSync": true
           }
         ],
         "saveDcEffective": 14,
@@ -70011,5 +69998,6 @@
     ]
   },
   "nextId": 243,
-  "_updated": 1785011440088
+  "_updated": 1785011729155,
+  "_unchanged": true
 }

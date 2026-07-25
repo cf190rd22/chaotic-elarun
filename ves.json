@@ -14543,20 +14543,6 @@
             "used": false
           },
           {
-            "name": "Fire Bolt",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Evocation",
-            "hit": "Attack",
-            "damage": "1d10 Fire ↑",
-            "range": "120 feet",
-            "save": "",
-            "notes": "Instantaneous",
-            "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
-            "fav": false,
-            "used": false
-          },
-          {
             "name": "Blessing of the Elandran Cleric",
             "_libName": "Blessing of the Elandran Cleric",
             "kind": "feat",
@@ -17761,26 +17747,6 @@
             "_singleUsed": false
           },
           {
-            "name": "Blight",
-            "level": 4,
-            "school": "Necromancy",
-            "time": "A",
-            "range": "30 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "hit": "CON",
-            "effect": "8d8 Necrotic ↑",
-            "desc": "A creature that you can see within range makes a Constitution saving throw, taking 8d8 Necrotic damage on a failed save or half as much damage on a successful one. A Plant creature automatically fails the save.\nAlternatively, target a nonmagical plant that isn’t a creature, such as a tree or shrub. It doesn’t make a save; it simply withers and dies.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 4.",
-            "area": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 66,
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
             "name": "Buried Alive",
             "level": 4,
             "school": "Transmutation",
@@ -18670,27 +18636,6 @@
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
-            "name": "Wall of Stone",
-            "level": 5,
-            "school": "Evocation",
-            "time": "A",
-            "range": "120 feet",
-            "components": "V, S, M (a cube of granite)",
-            "duration": "Concentration, up to 10 min",
-            "hit": "DEX",
-            "desc": "A nonmagical wall of solid stone springs into existence at a point you choose within range. The wall is 6 inches thick and is composed of ten 10-foot-by-10-foot panels. Each panel must be contiguous with another panel. Alternatively, you can create 10-foot-by-20-foot panels that are only 3 inches thick.\nIf the wall cuts through a creature’s space when it appears, the creature is pushed to one side of the wall (you choose which side). If a creature would be surrounded on all sides by the wall (or the wall and another solid surface), that creature can make a Dexterity saving throw. On a success, it can use its Reaction to move up to its Speed so that it is no longer enclosed by the wall.\nThe wall can have any shape you desire, though it can’t occupy the same space as a creature or object. The wall doesn’t need to be vertical or rest on a firm foundation. It must, however, merge with and be solidly supported by existing stone. Thus, you can use this spell to bridge a chasm or create a ramp.\nIf you create a span greater than 20 feet in length, you must halve the size of each panel to create supports. You can crudely shape the wall to create battlements and the like.\nThe wall is an object made of stone that can be damaged and thus breached. Each panel has AC 15 and 30 Hit Points per inch of thickness, and it has Immunity to Poison and Psychic damage. Reducing a panel to 0 Hit Points destroys it and might cause connected panels to collapse at the DM’s discretion.\nIf you maintain your Concentration on this spell for its full duration, the wall becomes permanent and can’t be dispelled. Otherwise, the wall disappears when the spell ends.",
-            "concentration": true,
-            "area": "",
-            "effect": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 66,
             "_freecasted": false,
             "_singleUsed": false
           },
@@ -19611,32 +19556,6 @@
             "_singleUsed": false
           },
           {
-            "name": "Fire Bolt",
-            "level": 0,
-            "school": "Evocation",
-            "time": "Action",
-            "range": "120 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "hit": "Attack",
-            "effect": "1d10 Fire ↑",
-            "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
-            "source": "Sorcerer",
-            "_effectManual": true,
-            "concentration": false,
-            "ritual": false,
-            "_spellAdjDuration": "",
-            "_noScale": false,
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
-            "_syncSourceId": 168,
-            "_syncSourceName": "Magic Initiate",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
             "name": "Message",
             "level": 0,
             "school": "Transmutation",
@@ -19858,8 +19777,8 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": false,
-        "_hideUnassigned": true,
+        "_subSpellsCollapsed": true,
+        "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -20039,7 +19958,10 @@
         "saveDcEffective": 15,
         "_dmHidden": true,
         "_collapsedSpLevels": {
-          "1": false,
+          "0": true,
+          "1": true,
+          "2": true,
+          "3": true,
           "4": false
         },
         "_panelAcAdj": 0,
@@ -20105,6 +20027,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784548521240,
+  "_updated": 1784980737745,
   "_unchanged": true
 }

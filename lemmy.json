@@ -18934,7 +18934,10 @@
         "_qsHdOpen": true,
         "gold": 5937,
         "sp": 0,
-        "pp": 50
+        "pp": 50,
+        "_hitDiceUsed": {
+          "d8": 4
+        }
       }
     ],
     "_exportedAt": 1784299506434,
@@ -18992,5 +18995,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784991590464
+  "_updated": 1784991641526
 }

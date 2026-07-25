@@ -19768,7 +19768,8 @@
           "languages": true,
           "proficiencies": true,
           "core": true,
-          "jump": true
+          "jump": true,
+          "progression": true
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
@@ -20034,6 +20035,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784984280208,
+  "_updated": 1784984520174,
   "_unchanged": true
 }

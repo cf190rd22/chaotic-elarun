@@ -19550,11 +19550,22 @@
           },
           {
             "name": "Misty Step",
-            "level": 3,
+            "level": 2,
+            "time": "Action",
+            "_effectManual": false,
+            "_noScale": false,
+            "concentration": false,
+            "ritual": false,
+            "tags": [],
             "_assigned": true,
+            "_freecast": false,
+            "_singleUse": false,
+            "_freecasted": false,
+            "_classSync": false,
             "_subclassSync": true,
-            "_syncMinLevel": 3,
-            "group": "Temperate Land"
+            "_raceSync": false,
+            "_spellAdjActive": false,
+            "_spellAdjDuration": ""
           },
           {
             "name": "Shocking Grasp",
@@ -19737,7 +19748,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": false,
+        "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -19990,6 +20001,5 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784996860540,
-  "_unchanged": true
+  "_updated": 1784996940827
 }

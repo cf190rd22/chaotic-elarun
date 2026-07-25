@@ -14475,7 +14475,8 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 3
+            "_syncMinLevel": 3,
+            "_lastCastUpcast": 1
           },
           {
             "name": "Command",
@@ -15378,7 +15379,9 @@
             "actionLink": "Aura of Chaos"
           }
         ],
-        "_slotUsed": {},
+        "_slotUsed": {
+          "157-L2": 1
+        },
         "_defTags": [
           {
             "type": "resistance",
@@ -16038,7 +16041,9 @@
         "activeModes": [],
         "acEffective": 22,
         "hpMax": 74,
-        "_slotUsedCompact": {},
+        "_slotUsedCompact": {
+          "2": 1
+        },
         "deathSaves": {
           "pass": 0,
           "fail": 0
@@ -16209,6 +16214,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784983043174,
-  "_unchanged": true
+  "_updated": 1784983054049
 }

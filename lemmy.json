@@ -18932,7 +18932,8 @@
         "_advDisadv": null,
         "statsLocked": false,
         "_qsHdOpen": true,
-        "gold": 0
+        "gold": 6437,
+        "sp": 0
       }
     ],
     "_exportedAt": 1784299506434,
@@ -18990,5 +18991,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784990944469
+  "_updated": 1784990959515
 }

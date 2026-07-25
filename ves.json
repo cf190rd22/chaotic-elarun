@@ -19928,7 +19928,7 @@
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
         "_hitDiceUsed": {},
-        "heroicInspiration": false,
+        "heroicInspiration": true,
         "_spFiltersCollapsed": false,
         "_wasDying": false
       }
@@ -19987,6 +19987,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784991558016,
+  "_updated": 1784991798047,
   "_unchanged": true
 }

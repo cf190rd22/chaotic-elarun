@@ -19704,7 +19704,7 @@
           "261-L2": 2,
           "261-L3": 2,
           "261-L1": 2,
-          "261-L4": 1
+          "261-L4": 0
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
@@ -19726,7 +19726,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 6,
+        "hpCurrent": 42,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -19793,7 +19793,7 @@
           "1": 2,
           "2": 2,
           "3": 2,
-          "4": 1
+          "4": 0
         },
         "_trackersForDm": [
           {
@@ -19987,6 +19987,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784991798047,
+  "_updated": 1784994056869,
   "_unchanged": true
 }

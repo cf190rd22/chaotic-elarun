@@ -19769,14 +19769,14 @@
           "proficiencies": true,
           "core": true,
           "jump": true,
-          "progression": true
+          "progression": false
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 35,
+        "hpCurrent": 0,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -19826,7 +19826,7 @@
           }
         ],
         "_actFlatView": true,
-        "_actQRCollapsed": false,
+        "_actQRCollapsed": true,
         "_grantedSpells": [],
         "passivePerception": 14,
         "passiveInsight": 17,
@@ -19978,7 +19978,8 @@
         "_panelSaveDcAdj": 0,
         "_hitDiceUsed": {},
         "heroicInspiration": false,
-        "_spFiltersCollapsed": false
+        "_spFiltersCollapsed": false,
+        "_wasDying": true
       }
     ],
     "_exportedAt": 1784299496686,
@@ -20035,6 +20036,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784984684669,
+  "_updated": 1784984873065,
   "_unchanged": true
 }

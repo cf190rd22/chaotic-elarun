@@ -39620,7 +39620,8 @@
           "languages": true,
           "proficiencies": true,
           "core": true,
-          "jump": true
+          "jump": true,
+          "spellSlots": true
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
@@ -39637,7 +39638,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": true,
+        "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -39817,7 +39818,8 @@
         "saveDcEffective": 15,
         "_dmHidden": true,
         "_collapsedSpLevels": {
-          "1": false
+          "1": false,
+          "4": false
         },
         "_panelAcAdj": 0,
         "_panelSpeedAdj": 0,
@@ -70009,6 +70011,5 @@
     ]
   },
   "nextId": 243,
-  "_updated": 1785008197870,
-  "_unchanged": true
+  "_updated": 1785008269556
 }

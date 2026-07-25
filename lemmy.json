@@ -18357,13 +18357,14 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance"
+            "actionLink": "Relentless Endurance",
+            "_origIdx": 7
           }
         ],
         "_grantImmunities": [],
@@ -18908,13 +18909,14 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance"
+            "actionLink": "Relentless Endurance",
+            "_origIdx": 7
           }
         ],
         "saveDcEffective": 14,
@@ -18979,6 +18981,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784988995298,
+  "_updated": 1784989072992,
   "_unchanged": true
 }

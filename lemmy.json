@@ -18443,7 +18443,7 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 45,
+        "hpCurrent": 31,
         "hpTemp": 0,
         "_concentratingOn": "Fount of Moonlight",
         "conditions": [],
@@ -18984,5 +18984,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784985385406
+  "_updated": 1784985448094,
+  "_unchanged": true
 }

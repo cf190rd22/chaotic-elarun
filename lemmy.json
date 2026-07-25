@@ -18434,7 +18434,7 @@
         "_slotUsed": {
           "399-L2": 3,
           "399-L4": 1,
-          "399-L3": 2,
+          "399-L3": 3,
           "399-L1": 2
         },
         "acAdjust": 0,
@@ -18653,15 +18653,6 @@
             "proficient": false
           },
           {
-            "name": "Potion of Healing",
-            "subtype": "Potion",
-            "desc": "In Party Equipment\nCharges\nThis potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.",
-            "rarity": "common",
-            "proficient": false,
-            "actionType": "bonus",
-            "equipped": true
-          },
-          {
             "name": "Shortsword",
             "subtype": "Shortsword",
             "effect": "1d6",
@@ -18824,7 +18815,7 @@
         "_slotUsedCompact": {
           "1": 2,
           "2": 3,
-          "3": 2,
+          "3": 3,
           "4": 1
         },
         "_featAtypes": {
@@ -18987,5 +18978,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784987535574
+  "_updated": 1784987582191,
+  "_unchanged": true
 }

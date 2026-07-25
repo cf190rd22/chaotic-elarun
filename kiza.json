@@ -15287,19 +15287,6 @@
             "_catId": 1784109388919
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
-            "label": "Chaos: Size",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 398,
-            "actionLink": "Chaos: Size",
-            "_catId": 1784109388919
-          },
-          {
             "key": "custom_repulsion_shield_1784105550080",
             "label": "Repulsion Shield",
             "cur": 0,
@@ -15340,7 +15327,7 @@
             "key": "cls_chaos_knight_channel_divinity",
             "label": "Channel Divinity",
             "max": 2,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -15377,6 +15364,20 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
+          },
+          {
+            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
+            "label": "Chaos: Size",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 398,
+            "actionLink": "Chaos: Size",
+            "_catId": 1784109388919,
+            "_origIdx": 1
           }
         ],
         "_slotUsed": {
@@ -16063,19 +16064,6 @@
             "_catId": 1784109388919
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
-            "label": "Chaos: Size",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 398,
-            "actionLink": "Chaos: Size",
-            "_catId": 1784109388919
-          },
-          {
             "key": "custom_repulsion_shield_1784105550080",
             "label": "Repulsion Shield",
             "cur": 0,
@@ -16116,7 +16104,7 @@
             "key": "cls_chaos_knight_channel_divinity",
             "label": "Channel Divinity",
             "max": 2,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -16153,6 +16141,20 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
+          },
+          {
+            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
+            "label": "Chaos: Size",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 398,
+            "actionLink": "Chaos: Size",
+            "_catId": 1784109388919,
+            "_origIdx": 1
           }
         ],
         "saveDcEffective": 14,
@@ -16218,6 +16220,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1784995345817,
-  "_unchanged": true
+  "_updated": 1784996512420
 }

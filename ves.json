@@ -19785,7 +19785,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": true,
-        "_hideUnassigned": false,
+        "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -19966,9 +19966,9 @@
         "_dmHidden": true,
         "_collapsedSpLevels": {
           "0": true,
-          "1": true,
-          "2": true,
-          "3": true,
+          "1": false,
+          "2": false,
+          "3": false,
           "4": false
         },
         "_panelAcAdj": 0,
@@ -20034,6 +20034,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784980857768,
+  "_updated": 1784982840191,
   "_unchanged": true
 }

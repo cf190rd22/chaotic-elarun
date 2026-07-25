@@ -19569,19 +19569,41 @@
           },
           {
             "name": "Shocking Grasp",
-            "level": 3,
+            "level": 0,
+            "time": "Action",
+            "_effectManual": false,
+            "_noScale": false,
+            "concentration": false,
+            "ritual": false,
+            "tags": [],
             "_assigned": true,
+            "_freecast": false,
+            "_singleUse": false,
+            "_freecasted": false,
+            "_classSync": false,
             "_subclassSync": true,
-            "_syncMinLevel": 3,
-            "group": "Temperate Land"
+            "_raceSync": false,
+            "_spellAdjActive": false,
+            "_spellAdjDuration": ""
           },
           {
             "name": "Sleep",
-            "level": 3,
+            "level": 1,
+            "time": "Action",
+            "_effectManual": false,
+            "_noScale": false,
+            "concentration": false,
+            "ritual": false,
+            "tags": [],
             "_assigned": true,
+            "_freecast": false,
+            "_singleUse": false,
+            "_freecasted": false,
+            "_classSync": false,
             "_subclassSync": true,
-            "_syncMinLevel": 3,
-            "group": "Temperate Land"
+            "_raceSync": false,
+            "_spellAdjActive": false,
+            "_spellAdjDuration": ""
           },
           {
             "name": "Lightning Bolt",
@@ -19748,7 +19770,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": true,
+        "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -20001,5 +20023,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1784996940827
+  "_updated": 1784997220544,
+  "_unchanged": true
 }

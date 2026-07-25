@@ -18446,7 +18446,7 @@
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
         "hpCurrent": 34,
-        "hpTemp": 0,
+        "hpTemp": 1,
         "_concentratingOn": null,
         "conditions": [],
         "items": [
@@ -18996,5 +18996,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1784995710124
+  "_updated": 1784995767633
 }

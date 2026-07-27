@@ -14005,7 +14005,7 @@
           {
             "key": "custom_owl_1780435425887",
             "label": "Owl",
-            "cur": 1,
+            "cur": 0,
             "max": 1,
             "reset": "long",
             "_custom": true,
@@ -14985,7 +14985,7 @@
             "speed": "60 ft.",
             "speedType": "",
             "subtypes": "",
-            "tempHp": 0
+            "tempHp": 19
           },
           {
             "name": "Reef Shark",
@@ -19833,7 +19833,7 @@
           {
             "key": "custom_owl_1780435425887",
             "label": "Owl",
-            "cur": 1,
+            "cur": 0,
             "max": 1,
             "reset": "long",
             "_custom": true,
@@ -20023,6 +20023,5 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1785179965799,
-  "_unchanged": true
+  "_updated": 1785180016683
 }

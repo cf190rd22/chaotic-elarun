@@ -19770,7 +19770,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": false,
+        "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_1": [
@@ -20023,6 +20023,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1785007439171,
+  "_updated": 1785179676125,
   "_unchanged": true
 }

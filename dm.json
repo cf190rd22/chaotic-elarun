@@ -31842,8 +31842,7 @@
             "name": "Magic Initiate",
             "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
           }
-        ],
-        "allowMultiple": false
+        ]
       },
       {
         "id": 169,
@@ -33097,15 +33096,14 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 9,
+            "bonus": 7,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
             "_grantProf": false,
             "_grantProfLevel": null,
             "_grantBonus": 0,
-            "_grantSources": [],
-            "_manualAdj": 2
+            "_grantSources": []
           },
           "Intimidation": {
             "state": "none",
@@ -33124,15 +33122,14 @@
             "state": "none",
             "adv": true,
             "dis": false,
-            "bonus": 11,
+            "bonus": 1,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
             "_grantProf": false,
             "_grantProfLevel": null,
             "_grantBonus": 0,
-            "_grantSources": [],
-            "_manualAdj": 10
+            "_grantSources": []
           },
           "Medicine": {
             "state": "none",
@@ -33254,8 +33251,8 @@
         },
         "passives": {
           "Perception": 14,
-          "Investigation": 21,
-          "Insight": 19
+          "Investigation": 11,
+          "Insight": 17
         },
         "ac": "12",
         "hp": "52",
@@ -33282,10 +33279,10 @@
         "bonds": "",
         "flaws": "",
         "featIds": [
+          168,
           174,
           257,
-          258,
-          168
+          258
         ],
         "customFeats": [],
         "currency": {},
@@ -39619,7 +39616,10 @@
         "_subSpellsCollapsed": true,
         "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
-        "_grantChoices": {},
+        "_grantChoices": {
+          "grant_168_Magic_Initiate_1": [],
+          "grant_168_Magic_Initiate_0": []
+        },
         "_grantChoicesCollapsed": false,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
@@ -39652,7 +39652,7 @@
         "_actQRCollapsed": false,
         "_grantedSpells": [],
         "passivePerception": 14,
-        "passiveInsight": 19,
+        "passiveInsight": 17,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -39798,7 +39798,7 @@
         "_panelSaveDcAdj": 0,
         "_hitDiceUsed": {},
         "heroicInspiration": false,
-        "_qsAdjOpen": true
+        "_qsAdjOpen": false
       },
       {
         "id": 157,
@@ -43774,7 +43774,7 @@
             "key": "cls_sojourner_spirits",
             "label": "Spirits",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -52337,7 +52337,7 @@
             "key": "cls_sojourner_spirits",
             "label": "Spirits",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -70001,6 +70001,5 @@
     ]
   },
   "nextId": 243,
-  "_updated": 1785254917902,
-  "_unchanged": true
+  "_updated": 1785263526786
 }

@@ -31840,9 +31840,22 @@
           {
             "level": 0,
             "name": "Magic Initiate",
-            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
+            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
+            "spells": [
+              {
+                "count": 2,
+                "spellLevel": 0,
+                "classList": "Cleric,Druid,Wizard"
+              },
+              {
+                "count": 1,
+                "spellLevel": 1,
+                "classList": "Cleric,Druid,Wizard"
+              }
+            ]
           }
-        ]
+        ],
+        "allowMultiple": true
       },
       {
         "id": 169,
@@ -33282,7 +33295,8 @@
           168,
           174,
           257,
-          258
+          258,
+          168
         ],
         "customFeats": [],
         "currency": {},
@@ -39472,6 +39486,132 @@
             "group": "Temperate Land",
             "_syncSourceName": "Circle of the Land",
             "_syncSourceId": 139
+          },
+          {
+            "name": "Chill Touch",
+            "level": 0,
+            "school": "Necromancy",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "Attack",
+            "effect": "1d10 Necrotic ↑",
+            "desc": "Channeling the chill of the grave, make a melee spell attack against a target within reach. On a hit, the target takes 1d10 Necrotic damage, and it can’t regain Hit Points until the end of your next turn.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
+            "area": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate"
+          },
+          {
+            "name": "Create Bonfire",
+            "level": 0,
+            "school": "Conjuration",
+            "source": "Sorcerer",
+            "time": "Action",
+            "range": "60 feet",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 minute",
+            "concentration": true,
+            "desc": "You create a bonfire on ground that you can see within range. Until the spell ends, the magic bonfire fills a 5-foot cube. Any creature in the bonfire's space when you cast the spell must succeed on a Dexterity saving throw or take 1d8 fire damage. A creature must also make the saving throw when it moves into the bonfire's space for the first time on a turn or ends its turn there.\nThe bonfire ignites flammable objects in its area that aren't being worn or carried.\nThe spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",
+            "area": "5ft cube",
+            "hit": "DEX",
+            "effect": "1d8 fire, DEX Save",
+            "_sourceBook": "XGTE",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate"
+          },
+          {
+            "name": "Cause Fear",
+            "level": 1,
+            "school": "Necromancy",
+            "source": "Warlock",
+            "time": "Action",
+            "range": "60 feet",
+            "components": "V",
+            "duration": "Concentration, up to 1 minute",
+            "concentration": true,
+            "upcast": "When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each slot level above 1st. The creatures must be within 30 feet of each other when you target them.",
+            "desc": "You awaken the sense of mortality in one creature you can see within range. A construct or an undead is immune to this effect. The target must succeed on a Wisdom saving throw or become frightened of you until the spell ends. The frightened target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.",
+            "area": "",
+            "hit": "WIS",
+            "effect": "Frightened",
+            "_sourceBook": "XGTE",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_168_Magic_Initiate_1",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate",
+            "_singleUse": true
+          },
+          {
+            "name": "Friends",
+            "level": 0,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "10 feet",
+            "components": "S, M (some makeup)",
+            "duration": "Concentration, up to 1 min",
+            "hit": "WIS",
+            "effect": "Charmed",
+            "desc": "You magically emanate a sense of friendship toward one creature you can see within range. The target must succeed on a Wisdom saving throw or have the Charmed condition for the duration. The target succeeds automatically if it isn’t a Humanoid, if you’re fighting it, or if you have cast this spell on it within the past 24 hours.\nThe spell ends early if the target takes damage or if you make an attack roll, deal damage, or force anyone to make a saving throw. When the spell ends, the target knows it was Charmed by you.",
+            "concentration": true,
+            "area": "",
+            "source": "Bard",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_inst2_168_Magic_Initiate_0",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate"
+          },
+          {
+            "name": "Acid Splash",
+            "level": 0,
+            "school": "Evocation",
+            "time": "A",
+            "range": "60 feet",
+            "area": "5ft. radius Sphere",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "DEX",
+            "effect": "1d6 Acid ↑",
+            "desc": "You create an acidic bubble at a point within range, where it explodes in a 5-foot-radius Sphere. Each creature in that Sphere must succeed on a Dexterity saving throw or take 1d6 Acid damage.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6).",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_inst2_168_Magic_Initiate_0",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate"
+          },
+          {
+            "name": "Chromatic Orb",
+            "level": 1,
+            "school": "Evocation",
+            "time": "A",
+            "range": "90 feet",
+            "components": "V, S, M (a diamond worth 50+ GP)",
+            "duration": "Instantaneous",
+            "hit": "Attack",
+            "desc": "You hurl an orb of energy at a target within range. Choose Acid, Cold, Fire, Lightning, Poison, or Thunder for the type of orb you create, and then make a ranged spell attack against the target. On a hit, the target takes 3d8 damage of the chosen type.\nIf you roll the same number on two or more of the d8s, the orb leaps to a different target of your choice within 30 feet of the target. Make an attack roll against the new target, and make a new damage roll. The orb can’t leap again unless you cast the spell with a level 2+ spell slot.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1. The orb can leap a maximum number of times equal to the level of the slot expended, and a creature can be targeted only once by each casting of this spell.",
+            "area": "",
+            "effect": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_inst2_168_Magic_Initiate_1",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate",
+            "_singleUse": true
           }
         ],
         "_grantImmunities": [],
@@ -39614,13 +39754,25 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": true,
-        "_hideUnassigned": false,
+        "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
-          "grant_168_Magic_Initiate_1": [],
-          "grant_168_Magic_Initiate_0": []
+          "grant_168_Magic_Initiate_1": [
+            "Cause Fear"
+          ],
+          "grant_168_Magic_Initiate_0": [
+            "Chill Touch",
+            "Create Bonfire"
+          ],
+          "grant_inst2_168_Magic_Initiate_0": [
+            "Friends",
+            "Acid Splash"
+          ],
+          "grant_inst2_168_Magic_Initiate_1": [
+            "Chromatic Orb"
+          ]
         },
-        "_grantChoicesCollapsed": false,
+        "_grantChoicesCollapsed": true,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -70001,5 +70153,6 @@
     ]
   },
   "nextId": 243,
-  "_updated": 1785264401255
+  "_updated": 1785264665234,
+  "_unchanged": true
 }

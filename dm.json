@@ -49381,7 +49381,15 @@
               "comp": false
             }
           }
-        }
+        },
+        "_grantFlatBonusHitRanged": 0,
+        "_grantFlatBonusHitMelee": 0,
+        "_grantFlatBonusHitFinesse": 0,
+        "_grantFlatBonusHitThrown": 0,
+        "_grantFlatBonusDamageRanged": 0,
+        "_grantFlatBonusDamageMelee": 0,
+        "_grantFlatBonusDamageFinesse": 0,
+        "_grantFlatBonusDamageThrown": 0
       },
       {
         "id": 157,
@@ -79739,6 +79747,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785419330016,
-  "_unchanged": true
+  "_updated": 1785421016591
 }

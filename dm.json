@@ -33643,7 +33643,16 @@
           {
             "level": 6,
             "name": "Elemental Burst",
-            "description": "As a Magic action, you can expend 2 Focus Points to cause elemental energy to burst in a 20-foot-radius Sphere centered on a point within 120 feet of yourself. Choose a damage type: Acid, Cold, Fire, Lightning, or Thunder.\n\nEach creature in the Sphere must make a Dexterity saving throw. On a failed save, a creature takes damage of the chosen type equal to three rolls of your Martial Arts die. On a successful save, a creature takes half as much damage."
+            "description": "As a Magic action, you can expend 2 Focus Points to cause elemental energy to burst in a 20-foot-radius Sphere centered on a point within 120 feet of yourself. Choose a damage type: Acid, Cold, Fire, Lightning, or Thunder.\n\nEach creature in the Sphere must make a Dexterity saving throw. On a failed save, a creature takes damage of the chosen type equal to three rolls of your Martial Arts die. On a successful save, a creature takes half as much damage.",
+            "trackers": [
+              {
+                "label": "Martial Arts Die",
+                "max": 1,
+                "reset": "LR",
+                "type": "uses",
+                "_unmodified": true
+              }
+            ]
           },
           {
             "level": 11,
@@ -33653,7 +33662,16 @@
           {
             "level": 17,
             "name": "Elemental Epitome",
-            "description": "While your Elemental Attunement is active, you also gain the following benefits.\n\nDamage Resistance. You gain Resistance to one of the following damage types of your choice: Acid, Cold, Fire, Lightning, or Thunder. At the start of each of your turns, you can change this choice.\n\nDestructive Stride. When you use your Step of the Wind, your Speed increases by 20 feet until the end of the turn. For that duration, any creature of your choice takes damage equal to one roll of your Martial Arts die when you enter a space within 5 feet of it. The damage type is your choice of Acid, Cold, Fire, Lightning, or Thunder. A creature can take this damage only once per turn.\n\nEmpowered Strikes. Once on each of your turns, you can deal extra damage to a target equal to one roll of your Martial Arts die when you hit it with an Unarmed Strike. The extra damage is the same type dealt by that strike."
+            "description": "While your Elemental Attunement is active, you also gain the following benefits.\n\nDamage Resistance. You gain Resistance to one of the following damage types of your choice: Acid, Cold, Fire, Lightning, or Thunder. At the start of each of your turns, you can change this choice.\n\nDestructive Stride. When you use your Step of the Wind, your Speed increases by 20 feet until the end of the turn. For that duration, any creature of your choice takes damage equal to one roll of your Martial Arts die when you enter a space within 5 feet of it. The damage type is your choice of Acid, Cold, Fire, Lightning, or Thunder. A creature can take this damage only once per turn.\n\nEmpowered Strikes. Once on each of your turns, you can deal extra damage to a target equal to one roll of your Martial Arts die when you hit it with an Unarmed Strike. The extra damage is the same type dealt by that strike.",
+            "trackers": [],
+            "actions": [
+              {
+                "name": "Elemental Epitome",
+                "atype": "Additional Feature",
+                "desc": "While your Elemental Attunement is active, you also gain the following benefits.✂ cutDamage ResistanceYou gain Resistance to one of the following damage types of your choice: Acid, Cold, Fire, Lightning, or Thunder. At the start of each of your turns, you can change this choice.✂ cutDestructive StrideWhen you use your Step of the Wind, your Speed increases by 20 feet until the end of the turn. For",
+                "_unmodified": true
+              }
+            ]
           }
         ],
         "_parentId": 145,
@@ -75608,6 +75626,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785418311310,
+  "_updated": 1785418371328,
   "_unchanged": true
 }

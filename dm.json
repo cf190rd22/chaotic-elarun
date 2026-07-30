@@ -41406,13 +41406,13 @@
               {
                 "count": 2,
                 "spellLevel": 0,
-                "classList": "Cleric,Druid,Wizard",
+                "classList": "Cleric,Wizard,Druid",
                 "minLevel": 1
               },
               {
                 "count": 1,
                 "spellLevel": 1,
-                "classList": "Cleric,Druid,Wizard",
+                "classList": "Cleric,Wizard,Druid",
                 "minLevel": 1
               }
             ]
@@ -81279,5 +81279,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785442259216
+  "_updated": 1785442368321,
+  "_unchanged": true
 }

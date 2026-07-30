@@ -41406,13 +41406,13 @@
               {
                 "count": 2,
                 "spellLevel": 0,
-                "classList": "Wizard,Cleric,Druid",
+                "classList": "Cleric,Druid,Wizard",
                 "minLevel": 1
               },
               {
                 "count": 1,
                 "spellLevel": 1,
-                "classList": "",
+                "classList": "Cleric,Druid,Wizard",
                 "minLevel": 1
               }
             ]
@@ -49837,11 +49837,11 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": false,
+        "_subSpellsCollapsed": true,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {},
-        "_grantChoicesCollapsed": true,
+        "_grantChoicesCollapsed": false,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -81279,5 +81279,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785440517026
+  "_updated": 1785440587598,
+  "_unchanged": true
 }

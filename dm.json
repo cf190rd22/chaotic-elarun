@@ -45232,9 +45232,23 @@
           {
             "level": 0,
             "name": "Magic Initiate",
-            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
+            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
+            "spells": [
+              {
+                "count": 2,
+                "spellLevel": 0,
+                "classList": "Druid,Cleric,Wizard"
+              },
+              {
+                "count": 1,
+                "spellLevel": 1,
+                "classList": "Druid,Cleric,Wizard",
+                "_freecast": true
+              }
+            ]
           }
-        ]
+        ],
+        "allowMultiple": true
       },
       {
         "id": 169,
@@ -47122,6 +47136,20 @@
             "_origIdx": 3
           },
           {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109504842,
+            "actionLink": "Blessing of the Elandran Cleric",
+            "_origIdx": 1
+          },
+          {
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
@@ -47147,6 +47175,19 @@
             "_syncSourceId": 66,
             "_catId": 1784109512027,
             "actionLink": "Wild Resurgence: Regain Spell Slot"
+          },
+          {
+            "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
+            "label": "Nat.Recovery: Recover Spell Slots",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 139,
+            "_catId": 1784109512027,
+            "actionLink": "Natural Recovery: Recover Spell Slots"
           },
           {
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
@@ -47185,34 +47226,6 @@
             "maxFormula": "PROF",
             "_catId": 1784109515101,
             "actionLink": "Stonecunning"
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109504842,
-            "actionLink": "Blessing of the Elandran Cleric",
-            "_origIdx": 1
-          },
-          {
-            "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
-            "label": "Nat.Recovery: Recover Spell Slots",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139,
-            "_catId": 1784109512027,
-            "actionLink": "Natural Recovery: Recover Spell Slots",
-            "_origIdx": 5
           }
         ],
         "actions": [
@@ -47606,20 +47619,6 @@
             "used": false
           },
           {
-            "name": "Ride the Lightning",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Conjuration",
-            "hit": "DEX",
-            "damage": "4d6 Lightning ↑",
-            "range": "Self",
-            "save": "",
-            "notes": "Instantaneous",
-            "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
-            "fav": false,
-            "used": false
-          },
-          {
             "name": "Blessing of the Elandran Cleric",
             "_libName": "Blessing of the Elandran Cleric",
             "kind": "feat",
@@ -47734,20 +47733,6 @@
             "_syncSourceId": 174,
             "_libName": "Ability Score Improvement",
             "_syncMinLevel": 1
-          },
-          {
-            "name": "Create Bonfire",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Conjuration",
-            "hit": "DEX",
-            "damage": "1d8 fire, DEX Save",
-            "range": "60 feet",
-            "save": "",
-            "notes": "Concentration, up to 1 minute",
-            "desc": "You create a bonfire on ground that you can see within range. Until the spell ends, the magic bonfire fills a 5-foot cube. Any creature in the bonfire's space when you cast the spell must succeed on a Dexterity saving throw or take 1d8 fire damage. A creature must also make the saving throw when it moves into the bonfire's space for the first time on a turn or ends its turn there.\nThe bonfire ignites flammable objects in its area that aren't being worn or carried.\nThe spell's damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).",
-            "fav": false,
-            "used": false
           },
           {
             "name": "Pass without Trace",
@@ -48060,8 +48045,7 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
-            "_syncMinLevel": 1
+            "_raceSync": true
           },
           {
             "name": "Tremorsense",
@@ -48078,8 +48062,63 @@
             "desc": "From Stonecunning. As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.\n\nYou can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
-            "_syncMinLevel": 1
+            "_raceSync": true
+          },
+          {
+            "name": "Grasping Vine",
+            "kind": "spell",
+            "atype": "bonus",
+            "source": "Conjuration",
+            "hit": "Attack",
+            "damage": "4d8 Bludgeoning · Grappled ↑",
+            "range": "60 feet",
+            "save": "",
+            "notes": "Concentration, up to 1 min",
+            "desc": "You conjure a vine that sprouts from a surface in an unoccupied space that you can see within range. The vine lasts for the duration.\nMake a melee spell attack against a creature within 30 feet of the vine. On a hit, the target takes 4d8 Bludgeoning damage and is pulled up to 30 feet toward the vine; if the target is Huge or smaller, it has the Grappled condition (escape DC equal to your spell save DC). The vine can grapple only one creature at a time, and you can cause the vine to release a Grappled creature (no action required).\nAs a Bonus Action on your later turns, you can repeat the attack against a creature within 30 feet of the vine.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The number of creatures the vine can grapple increases by one for each spell slot level above 4.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Fire Bolt",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Evocation",
+            "hit": "Attack",
+            "damage": "1d10 Fire ↑",
+            "range": "120 feet",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Message",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Transmutation",
+            "hit": "",
+            "damage": "",
+            "range": "120 feet",
+            "save": "",
+            "notes": "1 round",
+            "desc": "You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Chromatic Orb",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Evocation",
+            "hit": "Attack",
+            "damage": "",
+            "range": "90 feet",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "You hurl an orb of energy at a target within range. Choose Acid, Cold, Fire, Lightning, Poison, or Thunder for the type of orb you create, and then make a ranged spell attack against the target. On a hit, the target takes 3d8 damage of the chosen type.\nIf you roll the same number on two or more of the d8s, the orb leaps to a different target of your choice within 30 feet of the target. Make an attack roll against the new target, and make a new damage roll. The orb can’t leap again unless you cast the spell with a level 2+ spell slot.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1. The orb can leap a maximum number of times equal to the level of the slot expended, and a creature can be targeted only once by each casting of this spell.",
+            "fav": false,
+            "used": false
           }
         ],
         "statblocks": [
@@ -52721,6 +52760,68 @@
             "area": ""
           },
           {
+            "name": "Fire Bolt",
+            "level": 0,
+            "school": "Evocation",
+            "time": "A",
+            "range": "120 feet",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "Attack",
+            "effect": "1d10 Fire ↑",
+            "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
+            "area": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate"
+          },
+          {
+            "name": "Message",
+            "level": 0,
+            "school": "Transmutation",
+            "time": "A",
+            "range": "120 feet",
+            "components": "S, M (a copper wire)",
+            "duration": "1 round",
+            "desc": "You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Bard",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate"
+          },
+          {
+            "name": "Chromatic Orb",
+            "level": 1,
+            "school": "Evocation",
+            "time": "A",
+            "range": "90 feet",
+            "components": "V, S, M (a diamond worth 50+ GP)",
+            "duration": "Instantaneous",
+            "hit": "Attack",
+            "desc": "You hurl an orb of energy at a target within range. Choose Acid, Cold, Fire, Lightning, Poison, or Thunder for the type of orb you create, and then make a ranged spell attack against the target. On a hit, the target takes 3d8 damage of the chosen type.\nIf you roll the same number on two or more of the d8s, the orb leaps to a different target of your choice within 30 feet of the target. Make an attack roll against the new target, and make a new damage roll. The orb can’t leap again unless you cast the spell with a level 2+ spell slot.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1. The orb can leap a maximum number of times equal to the level of the slot expended, and a creature can be targeted only once by each casting of this spell.",
+            "area": "",
+            "effect": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_grantChoiceKey": "grant_168_Magic_Initiate_1",
+            "_syncSourceId": 168,
+            "_syncSourceName": "Magic Initiate",
+            "_freecast": true,
+            "_singleUse": false
+          },
+          {
             "name": "Misty Step",
             "level": 2,
             "school": "Conjuration",
@@ -52982,7 +53083,7 @@
         "hpAdjust": 0,
         "speedAdjust": 0,
         "hpCurrent": 42,
-        "hpTemp": 7,
+        "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
           "feat_258_Chaos: Anchor": "reaction",
@@ -52993,7 +53094,15 @@
         "_subSpellsCollapsed": true,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
-        "_grantChoices": {},
+        "_grantChoices": {
+          "grant_168_Magic_Initiate_0": [
+            "Fire Bolt",
+            "Message"
+          ],
+          "grant_168_Magic_Initiate_1": [
+            "Chromatic Orb"
+          ]
+        },
         "_grantChoicesCollapsed": true,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
@@ -53080,6 +53189,20 @@
             "_origIdx": 3
           },
           {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109504842,
+            "actionLink": "Blessing of the Elandran Cleric",
+            "_origIdx": 1
+          },
+          {
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
@@ -53105,6 +53228,19 @@
             "_syncSourceId": 66,
             "_catId": 1784109512027,
             "actionLink": "Wild Resurgence: Regain Spell Slot"
+          },
+          {
+            "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
+            "label": "Nat.Recovery: Recover Spell Slots",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 139,
+            "_catId": 1784109512027,
+            "actionLink": "Natural Recovery: Recover Spell Slots"
           },
           {
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
@@ -53143,34 +53279,6 @@
             "maxFormula": "PROF",
             "_catId": 1784109515101,
             "actionLink": "Stonecunning"
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109504842,
-            "actionLink": "Blessing of the Elandran Cleric",
-            "_origIdx": 1
-          },
-          {
-            "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
-            "label": "Nat.Recovery: Recover Spell Slots",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139,
-            "_catId": 1784109512027,
-            "actionLink": "Natural Recovery: Recover Spell Slots",
-            "_origIdx": 5
           }
         ],
         "saveDcEffective": 15,
@@ -84500,5 +84608,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785534502463
+  "_updated": 1785534613674,
+  "_unchanged": true
 }

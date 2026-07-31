@@ -25180,9 +25180,7 @@
                 "label": "Bardic Inspiration (!)",
                 "max": 3,
                 "type": "boxes",
-                "reset": "long",
-                "minLevel": 1,
-                "maxLevel": 4
+                "reset": "long"
               }
             ],
             "actions": [
@@ -25221,18 +25219,7 @@
           {
             "level": 5,
             "name": "Font of Inspiration",
-            "description": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration.",
-            "trackers": [
-              {
-                "label": "Bardic Inspiration",
-                "max": 1,
-                "type": "boxes",
-                "reset": "short",
-                "maxFormula": "CHA",
-                "minLevel": 5,
-                "maxLevel": 20
-              }
-            ]
+            "description": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration."
           },
           {
             "level": 7,
@@ -45247,7 +45234,8 @@
             "name": "Magic Initiate",
             "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
           }
-        ]
+        ],
+        "allowMultiple": false
       },
       {
         "id": 169,
@@ -77191,17 +77179,6 @@
             "maxLevel": 4
           },
           {
-            "key": "sub_college_of_swords_bardic_inspiration_die",
-            "label": "Bardic Inspiration Die",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 69
-          },
-          {
             "key": "race_orc_adrenaline_rush_(1)",
             "label": "Adrenaline Rush (1)",
             "max": 2,
@@ -77771,17 +77748,6 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 400
-          },
-          {
-            "key": "sub_college_of_swords_bardic_inspiration_die",
-            "label": "Bardic Inspiration Die",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 69
           },
           {
             "key": "race_orc_adrenaline_rush_(1)",
@@ -84624,6 +84590,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785534793652,
+  "_updated": 1785534853639,
   "_unchanged": true
 }

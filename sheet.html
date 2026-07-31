@@ -1,4 +1,4 @@
-<html lang="en" style="--stats-scale: 1; --bg: #0f1117; --surface: #161b27; --surface-hover: #1c2236; --surface-exp: #181e2e; --border: #252d3f; --border-light: #1e2538; --text-primary: #e8eaf0; --text-secondary: #9aa3b8; --accent: #5b8ef0; --accent-border: rgba(91,142,240,0.35); --accent-dim: rgba(91,142,240,0.08); --amber: #f0b96b; --amber-border: rgba(240,185,107,0.3); --amber-dim: rgba(240,185,107,0.08); --orange: #f07b3a; --orange-border: rgba(240,123,58,0.3); --orange-dim: rgba(240,123,58,0.08); --teal: #6bcbcb; --teal-border: rgba(107,203,203,0.3); --teal-dim: rgba(107,203,203,0.08); --green: #6bcb8b; --green-border: rgba(107,203,139,0.3); --green-dim: rgba(107,203,139,0.08); --red: #f07070; --red-border: rgba(240,112,112,0.3); --red-dim: rgba(240,112,112,0.08); --purple: #b48af7; --purple-border: rgba(180,138,247,0.3); --purple-dim: rgba(180,138,247,0.08); --fw-display: 700; --fw-title: 700; --fw-label: 700; --fw-name: 600; --fw-ui: 600; color-scheme: dark; --text-muted: #8b96b3; --hdr-scale: 1; --free: #ff2d78; --free-border: rgba(255,45,120,0.55); --free-dim: rgba(255,45,120,0.12); --row-alt: #12141c; --tabbar-h: 0px;"><head>
+<html lang="en" style="--stats-scale: 1; --bg: #0f1117; --surface: #161b27; --surface-hover: #1c2236; --surface-exp: #181e2e; --border: #252d3f; --border-light: #1e2538; --text-primary: #e8eaf0; --text-secondary: #9aa3b8; --accent: #5b8ef0; --accent-border: rgba(91,142,240,0.35); --accent-dim: rgba(91,142,240,0.08); --amber: #f0b96b; --amber-border: rgba(240,185,107,0.3); --amber-dim: rgba(240,185,107,0.08); --orange: #f07b3a; --orange-border: rgba(240,123,58,0.3); --orange-dim: rgba(240,123,58,0.08); --teal: #6bcbcb; --teal-border: rgba(107,203,203,0.3); --teal-dim: rgba(107,203,203,0.08); --green: #6bcb8b; --green-border: rgba(107,203,139,0.3); --green-dim: rgba(107,203,139,0.08); --red: #f07070; --red-border: rgba(240,112,112,0.3); --red-dim: rgba(240,112,112,0.08); --purple: #b48af7; --purple-border: rgba(180,138,247,0.3); --purple-dim: rgba(180,138,247,0.08); --fw-display: 700; --fw-title: 700; --fw-label: 700; --fw-name: 600; --fw-ui: 600; color-scheme: dark; --text-muted: #8b96b3; --hdr-scale: 1; --free: #ff2d78; --free-border: rgba(255,45,120,0.55); --free-dim: rgba(255,45,120,0.12); --row-alt: #12141c; --tabbar-h: 49px;"><head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -2178,9 +2178,9 @@ A magical scimitar…"></textarea>
 <!-- TOP NAV -->
 <div class="top-nav">
   <div class="nav-brand">DM <span>Reference</span></div>
-  <button class="nav-tab" onclick="showPage('characters')">Characters</button>
+  <button class="nav-tab active" onclick="showPage('characters')">Characters</button>
   <button class="nav-tab" onclick="showPage('dm')">DM</button>
-  <button class="nav-tab active" onclick="showPage('library')">Library</button>
+  <button class="nav-tab" onclick="showPage('library')">Library</button>
   <select id="mob-page-select" onchange="switchPageMob(this.value)" style="display:none;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);cursor:pointer;font-family:'dm sans',monospace;">
     <option value="characters">Characters</option>
     <option value="dm">DM</option>
@@ -2230,7 +2230,7 @@ A magical scimitar…"></textarea>
 </div>
 
 <!-- CHARACTERS PAGE -->
-<div class="page" id="page-characters">
+<div class="page active" id="page-characters">
   <!-- Sidebar: character list -->
   <div class="sidebar">
     <div class="sidebar-hdr" onclick="if(_isMobile)toggleSidebar()">
@@ -2842,7 +2842,7 @@ A magical scimitar…"></textarea>
         </div>
       </div>
 
-      <div class="tab-pane" id="dt-features">
+      <div class="tab-pane active" id="dt-features">
         <div style="margin-bottom:10px;">
           <div style="position:relative;"><input type="text" placeholder="Search features…" oninput="filterFeaturesSearch(this.value);var clr=this.parentNode.querySelector('.feat-search-clr');if(clr)clr.style.display=this.value?'flex':'none';" style="width:100%;padding:5px 28px 5px 10px;border-radius:5px;font-size:12px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);outline:none;font-family:'dm sans',monospace;box-sizing:border-box;" onfocus="this.style.borderColor='var(--accent-border)'" onblur="this.style.borderColor='var(--border)'"><button class="feat-search-clr" onclick="var inp=this.previousElementSibling;inp.value='';filterFeaturesSearch('');this.style.display='none';" style="display:none;position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1;align-items:center;justify-content:center;">✕</button></div>
         </div>
@@ -4501,7 +4501,7 @@ A magical scimitar…"></textarea>
       <div style="display:flex;align-items:center;gap:6px;padding:4px 2px;margin-bottom:8px;user-select:none;">
         <button onclick="toggleTrackerCat(242,'uncat')" style="font-size:13px;color:var(--text-muted);background:transparent;border:none;cursor:pointer;padding:2px 5px;line-height:1;flex-shrink:0;touch-action:manipulation;" title="Collapse">⊟</button>
         <span onclick="toggleTrackerCat(242,'uncat')" style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;font-family:'dm sans',monospace;color:var(--text-muted);cursor:pointer;">Uncategorised</span>
-        <span style="font-size:9px;font-family:'dm sans',monospace;color:var(--text-muted);opacity:0.5;">5</span>
+        <span style="font-size:9px;font-family:'dm sans',monospace;color:var(--text-muted);opacity:0.5;">4</span>
         <span style="flex:1;height:1px;background:var(--border-light);"></span>
         
       </div>
@@ -4549,30 +4549,6 @@ A magical scimitar…"></textarea>
         <button class="btn btn-sm btn-danger" onclick="_confirm('Delete tracker: Chaos: Thunder Step?',function(){deleteTracker(242,'feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step')})" style="font-size:9px;padding:1px 5px;">✕ Delete</button>
       </div>
       <div onclick="event.stopPropagation();_expandedCompleteTrackers.add('242|feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step');refreshTrackersTab(242)" style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;padding:4px 0;">
-      <span style="font-size:10px;font-family:'dm sans',monospace;color:var(--green);opacity:0.8;">✓ All used</span>
-      <span style="font-size:9px;color:var(--text-muted);">— click to expand</span>
-    </div>
-    </div><div draggable="true" data-tracker-key="sub_college_of_swords_bardic_inspiration_die" data-char-id="242" ondragstart="trackerDragStart(event)" ondragover="trackerDragOver(event)" ondrop="trackerDrop(event,242,'sub_college_of_swords_bardic_inspiration_die')" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;margin-bottom:4px;opacity:0.45;transition:opacity 0.2s;">
-      <div style="display:flex;align-items:center;gap:5px;min-width:0;">
-        <span title="Drag to reorder" style="cursor:grab;color:var(--text-muted);font-size:12px;line-height:1;user-select:none;flex-shrink:0;">⠿</span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;font-weight:500;color:var(--text-primary);overflow-wrap:break-word;white-space:normal;line-height:1.3;">Bardic Inspiration Die</div>
-          
-        </div>
-        <button onclick="event.stopPropagation();(function(){var k='242|sub_college_of_swords_bardic_inspiration_die';if(_collapsedTrackers.has(k)){_collapsedTrackers.delete(k);}else{_collapsedTrackers.add(k);}refreshTrackersTab(242);})()" title="Collapse" style="font-size:11px;color:var(--text-muted);background:transparent;border:none;cursor:pointer;padding:2px 4px;line-height:1;flex-shrink:0;touch-action:manipulation;">▾</button>
-        <button onclick="event.stopPropagation();_toggleTrackerCtrl('tctrl-242-sub_college_of_swords_bardic_inspiration_die')" style="font-size:16px;color:var(--text-muted);background:transparent;border:none;cursor:pointer;padding:2px 5px;line-height:1;flex-shrink:0;touch-action:manipulation;">⋯</button>
-      </div>
-      <div id="tctrl-242-sub_college_of_swords_bardic_inspiration_die" style="display:none;flex-wrap:wrap;gap:5px;margin-top:5px;width:100%;align-items:center;" onclick="event.stopPropagation()">
-        <button class="btn btn-sm" onclick="event.stopPropagation();moveTrackerItem(242,'sub_college_of_swords_bardic_inspiration_die',-1)" style="font-size:9px;padding:1px 4px;line-height:1;" title="Move up">▲ Up</button><button class="btn btn-sm" onclick="event.stopPropagation();moveTrackerItem(242,'sub_college_of_swords_bardic_inspiration_die',1)" style="font-size:9px;padding:1px 4px;line-height:1;" title="Move down">▼ Down</button>
-        <select onchange="moveTrackerToCat(242,'sub_college_of_swords_bardic_inspiration_die',this.value)" onclick="event.stopPropagation()" title="Move to category" style="font-size:11px;width:100%;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);border-radius:4px;padding:3px 6px;outline:none;cursor:pointer;display:block;">
-      <option value="" selected="">— Uncategorised</option>
-      <option value="1784152083378">Other</option><option value="1784152058622">Chaos</option><option value="1784151662696">Items</option>
-    </select>
-        
-        <button class="btn btn-sm" onclick="event.stopPropagation();_editTracker(242,'sub_college_of_swords_bardic_inspiration_die')" style="font-size:9px;padding:1px 5px;">✎ Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="_confirm('Delete tracker: Bardic Inspiration Die?',function(){deleteTracker(242,'sub_college_of_swords_bardic_inspiration_die')})" style="font-size:9px;padding:1px 5px;">✕ Delete</button>
-      </div>
-      <div onclick="event.stopPropagation();_expandedCompleteTrackers.add('242|sub_college_of_swords_bardic_inspiration_die');refreshTrackersTab(242)" style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;padding:4px 0;">
       <span style="font-size:10px;font-family:'dm sans',monospace;color:var(--green);opacity:0.8;">✓ All used</span>
       <span style="font-size:9px;color:var(--text-muted);">— click to expand</span>
     </div>
@@ -6127,7 +6103,7 @@ A magical scimitar…"></textarea>
         </div>
       </div>
 
-      <div class="tab-pane active" id="dt-actions">
+      <div class="tab-pane" id="dt-actions">
         <div class="sp-sticky-hdr" id="act-cast-hdr-242" style="position:sticky;top:0;z-index:20;background:var(--bg);margin:0 -26px;padding:6px 26px 5px;border-bottom:1px solid var(--border);margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;"><button onclick="event.stopPropagation();toggleActCastHdr(242)" title="Hide casting stats" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text-muted);cursor:pointer;font-size:10px;font-family:'dm sans',monospace;padding:2px 7px;line-height:1.4;flex-shrink:0;">▾ Cast</button><div style="flex:1;overflow-x:auto;"><div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;"><div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0;">
     <span style="font-size:8px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;">Casting</span>
     <select style="background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text-secondary);font-family:'dm sans',monospace;font-size:10px;padding:2px 3px;outline:none;cursor:pointer;width:70px;" title="Spellcasting ability for Bard" onchange="updateCharField(242,'spellcastingAbility',this.value);renderDetail(db.characters.find(x=&gt;x.id===242))"><option value="">Manual</option><option value="INT">INT</option><option value="WIS">WIS</option><option value="CHA" selected="">CHA</option></select>
@@ -10081,9 +10057,9 @@ A magical scimitar…"></textarea>
 
     </div>
     <div class="tab-bar">
-      <button class="tab-btn tab-stats" onclick="switchTab(event,'dt-features')"><span class="tab-icon">⊞</span>Stats</button>
+      <button class="tab-btn active tab-stats" onclick="switchTab(event,'dt-features')"><span class="tab-icon">⊞</span>Stats</button>
       <button class="tab-btn tab-trackers" onclick="switchTab(event,'dt-trackers')"><span class="tab-icon">⊛</span>Trackers</button>
-      <button class="tab-btn tab-actions active" onclick="switchTab(event,'dt-actions')"><span class="tab-icon">⚔</span>Actions</button>
+      <button class="tab-btn tab-actions" onclick="switchTab(event,'dt-actions')"><span class="tab-icon">⚔</span>Actions</button>
       <button class="tab-btn tab-spells" onclick="switchTab(event,'dt-spells')"><span class="tab-icon">✧</span>Spells</button>
       <button class="tab-btn tab-items" onclick="switchTab(event,'dt-items')"><span class="tab-icon">◈</span>Items</button>
       <button class="tab-btn tab-sb" onclick="switchTab(event,'dt-statblocks')"><span class="tab-icon">⊡</span>SB</button>
@@ -10230,7 +10206,7 @@ A magical scimitar…"></textarea>
       <div style="display:flex;align-items:center;gap:6px;padding:4px 2px;margin-bottom:8px;user-select:none;">
         <button onclick="toggleTrackerCat(242,'uncat')" style="font-size:13px;color:var(--text-muted);background:transparent;border:none;cursor:pointer;padding:2px 5px;line-height:1;flex-shrink:0;touch-action:manipulation;" title="Collapse">⊟</button>
         <span onclick="toggleTrackerCat(242,'uncat')" style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;font-family:'dm sans',monospace;color:var(--text-muted);cursor:pointer;">Uncategorised</span>
-        <span style="font-size:9px;font-family:'dm sans',monospace;color:var(--text-muted);opacity:0.5;">5</span>
+        <span style="font-size:9px;font-family:'dm sans',monospace;color:var(--text-muted);opacity:0.5;">4</span>
         <span style="flex:1;height:1px;background:var(--border-light);"></span>
         
       </div>
@@ -10278,30 +10254,6 @@ A magical scimitar…"></textarea>
         <button class="btn btn-sm btn-danger" onclick="_confirm('Delete tracker: Chaos: Thunder Step?',function(){deleteTracker(242,'feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step')})" style="font-size:9px;padding:1px 5px;">✕ Delete</button>
       </div>
       <div onclick="event.stopPropagation();_expandedCompleteTrackers.add('242|feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step');refreshTrackersTab(242)" style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;padding:4px 0;">
-      <span style="font-size:10px;font-family:'dm sans',monospace;color:var(--green);opacity:0.8;">✓ All used</span>
-      <span style="font-size:9px;color:var(--text-muted);">— click to expand</span>
-    </div>
-    </div><div draggable="true" data-tracker-key="sub_college_of_swords_bardic_inspiration_die" data-char-id="242" ondragstart="trackerDragStart(event)" ondragover="trackerDragOver(event)" ondrop="trackerDrop(event,242,'sub_college_of_swords_bardic_inspiration_die')" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;margin-bottom:4px;opacity:0.45;transition:opacity 0.2s;">
-      <div style="display:flex;align-items:center;gap:5px;min-width:0;">
-        <span title="Drag to reorder" style="cursor:grab;color:var(--text-muted);font-size:12px;line-height:1;user-select:none;flex-shrink:0;">⠿</span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;font-weight:500;color:var(--text-primary);overflow-wrap:break-word;white-space:normal;line-height:1.3;">Bardic Inspiration Die</div>
-          
-        </div>
-        <button onclick="event.stopPropagation();(function(){var k='242|sub_college_of_swords_bardic_inspiration_die';if(_collapsedTrackers.has(k)){_collapsedTrackers.delete(k);}else{_collapsedTrackers.add(k);}refreshTrackersTab(242);})()" title="Collapse" style="font-size:11px;color:var(--text-muted);background:transparent;border:none;cursor:pointer;padding:2px 4px;line-height:1;flex-shrink:0;touch-action:manipulation;">▾</button>
-        <button onclick="event.stopPropagation();_toggleTrackerCtrl('p-tctrl-242-sub_college_of_swords_bardic_inspiration_die')" style="font-size:16px;color:var(--text-muted);background:transparent;border:none;cursor:pointer;padding:2px 5px;line-height:1;flex-shrink:0;touch-action:manipulation;">⋯</button>
-      </div>
-      <div id="p-tctrl-242-sub_college_of_swords_bardic_inspiration_die" style="display:none;flex-wrap:wrap;gap:5px;margin-top:5px;width:100%;align-items:center;" onclick="event.stopPropagation()">
-        <button class="btn btn-sm" onclick="event.stopPropagation();moveTrackerItem(242,'sub_college_of_swords_bardic_inspiration_die',-1)" style="font-size:9px;padding:1px 4px;line-height:1;" title="Move up">▲ Up</button><button class="btn btn-sm" onclick="event.stopPropagation();moveTrackerItem(242,'sub_college_of_swords_bardic_inspiration_die',1)" style="font-size:9px;padding:1px 4px;line-height:1;" title="Move down">▼ Down</button>
-        <select onchange="moveTrackerToCat(242,'sub_college_of_swords_bardic_inspiration_die',this.value)" onclick="event.stopPropagation()" title="Move to category" style="font-size:11px;width:100%;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);border-radius:4px;padding:3px 6px;outline:none;cursor:pointer;display:block;">
-      <option value="" selected="">— Uncategorised</option>
-      <option value="1784152083378">Other</option><option value="1784152058622">Chaos</option><option value="1784151662696">Items</option>
-    </select>
-        
-        <button class="btn btn-sm" onclick="event.stopPropagation();_editTracker(242,'sub_college_of_swords_bardic_inspiration_die')" style="font-size:9px;padding:1px 5px;">✎ Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="_confirm('Delete tracker: Bardic Inspiration Die?',function(){deleteTracker(242,'sub_college_of_swords_bardic_inspiration_die')})" style="font-size:9px;padding:1px 5px;">✕ Delete</button>
-      </div>
-      <div onclick="event.stopPropagation();_expandedCompleteTrackers.add('242|sub_college_of_swords_bardic_inspiration_die');refreshTrackersTab(242)" style="cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;padding:4px 0;">
       <span style="font-size:10px;font-family:'dm sans',monospace;color:var(--green);opacity:0.8;">✓ All used</span>
       <span style="font-size:9px;color:var(--text-muted);">— click to expand</span>
     </div>
@@ -15804,7 +15756,7 @@ A magical scimitar…"></textarea>
 <!-- DM SPELLS PANEL -->
 
 <!-- LIBRARY PAGE -->
-<div class="page active" id="page-library">
+<div class="page" id="page-library">
   <div class="lib-page active" id="lib-page">
     <div class="lib-subnav">
       <button class="lib-tab active" onclick="showLibSection('classes')">Classes</button>

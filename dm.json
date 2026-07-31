@@ -25180,7 +25180,9 @@
                 "label": "Bardic Inspiration (!)",
                 "max": 3,
                 "type": "boxes",
-                "reset": "long"
+                "reset": "long",
+                "minLevel": 1,
+                "maxLevel": 4
               }
             ],
             "actions": [
@@ -25219,7 +25221,18 @@
           {
             "level": 5,
             "name": "Font of Inspiration",
-            "description": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration."
+            "description": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration.",
+            "trackers": [
+              {
+                "label": "Bardic Inspiration",
+                "max": 1,
+                "type": "boxes",
+                "reset": "short",
+                "maxFormula": "CHA",
+                "minLevel": 5,
+                "maxLevel": 20
+              }
+            ]
           },
           {
             "level": 7,
@@ -45234,8 +45247,7 @@
             "name": "Magic Initiate",
             "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
           }
-        ],
-        "allowMultiple": false
+        ]
       },
       {
         "id": 169,
@@ -77174,7 +77186,9 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "_syncSourceId": 65
+            "_syncSourceId": 65,
+            "minLevel": 1,
+            "maxLevel": 4
           },
           {
             "key": "sub_college_of_swords_bardic_inspiration_die",
@@ -77208,6 +77222,20 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "cls_bard_bardic_inspiration",
+            "label": "Bardic Inspiration",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "short",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 65,
+            "maxFormula": "CHA",
+            "minLevel": 5,
+            "maxLevel": 20
           }
         ],
         "_grantImmunities": [],
@@ -77745,17 +77773,6 @@
             "_syncSourceId": 400
           },
           {
-            "key": "cls_bard_bardic_inspiration_(!)",
-            "label": "Bardic Inspiration (!)",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65
-          },
-          {
             "key": "sub_college_of_swords_bardic_inspiration_die",
             "label": "Bardic Inspiration Die",
             "max": 1,
@@ -77787,6 +77804,20 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "cls_bard_bardic_inspiration",
+            "label": "Bardic Inspiration",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "short",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 65,
+            "maxFormula": "CHA",
+            "minLevel": 5,
+            "maxLevel": 20
           }
         ],
         "saveDcEffective": 14,
@@ -84593,6 +84624,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785534733646,
+  "_updated": 1785534793652,
   "_unchanged": true
 }

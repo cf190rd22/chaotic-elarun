@@ -50492,7 +50492,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -84678,6 +84678,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785527887473,
+  "_updated": 1785527947467,
   "_unchanged": true
 }

@@ -76380,9 +76380,7 @@
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 20
           },
           {
             "name": "Power Word Kill",
@@ -76402,9 +76400,7 @@
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 20
           }
         ],
         "actions": [
@@ -76479,14 +76475,14 @@
             "kind": "spell",
             "_fromItemGrant": "Mac-Fuirmidh Cittern",
             "_grantReset": "longRest",
-            "atype": "action",
-            "source": "Item Spell",
+            "atype": "bonus",
+            "source": "Transmutation",
             "hit": "",
             "damage": "",
-            "range": "",
+            "range": "Touch",
             "save": "",
-            "notes": "",
-            "desc": "",
+            "notes": "1 h",
+            "desc": "You touch a willing creature. Until the spell ends, the target’s skin assumes a bark-like appearance, and the target has an Armor Class of 17 if its AC is lower than that.",
             "_singleUse": true,
             "fav": false,
             "used": false,
@@ -76573,7 +76569,7 @@
             "range": "120 feet",
             "save": "",
             "notes": "Concentration, up to 1 h",
-            "desc": "<p>You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.</p>",
+            "desc": "You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.",
             "fav": false,
             "used": false
           },
@@ -76741,7 +76737,7 @@
             "range": "Touch",
             "save": "",
             "notes": "Concentration, up to 10 min",
-            "desc": "<p>You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.</p>",
+            "desc": "You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.",
             "fav": false,
             "used": false
           },
@@ -76923,41 +76919,42 @@
             "_modeActive": false
           },
           {
-            "name": "Bardic Inspiration",
-            "_libName": "Bardic Inspiration",
+            "name": "Musician",
             "kind": "feat",
             "atype": "feature",
-            "source": "Bard",
-            "_syncSourceId": 65,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
+            "source": "Musician",
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.</p><details open=\"\"><summary>Using Bardic Inspiration</summary><div class=\"det-body\"><p>As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.</p><p>Once within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.</p></div></details><details open=\"\"><summary>Number of Uses</summary><div class=\"det-body\"><p>You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.</p></div></details><details open=\"\"><summary>At Higher Levels</summary><div class=\"det-body\"><p>Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.</p></div></details>",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Font of Inspiration",
-            "_libName": "Font of Inspiration",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Bard",
-            "_syncSourceId": 65,
-            "_syncMinLevel": 5,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration.",
+            "desc": "Instrument Training. You gain proficiency with three Musical Instruments of your choice.\nEncouraging Song. As you finish a Short or Long Rest, you can play a song on a Musical Instrument with which you have proficiency and give Heroic Inspiration to allies who hear the song. The number of allies you can affect in this way equals your Proficiency Bonus.",
             "fav": false,
             "used": false,
-            "_flag": true
+            "_featSync": true,
+            "_syncSourceId": 169,
+            "_libName": "Musician",
+            "_syncMinLevel": 1
+          },
+          {
+            "name": "Bardic Inspiration (!)",
+            "_libName": "Bardic Inspiration (!)",
+            "kind": "feat",
+            "atype": "bonus",
+            "source": "Bard",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.\n\nUsing Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.\n\nOnce within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.\n\nNumber of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.\n\nAt Higher Levels. Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 65
           },
           {
             "name": "Countercharm",
@@ -76965,18 +76962,37 @@
             "kind": "feat",
             "atype": "reaction",
             "source": "Bard",
-            "_syncSourceId": 65,
-            "_syncMinLevel": 7,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
             "desc": "You can use musical notes or words of power to disrupt mind-influencing effects. If you or a creature within 30 feet of you fails a saving throw against an effect that applies the Charmed or Frightened condition, you can take a Reaction to cause the save to be rerolled, and the new roll has Advantage.",
             "fav": false,
             "used": false,
-            "_classSync": true
+            "_classSync": true,
+            "_syncMinLevel": 7,
+            "_syncSourceId": 65
+          },
+          {
+            "name": "Fighting Style",
+            "_libName": "Fighting Style",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "College of Swords",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You adopt a style of fighting as your specialty. Choose one of the following options. You can’t take a Fighting Style option more than once, even if something in the game lets you choose again.\n\nDueling\nWhen you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.\n\nTwo-Weapon Fighting\nWhen you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.",
+            "fav": false,
+            "used": false,
+            "_subclassSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 69
           },
           {
             "name": "Flourish - Defensive",
@@ -76996,8 +77012,7 @@
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 69,
-            "_flag": true,
-            "_modeActive": false
+            "_flag": true
           },
           {
             "name": "Flourish - Slashing",
@@ -77045,18 +77060,18 @@
             "kind": "feat",
             "atype": "feature",
             "source": "College of Swords",
-            "_syncSourceId": 69,
-            "_syncMinLevel": 3,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
             "desc": "When you take the Attack action, your speed increases by 10 ft and you can use a Bardic Inspiration die for a Defensive, Slashing, or Mobile Flourish.",
             "fav": false,
             "used": false,
-            "_subclassSync": true
+            "_subclassSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 69
           },
           {
             "name": "Extra Attack",
@@ -77083,11 +77098,9 @@
             "kind": "feat",
             "atype": "bonus",
             "source": "Orc",
-            "_syncSourceId": 34,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
@@ -77097,34 +77110,14 @@
             "_raceSync": true
           },
           {
-            "name": "Darkvision",
-            "_libName": "Darkvision",
-            "kind": "feat",
-            "atype": "other",
-            "source": "Orc",
-            "_syncSourceId": 34,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You have Darkvision with a range of 120 feet.",
-            "fav": false,
-            "used": false
-          },
-          {
             "name": "Relentless Endurance",
             "_libName": "Relentless Endurance",
             "kind": "feat",
             "atype": "other",
             "source": "Orc",
-            "_syncSourceId": 34,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
@@ -77132,63 +77125,6 @@
             "fav": false,
             "used": false,
             "_raceSync": true
-          },
-          {
-            "name": "Bardic Inspiration (!)",
-            "_libName": "Bardic Inspiration (!)",
-            "kind": "feat",
-            "atype": "bonus",
-            "source": "Bard",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.\n\nUsing Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.\n\nOnce within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.\n\nNumber of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.\n\nAt Higher Levels. Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 1,
-            "_syncSourceId": 65
-          },
-          {
-            "name": "Fighting Style",
-            "_libName": "Fighting Style",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "College of Swords",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You adopt a style of fighting as your specialty. Choose one of the following options. You can’t take a Fighting Style option more than once, even if something in the game lets you choose again.\n\nDueling\nWhen you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.\n\nTwo-Weapon Fighting\nWhen you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.",
-            "fav": false,
-            "used": false,
-            "_subclassSync": true,
-            "_syncMinLevel": 3,
-            "_syncSourceId": 69
-          },
-          {
-            "name": "Musician",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Musician",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "Instrument Training. You gain proficiency with three Musical Instruments of your choice.\nEncouraging Song. As you finish a Short or Long Rest, you can play a song on a Musical Instrument with which you have proficiency and give Heroic Inspiration to allies who hear the song. The number of allies you can affect in this way equals your Proficiency Bonus.",
-            "fav": false,
-            "used": false,
-            "_featSync": true,
-            "_syncSourceId": 169,
-            "_libName": "Musician",
-            "_syncMinLevel": 1
           }
         ],
         "trackers": [
@@ -77237,16 +77173,15 @@
             "_syncSourceId": 257
           },
           {
-            "key": "race_orc_relentless_endurance",
-            "label": "Relentless Endurance",
+            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step",
+            "label": "Chaos: Thunder Step",
             "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "LR",
             "_custom": true,
-            "_raceSync": true,
-            "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance"
+            "_featSync": true,
+            "_syncSourceId": 400
           },
           {
             "key": "cls_bard_bardic_inspiration_(!)",
@@ -77260,16 +77195,6 @@
             "_syncSourceId": 65
           },
           {
-            "key": "race_orc_adrenaline_rush_(1)",
-            "label": "Adrenaline Rush (1)",
-            "max": 2,
-            "cur": 2,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_raceSync": true
-          },
-          {
             "key": "sub_college_of_swords_bardic_inspiration_die",
             "label": "Bardic Inspiration Die",
             "max": 1,
@@ -77281,15 +77206,26 @@
             "_syncSourceId": 69
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step",
-            "label": "Chaos: Thunder Step",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
+            "key": "race_orc_adrenaline_rush_(1)",
+            "label": "Adrenaline Rush (1)",
+            "max": 2,
+            "cur": 2,
+            "_trackerType": "boxes",
+            "reset": "short",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 400
+            "_raceSync": true
+          },
+          {
+            "key": "race_orc_relentless_endurance",
+            "label": "Relentless Endurance",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_raceSync": true,
+            "_catId": 1784152083378,
+            "actionLink": "Relentless Endurance"
           }
         ],
         "_grantImmunities": [],
@@ -77816,16 +77752,15 @@
             "_syncSourceId": 257
           },
           {
-            "key": "race_orc_relentless_endurance",
-            "label": "Relentless Endurance",
+            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step",
+            "label": "Chaos: Thunder Step",
             "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "LR",
             "_custom": true,
-            "_raceSync": true,
-            "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance"
+            "_featSync": true,
+            "_syncSourceId": 400
           },
           {
             "key": "cls_bard_bardic_inspiration_(!)",
@@ -77839,16 +77774,6 @@
             "_syncSourceId": 65
           },
           {
-            "key": "race_orc_adrenaline_rush_(1)",
-            "label": "Adrenaline Rush (1)",
-            "max": 2,
-            "cur": 2,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_raceSync": true
-          },
-          {
             "key": "sub_college_of_swords_bardic_inspiration_die",
             "label": "Bardic Inspiration Die",
             "max": 1,
@@ -77860,15 +77785,26 @@
             "_syncSourceId": 69
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_thunder_step",
-            "label": "Chaos: Thunder Step",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
+            "key": "race_orc_adrenaline_rush_(1)",
+            "label": "Adrenaline Rush (1)",
+            "max": 2,
+            "cur": 2,
+            "_trackerType": "boxes",
+            "reset": "short",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 400
+            "_raceSync": true
+          },
+          {
+            "key": "race_orc_relentless_endurance",
+            "label": "Relentless Endurance",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_raceSync": true,
+            "_catId": 1784152083378,
+            "actionLink": "Relentless Endurance"
           }
         ],
         "saveDcEffective": 14,
@@ -84675,5 +84611,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785529270924
+  "_updated": 1785529383585,
+  "_unchanged": true
 }

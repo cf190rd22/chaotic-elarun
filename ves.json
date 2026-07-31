@@ -19966,7 +19966,8 @@
         "heroicInspiration": true,
         "_spFiltersCollapsed": false,
         "_wasDying": false,
-        "_modesBarCollapsed": true
+        "_modesBarCollapsed": true,
+        "_qsHdOpen": false
       }
     ],
     "_exportedAt": 1784299496686,
@@ -20023,5 +20024,6 @@
     ]
   },
   "nextId": 262,
-  "_updated": 1785180121628
+  "_updated": 1785521806492,
+  "_unchanged": true
 }

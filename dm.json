@@ -45232,23 +45232,9 @@
           {
             "level": 0,
             "name": "Magic Initiate",
-            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
-            "spells": [
-              {
-                "count": 2,
-                "spellLevel": 0,
-                "classList": "Cleric,Druid,Wizard"
-              },
-              {
-                "count": 1,
-                "spellLevel": 1,
-                "classList": "Cleric,Druid,Wizard",
-                "_freecast": true
-              }
-            ]
+            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
           }
-        ],
-        "allowMultiple": true
+        ]
       },
       {
         "id": 169,
@@ -51260,7 +51246,7 @@
             "concentration": true,
             "area": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -51380,7 +51366,7 @@
             "effect": "4d6 Lightning ↑",
             "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "GH",
@@ -52876,68 +52862,6 @@
             "_syncSourceId": 139,
             "_syncMinLevel": 9,
             "group": "Temperate Land"
-          },
-          {
-            "name": "Fire Bolt",
-            "level": 0,
-            "school": "Evocation",
-            "time": "A",
-            "range": "120 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "hit": "Attack",
-            "effect": "1d10 Fire ↑",
-            "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
-            "area": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
-            "_syncSourceId": 168,
-            "_syncSourceName": "Magic Initiate"
-          },
-          {
-            "name": "Message",
-            "level": 0,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "120 feet",
-            "components": "S, M (a copper wire)",
-            "duration": "1 round",
-            "desc": "You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_168_Magic_Initiate_0",
-            "_syncSourceId": 168,
-            "_syncSourceName": "Magic Initiate"
-          },
-          {
-            "name": "Chromatic Orb",
-            "level": 1,
-            "school": "Evocation",
-            "time": "A",
-            "range": "90 feet",
-            "components": "V, S, M (a diamond worth 50+ GP)",
-            "duration": "Instantaneous",
-            "hit": "Attack",
-            "desc": "You hurl an orb of energy at a target within range. Choose Acid, Cold, Fire, Lightning, Poison, or Thunder for the type of orb you create, and then make a ranged spell attack against the target. On a hit, the target takes 3d8 damage of the chosen type.\nIf you roll the same number on two or more of the d8s, the orb leaps to a different target of your choice within 30 feet of the target. Make an attack roll against the new target, and make a new damage roll. The orb can’t leap again unless you cast the spell with a level 2+ spell slot.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1. The orb can leap a maximum number of times equal to the level of the slot expended, and a creature can be targeted only once by each casting of this spell.",
-            "area": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_168_Magic_Initiate_1",
-            "_syncSourceId": 168,
-            "_syncSourceName": "Magic Initiate",
-            "_freecast": true,
-            "_singleUse": false
           }
         ],
         "_grantImmunities": [],
@@ -53091,7 +53015,7 @@
             "Chromatic Orb"
           ]
         },
-        "_grantChoicesCollapsed": false,
+        "_grantChoicesCollapsed": true,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -84592,6 +84516,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785531424289,
+  "_updated": 1785531544294,
   "_unchanged": true
 }

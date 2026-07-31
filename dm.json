@@ -800,16 +800,18 @@
             "name": "Speak with Animals",
             "level": 1,
             "school": "Divination",
-            "time": "A",
+            "time": "Action",
             "range": "Self",
             "components": "V, S",
             "duration": "10 min",
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
-            "area": "",
-            "hit": "",
-            "effect": "",
+            "desc": "<p>For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.<br>Most Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.</p>",
             "source": "Bard",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": true,
+            "_spellAdjDuration": "",
+            "_noScale": false
           },
           {
             "name": "Tasha’s Hideous Laughter",
@@ -7728,16 +7730,18 @@
             "name": "Speak with Animals",
             "level": 1,
             "school": "Divination",
-            "time": "A",
+            "time": "Action",
             "range": "Self",
             "components": "V, S",
             "duration": "10 min",
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
-            "area": "",
-            "hit": "",
-            "effect": "",
+            "desc": "<p>For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.<br>Most Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.</p>",
             "source": "Warlock",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": true,
+            "_spellAdjDuration": "",
+            "_noScale": false
           },
           {
             "name": "Tasha’s Hideous Laughter",
@@ -21404,16 +21408,18 @@
             "name": "Speak with Animals",
             "level": 1,
             "school": "Divination",
-            "time": "A",
+            "time": "Action",
             "range": "Self",
             "components": "V, S",
             "duration": "10 min",
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
-            "area": "",
-            "hit": "",
-            "effect": "",
+            "desc": "<p>For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.<br>Most Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.</p>",
             "source": "Ranger",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": true,
+            "_spellAdjDuration": "",
+            "_noScale": false
           },
           {
             "name": "Thorn Armor",
@@ -45226,23 +45232,9 @@
           {
             "level": 0,
             "name": "Magic Initiate",
-            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time.",
-            "spells": [
-              {
-                "count": 2,
-                "spellLevel": 0,
-                "classList": "Cleric,Druid,Wizard"
-              },
-              {
-                "count": 1,
-                "spellLevel": 1,
-                "classList": "Cleric,Druid,Wizard",
-                "_freecast": true
-              }
-            ]
+            "description": "Two Cantrips. You learn two cantrips of your choice from the Cleric, Druid, or Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat's spells (choose when you select this feat).\nLevel 1 Spell. Choose a level 1 spell from the same list you selected for this feat's cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have.\nSpell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list.\nRepeatable. You can take this feat more than once, but you must choose a different spell list each time."
           }
-        ],
-        "allowMultiple": true
+        ]
       },
       {
         "id": 169,
@@ -49418,7 +49410,7 @@
             "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
             "tags": [],
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -49576,7 +49568,7 @@
             "duration": "10 min",
             "concentration": false,
             "ritual": true,
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
+            "desc": "<p>For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.<br>Most Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.</p>",
             "tags": [],
             "_assigned": true,
             "_freecast": false,
@@ -49585,10 +49577,9 @@
             "_classSync": false,
             "_subclassSync": false,
             "_raceSync": false,
+            "_syncSourceName": "Druidic",
             "_spellAdjActive": false,
-            "_spellAdjDuration": "",
-            "_sourceBook": "PHB",
-            "_singleUsed": false
+            "_spellAdjDuration": ""
           },
           {
             "name": "Thorn Armor",
@@ -65769,7 +65760,7 @@
             "range": "Self",
             "components": "V, S",
             "duration": "10 min",
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
+            "desc": "<p>For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.<br>Most Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.</p>",
             "source": "Bard",
             "_effectManual": false,
             "concentration": false,
@@ -73376,7 +73367,7 @@
             "range": "Self",
             "components": "V, S",
             "duration": "10 min",
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
+            "desc": "<p>For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.<br>Most Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.</p>",
             "source": "Bard",
             "_effectManual": false,
             "concentration": false,
@@ -84687,6 +84678,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785527707478,
+  "_updated": 1785527827486,
   "_unchanged": true
 }

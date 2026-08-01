@@ -18838,7 +18838,7 @@
             "damage": "Cold"
           }
         ],
-        "heroicInspiration": true,
+        "heroicInspiration": false,
         "passivePerception": 17,
         "passiveInsight": 14,
         "_slotTotal": {
@@ -19016,6 +19016,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1785594473113,
+  "_updated": 1785594743566,
   "_unchanged": true
 }

@@ -18783,6 +18783,12 @@
             "subtype": "Potion",
             "desc": "You regain Hit Points when you drink this potion.\nThe number of Hit Points depends on the potion’s rarity, as shown in the table below.Whatever its potency, the potion’s red liquid glimmers when agitated.\n| Potion | HP Regained | Rarity |\n| --- | --- | --- |\n| Potion of Healing | 2d4 + 2 | Common |\n| Potion of Healing (greater) | 4d4 + 4 | Uncommon |\n| Potion of Healing (superior) | 8d4 + 8 | Rare |\n| Potion of Healing (supreme) | 10d4 + 20 | Very Rare |",
             "proficient": false
+          },
+          {
+            "name": "Potions of Healing (varies)",
+            "subtype": "Potion",
+            "desc": "You regain Hit Points when you drink this potion.\nThe number of Hit Points depends on the potion’s rarity, as shown in the table below.Whatever its potency, the potion’s red liquid glimmers when agitated.\n| Potion | HP Regained | Rarity |\n| --- | --- | --- |\n| Potion of Healing | 2d4 + 2 | Common |\n| Potion of Healing (greater) | 4d4 + 4 | Uncommon |\n| Potion of Healing (superior) | 8d4 + 8 | Rare |\n| Potion of Healing (supreme) | 10d4 + 20 | Very Rare |",
+            "proficient": false
           }
         ],
         "_collapsedActSubgroups": {},
@@ -19016,6 +19022,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1785586886906,
-  "_unchanged": true
+  "_updated": 1785586922208
 }

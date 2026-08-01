@@ -14038,7 +14038,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false,
+            "_singleUsed": true,
             "_dmAllow": true,
             "_dmAllowNote": "Mac-Fuirmidh Cittern",
             "_dmAllowSource": "Class"
@@ -14654,7 +14654,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": true
           },
           {
             "name": "Blindness/Deafness",
@@ -14987,7 +14987,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": true
           },
           {
             "name": "Knock",
@@ -15054,7 +15054,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": true
           },
           {
             "name": "Locate Animals or Plants",
@@ -15216,8 +15216,7 @@
             "_classListImport": true,
             "_syncSourceId": 65,
             "_freecasted": false,
-            "_singleUsed": false,
-            "_lastCastUpcast": 0
+            "_singleUsed": false
           },
           {
             "name": "Silence",
@@ -16009,9 +16008,7 @@
             "_classListImport": true,
             "_syncSourceId": 65,
             "_freecasted": false,
-            "_singleUsed": false,
-            "_singleUse": false,
-            "_lastCastUpcast": 0
+            "_singleUsed": false
           },
           {
             "name": "Freedom of Movement",
@@ -17502,9 +17499,7 @@
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 20
           },
           {
             "name": "Power Word Kill",
@@ -17524,9 +17519,7 @@
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 20
           }
         ],
         "actions": [
@@ -17601,14 +17594,14 @@
             "kind": "spell",
             "_fromItemGrant": "Mac-Fuirmidh Cittern",
             "_grantReset": "longRest",
-            "atype": "action",
-            "source": "Item Spell",
+            "atype": "bonus",
+            "source": "Transmutation",
             "hit": "",
             "damage": "",
-            "range": "",
+            "range": "Touch",
             "save": "",
-            "notes": "",
-            "desc": "",
+            "notes": "1 h",
+            "desc": "<p>You touch a willing creature. Until the spell ends, the target’s skin assumes a bark-like appearance, and the target has an Armor Class of 17 if its AC is lower than that.</p>",
             "_singleUse": true,
             "fav": false,
             "used": false,
@@ -18051,8 +18044,7 @@
             "_modeResistance": "",
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": [],
-            "_modeActive": false
+            "_modeAdvAbilChecks": []
           },
           {
             "name": "Bardic Inspiration",
@@ -18139,8 +18131,7 @@
             "_libHasMode": true,
             "_modeConsumesTracker": "Bardic Inspiration",
             "_modeBonusAskField": "ac",
-            "_modeDuration": "turn",
-            "_modeActive": false
+            "_modeDuration": "turn"
           },
           {
             "name": "Flourish - Slashing",
@@ -18278,7 +18269,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 0,
+            "cur": 1,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -18288,7 +18279,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 0,
+            "cur": 4,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18312,7 +18303,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18353,7 +18344,7 @@
             "key": "race_orc_adrenaline_rush",
             "label": "Adrenaline Rush",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
@@ -18366,13 +18357,14 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance"
+            "actionLink": "Relentless Endurance",
+            "_origIdx": 7
           }
         ],
         "_grantImmunities": [],
@@ -18424,10 +18416,10 @@
           "tempHp": 0
         },
         "_secCollapsed": {
-          "core": true,
+          "core": false,
           "saves": true,
-          "skills": true,
-          "passives": true,
+          "skills": false,
+          "passives": false,
           "senses": true,
           "defenses": true,
           "feats": true,
@@ -18435,14 +18427,16 @@
           "proficiencies": true,
           "jump": true,
           "progression": false,
-          "abilities": true
+          "abilities": false
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
         "spellcastingAbility": "CHA",
         "_slotUsed": {
+          "399-L2": 3,
           "399-L4": 1,
-          "399-L2": 1
+          "399-L3": 3,
+          "399-L1": 2
         },
         "acAdjust": 0,
         "_panelAcAdj": 0,
@@ -18451,9 +18445,9 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 37,
-        "hpTemp": 12,
-        "_concentratingOn": "Fount of Moonlight",
+        "hpCurrent": 34,
+        "hpTemp": 1,
+        "_concentratingOn": null,
         "conditions": [],
         "items": [
           {
@@ -18574,6 +18568,14 @@
             "equipped": true
           },
           {
+            "name": "Potion of Healing (Greater)",
+            "subtype": "Potion",
+            "desc": "Charges\nYou regain 4d4 + 4 Hit Points when you drink this potion.\nWhatever its potency, the potion’s red liquid glimmers when agitated.",
+            "rarity": "uncommon",
+            "proficient": false,
+            "equipped": true
+          },
+          {
             "name": "Acid",
             "subtype": "Adventuring Gear",
             "qty": "3",
@@ -18650,15 +18652,6 @@
             "subtype": "Adventuring Gear",
             "desc": "Perfume comes in a 4-ounce vial. For 1 hour after applying Perfume to yourself, you have Advantage on Charisma (Persuasion) checks made to influence an Indifferent Humanoid within 5 feet of yourself.",
             "proficient": false
-          },
-          {
-            "name": "Potion of Healing",
-            "subtype": "Potion",
-            "desc": "In Party Equipment\nCharges\nThis potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.",
-            "rarity": "common",
-            "proficient": false,
-            "actionType": "bonus",
-            "equipped": true
           },
           {
             "name": "Shortsword",
@@ -18761,26 +18754,15 @@
             "desc": "The days of wondering what the socialites across the room are chatting about have come to an end! This brass earring is sculpted into the shape of whispering maidens. Whenever a creature says your name while within 100 feet the earring activates, transmitting the creature’s words as a hushed whisper into your ears until it has gone at least 1 minute without saying your name.",
             "attune": "yes",
             "rarity": "rarity: uncommon",
-            "proficient": false,
-            "equipped": true
-          },
-          {
-            "name": "Mithral Armor, Plate Armor",
-            "subtype": "Plate Armor",
-            "effect": "AC 18",
-            "notes": "Stealth Disadvantage, Str 15 required",
-            "desc": "Mithral is a light, flexible metal. Armor made of this substance can be worn under normal clothes. If the armor normally imposes Disadvantage on Dexterity (Stealth) checks or has a Strength requirement, the mithral version of the armor doesn’t.",
-            "rarity": "uncommon",
-            "proficient": false,
-            "equipped": false
-          },
-          {
-            "name": "Pearl of Power",
-            "subtype": "Wondrous Item",
-            "desc": "While this pearl is on your person, you can take a Magic action to regain one expended spell slot of level 3 or lower. Once you use the pearl, it can’t be used again until the next dawn.",
-            "attune": "yes",
-            "rarity": "uncommon",
             "proficient": false
+          },
+          {
+            "name": "Dragon tooth guitar pick",
+            "tags": [],
+            "proficient": false,
+            "_grants": [],
+            "_actionAdjDuration": "",
+            "_playerOwned": true
           }
         ],
         "_collapsedActSubgroups": {},
@@ -18797,9 +18779,12 @@
         "_hideUnassigned": true,
         "_spFiltersCollapsed": true,
         "_collapsedSpLevels": {
-          "4": false
+          "1": false,
+          "2": true,
+          "3": true,
+          "4": true
         },
-        "_qsAdjOpen": true,
+        "_qsAdjOpen": false,
         "_restNotesOpen": true,
         "shortRestNotes": "+ Give Inspiration",
         "longRestNotes": "+ Give Inspiration",
@@ -18826,7 +18811,7 @@
             "damage": "Cold"
           }
         ],
-        "heroicInspiration": false,
+        "heroicInspiration": true,
         "passivePerception": 17,
         "passiveInsight": 14,
         "_slotTotal": {
@@ -18839,7 +18824,9 @@
         "acEffective": 17,
         "hpMax": 45,
         "_slotUsedCompact": {
-          "2": 1,
+          "1": 2,
+          "2": 3,
+          "3": 3,
           "4": 1
         },
         "_featAtypes": {
@@ -18847,7 +18834,7 @@
         },
         "_actQRCollapsed": false,
         "_restSub_notes_short": true,
-        "_restSectionOpen_short": true,
+        "_restSectionOpen_short": false,
         "_modesBarCollapsed": false,
         "deathSaves": {
           "pass": 0,
@@ -18857,7 +18844,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 0,
+            "cur": 1,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -18867,7 +18854,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 0,
+            "cur": 4,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18891,7 +18878,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18918,7 +18905,7 @@
             "key": "race_orc_adrenaline_rush",
             "label": "Adrenaline Rush",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
@@ -18931,22 +18918,27 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance"
+            "actionLink": "Relentless Endurance",
+            "_origIdx": 7
           }
         ],
         "saveDcEffective": 14,
         "_dmHidden": true,
-        "_hitDiceUsed": {},
         "_advDisadv": null,
-        "_wasDying": false,
-        "_qsHdOpen": false,
-        "statsLocked": false
+        "statsLocked": false,
+        "_qsHdOpen": true,
+        "gold": 5937,
+        "sp": 0,
+        "pp": 50,
+        "_hitDiceUsed": {
+          "d8": 4
+        }
       }
     ],
     "_exportedAt": 1784299506434,
@@ -19004,6 +18996,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1785256221119,
-  "_unchanged": true
+  "_updated": 1785585567534
 }

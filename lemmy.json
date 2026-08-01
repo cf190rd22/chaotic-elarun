@@ -14052,7 +14052,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true,
+            "_singleUsed": false,
             "_dmAllow": true,
             "_dmAllowNote": "Mac-Fuirmidh Cittern",
             "_dmAllowSource": "Class"
@@ -14668,7 +14668,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true
+            "_singleUsed": false
           },
           {
             "name": "Blindness/Deafness",
@@ -15001,7 +15001,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true
+            "_singleUsed": false
           },
           {
             "name": "Knock",
@@ -15068,7 +15068,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true
+            "_singleUsed": false
           },
           {
             "name": "Locate Animals or Plants",
@@ -17513,7 +17513,9 @@
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20
+            "_syncMinLevel": 20,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Power Word Kill",
@@ -17533,7 +17535,9 @@
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20
+            "_syncMinLevel": 20,
+            "_freecasted": false,
+            "_singleUsed": false
           }
         ],
         "actions": [
@@ -18058,7 +18062,8 @@
             "_modeResistance": "",
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": []
+            "_modeAdvAbilChecks": [],
+            "_modeActive": false
           },
           {
             "name": "Bardic Inspiration",
@@ -18145,7 +18150,8 @@
             "_libHasMode": true,
             "_modeConsumesTracker": "Bardic Inspiration",
             "_modeBonusAskField": "ac",
-            "_modeDuration": "turn"
+            "_modeDuration": "turn",
+            "_modeActive": false
           },
           {
             "name": "Flourish - Slashing",
@@ -18283,7 +18289,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 1,
+            "cur": 0,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -18293,7 +18299,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 4,
+            "cur": 0,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18317,7 +18323,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18358,7 +18364,7 @@
             "key": "race_orc_adrenaline_rush",
             "label": "Adrenaline Rush",
             "max": 3,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
@@ -18371,7 +18377,7 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18446,12 +18452,7 @@
         "_topOpen": false,
         "_autoCalcSkills": true,
         "spellcastingAbility": "CHA",
-        "_slotUsed": {
-          "399-L2": 3,
-          "399-L4": 1,
-          "399-L3": 3,
-          "399-L1": 2
-        },
+        "_slotUsed": {},
         "acAdjust": 0,
         "_panelAcAdj": 0,
         "hpAdjust": 0,
@@ -18459,8 +18460,8 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 34,
-        "hpTemp": 1,
+        "hpCurrent": 45,
+        "hpTemp": 0,
         "_concentratingOn": null,
         "conditions": [],
         "items": [
@@ -18849,12 +18850,7 @@
         "activeModes": [],
         "acEffective": 17,
         "hpMax": 45,
-        "_slotUsedCompact": {
-          "1": 2,
-          "2": 3,
-          "3": 3,
-          "4": 1
-        },
+        "_slotUsedCompact": {},
         "_featAtypes": {
           "feat_257_Blessing of the Elandran Cleric": "action"
         },
@@ -18870,7 +18866,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 1,
+            "cur": 0,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -18880,7 +18876,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 4,
+            "cur": 0,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18904,7 +18900,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18931,7 +18927,7 @@
             "key": "race_orc_adrenaline_rush",
             "label": "Adrenaline Rush",
             "max": 3,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
@@ -18944,7 +18940,7 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18962,9 +18958,7 @@
         "gold": 5937,
         "sp": 0,
         "pp": 50,
-        "_hitDiceUsed": {
-          "d8": 4
-        }
+        "_hitDiceUsed": {}
       }
     ],
     "_exportedAt": 1784299506434,
@@ -19022,5 +19016,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1785590187823
+  "_updated": 1785590233510
 }

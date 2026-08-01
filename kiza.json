@@ -15447,8 +15447,8 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 74,
-        "hpTemp": 4,
+        "hpCurrent": 45,
+        "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
         "statblocks": [
@@ -16268,6 +16268,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785596315187,
+  "_updated": 1785596435178,
   "_unchanged": true
 }

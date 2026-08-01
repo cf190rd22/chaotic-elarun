@@ -14447,7 +14447,9 @@
             "_syncSourceId": 70,
             "_syncMinLevel": 2,
             "_freecast": true,
-            "_singleUse": false
+            "_singleUse": false,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Find Steed",
@@ -14469,7 +14471,9 @@
             "_syncSourceId": 70,
             "_syncMinLevel": 5,
             "_freecast": true,
-            "_singleUse": false
+            "_singleUse": false,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Armor of Agathys",
@@ -14489,7 +14493,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 3
+            "_syncMinLevel": 3,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Command",
@@ -14509,7 +14515,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 3
+            "_syncMinLevel": 3,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Hold Person",
@@ -14530,7 +14538,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 5
+            "_syncMinLevel": 5,
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Spiritual Weapon",
@@ -14551,7 +14561,9 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 5
+            "_syncMinLevel": 5,
+            "_freecasted": false,
+            "_singleUsed": false
           }
         ],
         "actions": [
@@ -14968,7 +14980,8 @@
             "_modeAttackBonus": 0,
             "_modeDmgBonus": 0,
             "_modeResistance": "",
-            "_flag": true
+            "_flag": true,
+            "_modeActive": false
           },
           {
             "name": "Lay on Hands",
@@ -15077,7 +15090,8 @@
             "_groupLabel": "Channel Divinity",
             "_playerSetMode": true,
             "_modeConsumesTracker": "Chaotic Wounds",
-            "_libHasMode": true
+            "_libHasMode": true,
+            "_modeActive": false
           },
           {
             "name": "CD:  Channel Chaos",
@@ -15165,7 +15179,8 @@
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
-            "_flag": true
+            "_flag": true,
+            "_modeActive": false
           },
           {
             "name": "Lvl 7: Fire Resistance",
@@ -15497,7 +15512,8 @@
             "size": "Tiny",
             "speed": "50 ft.",
             "speedType": "",
-            "subtypes": ""
+            "subtypes": "",
+            "tempHp": 0
           }
         ],
         "items": [
@@ -16194,7 +16210,8 @@
           }
         ],
         "saveDcEffective": 14,
-        "_dmHidden": true
+        "_dmHidden": true,
+        "_hitDiceUsed": {}
       }
     ],
     "_exportedAt": 1784299476169,
@@ -16251,5 +16268,6 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785588551626
+  "_updated": 1785590255470,
+  "_unchanged": true
 }

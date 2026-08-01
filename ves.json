@@ -14828,7 +14828,8 @@
           "tempHp": 0
         },
         "_slotUsed": {
-          "152-L2": 1
+          "152-L2": 1,
+          "152-L1": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
@@ -14914,6 +14915,7 @@
         "acEffective": 18,
         "hpMax": 52,
         "_slotUsedCompact": {
+          "1": 1,
           "2": 1
         },
         "_trackersForDm": [
@@ -15088,7 +15090,9 @@
         "_grantClassLock": {
           "ifeat_168_1": "Wizard"
         },
-        "_qsHdOpen": false
+        "_qsHdOpen": false,
+        "_spFiltersCollapsed": false,
+        "_spTimeFilter": "all"
       }
     ],
     "_exportedAt": 1785536910088,
@@ -15145,5 +15149,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785596630883
+  "_updated": 1785599428256
 }

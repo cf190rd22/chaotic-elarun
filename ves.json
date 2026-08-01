@@ -14827,7 +14827,9 @@
           "maxHp": 0,
           "tempHp": 0
         },
-        "_slotUsed": {},
+        "_slotUsed": {
+          "152-L2": 1
+        },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
@@ -14911,7 +14913,9 @@
         "activeModes": [],
         "acEffective": 18,
         "hpMax": 52,
-        "_slotUsedCompact": {},
+        "_slotUsedCompact": {
+          "2": 1
+        },
         "_trackersForDm": [
           {
             "key": "custom_owl_1780435425887",
@@ -15141,5 +15145,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785591055853
+  "_updated": 1785591670073
 }

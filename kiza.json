@@ -14594,7 +14594,7 @@
             "save": "",
             "notes": "Concentration, up to 1 min",
             "desc": "Choose a Humanoid that you can see within range. The target must succeed on a Wisdom saving throw or have the Paralyzed condition for the duration. At the end of each of its turns, the target repeats the save, ending the spell on itself on a success.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional Humanoid for each spell slot level above 2.",
-            "fav": false,
+            "fav": true,
             "used": false
           },
           {
@@ -16251,6 +16251,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785586788622,
-  "_unchanged": true
+  "_updated": 1785586841167
 }

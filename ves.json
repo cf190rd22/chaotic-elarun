@@ -14830,7 +14830,7 @@
           "proficiencies": true,
           "core": true,
           "jump": true,
-          "spellSlots": true
+          "spellSlots": false
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
@@ -15137,5 +15137,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1785581422254
+  "_updated": 1785585340447
 }

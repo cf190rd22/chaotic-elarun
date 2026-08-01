@@ -18794,9 +18794,9 @@
         "_spFiltersCollapsed": true,
         "_collapsedSpLevels": {
           "1": false,
-          "2": true,
-          "3": true,
-          "4": true
+          "2": false,
+          "3": false,
+          "4": false
         },
         "_qsAdjOpen": false,
         "_restNotesOpen": true,
@@ -19010,5 +19010,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1785586075647
+  "_updated": 1785586107086,
+  "_unchanged": true
 }

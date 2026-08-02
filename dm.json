@@ -84677,8 +84677,38 @@
         "desc": "A spellcaster can transfer a spell to a scroll and create a Spell Scroll, using the rules below.\n\nTime and Cost\nScribing a scroll takes an amount of time and money based on the level of the spell, as shown in the Spell Scroll Costs table. For each day of inscription, you must work for 8 hours. If a scroll requires multiple days, those days needn’t be consecutive.\n\nPrerequisites for the Scribe\nTo scribe a scroll, you must have proficiency in the Arcana skill or with Calligrapher’s Supplies and have the spell prepared on each day of the inscription. You must also have at hand any Material components required by the spell; if the spell consumes its Material components, they are consumed only when you complete the scroll. The scroll’s spell uses your spell save DC and spell attack bonus.\n\nCantrips\nIf the scribed spell is a cantrip, the version on the scroll works as if the caster were your level.\n\nSpell Scroll Costs\nSpell Level | Time | Cost\nCantrip | 1 day | 15 GP\n1 | 1 day | 25 GP\n2 | 3 days | 100 GP\n3 | 5 days | 150 GP\n4 | 10 days | 1,000 GP\n5 | 25 days | 1,500 GP\n6 | 40 days | 10,000 GP\n7 | 50 days | 12,500 GP\n8 | 60 days | 15,000 GP\n9 | 120 days | 50,000 GP",
         "tags": []
       }
+    ],
+    "groupInventory": [
+      {
+        "id": 398,
+        "name": "Potion of Healing",
+        "notes": "This potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.",
+        "holders": [
+          {
+            "player": "Kiza",
+            "qty": 1
+          },
+          {
+            "player": "Schmiff",
+            "qty": 2
+          }
+        ]
+      },
+      {
+        "id": 399,
+        "name": "Potion of Healing (Superior)",
+        "notes": "You regain 8d4 + 8 Hit Points when you drink this potion.\nWhatever its potency, the potion’s red liquid glimmers when agitated.",
+        "holders": []
+      },
+      {
+        "id": 400,
+        "name": "Potions of Healing (varies)",
+        "notes": "You regain Hit Points when you drink this potion.\nThe number of Hit Points depends on the potion’s rarity, as shown in the table below.Whatever its potency, the potion’s red liquid glimmers when agitated.\n| Potion | HP Regained | Rarity |\n| --- | --- | --- |\n| Potion of Healing | 2d4 + 2 | Common |\n| Potion of Healing (greater) | 4d4 + 4 | Uncommon |\n| Potion of Healing (superior) | 8d4 + 8 | Rare |\n| Potion of Healing (supreme) | 10d4 + 20 | Very Rare |",
+        "holders": []
+      }
     ]
   },
-  "nextId": 398,
-  "_updated": 1785676970681
+  "nextId": 401,
+  "_updated": 1785677075581,
+  "_unchanged": true
 }

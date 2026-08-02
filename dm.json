@@ -71487,7 +71487,8 @@
             "_featSync": true,
             "_syncSourceId": 255,
             "_syncSourceName": "Blades of Chaos: Path of Shadow",
-            "_freecast": true
+            "_freecast": true,
+            "_singleUse": false
           }
         ],
         "_grantImmunities": [],
@@ -90445,6 +90446,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1785702509388,
-  "_unchanged": true
+  "_updated": 1785703331742
 }

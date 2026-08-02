@@ -58838,7 +58838,8 @@
           "ifeat_168_1": "Wizard"
         },
         "_qsHdOpen": false,
-        "_grantMinAC": []
+        "_grantMinAC": [],
+        "_grantAbilBonus": {}
       },
       {
         "id": 157,
@@ -71297,7 +71298,8 @@
             "_featSync": true,
             "_syncSourceId": 255,
             "_syncSourceName": "Blades of Chaos: Path of Shadow",
-            "_freecast": true
+            "_freecast": true,
+            "_singleUse": false
           }
         ],
         "_grantImmunities": [],
@@ -91143,6 +91145,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1785687766144,
-  "_unchanged": true
+  "_updated": 1785699575099
 }

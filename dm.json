@@ -54425,7 +54425,8 @@
         "_grantClassLock": {
           "ifeat_168_1": "Wizard"
         },
-        "_qsHdOpen": false
+        "_qsHdOpen": false,
+        "_grantMinAC": []
       },
       {
         "id": 157,
@@ -85745,5 +85746,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1785685358000
+  "_updated": 1785686623856
 }

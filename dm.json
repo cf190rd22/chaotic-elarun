@@ -71487,7 +71487,8 @@
             "_featSync": true,
             "_syncSourceId": 255,
             "_syncSourceName": "Blades of Chaos: Path of Shadow",
-            "_freecast": true
+            "_freecast": true,
+            "_singleUse": false
           }
         ],
         "_grantImmunities": [],
@@ -84101,7 +84102,9 @@
             "fav": false,
             "used": false,
             "_featSync": true,
-            "_syncSourceId": 167
+            "_syncSourceId": 167,
+            "_libName": "Lucky",
+            "_syncMinLevel": 1
           },
           {
             "name": "Savage Attacker",
@@ -84118,7 +84121,9 @@
             "fav": false,
             "used": false,
             "_featSync": true,
-            "_syncSourceId": 170
+            "_syncSourceId": 170,
+            "_libName": "Savage Attacker",
+            "_syncMinLevel": 1
           }
         ],
         "trackers": [
@@ -91179,6 +91184,5 @@
     ]
   },
   "nextId": 404,
-  "_updated": 1785787915574,
-  "_unchanged": true
+  "_updated": 1785790251620
 }

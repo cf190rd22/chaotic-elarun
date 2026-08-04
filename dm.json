@@ -59263,17 +59263,13 @@
         ],
         "_grantImmunities": [],
         "_grantResistances": [
-          "poison"
+          "Poison"
         ],
         "_grantVulnerabilities": [],
         "_grantLanguages": [],
         "_grantFeats": [],
-        "_grantArmorProfs": [
-          "Medium Armor"
-        ],
-        "_grantWeaponProfs": [
-          "Martial Weapons"
-        ],
+        "_grantArmorProfs": [],
+        "_grantWeaponProfs": [],
         "_grantToolProfs": [],
         "_grantHeroicInspiration": false,
         "_grantAttuneSlots": 0,
@@ -59653,7 +59649,8 @@
         },
         "_qsHdOpen": false,
         "_grantMinAC": [],
-        "_grantAbilBonus": {}
+        "_grantAbilBonus": {},
+        "_grantSenses": []
       },
       {
         "id": 157,
@@ -93307,6 +93304,5 @@
     ]
   },
   "nextId": 406,
-  "_updated": 1785847690137,
-  "_unchanged": true
+  "_updated": 1785851406955
 }

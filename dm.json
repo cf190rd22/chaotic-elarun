@@ -27621,7 +27621,150 @@
           {
             "level": 1,
             "name": "Weapon Mastery",
-            "description": "Your training with weapons allows you to use the mastery properties of three kinds of Simple or Martial weapons of your choice. Whenever you finish a Long Rest, you can practice weapon drills and change one of those weapon choices.\n\nWhen you reach certain Fighter levels, you gain the ability to use the mastery properties of more kinds of weapons, as shown in the Weapon Mastery column of the Fighter Features table."
+            "description": "<p>Your training with weapons allows you to use the mastery properties of three kinds of Simple or Martial weapons of your choice. Whenever you finish a Long Rest, you can practice weapon drills and change one of those weapon choices.</p><p>When you reach certain Fighter levels, you gain the ability to use the mastery properties of more kinds of weapons, as shown in the Weapon Mastery column of the Fighter Features table.</p>",
+            "knownOptions": [
+              {
+                "name": "Battleaxe",
+                "desc": ""
+              },
+              {
+                "name": "Blowgun",
+                "desc": ""
+              },
+              {
+                "name": "Club",
+                "desc": ""
+              },
+              {
+                "name": "Dagger",
+                "desc": ""
+              },
+              {
+                "name": "Flail",
+                "desc": ""
+              },
+              {
+                "name": "Glaive",
+                "desc": ""
+              },
+              {
+                "name": "Greataxe",
+                "desc": ""
+              },
+              {
+                "name": "Greatclub",
+                "desc": ""
+              },
+              {
+                "name": "Greatsword",
+                "desc": ""
+              },
+              {
+                "name": "Halberd",
+                "desc": ""
+              },
+              {
+                "name": "Hand Crossbow",
+                "desc": ""
+              },
+              {
+                "name": "Handaxe",
+                "desc": ""
+              },
+              {
+                "name": "Heavy Crossbow",
+                "desc": ""
+              },
+              {
+                "name": "Javelin",
+                "desc": ""
+              },
+              {
+                "name": "Lance",
+                "desc": ""
+              },
+              {
+                "name": "Light Crossbow",
+                "desc": ""
+              },
+              {
+                "name": "Light Hammer",
+                "desc": ""
+              },
+              {
+                "name": "Longbow",
+                "desc": ""
+              },
+              {
+                "name": "Longsword",
+                "desc": ""
+              },
+              {
+                "name": "Mace",
+                "desc": ""
+              },
+              {
+                "name": "Maul",
+                "desc": ""
+              },
+              {
+                "name": "Morningstar",
+                "desc": ""
+              },
+              {
+                "name": "Net",
+                "desc": ""
+              },
+              {
+                "name": "Pike",
+                "desc": ""
+              },
+              {
+                "name": "Quarterstaff",
+                "desc": ""
+              },
+              {
+                "name": "Rapier",
+                "desc": ""
+              },
+              {
+                "name": "Scimitar",
+                "desc": ""
+              },
+              {
+                "name": "Shortsword",
+                "desc": ""
+              },
+              {
+                "name": "Shortbow",
+                "desc": ""
+              },
+              {
+                "name": "Sickle",
+                "desc": ""
+              },
+              {
+                "name": "Spear",
+                "desc": ""
+              },
+              {
+                "name": "Trident",
+                "desc": ""
+              },
+              {
+                "name": "War Pick",
+                "desc": ""
+              },
+              {
+                "name": "Warhammer",
+                "desc": ""
+              },
+              {
+                "name": "Whip",
+                "desc": ""
+              }
+            ],
+            "knownCount": "TIER(LVL,1:3,4:4,10:5)"
           },
           {
             "level": 2,
@@ -30614,142 +30757,7 @@
           {
             "level": 2,
             "name": "Metamagic",
-            "description": "<p>Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.</p><p>You can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.</p><p>Whenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.</p>",
-            "knownOptions": [
-              {
-                "name": "Careful Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you cast a spell that forces other creatures to make a Saving Throw, you can protect some of those creatures from the spell’s full force. To do so, spend 1 Sorcery Point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its Saving Throw against the spell, and it takes no damage if it would normally take half damage on a successful save.",
-                "desc": ""
-              },
-              {
-                "name": "Distant Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you cast a spell that has a range of at least 5 feet, you can spend 1 Sorcery Point to double the spell’s range. Or when you cast a spell that has a range of Touch, you can spend 1 Sorcery Point to make the spell’s range 30 feet.",
-                "desc": ""
-              },
-              {
-                "name": "Empowered Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you roll damage for a spell, you can spend 1 Sorcery Point to reroll a number of the damage dice up to your Charisma modifier (minimum of one), and you must use the new rolls.",
-                "desc": ""
-              },
-              {
-                "name": "You can use Empowered Spell even if you’ve already used a different Metamagic option during the casting of the spell.",
-                "desc": ""
-              },
-              {
-                "name": "Extended Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you cast a spell that has a duration of 1 minute or longer, you can spend 1 Sorcery Point to double its duration to a maximum duration of 24 hours.",
-                "desc": ""
-              },
-              {
-                "name": "If the affected spell requires Concentration, you have Advantage on any Saving Throw you make to maintain that Concentration.",
-                "desc": ""
-              },
-              {
-                "name": "Heightened Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "2 Sorcery Points"
-              },
-              {
-                "name": "When you cast a spell that forces a creature to make a Saving Throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.",
-                "desc": ""
-              },
-              {
-                "name": "Quickened Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "2 Sorcery Points"
-              },
-              {
-                "name": "When you cast a spell that has a casting time of an action, you can spend 2 Sorcery Points to change the casting time to a Bonus Action for this casting. You can’t modify a spell in this way if you’ve already cast a level 1+ spell on the current turn, nor can you cast a level 1+ spell on this turn after modifying a spell in this way.",
-                "desc": ""
-              },
-              {
-                "name": "Seeking Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "If you make an attack roll for a spell and miss, you can spend 1 Sorcery Point to reroll the d20, and you must use the new roll.",
-                "desc": ""
-              },
-              {
-                "name": "You can use Seeking Spell even if you’ve already used a different Metamagic option during the casting of the spell.",
-                "desc": ""
-              },
-              {
-                "name": "Subtle Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you cast a spell, you can spend 1 Sorcery Point to cast it without any Verbal, Somatic, or Material components, except Material components that are consumed by the spell or that have a cost specified in the spell.",
-                "desc": ""
-              },
-              {
-                "name": "Transmuted Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you cast a spell that deals a type of damage from the following list, you can spend 1 Sorcery Point to change that damage type to one of the other listed types",
-                "desc": "Acid, Cold, Fire, Lightning, Poison, Thunder."
-              },
-              {
-                "name": "Twinned Spell",
-                "desc": ""
-              },
-              {
-                "name": "Cost",
-                "desc": "1 Sorcery Point"
-              },
-              {
-                "name": "When you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.",
-                "desc": ""
-              }
-            ],
-            "knownCount": "TIER(LVL,2:2,10:3,17:4)"
+            "description": "Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.\n\nYou can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.\n\nWhenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17."
           },
           {
             "level": 3,
@@ -53826,7 +53834,6 @@
             "desc": "You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_libName": "Stonecunning",
             "_syncMinLevel": 1
           },
@@ -54573,7 +54580,6 @@
             "desc": "You have dedicated yourself to one of the following sacred roles of your choice.\n\nMagician\nYou know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).\n\nWarden\nTrained for battle, you gain proficiency with Martial weapons and training with Medium armor.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 66
           },
@@ -54592,7 +54598,6 @@
             "desc": "You have learned to cast spells through studying the mystical forces of nature. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Druid spells, which appear on the Druid spell list later in the class’s description.\n\nCantrips. You know two cantrips of your choice from the Druid spell list.\n\nWhenever you gain a Druid level, you can replace one of your cantrips with another cantrip of your choice from the Druid spell list.\n\nWhen you reach Druid levels 4 and 10, you learn another cantrip of your choice from the Druid spell list, as shown in the Cantrips column of the Druid Features table.\n\nSpell Slots. The Druid Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.\n\nPrepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose four level 1 spells from the Druid spell list.\n\nThe number of spells on your list increases as you gain Druid levels, as shown in the Prepared Spells column of the Druid Features table. Whenever that number increases, choose additional spells from the Druid spell list until the number of spells on your list matches the number on the table. The chosen spells must be of a level for which you have spell slots. For example, if you’re a level 3 Druid, your list of prepared spells can include six spells of levels 1 and 2 in any combination.\n\nIf another Druid feature gives you spells that you always have prepared, those spells don’t count against the number of spells you can prepare with this feature, but those spells otherwise count as Druid spells for you.\n\nChanging Your Prepared Spells. Whenever you finish a Long Rest, you can change your list of prepared spells, replacing any of the spells with other Druid spells for which you have spell slots.\n\nSpellcasting Ability. Wisdom is your spellcasting ability for your Druid spells.\n\nSpellcasting Focus. You can use a Druidic Focus as a Spellcasting Focus for your Druid spells.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 66
           },
@@ -54611,7 +54616,6 @@
             "desc": "You can summon a nature spirit that assumes an animal form to aid you. As a Magic action, you can expend a spell slot or a use of Wild Shape to cast the Find Familiar spell without Material components.\n\nWhen you cast the spell in this way, the familiar is Fey and disappears when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 66
           },
@@ -54630,7 +54634,6 @@
             "desc": "You gain a Druid subclass of your choice. A subclass is a specialization that grants you features at certain Druid levels. For the rest of your career, you gain each of your subclass’s features that are of your Druid level or lower.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 66
           },
@@ -54649,7 +54652,6 @@
             "desc": "Once on each of your turns, if you have no uses of Wild Shape left, you can give yourself one use by expending a spell slot (no action required).\n\nIn addition, you can expend one use of Wild Shape (no action required) to give yourself a level 1 spell slot, but you can’t do so again until you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 5,
             "_syncSourceId": 66
           },
@@ -54668,7 +54670,6 @@
             "desc": "The might of the elements flows through you. You gain one of the following options of your choice.\n\nPotent Spellcasting\nAdd your Wisdom modifier to the damage you deal with any Druid cantrip.\n\nPrimal Strike\nOnce on each of your turns when you hit a creature with an attack roll using a weapon or a Beast form’s attack in Wild Shape, you can cause the target to take an extra 1d8 Cold, Fire, Lightning, or Thunder damage (choose when you hit).",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 7,
             "_syncSourceId": 66
           },
@@ -54687,7 +54688,6 @@
             "desc": "You have Darkvision with a range of 120 feet.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -54705,7 +54705,6 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -54723,7 +54722,6 @@
             "desc": "Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           }
         ],
@@ -62020,8 +62018,7 @@
             "notes": "",
             "desc": "Your training with weapons allows you to use the mastery properties of two kinds of weapons of your choice with which you have proficiency, such as Longswords and Javelins.\nWhenever you finish a Long Rest, you can change the kinds of weapons you chose. For example, you could switch to using the mastery properties of Halberds and Flails.",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Fighting Style",
@@ -62039,8 +62036,7 @@
             "notes": "",
             "desc": "You gain a Fighting Style feat of your choice (see chapter 5 for feats). Instead of choosing one of those feats, you can choose the option below.\nBlessed Warrior. You learn two Cleric cantrips of your choice (see the Cleric class’s section for a list of Cleric spells). Guidance and Sacred Flame are recommended. The chosen cantrips count as Paladin spells for you, and Charisma is your spellcasting ability for them. Whenever you gain a Paladin level, you can replace one of these cantrips with another Cleric cantrip.",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Paladin’s Smite",
@@ -62058,8 +62054,7 @@
             "notes": "",
             "desc": "You always have the Divine Smite spell prepared. In addition, you can cast it without expending a spell slot, but you must finish a Long Rest before you can cast it in this way again.",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "CD: Channel Chaos (Chaotic Wounds)",
@@ -62140,8 +62135,7 @@
             "notes": "",
             "desc": "You can call on the aid of an otherworldly steed. You always have the Find Steed spell prepared.\nYou can also cast the spell once without expending a spell slot, and you regain the ability to do so when you finish a Long Rest.",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Aura of Chaos",
@@ -62435,7 +62429,6 @@
             "desc": "You have learned to cast spells through prayer and meditation. See chapter 7 for the rules on spellcasting. The information below details how you use those rules with Paladin spells, which appear in the Paladin spell list later in the class’s description.\nSpell Slots. The Paladin Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.\nPrepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Paladin spells. Heroism and Searing Smite are recommended.\nThe number of spells on your list increases as you gain Paladin levels, as shown in the Prepared Spells column of the Paladin Features table. Whenever that number increases, choose additional Paladin spells until the number of spells on your list matches the number in the Paladin Features table. The chosen spells must be of a level for which you have spell slots. For example, if you’re a level 5 Paladin, your list of prepared spells can include six Paladin spells of level 1 or 2 in any combination.\nIf another Paladin feature gives you spells that you always have prepared, those spells don’t count against the number of spells you can prepare with this feature, but those spells otherwise count as Paladin spells for you.\nChanging Your Prepared Spells. Whenever you finish a Long Rest, you can replace one spell on your list with another Paladin spell for which you have spell slots.\nSpellcasting Ability. Charisma is your spellcasting ability for your Paladin spells.\nSpellcasting Focus. You can use a Holy Symbol as a Spellcasting Focus for your Paladin spells.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 70
           },
@@ -62454,7 +62447,6 @@
             "desc": "You can channel divine energy directly from the Outer Planes, using it to fuel magical effects. You start with one such effect: Divine Sense, which is described below. Other Paladin features give additional Channel Divinity effect options. Each time you use this class’s Channel Divinity, you choose which effect from this class to create.\n\nYou can use this class’s Channel Divinity twice. You regain one of its expended uses when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest. You gain an additional use when you reach Paladin level 11.\n\nIf a Channel Divinity effect requires a saving throw, the DC equals the spell save DC from this class’s Spellcasting feature.\n\nDivine Sense. As a Bonus Action, you can open your awareness to detect Celestials, Fiends, and Undead. For the next 10 minutes or until you have the Incapacitated condition, you know the location of any creature of those types within 60 feet of yourself, and you know its creature type. Within the same radius, you also detect the presence of any place or object that has been consecrated or desecrated, as with the Hallow spell.\n\nChannel Chaos. As a Bonus Action, you can imbue one weapon that you are holding with Chaotic energy, transforming it into a Chaos Weapon able to inflict Chaotic Wounds via a Chaotic Wound Die.  It remains transformed in this way for 10 minutes or until you have the Incapacitated condition, use this feature again, you die, or the weapon is more than 5 feet away from you for 1 minute or more. You can end this effect early (no action required).\n\nWhile transformed into a Chaos Weapon, a weapon emits Dim Light in a 5-foot Emanation, and whenever you deal damage with the weapon, it can deal your choice of Fire damage or its normal damage type.\n\nChaotic Wound Die. You have one Chaos Wound Die, which is a d6 at level 3.\n\nInflicting Chaotic Wounds. Once per turn when you hit a creature with your Chaos Weapon, you can deal extra Fire damage equal to one roll of your Chaotic Wound Die and give the target a Chaotic wound.\n\nWhile wounded in this way, the target takes Fire damage equal to one roll of your Chaos Wound Die at the start of each of its turns. This effect lasts for 1 minute, until the target regains Hit Points, or until the target or a creature within 5 feet of the target takes an action to stanch the wound. A target can be affected by only one instance of this feature at a time.\n\nYou can use this feature a number of times equal to your Constitution modifier (minimum of once). You regain all expended uses when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 70
           },
@@ -62473,7 +62465,6 @@
             "desc": "You gain a Paladin subclass of your choice. The Oath of Devotion, Oath of Glory, Oath of the Ancients, and Oath of Vengeance subclasses are detailed after this class’s description. A subclass is a specialization that grants you features at certain Paladin levels. For the rest of your career, you gain each of your subclass’s features that are of your Paladin level or lower.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 70
           },
@@ -62492,7 +62483,6 @@
             "desc": "You gain the Ability Score Improvement feat (see chapter 5) or another feat of your choice for which you qualify. You gain this feature again at Paladin levels 8, 12, and 16.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 4,
             "_syncSourceId": 70
           },
@@ -62511,7 +62501,6 @@
             "desc": "You can attack twice instead of once whenever you take the Attack action on your turn.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 5,
             "_syncSourceId": 70
           },
@@ -62530,7 +62519,6 @@
             "desc": "Your Constitution score increases by 2, and your Strength score increases by 1.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -62548,7 +62536,6 @@
             "desc": "Leonin are typically over 6 feet tall, with some standing over 7 feet. Your size is Medium.\nHere’s how to determine your height and weight randomly, starting with rolling a size modifier:\n- Size modifier = 2d10\n- Height = 5 feet + 6 inches + your size modifier in inches\n- Weight in pounds = 180 + (2d6 × your size modifier)",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -62566,7 +62553,6 @@
             "desc": "Your base walking speed is 35 feet.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -62584,7 +62570,6 @@
             "desc": "You can see in dim light within 60 feet of you as if it were bright light and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -62602,7 +62587,6 @@
             "desc": "You have proficiency in one of the following skills of your choice: Athletics, Intimidation, Perception, or Survival.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -62620,7 +62604,6 @@
             "desc": "You can speak, read, and write Common and Leonin.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           }
         ],
@@ -62741,28 +62724,6 @@
             "_subclassSync": true,
             "_syncSourceId": 93,
             "maxFormula": "con"
-          },
-          {
-            "key": "cls_chaos_knight_chaos_wound_die",
-            "label": "Chaos Wound Die",
-            "max": 4,
-            "cur": 4,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "CON"
-          },
-          {
-            "key": "race_leonin_darkvision",
-            "label": "Darkvision",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_raceSync": true
           }
         ],
         "_slotUsed": {},
@@ -63547,28 +63508,6 @@
             "_subclassSync": true,
             "_syncSourceId": 93,
             "maxFormula": "con"
-          },
-          {
-            "key": "cls_chaos_knight_chaos_wound_die",
-            "label": "Chaos Wound Die",
-            "max": 4,
-            "cur": 4,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 70,
-            "maxFormula": "CON"
-          },
-          {
-            "key": "race_leonin_darkvision",
-            "label": "Darkvision",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_raceSync": true
           }
         ],
         "saveDcEffective": 14,
@@ -64340,17 +64279,6 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 255
-          },
-          {
-            "key": "race_gnome_gnomish_lineage",
-            "label": "Gnomish Lineage",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF"
           }
         ],
         "actions": [
@@ -64795,8 +64723,7 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": true,
-            "_libHasMode": true,
-            "_classSync": true
+            "_libHasMode": true
           },
           {
             "name": "Font of Magic",
@@ -64814,8 +64741,7 @@
             "notes": "",
             "desc": "You can tap into the wellspring of magic within yourself. This wellspring is represented by Sorcery Points, which allow you to create a variety of magical effects.\n\nYou have 2 Sorcery Points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer Features table. You can’t have more Sorcery Points than the number shown in the table for your level. You regain all expended Sorcery Points when you finish a Long Rest.\n\nYou can use your Sorcery Points to fuel the options below, along with other features, such as Metamagic, that use those points.\n\nConverting Spell Slots to Sorcery Points. You can expend a spell slot to gain a number of Sorcery Points equal to the slot’s level (no action required).\n\nCreating Spell Slots. As a Bonus Action, you can transform unexpended Sorcery Points into one spell slot. The Creating Spell Slots table shows the cost of creating a spell slot of a given level, and it lists the minimum Sorcerer level you must be to create a slot. You can create a spell slot no higher than level 5.\n\nAny spell slot you create with this feature vanishes when you finish a Long Rest.\n\nCreating Spell Slots\n  Spell Slot Level | Sorcery Point Cost | Min. Sorcerer Level\n  1 | 2 | 2\n  2 | 3 | 3\n  3 | 5 | 5\n  4 | 6 | 7\n  5 | 7 | 9",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Metamagic",
@@ -64833,8 +64759,7 @@
             "notes": "",
             "desc": "Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.\n\nYou can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.\n\nWhenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Sorcerous Restoration",
@@ -64852,8 +64777,7 @@
             "notes": "",
             "desc": "When you finish a Short Rest, you can regain expended Sorcery Points, but no more than a number equal to half your Sorcerer level (round down). Once you use this feature, you can’t do so again until you finish a Long Rest.",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Harmonic Spirits",
@@ -64869,9 +64793,10 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You gain one spirit of your choice. A list of the available spirits can be found at the end of the class description. When you gain certain Sojourner levels, you gain additional spirits of your choice, as shown in the Spirits column of the Sojourner table.</p><p>Detailed under each spirit is a cantrip you learn, associated with that spirit. These cantrips are Sojourner cantrips for you, and don't count against the total number of cantrips you know.</p><hr><h3>Expanded Spells</h3><p>Each spirit has its own expanded list of spells you can choose from when you learn a Sojourner spell.<br><br></p><h3>Spiritual Drift</h3><p>Your spirits drift with you, meaning they share your space and move with you at all times. As a bonus action on your turn, you can have one of your spirits move to drift with a willing creature you can see within 120 feet of you. You can have any of your spirits return to drift with you on your turn (no action required). A spirit will also return to you if another creature they're drifting with is ever further than 120 feet away from you.</p><p>Each spirit has a benefit it provides to any creature it drifts with, detailed as part of each spirit’s description.<br><br></p><h3>Harmonic Form</h3><p>Your spirits are illusions; they count as neither creatures nor objects, but are visible to you and all other creatures. You decide on their forms, although they can be no larger than the space of a creature they're drifting with, and they don't obscure that creature's vision. They can't interact with any objects or creatures or move beyond the space of a creature they're drifting with, and a spirit drifting with an invisible or otherwise hidden creature will also be obscured from view.</p><div><br></div><div><hr></div><div><br></div><h2>Harmonic Spirits</h2><div><br></div><div><details open=\"\"><summary>The Companion</summary><div class=\"det-body\"><p>An essence of friendship, which encourages you to appreciate company.</p><p>- Bonus Cantrip.&nbsp;You learn the message cantrip.</p><p>- Roaming Spirit. The creature the Companion is drifting with gains an aura of popularity. It gains advantage on all charisma checks and saving throws.<br></p><hr><p><b>Expanded Spells:</b></p><p></p><p></p><p></p><table class=\"fd-table\"><thead><tr><th>Sojourner Level</th><th>Spells</th></tr></thead><tbody><tr><td>&nbsp;1st</td><td>&nbsp;Purify Food and Drink</td></tr><tr><td>&nbsp;5th</td><td>&nbsp;Enthrall</td></tr><tr><td>&nbsp;9th</td><td>&nbsp;Create Food and Water</td></tr><tr><td>&nbsp;13th</td><td>&nbsp;Hallucinatory Terrain</td></tr><tr><td>&nbsp;17th</td><td>&nbsp;Mass Cure Wounds</td></tr></tbody></table></div></details><p></p></div><div><br></div><div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Empyrean</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">An agent of light, which guides you to aid others.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">- Bonus Cantrip. You learn the sacred flame cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184);\">- Luminous Spirit. </span>The creature the empyrean is drifting with can begin shedding bright light on its turn in a 30-foot radius sphere and dim light for an additional 30 feet, or stop shedding the same light (no action required).</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Healing Word</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Prayer of Healing</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Mass Healing Word</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Aura of Life</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Summon Celestial</td></tr></tbody></table></div></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Fallen</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">A being of death, which reminds you of mortality.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">- Bonus Cantrip. You learn the Chill Touch cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- Dying Spirit. </span>The creature the fallen is drifting with has advantage on death saving throws.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Inflect Wounds</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Ray of Enfeeblement</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Summon Undead</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Death Ward</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Contagion</td></tr></tbody></table></div></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Hellion</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">An omen of suffering, who enjoys inflicting misery.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">- Bonus Cantrip. You learn the Poison Spray cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184); scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">-&nbsp;</span>Merciless Spirit. Once per turn, when the creature the Hellion is drifting with deals damage, it can choose one creature that suffered that damage and deal additional damage to that creature equal to your proficiency bonus.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></b></p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Hellish Rebuke</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Crown of Madness</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Stinking Cloud</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Summon Greater Demon</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Cloudkill</td></tr></tbody></table></div></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Tectonic</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">A force of earth, who encourages you to remain steadfast.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">- Bonus Cantrip. You learn the Blade Ward cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184); scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">-&nbsp;</span>Enduring Spirit. The creature the Tectonic is drifting with gains temporary hit points equal to your proficiency bonus when the tectonic first drifts with it and at the start of each of its turns. These temporary hit points only last while the tectonic is drifting with it.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Earth Tremor</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Earthbind</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Erupting Earth</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Stoneskin</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Wall of Stone</td></tr></tbody></table></div></slot></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Torrent</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">An essence of water, who teaches you to flow.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184);\">- Bonus Cantrip. </span>You learn the Soak cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184); scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">-&nbsp;</span>Flowing Spirit. The creature the torrent is drifting with has a climbing and swimming speed equal to their walking speed, and can breathe air and water.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Create or Destroy Water</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Moonbeam</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Tidal Wave</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Watery Sphere</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Maelstrom</td></tr></tbody></table></div></slot></slot></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Verdant</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">An agent of nature, who reminds you to appreciate life.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- Bonus Cantrip. </span>You learn the Thorn Whip cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184); scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">-&nbsp;</span>Lush Spirit. The creature the verdant is drifting with ignores non-magical difficult terrain.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Entangle</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Spike Growth</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Summon Fey</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Dominate Beast</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Circle of Power</td></tr></tbody></table></div></slot></slot></slot></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Wildfire</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">An entity of ember, who encourages you to unleash the flames.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- Bonus Cantrip. </span>You learn the Fire Bolt cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><span style=\"color: rgb(154, 163, 184); scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">-&nbsp;</span>Blazing Spirit. The creature the wildfire is drifting with gains a bonus to its initiative rolls. This bonus is equal to your proficiency bonus.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Burning Hands</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Pyrotechnics</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Fireball</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Wall of Fire</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Immolation</td></tr></tbody></table></div></slot></slot></slot></slot></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Wrym</summary><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">An omen of power, who roars with strength.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- Bonus Cantrip. </span>You learn the Resistance cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- </span>Prideful Spirit. The creature the wyrm is drifting with has advantage on saving throws against being charmed or frightened.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Chromatic Orb</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Dragons Breath</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Protection from Energy</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Fire Shield</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Summon Dragon Spirit</td></tr></tbody></table></div></slot></slot></slot></slot></slot></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br></div></div></div></div></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\" open=\"\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Zephyr</summary><span style=\"color: rgb(232, 234, 240); font-size: 12px; font-weight: 600; background-color: rgb(22, 27, 39);\"></span><span style=\"color: rgb(232, 234, 240); font-size: 12px; font-weight: 600; background-color: rgb(22, 27, 39);\"></span><slot id=\"details-content\" pseudo=\"details-content\" style=\"display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><slot id=\"details-content\" pseudo=\"details-content\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); display: block;\"><div class=\"det-body\" style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">An essence of wind, who encourages you to run free.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- Bonus Cantrip. </span>You learn the Gust cantrip.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><span style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">- </span>Roaming Spirit. The creature the zephyr is drifting with becomes swift and sure-footed. Its speed increases by 5 feet, and opportunity attacks against it have disadvantage.</p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"><b style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\">Expanded Spells:</b></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><table style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\" class=\"fd-table\"><thead style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Sojourner Level</th><th style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(232, 234, 240); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); border-color: rgb(37, 45, 63); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">Spells</th></tr></thead><tbody style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;1st</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Longstrider</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;5th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Gust of Wind</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;9th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Wind Wall</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;13th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Freedom of Movement</td></tr><tr style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;17th</td><td style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\">&nbsp;Control Winds</td></tr></tbody></table></div></slot></slot></slot></slot></slot></slot></slot></slot></slot></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><br></div></div></div></div></div></div>",
+            "desc": "You gain one spirit of your choice. A list of the available spirits can be found at the end of the class description. When you gain certain Sojourner levels, you gain additional spirits of your choice, as shown in the Spirits column of the Sojourner table.Detailed under each spirit is a cantrip you learn, associated with that spirit. These cantrips are Sojourner cantrips for you, and don't count a",
             "fav": false,
-            "used": false
+            "used": false,
+            "_classSync": true
           },
           {
             "name": "Tides of Chaos",
@@ -65115,7 +65040,6 @@
             "desc": "You have Darkvision with a range of 60 feet.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_libName": "Darkvision",
             "_syncMinLevel": 1
           },
@@ -65153,7 +65077,6 @@
             "desc": "Drawing from your innate magic, you can cast spells.\n\nCantrips. You know four Sorcerer cantrips of your choice. Whenever you gain a Sorcerer level, you can replace one of your cantrips from this feature with another Sorcerer cantrip of your choice.\n\nWhen you reach Sorcerer levels 4 and 10, you learn another Sorcerer cantrip of your choice, as shown in the Cantrips column of the Sorcerer Features table.\n\nSpell Slots. The Sorcerer Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.\n\nPrepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Sorcerer spells.\n\nThe number of spells on your list increases as you gain Sorcerer levels, as shown in the Prepared Spells column of the Sorcerer Features table. Whenever that number increases, choose additional Sorcerer spells until the number of spells on your list matches the number in the Sorcerer Features table. The chosen spells must be of a level for which you have spell slots. For example, if you’re a level 3 Sorcerer, your list of prepared spells can include six Sorcerer spells of level 1 or 2 in any combination.\n\nIf another Sorcerer feature gives you spells that you always have prepared, those spells don’t count against the number of spells you can prepare with this feature, but those spells otherwise count as Sorcerer spells for you.\n\nChanging Your Prepared Spells. Whenever you gain a Sorcerer level, you can replace one spell on your list with another Sorcerer spell for which you have spell slots.\n\nSpellcasting Ability. Charisma is your spellcasting ability for your Sorcerer spells.\n\nSpellcasting Focus. You can use an Arcane Focus as a Spellcasting Focus for your Sorcerer spells.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 61
           },
@@ -65172,7 +65095,6 @@
             "desc": "You gain a Sorcerer subclass of your choice. A subclass is a specialization that grants you features at certain Sorcerer levels. For the rest of your career, you gain each of your subclass’s features that are of your Sorcerer level or lower.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 61
           },
@@ -65191,7 +65113,6 @@
             "desc": "You gain the Ability Score Improvement feat or another feat of your choice for which you qualify. You gain this feature again at Sorcerer levels 8, 12, and 16.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 4,
             "_syncSourceId": 61
           },
@@ -65210,7 +65131,6 @@
             "desc": "Metamagic Options\nThe following options are available to your Metamagic feature. The options are presented in alphabetical order.\n\nCareful Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell’s full force. To do so, spend 1 Sorcery Point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell, and it takes no damage if it would normally take half damage on a successful save.\n\nDistant Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that has a range of at least 5 feet, you can spend 1 Sorcery Point to double the spell’s range. Or when you cast a spell that has a range of Touch, you can spend 1 Sorcery Point to make the spell’s range 30 feet.\n\nEmpowered Spell\nCost: 1 Sorcery Point\n\nWhen you roll damage for a spell, you can spend 1 Sorcery Point to reroll a number of the damage dice up to your Charisma modifier (minimum of one), and you must use the new rolls.\n\nYou can use Empowered Spell even if you’ve already used a different Metamagic option during the casting of the spell.\n\nExtended Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that has a duration of 1 minute or longer, you can spend 1 Sorcery Point to double its duration to a maximum duration of 24 hours.\n\nIf the affected spell requires Concentration, you have Advantage on any saving throw you make to maintain that Concentration.\n\nHeightened Spell\nCost: 2 Sorcery Points\n\nWhen you cast a spell that forces a creature to make a saving throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.\n\nQuickened Spell\nCost: 2 Sorcery Points\n\nWhen you cast a spell that has a casting time of an action, you can spend 2 Sorcery Points to change the casting time to a Bonus Action for this casting. You can’t modify a spell in this way if you’ve already cast a level 1+ spell on the current turn, nor can you cast a level 1+ spell on this turn after modifying a spell in this way.\n\nSeeking Spell\nCost: 1 Sorcery Point\n\nIf you make an attack roll for a spell and miss, you can spend 1 Sorcery Point to reroll the d20, and you must use the new roll.\n\nYou can use Seeking Spell even if you’ve already used a different Metamagic option during the casting of the spell.\n\nSubtle Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell, you can spend 1 Sorcery Point to cast it without any Verbal, Somatic, or Material components, except Material components that are consumed by the spell or that have a cost specified in the spell.\n\nTransmuted Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that deals a type of damage from the following list, you can spend 1 Sorcery Point to change that damage type to one of the other listed types: Acid, Cold, Fire, Lightning, Poison, Thunder.\n\nTwinned Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 61
           },
@@ -65229,7 +65149,6 @@
             "desc": "You have Advantage on Intelligence, Wisdom, and Charisma saving throws.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -65247,7 +65166,6 @@
             "desc": "You are part of a lineage that grants you supernatural abilities. Choose one of the following options; whichever one you choose, Intelligence, Wisdom, or Charisma is your spellcasting ability for the spells you cast with this trait (choose the ability when you select the lineage):\n\nForest Gnome. You know the Minor Illusion cantrip. You also always have the Speak with Animals spell prepared. You can cast it without a spell slot a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest. You can also use any spell slots you have to cast the spell.\n\nRock Gnome. You know the Mending and Prestidigitation cantrips. In addition, you can spend 10 minutes casting Prestidigitation to create a Tiny clockwork device (AC 5, 1 HP), such as a toy, fire starter, or music box. When you create the device, you determine its function by choosing one effect from Prestidigitation; the device produces that effect whenever you or another creature takes a Bonus Action to activate it with a touch. If the chosen effect has options within it, you choose one of those options for the device when you create it. For example, if you choose the spell’s ignite-extinguish effect, you determine whether the device ignites or extinguishes fire; the device doesn’t do both. You can have three such devices in existence at a time, and each falls apart 8 hours after its creation or when you dismantle it with a touch as a Utilize action.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           }
         ],
@@ -68091,30 +68009,6 @@
             "_sourceBook": "GH"
           },
           {
-            "name": "Enthrall",
-            "level": 2,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "hit": "WIS",
-            "desc": "You weave a distracting string of words, causing creatures of your choice that you can see within range to make a Wisdom saving throw. Any creature you or your companions are fighting automatically succeeds on this save. On a failed save, a target has a −10 penalty to Wisdom (Perception) checks and Passive Perception until the spell ends.",
-            "concentration": true,
-            "area": "",
-            "source": "Bard",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 158,
-            "_freecasted": false,
-            "_singleUsed": false,
-            "_sourceBook": "PHB",
-            "effect": "",
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncMinLevel": 5
-          },
-          {
             "name": "Fiend Flesh",
             "level": 2,
             "school": "Transmutation",
@@ -68660,30 +68554,6 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_sourceBook": "XGTE"
-          },
-          {
-            "name": "Ray of Enfeeblement",
-            "level": 2,
-            "school": "Necromancy",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "hit": "CON",
-            "desc": "A beam of enervating energy shoots from you toward a creature within range. The target must make a Constitution saving throw. On a successful save, the target has Disadvantage on the next attack roll it makes until the start of your next turn.\nOn a failed save, the target has Disadvantage on Strength-based D20 Tests for the duration. During that time, it also subtracts 1d8 from all its damage rolls. The target repeats the save at the end of each of its turns, ending the spell on a success.",
-            "concentration": true,
-            "area": "",
-            "source": "Warlock",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 158,
-            "_freecasted": false,
-            "_singleUsed": false,
-            "_sourceBook": "PHB",
-            "effect": "",
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncMinLevel": 5
           },
           {
             "name": "Recall",
@@ -70547,29 +70417,6 @@
             "_sourceBook": "PHB"
           },
           {
-            "name": "Hallucinatory Terrain",
-            "level": 4,
-            "school": "Illusion",
-            "time": "10 minutes",
-            "range": "300 feet",
-            "area": "150ft. Cube",
-            "components": "V, S, M (a mushroom)",
-            "duration": "24 h",
-            "desc": "You make natural terrain in a 150-foot Cube in range look, sound, and smell like another sort of natural terrain. Thus, open fields or a road can be made to resemble a swamp, hill, crevasse, or some other difficult or impassable terrain. A pond can be made to seem like a grassy meadow, a precipice like a gentle slope, or a rock-strewn gully like a wide and smooth road. Manufactured structures, equipment, and creatures within the area aren’t changed.\nThe tactile characteristics of the terrain are unchanged, so creatures entering the area are likely to notice the illusion. If the difference isn’t obvious by touch, a creature examining the illusion can take the Study action to make an Intelligence (Investigation) check against your spell save DC to disbelieve it. If a creature discerns that the terrain is illusory, the creature sees a vague image superimposed on the real terrain.",
-            "hit": "",
-            "source": "Bard",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 158,
-            "_freecasted": false,
-            "_singleUsed": false,
-            "_sourceBook": "PHB",
-            "effect": "",
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncMinLevel": 13
-          },
-          {
             "name": "Ice Storm",
             "level": 4,
             "school": "Evocation",
@@ -71349,29 +71196,6 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_sourceBook": "GH"
-          },
-          {
-            "name": "Mass Cure Wounds",
-            "level": 5,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "60 feet",
-            "area": "30ft. radius Sphere",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "desc": "A wave of healing energy washes out from a point you can see within range. Choose up to six creatures in a 30-foot-radius Sphere centered on that point. Each target regains Hit Points equal to 5d8 plus your spellcasting ability modifier.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 1d8 for each spell slot level above 5.",
-            "hit": "",
-            "source": "Bard",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 158,
-            "_freecasted": false,
-            "_singleUsed": false,
-            "_sourceBook": "PHB",
-            "effect": "",
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncMinLevel": 17
           },
           {
             "name": "Mirrored Agony",
@@ -72809,892 +72633,6 @@
             "_raceSync": true,
             "_syncSourceName": "Gnomish Lineage",
             "group": "Forest"
-          },
-          {
-            "name": "Purify Food",
-            "level": 1,
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Drink",
-            "level": 1,
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Create Food",
-            "level": 9,
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Water",
-            "level": 9,
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Healing Word",
-            "level": 1,
-            "school": "Abjuration",
-            "time": "BA",
-            "range": "60 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "desc": "A creature of your choice that you can see within range regains Hit Points equal to 2d4 plus your spellcasting ability modifier.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 2d4 for each spell slot level above 1.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Prayer of Healing",
-            "level": 2,
-            "school": "Abjuration",
-            "time": "10 minutes",
-            "range": "30 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "desc": "Up to five creatures of your choice who remain within range for the spell’s entire casting gain the benefits of a Short Rest and also regain 2d8 Hit Points. A creature can’t be affected by this spell again until that creature finishes a Long Rest.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 1d8 for each spell slot level above 2.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Chaos Knight",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Mass Healing Word",
-            "level": 3,
-            "school": "Abjuration",
-            "time": "BA",
-            "range": "60 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "desc": "Up to six creatures of your choice that you can see within range regain Hit Points equal to 2d4 plus your spellcasting ability modifier.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 1d4 for each spell slot level above 3.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Aura of Life",
-            "level": 4,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Self",
-            "area": "30ft. Emanation",
-            "components": "V",
-            "duration": "Concentration, up to 10 min",
-            "desc": "An aura radiates from you in a 30-foot Emanation for the duration. While in the aura, you and your allies have Resistance to Necrotic damage, and your Hit Point maximums can’t be reduced. If an ally with 0 Hit Points starts its turn in the aura, that ally regains 1 Hit Point.",
-            "concentration": true,
-            "hit": "",
-            "effect": "",
-            "source": "Chaos Knight",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Summon Celestial",
-            "level": 5,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "90 feet",
-            "components": "V, S, M (a reliquary worth 500+ GP)",
-            "duration": "Concentration, up to 1 h",
-            "desc": "You call forth a Celestial spirit. It manifests in an angelic form in an unoccupied space that you can see within range and uses the Celestial Spirit stat block. When you cast the spell, choose Avenger or Defender. Your choice determines certain details in its stat block. The creature disappears when it drops to 0 Hit Points or when the spell ends.\nThe creature is an ally to you and your allies. In combat, the creature shares your Initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don’t issue any, it takes the Dodge action and uses its movement to avoid danger.\n───────────────────\nCELESTIAL SPIRIT\nLarge Celestial, Neutral\nAC 11 + the spell’s level + 2 (Defender only)\nHP 40 + 10 for each spell level above 5\nSpeed 30 ft., Fly 40 ft.\nMOD\tSAVE\nSTR\t16\t+3\t+3\nDEX\t14\t+2\t+2\nCON\t16\t+3\t+3\nMOD\tSAVE\nINT\t10\t+0\t+0\nWIS\t14\t+2\t+2\nCHA\t16\t+3\t+3\nResistances Radiant\nImmunities Charmed, Frightened\nSenses Darkvision 60 ft.; Passive Perception 12\nLanguages Celestial, understands the languages you know\nCR None (XP 0; PB equals your Proficiency Bonus)\nActions\nMultiattack. The spirit makes a number of attacks equal to half this spell’s level (round down).\nRadiant Bow (Avenger Only). Ranged Attack Roll: Bonus equals your spell attack modifier, range 600 ft. Hit: 2d6 + 2 + the spell’s level Radiant damage.\nRadiant Mace (Defender Only). Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d10 + 3 + the spell’s level Radiant damage, and the spirit can choose itself or another creature it can see within 10 feet of the target. The chosen creature gains 1d10 Temporary Hit Points.\nHealing Touch (1/Day). The spirit touches another creature. The target regains Hit Points equal to 2d8 + the spell’s level.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Chaos Knight",
-            "_sourceBook": "TCOE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Inflect Wounds",
-            "level": 1,
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Summon Undead",
-            "level": 3,
-            "school": "Necromancy",
-            "time": "A",
-            "range": "90 feet",
-            "area": "5ft. Emanation",
-            "components": "V, S, M (a gilded skull worth 300+ GP)",
-            "duration": "Concentration, up to 1 h",
-            "hit": "CON",
-            "effect": "1d10 Force · Frightened/Paralyzed ↑",
-            "desc": "You call forth an Undead spirit. It manifests in an unoccupied space that you can see within range and uses the Undead Spirit stat block. When you cast the spell, choose the creature’s form: Ghostly, Putrid, or Skeletal. The spirit resembles an Undead creature with the chosen form, which determines certain details in its stat block. The creature disappears when it drops to 0 Hit Points or when the spell ends.\nThe creature is an ally to you and your allies. In combat, the creature shares your Initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don’t issue any, it takes the Dodge action and uses its movement to avoid danger.\n───────────────────\nUNDEAD SPIRIT\nMedium Undead, Neutral\nAC 11 + the spell’s level\nHP 30 (Ghostly and Putrid only) or 20 (Skeletal only) + 10 for each spell level above 3\nSpeed 30 ft.; Fly 40 ft. (hover; Ghostly only)\nMOD\tSAVE\nSTR\t12\t+1\t+1\nDEX\t16\t+3\t+3\nCON\t15\t+2\t+2\nMOD\tSAVE\nINT\t4\t−3\t−3\nWIS\t10\t+0\t+0\nCHA\t9\t−1\t−1\nImmunities Necrotic, Poison; Exhaustion, Frightened, Paralyzed, Poisoned\nSenses Darkvision 60 ft.; Passive Perception 10\nLanguages Understands the languages you know\nCR None (XP 0; PB equals your Proficiency Bonus)\nTraits\nFestering Aura (Putrid Only). Constitution Saving Throw: DC equals your spell save DC, any creature (other than you) that starts its turn within a 5-foot Emanation originating from the spirit. Failure: The creature has the Poisoned condition until the start of its next turn.\nIncorporeal Passage (Ghostly Only). The spirit can move through other creatures and objects as if they were Difficult Terrain. If it ends its turn inside an object, it is shunted to the nearest unoccupied space and takes 1d10 Force damage for every 5 feet traveled.\nActions\nMultiattack. The spirit makes a number of attacks equal to half this spell’s level (round down).\nDeathly Touch (Ghostly Only). Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d8 + 3 + the spell’s level Necrotic damage, and the target has the Frightened condition until the end of its next turn.\nGrave Bolt (Skeletal Only). Ranged Attack Roll: Bonus equals your spell attack modifier, range 150 ft. Hit: 2d4 + 3 + the spell’s level Necrotic damage.\nRotting Claw (Putrid Only). Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 1d6 + 3 + the spell’s level Slashing damage. If the target has the Poisoned condition, it has the Paralyzed condition until the end of its next turn.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
-            "concentration": true,
-            "source": "Warlock",
-            "_sourceBook": "TCOE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Death Ward",
-            "level": 4,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S",
-            "duration": "8 h",
-            "desc": "You touch a creature and grant it a measure of protection from death. The first time the target would drop to 0 Hit Points before the spell ends, the target instead drops to 1 Hit Point, and the spell ends.\nIf the spell is still in effect when the target is subjected to an effect that would kill it instantly without dealing damage, that effect is negated against the target, and the spell ends.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Chaos Knight",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Contagion",
-            "level": 5,
-            "school": "Necromancy",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S",
-            "duration": "7 d",
-            "hit": "CON",
-            "effect": "11d8 Necrotic · Poisoned",
-            "desc": "Your touch inflicts a magical contagion. The target must succeed on a Constitution saving throw or take 11d8 Necrotic damage and have the Poisoned condition. Also, choose one ability when you cast the spell. While Poisoned, the target has Disadvantage on saving throws made with the chosen ability.\nThe target must repeat the saving throw at the end of each of its turns until it gets three successes or failures. If the target succeeds on three of these saves, the spell ends on the target. If the target fails three of the saves, the spell lasts for 7 days on it.\nWhenever the Poisoned target receives an effect that would end the Poisoned condition, the target must succeed on a Constitution saving throw, or the Poisoned condition doesn’t end on it.",
-            "area": "",
-            "source": "Cleric",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Hellish Rebuke",
-            "level": 1,
-            "school": "Evocation",
-            "time": "R",
-            "range": "60 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "hit": "DEX",
-            "effect": "2d10 Fire ↑",
-            "desc": "The creature that damaged you is momentarily surrounded by green flames. It makes a Dexterity saving throw, taking 2d10 Fire damage on a failed save or half as much damage on a successful one.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d10 for each spell slot level above 1.",
-            "area": "",
-            "source": "Warlock",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Crown of Madness",
-            "level": 2,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "120 feet",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "hit": "WIS",
-            "effect": "Charmed",
-            "desc": "One creature that you can see within range must succeed on a Wisdom saving throw or have the Charmed condition for the duration. The creature succeeds automatically if it isn’t Humanoid.\nA spectral crown appears on the Charmed target's head, and it must use its action before moving on each of its turns to make a melee attack against a creature other than itself that you mentally choose. The target can act normally on its turn if you choose no creature or if no creature is within its reach. The target repeats the save at the end of each of its turns, ending the spell on itself on a success.\nOn your later turns, you must take the Magic action to maintain control of the target, or the spell ends.",
-            "concentration": true,
-            "area": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Stinking Cloud",
-            "level": 3,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "90 feet",
-            "area": "20ft. radius Sphere",
-            "components": "V, S, M (a rotten egg)",
-            "duration": "Concentration, up to 1 min",
-            "hit": "CON",
-            "effect": "Poisoned",
-            "desc": "You create a 20-foot-radius Sphere of yellow, nauseating gas centered on a point within range. The cloud is Heavily Obscured. The cloud lingers in the air for the duration or until a strong wind (such as the one created by Gust of Wind) disperses it.\nEach creature that starts its turn in the Sphere must succeed on a Constitution saving throw or have the Poisoned condition until the end of the current turn. While Poisoned in this way, the creature can’t take an action or a Bonus Action.",
-            "concentration": true,
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Summon Greater Demon",
-            "level": 4,
-            "school": "Conjuration",
-            "source": "Warlock",
-            "time": "Action",
-            "range": "60 feet",
-            "components": "V, S, M (a vial of blood from a humanoid killed within the past 24 hours)",
-            "duration": "Concentration, up to 1 hour",
-            "concentration": true,
-            "upcast": "When you cast this spell using a spell slot of 5th level or higher, the challenge rating increases by 1 for each slot level above 4th.",
-            "desc": "You utter foul words, summoning one demon from the chaos of the Abyss. You choose the demon's type, which must be one of challenge rating 5 or lower, such as a shadow demon or a barlgura. The demon appears in an unoccupied space you can see within range, and the demon disappears when it drops to 0 hit points or when the spell ends.\nRoll initiative for the demon, which has its own turns. When you summon it and on each of your turns thereafter, you can issue a verbal command to it (requiring no action on your part), telling it what it must do on its next turn. If you issue no command, it spends its turn attacking any creature within reach that has attacked it.\nAt the end of each of the demon's turns, it makes a Charisma saving throw. The demon has disadvantage on this saving throw if you say its true name. On a failed save, the demon continues to obey you. On a successful save, your control of the demon ends for the rest of the duration, and the demon spends its turns pursuing and attacking the nearest non-demons to the best of its ability. If you stop concentrating on the spell before it reaches its full duration, an uncontrolled demon doesn't disappear for 1d6 rounds if it still has hit points.\nAs part of casting the spell, you can form a circle on the ground with the blood used as a material component. The circle is large enough to encompass your space. While the spell lasts, the summoned demon can't cross the circle or harm it, and it can't target anyone within it. Using the material component in this manner consumes it when the spell ends.",
-            "area": "",
-            "hit": "CHA",
-            "effect": "1d6 heal",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Cloudkill",
-            "level": 5,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "120 feet",
-            "area": "20ft. radius Sphere",
-            "components": "V, S",
-            "duration": "Concentration, up to 10 min",
-            "hit": "CON",
-            "effect": "5d8 Poison ↑",
-            "desc": "You create a 20-foot-radius Sphere of yellow-green fog centered on a point within range. The fog lasts for the duration or until strong wind (such as the one created by Gust of Wind) disperses it, ending the spell. Its area is Heavily Obscured.\nEach creature in the Sphere makes a Constitution saving throw, taking 5d8 Poison damage on a failed save or half as much damage on a successful one. A creature must also make this save when the Sphere moves into its space and when it enters the Sphere or ends its turn there. A creature makes this save only once per turn.\nThe Sphere moves 10 feet away from you at the start of each of your turns.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 5.",
-            "concentration": true,
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Earth Tremor",
-            "level": 1,
-            "school": "Evocation",
-            "source": "Bard",
-            "time": "Action",
-            "range": "10 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "upcast": "When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d6 for each slot level above 1st.",
-            "desc": "You cause a tremor in the ground within range. Each creature other than you in that area must make a Dexterity saving throw. On a failed save, a creature takes 1d6 bludgeoning damage and is knocked prone. If the ground in that area is loose earth or stone, it becomes difficult terrain until cleared, with each 5-foot-diameter portion requiring at least 1 minute to clear by hand.",
-            "area": "",
-            "hit": "DEX",
-            "effect": "1d6 bludgeoning, DEX Save",
-            "_sourceBook": "XGTE",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Earthbind",
-            "level": 2,
-            "school": "Transmutation",
-            "source": "Sorcerer",
-            "time": "Action",
-            "range": "300 feet",
-            "components": "V",
-            "duration": "Concentration, up to 1 minute",
-            "concentration": true,
-            "desc": "Choose one creature you can see within range. Yellow strips of magical energy loop around the creature. The target must succeed on a Strength saving throw, or its flying speed (if any) is reduced to 0 feet for the spell's duration. An airborne creature affected by this spell safely descends at 60 feet per round until it reaches the ground or the spell ends.",
-            "area": "",
-            "hit": "STR",
-            "effect": "",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Erupting Earth",
-            "level": 3,
-            "school": "Transmutation",
-            "source": "Sorcerer",
-            "time": "Action",
-            "range": "120 feet",
-            "components": "V, S, M (a piece of obsidian)",
-            "duration": "Instantaneous",
-            "upcast": "When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d12 for each slot level above 3rd.",
-            "desc": "Choose a point you can see on the ground within range. A fountain of churned earth and stone erupts in a 20-foot cube centered on that point. Each creature in that area must make a Dexterity saving throw. A creature takes 3d12 bludgeoning damage on a failed save, or half as much damage on a successful one. Additionally, the ground in that area becomes difficult terrain until cleared. Each 5-foot-square portion of the area requires at least 1 minute to clear by hand.",
-            "area": "20ft cube",
-            "hit": "DEX",
-            "effect": "3d12 bludgeoning, DEX Save",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Stoneskin",
-            "level": 4,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S, M (diamond dust worth 100+ GP, which the spell consumes)",
-            "duration": "Concentration, up to 1 h",
-            "desc": "Until the spell ends, one willing creature you touch has Resistance to Bludgeoning, Piercing, and Slashing damage.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Wall of Stone",
-            "level": 5,
-            "school": "Evocation",
-            "time": "A",
-            "range": "120 feet",
-            "components": "V, S, M (a cube of granite)",
-            "duration": "Concentration, up to 10 min",
-            "hit": "DEX",
-            "desc": "A nonmagical wall of solid stone springs into existence at a point you choose within range. The wall is 6 inches thick and is composed of ten 10-foot-by-10-foot panels. Each panel must be contiguous with another panel. Alternatively, you can create 10-foot-by-20-foot panels that are only 3 inches thick.\nIf the wall cuts through a creature’s space when it appears, the creature is pushed to one side of the wall (you choose which side). If a creature would be surrounded on all sides by the wall (or the wall and another solid surface), that creature can make a Dexterity saving throw. On a success, it can use its Reaction to move up to its Speed so that it is no longer enclosed by the wall.\nThe wall can have any shape you desire, though it can’t occupy the same space as a creature or object. The wall doesn’t need to be vertical or rest on a firm foundation. It must, however, merge with and be solidly supported by existing stone. Thus, you can use this spell to bridge a chasm or create a ramp.\nIf you create a span greater than 20 feet in length, you must halve the size of each panel to create supports. You can crudely shape the wall to create battlements and the like.\nThe wall is an object made of stone that can be damaged and thus breached. Each panel has AC 15 and 30 Hit Points per inch of thickness, and it has Immunity to Poison and Psychic damage. Reducing a panel to 0 Hit Points destroys it and might cause connected panels to collapse at the DM’s discretion.\nIf you maintain your Concentration on this spell for its full duration, the wall becomes permanent and can’t be dispelled. Otherwise, the wall disappears when the spell ends.",
-            "concentration": true,
-            "area": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Create or Destroy Water",
-            "level": 1,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "30 feet",
-            "area": "30ft. Cube",
-            "components": "V, S, M (a mix of water and sand)",
-            "duration": "Instantaneous",
-            "desc": "You do one of the following:\nCreate Water. You create up to 10 gallons of clean water within range in an open container. Alternatively, the water falls as rain in a 30-foot Cube within range, extinguishing exposed flames there.\nDestroy Water. You destroy up to 10 gallons of water in an open container within range. Alternatively, you destroy fog in a 30-foot Cube within range.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You create or destroy 10 additional gallons of water, or the size of the Cube increases by 5 feet, for each spell slot level above 1.",
-            "hit": "",
-            "effect": "",
-            "source": "Cleric",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Moonbeam",
-            "level": 5,
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Tidal Wave",
-            "level": 3,
-            "school": "Conjuration",
-            "source": "Sorcerer",
-            "time": "Action",
-            "range": "120 feet",
-            "components": "V, S, M (a drop of water)",
-            "duration": "Instantaneous",
-            "desc": "You conjure up a wave of water that crashes down on an area within range. The area can be up to 30 feet long, up to 10 feet wide, and up to 10 feet tall. Each creature in that area must make a Dexterity saving throw. On a failed save, a creature takes 4d8 bludgeoning damage and is knocked prone. On a successful save, a creature takes half as much damage and isn't knocked prone. The water then spreads out across the ground in all directions, extinguishing unprotected flames in its area and within 30 feet of it, and then it vanishes.",
-            "area": "",
-            "hit": "DEX",
-            "effect": "4d8 bludgeoning, DEX Save",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Watery Sphere",
-            "level": 4,
-            "school": "Conjuration",
-            "source": "Sorcerer",
-            "time": "Action",
-            "range": "90 feet",
-            "components": "V, S, M (a droplet of water)",
-            "duration": "Concentration, up to 1 minute",
-            "concentration": true,
-            "desc": "You conjure up a sphere of water with a 5-foot radius at a point you can see within range. The sphere can hover but no more than 10 feet off the ground. The sphere remains for the spell's duration.\nAny creature in the sphere's space must make a Strength saving throw. On a successful save, a creature is ejected from that space to the nearest unoccupied space of the creature's choice outside the sphere. A Huge or larger creature succeeds on the saving throw automatically, and a Large or smaller creature can choose to fail it. On a failed save, a creature is restrained by the sphere and is engulfed by the water. At the end of each of its turns, a restrained target can repeat the saving throw, ending the effect on itself on a success.\nThe sphere can restrain as many as four Medium or smaller creatures or one Large creature. If the sphere restrains a creature that causes it to exceed this capacity, a random creature that was already restrained by the sphere falls out of it and lands prone in a space within 5 feet of it.\nAs an action, you can move the sphere up to 30 feet in a straight line. If it moves over a pit, a cliff, or other drop-off, it safely descends until it is hovering 10 feet above the ground. Any creature restrained by the sphere moves with it. You can ram the sphere into creatures, forcing them to make the saving throw.\nWhen the spell ends, the sphere falls to the ground and extinguishes all normal flames within 30 feet of it. Any creature restrained by the sphere is knocked prone in the space where it falls. The water then vanishes.",
-            "area": "",
-            "hit": "STR",
-            "effect": "Restrained",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Maelstrom",
-            "level": 17,
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Entangle",
-            "level": 1,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "90 feet",
-            "area": "20ft. square",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "hit": "STR",
-            "effect": "Restrained",
-            "desc": "Grasping plants sprout from the ground in a 20-foot square within range. For the duration, these plants turn the ground in the area into Difficult Terrain. They disappear when the spell ends.\nEach creature (other than you) in the area when you cast the spell must succeed on a Strength saving throw or have the Restrained condition until the spell ends. A Restrained creature can take an action to make a Strength (Athletics) check against your spell save DC. On a success, it frees itself from the grasping plants and is no longer Restrained by them.",
-            "concentration": true,
-            "source": "Ranger",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Spike Growth",
-            "level": 2,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "150 feet",
-            "area": "20ft. radius Sphere",
-            "components": "V, S, M (seven thorns)",
-            "duration": "Concentration, up to 10 min",
-            "effect": "2d4 Piercing",
-            "desc": "The ground in a 20-foot-radius Sphere centered on a point within range sprouts hard spikes and thorns. The area becomes Difficult Terrain for the duration. When a creature moves into or within the area, it takes 2d4 Piercing damage for every 5 feet it travels.\nThe transformation of the ground is camouflaged to look natural. Any creature that can’t see the area when the spell is cast must take a Search action and succeed on a Wisdom (Perception or Survival) check against your spell save DC to recognize the terrain as hazardous before entering it.",
-            "concentration": true,
-            "hit": "",
-            "source": "Ranger",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Summon Fey",
-            "level": 3,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "90 feet",
-            "area": "10ft. Cube",
-            "components": "V, S, M (a gilded flower worth 300+ GP)",
-            "duration": "Concentration, up to 1 h",
-            "hit": "WIS",
-            "effect": "Charmed ↑",
-            "desc": "You call forth a Fey spirit. It manifests in an unoccupied space that you can see within range and uses the Fey Spirit stat block. When you cast the spell, choose a mood: Fuming, Mirthful, or Tricksy. The creature resembles a Fey creature of your choice marked by the chosen mood, which determines certain details in its stat block. The creature disappears when it drops to 0 Hit Points or when the spell ends.\nThe creature is an ally to you and your allies. In combat, the creature shares your Initiative count, but it takes its turn immediately after yours. It obeys your verbal commands (no action required by you). If you don’t issue any, it takes the Dodge action and uses its movement to avoid danger.\n───────────────────\nFEY SPIRIT\nSmall Fey, Neutral\nAC 12 + the spell’s level\nHP 30 + 10 for each spell level above 3\nSpeed 30 ft., Fly 30 ft.\nMOD\tSAVE\nSTR\t13\t+1\t+1\nDEX\t16\t+3\t+3\nCON\t14\t+2\t+2\nMOD\tSAVE\nINT\t14\t+2\t+2\nWIS\t11\t+0\t+0\nCHA\t16\t+3\t+3\nImmunities Charmed\nSenses Darkvision 60 ft.; Passive Perception 10\nLanguages Sylvan, understands the languages you know\nCR None (XP 0; PB equals your Proficiency Bonus)\nActions\nMultiattack. The spirit makes a number of Fey Blade attacks equal to half this spell’s level (round down).\nFey Blade. Melee Attack Roll: Bonus equals your spell attack modifier, reach 5 ft. Hit: 2d6 + 3 + the spell’s level Force damage.\nBonus Actions\nFey Step. The spirit magically teleports up to 30 feet to an unoccupied space it can see. Then one of the following effects occurs, based on the spirit’s chosen mood:\nFuming. The spirit has Advantage on the next attack roll it makes before the end of this turn.\nMirthful. Wisdom Saving Throw: DC equals your spell save DC, one creature the spirit can see within 10 feet of itself. Failure: The target is Charmed by you and the spirit for 1 minute or until the target takes any damage.\nTricksy. The spirit fills a 10-foot Cube within 5 feet of it with magical Darkness, which lasts until the end of its next turn.\nAt Higher Levels: Using a Higher-Level Spell Slot. Use the spell slot’s level for the spell’s level in the stat block.",
-            "concentration": true,
-            "source": "Warlock",
-            "_sourceBook": "TCOE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Dominate Beast",
-            "level": 4,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "hit": "WIS",
-            "effect": "Charmed ↑",
-            "desc": "One Beast you can see within range must succeed on a Wisdom saving throw or have the Charmed condition for the duration. The target has Advantage on the save if you or your allies are fighting it. Whenever the target takes damage, it repeats the save, ending the spell on itself on a success.\nYou have a telepathic link with the Charmed target while the two of you are on the same plane of existence. On your turn, you can use this link to issue commands to the target (no action required), such as “Attack that creature,” “Move over there,” or “Fetch that object.” The target does its best to obey on its turn. If it completes an order and doesn’t receive further direction from you, it acts and moves as it likes, focusing on protecting itself.\nYou can command the target to take a Reaction but must take your own Reaction to do so.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. Your Concentration can last longer with a spell slot of level 5 (up to 10 minutes), 6 (up to 1 hour), or 7+ (up to 8 hours).",
-            "concentration": true,
-            "area": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Circle of Power",
-            "level": 5,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Self",
-            "area": "30ft. Emanation",
-            "components": "V",
-            "duration": "Concentration, up to 10 min",
-            "desc": "An aura radiates from you in a 30-foot Emanation for the duration. While in the aura, you and your allies have Advantage on saving throws against spells and other magical effects. When an affected creature makes a saving throw against a spell or magical effect that allows a save to take only half damage, it takes no damage if it succeeds on the save.",
-            "concentration": true,
-            "hit": "",
-            "effect": "",
-            "source": "Wizard",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Burning Hands",
-            "level": 1,
-            "school": "Evocation",
-            "time": "A",
-            "range": "Self",
-            "area": "15ft. Cone",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "hit": "DEX",
-            "effect": "3d6 Fire ↑",
-            "desc": "A thin sheet of flames shoots forth from you. Each creature in a 15-foot Cone makes a Dexterity saving throw, taking 3d6 Fire damage on a failed save or half as much damage on a successful one.\nFlammable objects in the Cone that aren’t being worn or carried start burning.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1.",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Pyrotechnics",
-            "level": 2,
-            "school": "Transmutation",
-            "source": "Bard",
-            "time": "Action",
-            "range": "60 feet",
-            "components": "V, S",
-            "duration": "Instantaneous",
-            "desc": "Choose an area of nonmagical flame that you can see and that fits within a 5-foot cube within range. You can extinguish the fire in that area, and you create either fireworks or smoke when you do so.\nFireworks. The target explodes with a dazzling display of colors. Each creature within 10 feet of the target must succeed on a Constitution saving throw or become blinded until the end of your next turn.\nSmoke. Thick black smoke spreads out from the target in a 20-foot radius, moving around corners. The area of the smoke is heavily obscured. The smoke persists for 1 minute or until a strong wind disperses it.",
-            "area": "5ft cube",
-            "hit": "CON",
-            "effect": "Heavily Obscured",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Fireball",
-            "level": 3,
-            "school": "Evocation",
-            "time": "A",
-            "range": "150 feet",
-            "area": "20ft. radius Sphere",
-            "components": "V, S, M (a ball of bat guano and sulfur)",
-            "duration": "Instantaneous",
-            "hit": "DEX",
-            "effect": "8d6 Fire ↑",
-            "desc": "A bright streak flashes from you to a point you choose within range and then blossoms with a low roar into a fiery explosion. Each creature in a 20-foot-radius Sphere centered on that point makes a Dexterity saving throw, taking 8d6 Fire damage on a failed save or half as much damage on a successful one.\nFlammable objects in the area that aren’t being worn or carried start burning.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 3.",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Wall of Fire",
-            "level": 4,
-            "school": "Evocation",
-            "time": "A",
-            "range": "120 feet",
-            "components": "V, S, M (a piece of charcoal)",
-            "duration": "Concentration, up to 1 min",
-            "hit": "DEX",
-            "effect": "5d8 Fire ↑",
-            "desc": "You create a wall of fire on a solid surface within range. You can make the wall up to 60 feet long, 20 feet high, and 1 foot thick, or a ringed wall up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall is opaque and lasts for the duration.\nWhen the wall appears, each creature in its area makes a Dexterity saving throw, taking 5d8 Fire damage on a failed save or half as much damage on a successful one.\nOne side of the wall, selected by you when you cast this spell, deals 5d8 Fire damage to each creature that ends its turn within 10 feet of that side or inside the wall. A creature takes the same damage when it enters the wall for the first time on a turn or ends its turn there. The other side of the wall deals no damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 4.",
-            "concentration": true,
-            "area": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Immolation",
-            "level": 5,
-            "school": "Evocation",
-            "source": "Sorcerer",
-            "time": "Action",
-            "range": "90 feet",
-            "components": "V",
-            "duration": "Concentration, up to 1 minute",
-            "concentration": true,
-            "desc": "Flames wreathe one creature you can see within range. The target must make a Dexterity saving throw. It takes 8d6 fire damage on a failed save, or half as much damage on a successful one. On a failed save, the target also burns for the spell's duration. The burning target sheds bright light in a 30-foot radius and dim light for an additional 30 feet. At the end of each of its turns, the target repeats the saving throw. It takes 4d6 fire damage on a failed save, and the spell ends on a successful one. These magical flames can't be extinguished by nonmagical means.\nIf damage from this spell kills a target, the target is turned to ash.",
-            "area": "",
-            "hit": "DEX",
-            "effect": "8d6 fire, DEX Save",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Chromatic Orb",
-            "level": 1,
-            "school": "Evocation",
-            "time": "A",
-            "range": "90 feet",
-            "components": "V, S, M (a diamond worth 50+ GP)",
-            "duration": "Instantaneous",
-            "hit": "Attack",
-            "desc": "You hurl an orb of energy at a target within range. Choose Acid, Cold, Fire, Lightning, Poison, or Thunder for the type of orb you create, and then make a ranged spell attack against the target. On a hit, the target takes 3d8 damage of the chosen type.\nIf you roll the same number on two or more of the d8s, the orb leaps to a different target of your choice within 30 feet of the target. Make an attack roll against the new target, and make a new damage roll. The orb can’t leap again unless you cast the spell with a level 2+ spell slot.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1. The orb can leap a maximum number of times equal to the level of the slot expended, and a creature can be targeted only once by each casting of this spell.",
-            "area": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Dragons Breath",
-            "level": 5,
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Protection from Energy",
-            "level": 3,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 h",
-            "desc": "For the duration, the willing creature you touch has Resistance to one damage type of your choice: Acid, Cold, Fire, Lightning, or Thunder.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Fire Shield",
-            "level": 4,
-            "school": "Evocation",
-            "time": "A",
-            "range": "Self",
-            "components": "V, S, M (a bit of phosphorus or a firefly)",
-            "duration": "10 min",
-            "effect": "2d8 Fire",
-            "desc": "Wispy flames wreathe your body for the duration, shedding Bright Light in a 10-foot radius and Dim Light for an additional 10 feet.\nThe flames provide you with a warm shield or a chill shield, as you choose. The warm shield grants you Resistance to Cold damage, and the chill shield grants you Resistance to Fire damage.\nIn addition, whenever a creature within 5 feet of you hits you with a melee attack roll, the shield erupts with flame. The attacker takes 2d8 Fire damage from a warm shield or 2d8 Cold damage from a chill shield.",
-            "area": "",
-            "hit": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Summon Dragon Spirit",
-            "level": 17,
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
-          },
-          {
-            "name": "Longstrider",
-            "level": 1,
-            "school": "Transmutation",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S, M (a pinch of dirt)",
-            "duration": "1 h",
-            "desc": "You touch a creature. The target’s Speed increases by 10 feet until the spell ends.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 1
-          },
-          {
-            "name": "Gust of Wind",
-            "level": 2,
-            "school": "Evocation",
-            "time": "A",
-            "range": "Self",
-            "components": "V, S, M (a legume seed)",
-            "duration": "Concentration, up to 1 min",
-            "hit": "STR",
-            "desc": "A Line of strong wind 60 feet long and 10 feet wide blasts from you in a direction you choose for the duration. Each creature in the Line must succeed on a Strength saving throw or be pushed 15 feet away from you in a direction following the Line. A creature that ends its turn in the Line must make the same save.\nAny creature in the Line must spend 2 feet of movement for every 1 foot it moves when moving closer to you.\nThe gust disperses gas or vapor, and it extinguishes candles and similar unprotected flames in the area. It causes protected flames, such as those of lanterns, to dance wildly and has a 50 percent chance to extinguish them.\nAs a Bonus Action on your later turns, you can change the direction in which the Line blasts from you.",
-            "concentration": true,
-            "area": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 5
-          },
-          {
-            "name": "Wind Wall",
-            "level": 3,
-            "school": "Evocation",
-            "time": "A",
-            "range": "120 feet",
-            "components": "V, S, M (a fan and a feather)",
-            "duration": "Concentration, up to 1 min",
-            "hit": "STR",
-            "effect": "4d8 Bludgeoning",
-            "desc": "A wall of strong wind rises from the ground at a point you choose within range. You can make the wall up to 50 feet long, 15 feet high, and 1 foot thick. You can shape the wall in any way you choose so long as it makes one continuous path along the ground. The wall lasts for the duration.\nWhen the wall appears, each creature in its area makes a Strength saving throw, taking 4d8 Bludgeoning damage on a failed save or half as much damage on a successful one.\nThe strong wind keeps fog, smoke, and other gases at bay. Small or smaller flying creatures or objects can’t pass through the wall. Loose, lightweight materials brought into the wall fly upward. Arrows, bolts, and other ordinary projectiles launched at targets behind the wall are deflected upward and miss automatically. Boulders hurled by Giants or siege engines, and similar projectiles, are unaffected. Creatures in gaseous form can’t pass through it.",
-            "concentration": true,
-            "area": "",
-            "source": "Ranger",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 9
-          },
-          {
-            "name": "Freedom of Movement",
-            "level": 4,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S, M (a leather strap)",
-            "duration": "1 h",
-            "effect": "Paralyzed ↑",
-            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
-            "area": "",
-            "hit": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 13
-          },
-          {
-            "name": "Control Winds",
-            "level": 5,
-            "school": "Transmutation",
-            "source": "Sorcerer",
-            "time": "Action",
-            "range": "300 feet",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 hour",
-            "concentration": true,
-            "desc": "You take control of the air in a 100-foot cube that you can see within range. Choose one of the following effects when you cast the spell. The effect lasts for the spell's duration, unless you use your action on a later turn to switch to a different effect. You can also use your action to temporarily halt the effect or to restart one you've halted.\nGusts. A wind picks up within the cube, continually blowing in a horizontal direction you designate. You choose the intensity of the wind: calm, moderate, or strong. If the wind is moderate or strong, ranged weapon attacks that enter or leave the cube or pass through it have disadvantage on their attack rolls. If the wind is strong, any creature moving against the wind must spend 1 extra foot of movement for each foot moved.\nDowndraft. You cause a sustained blast of strong wind to blow downward from the top of the cube. Ranged weapon attacks that pass through the cube or that are made against targets within it have disadvantage on their attack rolls. A creature must make a Strength saving throw if it flies into the cube for the first time on a turn or starts its turn there flying. On a failed save, the creature is knocked prone.\nUpdraft. You cause a sustained updraft within the cube, rising upward from the cube's bottom side. Creatures that end a fall within the cube take only half damage from the fall. When a creature in the cube makes a vertical jump, the creature can jump up to 10 feet higher than normal.",
-            "area": "100ft cube",
-            "hit": "STR",
-            "effect": "Prone",
-            "_sourceBook": "XGTE",
-            "_assigned": false,
-            "_classSync": true,
-            "_syncSourceName": "Sojourner",
-            "_syncSourceId": 158,
-            "_syncMinLevel": 17
           }
         ],
         "_grantImmunities": [],
@@ -73716,7 +72654,7 @@
         "_grantTempHp": 0,
         "_grantFlatBonusSaves": {},
         "_grantFlatBonusInit": 0,
-        "_grantFlatBonusAC": 2,
+        "_grantFlatBonusAC": 0,
         "_grantFlatBonusSpeed": 0,
         "_grantFlatBonusHit": 0,
         "_grantFlatBonusDamage": 0,
@@ -73724,10 +72662,6 @@
         "_grantFlatBonusMaxHp": 0,
         "_grantSourcesSpeed": [],
         "_grantSourcesAC": [
-          {
-            "src": "Wild Magic Sorcery: Wild Magic Surge",
-            "val": 2
-          },
           {
             "src": "Bracers of Defense",
             "val": 2,
@@ -73833,7 +72767,7 @@
           "4": 1
         },
         "activeModes": [],
-        "acEffective": 15,
+        "acEffective": 13,
         "hpMax": 38,
         "_slotUsedCompact": {},
         "_trackersForDm": [
@@ -73966,17 +72900,6 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 255
-          },
-          {
-            "key": "race_gnome_gnomish_lineage",
-            "label": "Gnomish Lineage",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF"
           }
         ],
         "saveDcEffective": 14,
@@ -79324,7 +78247,6 @@
             "desc": "You gain Heroic Inspiration whenever you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_libName": "Resourceful",
             "_syncMinLevel": 1
           },
@@ -79480,7 +78402,6 @@
             "desc": "Drawing from your innate magic, you can cast spells.\n\nCantrips. You know four Sorcerer cantrips of your choice. Whenever you gain a Sorcerer level, you can replace one of your cantrips from this feature with another Sorcerer cantrip of your choice.\n\nWhen you reach Sorcerer levels 4 and 10, you learn another Sorcerer cantrip of your choice, as shown in the Cantrips column of the Sorcerer Features table.\n\nSpell Slots. The Sorcerer Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.\n\nPrepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose two level 1 Sorcerer spells.\n\nThe number of spells on your list increases as you gain Sorcerer levels, as shown in the Prepared Spells column of the Sorcerer Features table. Whenever that number increases, choose additional Sorcerer spells until the number of spells on your list matches the number in the Sorcerer Features table. The chosen spells must be of a level for which you have spell slots. For example, if you’re a level 3 Sorcerer, your list of prepared spells can include six Sorcerer spells of level 1 or 2 in any combination.\n\nIf another Sorcerer feature gives you spells that you always have prepared, those spells don’t count against the number of spells you can prepare with this feature, but those spells otherwise count as Sorcerer spells for you.\n\nChanging Your Prepared Spells. Whenever you gain a Sorcerer level, you can replace one spell on your list with another Sorcerer spell for which you have spell slots.\n\nSpellcasting Ability. Charisma is your spellcasting ability for your Sorcerer spells.\n\nSpellcasting Focus. You can use an Arcane Focus as a Spellcasting Focus for your Sorcerer spells.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 61
           },
@@ -79499,7 +78420,6 @@
             "desc": "You can tap into the wellspring of magic within yourself. This wellspring is represented by Sorcery Points, which allow you to create a variety of magical effects.\n\nYou have 2 Sorcery Points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer Features table. You can’t have more Sorcery Points than the number shown in the table for your level. You regain all expended Sorcery Points when you finish a Long Rest.\n\nYou can use your Sorcery Points to fuel the options below, along with other features, such as Metamagic, that use those points.\n\nConverting Spell Slots to Sorcery Points. You can expend a spell slot to gain a number of Sorcery Points equal to the slot’s level (no action required).\n\nCreating Spell Slots. As a Bonus Action, you can transform unexpended Sorcery Points into one spell slot. The Creating Spell Slots table shows the cost of creating a spell slot of a given level, and it lists the minimum Sorcerer level you must be to create a slot. You can create a spell slot no higher than level 5.\n\nAny spell slot you create with this feature vanishes when you finish a Long Rest.\n\nCreating Spell Slots\n  Spell Slot Level | Sorcery Point Cost | Min. Sorcerer Level\n  1 | 2 | 2\n  2 | 3 | 3\n  3 | 5 | 5\n  4 | 6 | 7\n  5 | 7 | 9",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 61
           },
@@ -79518,7 +78438,6 @@
             "desc": "Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.\n\nYou can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.\n\nWhenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 61
           },
@@ -79537,7 +78456,6 @@
             "desc": "You gain a Sorcerer subclass of your choice. A subclass is a specialization that grants you features at certain Sorcerer levels. For the rest of your career, you gain each of your subclass’s features that are of your Sorcerer level or lower.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 61
           },
@@ -79556,7 +78474,6 @@
             "desc": "You gain the Ability Score Improvement feat or another feat of your choice for which you qualify. You gain this feature again at Sorcerer levels 8, 12, and 16.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 4,
             "_syncSourceId": 61
           },
@@ -79575,7 +78492,6 @@
             "desc": "Metamagic Options\nThe following options are available to your Metamagic feature. The options are presented in alphabetical order.\n\nCareful Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell’s full force. To do so, spend 1 Sorcery Point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell, and it takes no damage if it would normally take half damage on a successful save.\n\nDistant Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that has a range of at least 5 feet, you can spend 1 Sorcery Point to double the spell’s range. Or when you cast a spell that has a range of Touch, you can spend 1 Sorcery Point to make the spell’s range 30 feet.\n\nEmpowered Spell\nCost: 1 Sorcery Point\n\nWhen you roll damage for a spell, you can spend 1 Sorcery Point to reroll a number of the damage dice up to your Charisma modifier (minimum of one), and you must use the new rolls.\n\nYou can use Empowered Spell even if you’ve already used a different Metamagic option during the casting of the spell.\n\nExtended Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that has a duration of 1 minute or longer, you can spend 1 Sorcery Point to double its duration to a maximum duration of 24 hours.\n\nIf the affected spell requires Concentration, you have Advantage on any saving throw you make to maintain that Concentration.\n\nHeightened Spell\nCost: 2 Sorcery Points\n\nWhen you cast a spell that forces a creature to make a saving throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.\n\nQuickened Spell\nCost: 2 Sorcery Points\n\nWhen you cast a spell that has a casting time of an action, you can spend 2 Sorcery Points to change the casting time to a Bonus Action for this casting. You can’t modify a spell in this way if you’ve already cast a level 1+ spell on the current turn, nor can you cast a level 1+ spell on this turn after modifying a spell in this way.\n\nSeeking Spell\nCost: 1 Sorcery Point\n\nIf you make an attack roll for a spell and miss, you can spend 1 Sorcery Point to reroll the d20, and you must use the new roll.\n\nYou can use Seeking Spell even if you’ve already used a different Metamagic option during the casting of the spell.\n\nSubtle Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell, you can spend 1 Sorcery Point to cast it without any Verbal, Somatic, or Material components, except Material components that are consumed by the spell or that have a cost specified in the spell.\n\nTransmuted Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell that deals a type of damage from the following list, you can spend 1 Sorcery Point to change that damage type to one of the other listed types: Acid, Cold, Fire, Lightning, Poison, Thunder.\n\nTwinned Spell\nCost: 1 Sorcery Point\n\nWhen you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 61
           },
@@ -79594,7 +78510,6 @@
             "desc": "You gain proficiency in one skill of your choice.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           },
           {
@@ -79612,7 +78527,6 @@
             "desc": "You gain an Origin feat of your choice.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           }
         ],
@@ -79836,9 +78750,7 @@
         "_grantFeats": [],
         "_grantArmorProfs": [],
         "_grantWeaponProfs": [],
-        "_grantToolProfs": [
-          "one skill of your choice"
-        ],
+        "_grantToolProfs": [],
         "_grantHeroicInspiration": false,
         "_grantAttuneSlots": 0,
         "_grantExtraCantrips": {},
@@ -85258,7 +84170,6 @@
             "desc": "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.\n\nUsing Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.\n\nOnce within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.\n\nNumber of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.\n\nAt Higher Levels. Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 65
           },
@@ -85277,7 +84188,6 @@
             "desc": "You have learned to cast spells through your bardic arts.\n\nCantrips. You know two cantrips of your choice from the Bard spell list.\n\nWhenever you gain a Bard level, you can replace one of your cantrips with another cantrip of your choice from the Bard spell list.\n\nWhen you reach Bard levels 4 and 10, you learn another cantrip of your choice from the Bard spell list, as shown in the Cantrips column of the Bard Features table.\n\nSpell Slots. The Bard Features table shows how many spell slots you have to cast your level 1+ spells. You regain all expended slots when you finish a Long Rest.\n\nPrepared Spells of Level 1+. You prepare the list of level 1+ spells that are available for you to cast with this feature. To start, choose four level 1 spells from the Bard spell list.\n\nThe number of spells on your list increases as you gain Bard levels, as shown in the Prepared Spells column of the Bard Features table. Whenever that number increases, choose additional spells from the Bard spell list until the number of spells on your list matches the number on the table. The chosen spells must be of a level for which you have spell slots. For example, if you’re a level 3 Bard, your list of prepared spells can include six spells of levels 1 and 2 in any combination.\n\nIf another Bard feature gives you spells that you always have prepared, those spells don’t count against the number of spells you can prepare with this feature, but those spells otherwise count as Bard spells for you.\n\nChanging Your Prepared Spells. Whenever you gain a Bard level, you can replace one spell on your list with another Bard spell for which you have spell slots.\n\nSpellcasting Ability. Charisma is your spellcasting ability for your Bard spells.\n\nSpellcasting Focus. You can use a Musical Instrument as a Spellcasting Focus for your Bard spells.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 65
           },
@@ -85296,7 +84206,6 @@
             "desc": "You gain Expertise in two of your skill proficiencies of your choice.\n\nAt Bard level 9, you gain Expertise in two more of your skill proficiencies of your choice.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 65
           },
@@ -85315,7 +84224,6 @@
             "desc": "You can add half your Proficiency Bonus (round down) to any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus.\n\nFor example, if you make a Strength (Athletics) check and lack Athletics proficiency, you can add half your Proficiency Bonus to the check.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 65
           },
@@ -85334,7 +84242,6 @@
             "desc": "You gain a Bard subclass of your choice. A subclass is a specialization that grants you features at certain Bard levels. For the rest of your career, you gain each of your subclass’s features that are of your Bard level or lower.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 65
           },
@@ -85353,7 +84260,6 @@
             "desc": "You gain the Ability Score Improvement feat or another feat of your choice for which you qualify. You gain this feature again at Bard levels 8, 12, and 16.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 4,
             "_syncSourceId": 65
           },
@@ -85372,7 +84278,6 @@
             "desc": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 5,
             "_syncSourceId": 65
           },
@@ -85391,7 +84296,6 @@
             "desc": "You have Darkvision with a range of 120 feet.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
             "_syncMinLevel": 1
           }
         ],
@@ -85494,28 +84398,6 @@
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 69
-          },
-          {
-            "key": "cls_bard_bardic_inspiration",
-            "label": "Bardic Inspiration",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "cha"
-          },
-          {
-            "key": "race_orc_adrenaline_rush",
-            "label": "Adrenaline Rush",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF"
           }
         ],
         "_grantImmunities": [],
@@ -85536,17 +84418,12 @@
         "_grantFlatBonusSaves": {},
         "_grantFlatBonusInit": 0,
         "_grantFlatBonusAC": 0,
-        "_grantFlatBonusSpeed": 10,
+        "_grantFlatBonusSpeed": 0,
         "_grantFlatBonusHit": 0,
         "_grantFlatBonusDamage": 0,
         "_grantFlatBonusDC": 0,
         "_grantFlatBonusMaxHp": 0,
-        "_grantSourcesSpeed": [
-          {
-            "src": "College of Swords: Blade Flourish",
-            "val": 10
-          }
-        ],
+        "_grantSourcesSpeed": [],
         "_grantSourcesAC": [
           {
             "src": "Mithral Armor, Half Plate Armor",
@@ -86100,28 +84977,6 @@
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 69
-          },
-          {
-            "key": "cls_bard_bardic_inspiration",
-            "label": "Bardic Inspiration",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "cha"
-          },
-          {
-            "key": "race_orc_adrenaline_rush",
-            "label": "Adrenaline Rush",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF"
           }
         ],
         "saveDcEffective": 14,
@@ -86151,13 +85006,13 @@
         "subclassId": 149,
         "classId2": null,
         "subclassId2": null,
-        "level1": 7,
+        "level1": 2,
         "level2": null,
         "raceId": 33,
         "featIds": [
           168
         ],
-        "level": 7,
+        "level": 2,
         "cls": "Fighter",
         "cls2": "",
         "race": "Goliath",
@@ -86494,7 +85349,7 @@
         "senses": [],
         "languages": "",
         "armorProfs": "",
-        "weaponProfs": "",
+        "weaponProfs": "Battleaxe, Maul, Spear",
         "toolProfs": "",
         "defenses": "",
         "notes": "",
@@ -86615,8 +85470,7 @@
             "notes": "",
             "desc": "You are descended from Giants. Choose one of the following benefits—a supernatural boon from your ancestry; you can use the chosen benefit a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest:\n\nCloud’s Jaunt (Cloud Giant). As a Bonus Action, you magically teleport up to 30 feet to an unoccupied space you can see.\n\nFire’s Burn (Fire Giant). When you hit a target with an attack roll and deal damage to it, you can also deal 1d10 Fire damage to that target.\n\nFrost’s Chill (Frost Giant). When you hit a target with an attack roll and deal damage to it, you can also deal 1d6 Cold damage to that target and reduce its Speed by 10 feet until the start of your next turn.\n\nHill’s Tumble (Hill Giant). When you hit a Large or smaller creature with an attack roll and deal damage to it, you can give that target the Prone condition.\n\nStone’s Endurance (Stone Giant). When you take damage, you can take a Reaction to roll 1d12. Add your Constitution modifier to the number rolled and reduce the damage by that total.\nStorm’s Thunder (Storm Giant). When you take damage from a creature within 60 feet of you, you can take a Reaction to deal 1d8 Thunder damage to that creature.",
             "fav": false,
-            "used": false,
-            "_raceSync": true
+            "used": false
           },
           {
             "name": "Large Form",
@@ -86633,7 +85487,8 @@
             "desc": "Starting at character level 5, you can change your size to Large as a Bonus Action if you’re in a big enough space. This transformation lasts for 10 minutes or until you end it (no action required). For that duration, you have Advantage on Strength checks, and your Speed increases by 10 feet. Once you use this trait, you can’t use it again until you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Powerful Build",
@@ -86650,7 +85505,8 @@
             "desc": "You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           }
         ],
         "trackers": [
@@ -86675,17 +85531,6 @@
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 149
-          },
-          {
-            "key": "race_goliath_giant_ancestry",
-            "label": "Giant Ancestry",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF"
           },
           {
             "key": "race_goliath_large_form",
@@ -86772,16 +85617,15 @@
           "feats": true,
           "languages": true,
           "proficiencies": true,
-          "jump": true
+          "jump": true,
+          "knownSel": false
         },
         "_topOpen": false,
         "passivePerception": 11,
         "passiveInsight": 11,
         "acEffective": 13,
         "hpMax": 0,
-        "_slotTotal": {
-          "1": 3
-        },
+        "_slotTotal": {},
         "_slotUsedCompact": {},
         "activeModes": [],
         "deathSaves": {
@@ -86812,17 +85656,6 @@
             "_syncSourceId": 149
           },
           {
-            "key": "race_goliath_giant_ancestry",
-            "label": "Giant Ancestry",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF"
-          },
-          {
             "key": "race_goliath_large_form",
             "label": "Large Form",
             "max": 1,
@@ -86844,7 +85677,14 @@
             "_syncSourceId": 168
           }
         ],
-        "saveDcEffective": null
+        "saveDcEffective": null,
+        "_knownSelections": {
+          "144_Weapon Mastery": [
+            "Battleaxe",
+            "Maul",
+            "Spear"
+          ]
+        }
       }
     ],
     "unassignedSpells": [],
@@ -93717,5 +92557,6 @@
     ]
   },
   "nextId": 407,
-  "_updated": 1785922169143
+  "_updated": 1785922462294,
+  "_unchanged": true
 }

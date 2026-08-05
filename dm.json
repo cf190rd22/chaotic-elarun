@@ -84774,55 +84774,52 @@
         "_grantSenses": []
       },
       {
-        "id": 406,
-        "name": "fasdasdasdasd",
+        "id": 407,
+        "name": "asdasdasdasdasdasgfgsfhdfh",
         "player": "",
-        "classId": 66,
-        "subclassId": null,
-        "classId2": null,
-        "subclassId2": null,
+        "classId": 144,
+        "subclassId": 149,
+        "classId2": 66,
+        "subclassId2": 139,
         "level1": 7,
-        "level2": null,
-        "raceId": 33,
-        "featIds": [],
-        "level": 7,
-        "cls": "Druid",
-        "cls2": "",
-        "race": "Goliath",
+        "level2": 5,
+        "raceId": 31,
+        "featIds": [
+          164
+        ],
+        "level": 12,
+        "cls": "Fighter",
+        "cls2": "Druid",
+        "race": "Elf",
+        "originId": "guide",
+        "originName": "Guide",
         "abilities": {
           "Strength": {
-            "score": 15,
-            "mod": 2
+            "score": 10,
+            "mod": 0
           },
           "Dexterity": {
-            "score": 16,
-            "mod": 3
+            "score": 20,
+            "mod": 5
           },
           "Constitution": {
-            "score": 12,
-            "mod": 1
+            "score": 16,
+            "mod": 3
           },
           "Intelligence": {
             "score": 9,
             "mod": -1
           },
           "Wisdom": {
-            "score": 12,
-            "mod": 1
+            "score": 17,
+            "mod": 3
           },
           "Charisma": {
-            "score": 11,
-            "mod": 0
+            "score": 13,
+            "mod": 1
           }
         },
-        "saves": {
-          "Strength": 2,
-          "Dexterity": 3,
-          "Constitution": 1,
-          "Intelligence": -1,
-          "Wisdom": 1,
-          "Charisma": 0
-        },
+        "saves": {},
         "saveFlags": {
           "Strength": {
             "state": "none",
@@ -84874,34 +84871,8 @@
           }
         },
         "skills": {
-          "Stealth": {
-            "bonus": 6,
-            "state": "prof",
-            "adv": false,
-            "dis": false,
-            "_modeAdv": false,
-            "_modeDis": false,
-            "_itemDis": false,
-            "_grantProf": false,
-            "_grantProfLevel": null,
-            "_grantBonus": 0,
-            "_grantSources": []
-          },
-          "Survival": {
-            "bonus": 4,
-            "state": "prof",
-            "adv": false,
-            "dis": false,
-            "_modeAdv": false,
-            "_modeDis": false,
-            "_itemDis": false,
-            "_grantProf": false,
-            "_grantProfLevel": null,
-            "_grantBonus": 0,
-            "_grantSources": []
-          },
           "Acrobatics": {
-            "bonus": 3,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -84914,7 +84885,7 @@
             "_grantSources": []
           },
           "Athletics": {
-            "bonus": 2,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -84927,7 +84898,7 @@
             "_grantSources": []
           },
           "Animal Handling": {
-            "bonus": 1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -84940,7 +84911,7 @@
             "_grantSources": []
           },
           "Arcana": {
-            "bonus": -1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -84966,7 +84937,7 @@
             "_grantSources": []
           },
           "History": {
-            "bonus": -1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -84979,7 +84950,7 @@
             "_grantSources": []
           },
           "Insight": {
-            "bonus": 1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -85005,7 +84976,7 @@
             "_grantSources": []
           },
           "Investigation": {
-            "bonus": -1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -85018,7 +84989,7 @@
             "_grantSources": []
           },
           "Medicine": {
-            "bonus": 1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -85031,20 +85002,22 @@
             "_grantSources": []
           },
           "Nature": {
-            "bonus": -1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
-            "_grantProf": false,
-            "_grantProfLevel": null,
+            "_grantProf": true,
+            "_grantProfLevel": "exp",
             "_grantBonus": 0,
-            "_grantSources": []
+            "_grantSources": [
+              "Feature: class2_66_Primal Order"
+            ]
           },
           "Perception": {
-            "bonus": 1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -85083,7 +85056,7 @@
             "_grantSources": []
           },
           "Religion": {
-            "bonus": -1,
+            "bonus": 0,
             "state": "none",
             "adv": false,
             "dis": false,
@@ -85096,8 +85069,34 @@
             "_grantSources": []
           },
           "Sleight of Hand": {
-            "bonus": 3,
+            "bonus": 0,
             "state": "none",
+            "adv": false,
+            "dis": false,
+            "_modeAdv": false,
+            "_modeDis": false,
+            "_itemDis": false,
+            "_grantProf": false,
+            "_grantProfLevel": null,
+            "_grantBonus": 0,
+            "_grantSources": []
+          },
+          "Stealth": {
+            "bonus": 0,
+            "state": "prof",
+            "adv": false,
+            "dis": false,
+            "_modeAdv": false,
+            "_modeDis": false,
+            "_itemDis": false,
+            "_grantProf": false,
+            "_grantProfLevel": null,
+            "_grantBonus": 0,
+            "_grantSources": []
+          },
+          "Survival": {
+            "bonus": 0,
+            "state": "prof",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -85110,15 +85109,15 @@
           }
         },
         "passives": {
-          "Perception": 11,
-          "Investigation": 9,
-          "Insight": 11
+          "Perception": 10,
+          "Investigation": 10,
+          "Insight": 10
         },
-        "ac": "13",
+        "ac": "",
         "hp": "",
         "speed": "30ft",
         "initiative": "+0",
-        "profBonus": "+3",
+        "profBonus": "+2",
         "senses": [],
         "languages": "",
         "armorProfs": "",
@@ -85129,9 +85128,6 @@
         "overrides": {},
         "choices": {},
         "customFeatures": [],
-        "_autoCalcSkills": true,
-        "originId": "guide",
-        "originName": "Guide",
         "spells": [],
         "actions": [
           {
@@ -85149,7 +85145,6 @@
             "desc": "Your experience on the battlefield has refined your fighting techniques. You learn maneuvers that are fueled by special dice called Superiority Dice.\n\nManeuvers. You learn three maneuvers of your choice. Many maneuvers enhance an attack in some way. You can use only one maneuver per attack.\n\nYou learn two additional maneuvers of your choice when you reach Fighter levels 7, 10, and 15. Each time you learn new maneuvers, you can also replace one maneuver you know with a different one.\n\nSuperiority Dice. You have four Superiority Dice, which are d8s. A Superiority Die is expended when you use it. You regain all expended Superiority Dice when you finish a Short or Long Rest.\n\nYou gain an additional Superiority Die when you reach Fighter levels 7 (five dice total) and 15 (six dice total).\n\nSaving Throws. If a maneuver requires a saving throw, the DC equals 8 plus your Strength or Dexterity modifier (your choice) and Proficiency Bonus.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 149
           },
@@ -85168,7 +85163,6 @@
             "desc": "You gain proficiency with one type of Artisan’s Tools of your choice, and you gain proficiency in one skill of your choice from the skills available to Fighters at level 1.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 149
           },
@@ -85187,7 +85181,6 @@
             "desc": "As a Bonus Action, you can discern certain strengths and weaknesses of a creature you can see within 30 feet of yourself; you know whether that creature has any Immunities, Resistances, or Vulnerabilities, and if the creature has any, you know what they are.\n\nOnce you use this feature, you can’t do so again until you finish a Long Rest. You can also restore a use of the feature by expending one Su",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 7,
             "_syncSourceId": 149
           },
@@ -85206,7 +85199,6 @@
             "desc": "The maneuvers are presented here in alphabetical order.\n\nAmbush\nWhen you make a Dexterity (Stealth) check or an Initiative roll, you can expend one Superiority Die and add the die to the roll, unless you have the Incapacitated condition.\n\nBait and Switch\nWhen you’re within 5 feet of a creature on your turn, you can expend one Superiority Die and switch places with that creature, provided you spend at least 5 feet of movement and the creature is willing and doesn’t have the Incapacitated condition. This movement doesn’t provoke Opportunity Attacks.\n\nRoll the Superiority Die. Until the start of your next turn, you or the other creature (your choice) gains a bonus to AC equal to the number rolled.\n\nCommander’s Strike\nWhen you take the Attack action on your turn, you can replace one of your attacks to direct one of your companions to strike. When you do so, choose a willing creature who can see or hear you and expend one Superiority Die. That creature can immediately use its Reaction to make one attack with a weapon or an Unarmed Strike, adding the Superiority Die to the attack’s damage roll on a hit.\n\nCommanding Presence\nWhen you make a Charisma (Intimidation, Performance, or Persuasion) check, you can expend one Superiority Die and add that die to the roll.\n\nDisarming Attack\nWhen you hit a creature with an attack roll, you can expend one Superiority Die to attempt to disarm the target. Add the Superiority Die roll to the attack’s damage roll. The target must succeed on a Strength saving throw or drop one object of your choice that it’s holding, with the object landing in its space.\n\nDistracting Strike\nWhen you hit a creature with an attack roll, you can expend one Superiority Die to distract the target. Add the Superiority Die roll to the attack’s damage roll. The next attack roll against the target by an attacker other than you has Advantage if the attack is made before the start of your next turn.\n\nEvasive Footwork\nAs a Bonus Action, you can expend one Superiority Die and take the Disengage action. You also roll the die and add the number rolled to your AC until the start of your next turn.\n\nFeinting Attack\nAs a Bonus Action, you can expend one Superiority Die to feint, choosing one creature within 5 feet of yourself as your target. You have Advantage on your next attack roll against that target this turn. If that attack hits, add the Superiority Die to the attack’s damage roll.\n\nGoading Attack\nWhen you hit a creature with an attack roll, you can expend one Superiority Die to attempt to goad the target into attacking you. Add the Superiority Die to the attack’s damage roll. The target must succeed on a Wisdom saving throw or have Disadvantage on attack rolls against targets other than you until the end of your next turn.\n\nLunging Attack\nAs a Bonus Action, you can expend one Superiority Die and take the Dash action. If you move at least 5 feet in a straight line immediately before hitting with a melee attack as part of the Attack action on this turn, you can add the Superiority Die to the attack’s damage roll.\n\nManeuvering Attack\nWhen you hit a creature with an attack roll, you can expend one Superiority Die to maneuver one of your comrades into another position. Add the Superiority Die roll to the attack’s damage roll, and choose a willing creature who can see or hear you. That creature can use its Reaction to move up to half its Speed without provoking an Opportunity Attack from the target of your attack.\n\nMenacing Attack\nWhen you hit a creature with an attack roll, you can expend one Superiority Die to attempt to frighten the target. Add the Superiority Die to the attack’s damage roll. The target must succeed on a Wisdom saving throw or have the Frightened condition until the end of your next turn.\n\nParry\nWhen another creature damages you with a melee attack roll, you can take a Reaction and expend one Superiority Die to reduce the damage by the number you roll on your Superiority Die plus your Strength or Dexterity modifier (your choice).\n\nPrecision Attack\nWhen you miss with an attack roll, you can expend one Superiority Die, roll that die, and add it to the attack roll, potentially causing the attack to hit.\n\nPushing Attack\nWhen you hit a creature with an attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die to attempt to drive the target back. Add the Superiority Die to the attack’s damage roll. If the target is Large or smaller, it must succeed on a Strength saving throw or be pushed up to 15 feet directly away from you.\n\nRally\nAs a Bonus Action, you can expend one Superiority Die to bolster the resolve of a companion. Choose an ally of yours within 30 feet of yourself who can see or hear you. That creature gains Temporary Hit Points equal to the Superiority Die roll plus half your Fighter level (round down).\n\nRiposte\nWhen a creature misses you with a melee attack roll, you can take a Reaction and expend one Superiority Die to make a melee attack roll with a weapon or an Unarmed Strike against the creature. If you hit, add the Superiority Die to the attack’s damage.\n\nSweeping Attack\nWhen you hit a creature with a melee attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die to attempt to damage another creature. Choose another creature within 5 feet of the original target and within your reach. If the original attack roll would hit the second creature, it takes damage equal to the number you roll on your Superiority Die. The damage is of the same type dealt by the original attack.\n\nTactical Assessment\nWhen you make an Intelligence (History or Investigation) check or a Wisdom (Insight) check, you can expend one Superiority Die and add that die to the ability check.\n\nTrip Attack\nWhen you hit a creature with an attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die and add the die to the attack’s damage roll. If the target is Large or smaller, it must succeed on a Strength saving throw or have the Prone condition.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 149
           },
@@ -85225,61 +85217,82 @@
             "desc": "You have four Superiority Dice, which are d8s. A Superiority Die is expended when you use it. You regain all of your expended Superiority Dice when you finish a Short or Long Rest.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 149
           },
           {
-            "name": "Giant Ancestry",
-            "_libName": "Giant Ancestry",
+            "name": "Circle of the Land Spells",
+            "_libName": "Circle of the Land Spells",
             "kind": "feat",
-            "atype": "bonus",
-            "source": "Goliath",
+            "atype": "feature",
+            "source": "Circle of the Land",
             "hit": "",
             "damage": "",
             "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "You are descended from Giants. Choose one of the following benefits—a supernatural boon from your ancestry; you can use the chosen benefit a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest:\n\nCloud’s Jaunt (Cloud Giant). As a Bonus Action, you magically teleport up to 30 feet to an unoccupied space you can see.\n\nFire’s Burn (Fire Giant). When you hit a target with an attack roll and deal damage to it, you can also deal 1d10 Fire damage to that target.\n\nFrost’s Chill (Frost Giant). When you hit a target with an attack roll and deal damage to it, you can also deal 1d6 Cold damage to that target and reduce its Speed by 10 feet until the start of your next turn.\n\nHill’s Tumble (Hill Giant). When you hit a Large or smaller creature with an attack roll and deal damage to it, you can give that target the Prone condition.\n\nStone’s Endurance (Stone Giant). When you take damage, you can take a Reaction to roll 1d12. Add your Constitution modifier to the number rolled and reduce the damage by that total.\nStorm’s Thunder (Storm Giant). When you take damage from a creature within 60 feet of you, you can take a Reaction to deal 1d8 Thunder damage to that creature.",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Large Form",
-            "_libName": "Large Form",
-            "kind": "feat",
-            "atype": "bonus",
-            "source": "Goliath",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "Starting at character level 5, you can change your size to Large as a Bonus Action if you’re in a big enough space. This transformation lasts for 10 minutes or until you end it (no action required). For that duration, you have Advantage on Strength checks, and your Speed increases by 10 feet. Once you use this trait, you can’t use it again until you finish a Long Rest.",
+            "desc": "Whenever you finish a Long Rest, choose one type of land: arid, polar, temperate, or tropical. Consult the table below that corresponds to the chosen type; you have the spells listed for your Druid level and lower prepared.\n\nArid Land\n  Druid Level | Circle Spells\n  3 | Blur, Burning Hands, Fire Bolt\n  5 | Fireball\n  7 | Blight\n  9 | Wall of Stone\nPolar Land\n  Druid Level | Circle Spells\n  3 | Fog Cloud, Hold Person, Ray of Frost\n  5 | Sleet Storm\n  7 | Ice Storm\n  9 | Cone of Cold\nTemperate Land\n  Druid Level | Circle Spells\n  3 | Misty Step, Shocking Grasp, Sleep\n  5 | Lightning Bolt\n  7 | Freedom of Movement\n  9 | Tree Stride\nTropical Land\n  Druid Level | Circle Spells\n  3 | Acid Splash, Ray of Sickness, Web\n  5 | Stinking Cloud\n  7 | Polymorph\n  9 | Insect Plague",
             "fav": false,
             "used": false,
-            "_raceSync": true,
-            "_syncMinLevel": 1
+            "_subclassSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 139
           },
           {
-            "name": "Powerful Build",
-            "_libName": "Powerful Build",
+            "name": "Land's Aid",
+            "_libName": "Land's Aid",
+            "kind": "feat",
+            "atype": "action",
+            "source": "Circle of the Land",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "As a Magic action, you can expend a use of your Wild Shape and choose a point within 60 feet of yourself. Vitality-giving flowers and life-draining thorns appear for a moment in a 10-foot-radius Sphere centered on that point. Each creature of your choice in the Sphere must make a Constitution saving throw against your spell save DC, taking 2d6 Necrotic damage on a failed save or half as much damage on a successful one. One creature of your choice in that area regains 2d6 Hit Points.\n\nThe damage and healing increase by 1d6 when you reach Druid levels 10 (3d6) and 14 (4d6).",
+            "fav": false,
+            "used": false,
+            "_subclassSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 139
+          },
+          {
+            "name": "Land’s Aid",
+            "_libName": "Land’s Aid",
+            "kind": "feat",
+            "atype": "action",
+            "source": "Circle of the Land",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "As a Magic action, you can expend a use of your Wild Shape and choose a point within 60 feet of yourself. Vitality-giving flowers and life-draining thorns appear for a moment in a 10-foot-radius Sphere centered on that point. Each creature of your choice in the Sphere must make a Constitution saving throw against your spell save DC, taking 2d6 Necrotic damage on a failed save or half as much damage on a successful one. One creature of your choice in that area regains 2d6 Hit Points.\n\nThe damage and healing increase by 1d6 when you reach Druid levels 10 (3d6) and 14 (4d6).",
+            "fav": false,
+            "used": false,
+            "_subclassSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 139
+          },
+          {
+            "name": "Trance",
+            "_libName": "Trance",
             "kind": "feat",
             "atype": "other",
-            "source": "Goliath",
+            "source": "Elf",
             "hit": "",
             "damage": "",
             "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "You have Advantage on any ability check you make to end the Grappled condition. You also count as one size larger when determining your carrying capacity.",
+            "desc": "You don’t need to sleep, and magic can’t put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
-            "_syncMinLevel": 1
+            "_raceSync": true
           },
           {
             "name": "Druidic",
@@ -85377,8 +85390,8 @@
             "_syncSourceId": 66
           },
           {
-            "name": "Lvl 1 Primal Order: Warden",
-            "_libName": "Lvl 1 Primal Order: Warden",
+            "name": "Lvl 1: Primal Order: Magician",
+            "_libName": "Lvl 1: Primal Order: Magician",
             "kind": "feat",
             "atype": "feature",
             "source": "Druid",
@@ -85388,37 +85401,16 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "Trained for battle, you gain proficiency with Martial weapons and training with Medium armor.",
+            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
             "fav": false,
             "used": false,
             "_classSync": true,
             "_syncMinLevel": 1,
             "_syncSourceId": 66,
-            "group": "Warden"
+            "group": "Magician"
           }
         ],
         "trackers": [
-          {
-            "key": "sub_battle_master_superiority_dice",
-            "label": "Superiority Dice",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 149
-          },
-          {
-            "key": "race_goliath_large_form",
-            "label": "Large Form",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_raceSync": true
-          },
           {
             "key": "sub_battle_master_superiority_die",
             "label": "Superiority Die",
@@ -85431,10 +85423,21 @@
             "_syncSourceId": 149
           },
           {
+            "key": "sub_battle_master_superiority_dice",
+            "label": "Superiority Dice",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "SR",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 149
+          },
+          {
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
-            "max": 3,
-            "cur": 3,
+            "max": 2,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -85455,12 +85458,18 @@
           }
         ],
         "_grantImmunities": [],
-        "_grantResistances": [],
+        "_grantResistances": [
+          "Bludgeoning",
+          "Cold",
+          "Fire",
+          "Lightning"
+        ],
         "_grantVulnerabilities": [],
         "_grantLanguages": [],
         "_grantFeats": [],
-        "_grantSenses": [],
-        "_grantArmorProfs": [],
+        "_grantArmorProfs": [
+          "Heavy Armor"
+        ],
         "_grantWeaponProfs": [],
         "_grantToolProfs": [],
         "_grantHeroicInspiration": false,
@@ -85471,8 +85480,6 @@
         "_grantSpellMods": [],
         "_grantTempHp": 0,
         "_grantedSpells": [],
-        "_grantMinAC": [],
-        "_grantAbilBonus": {},
         "_grantFlatBonusSaves": {},
         "_grantFlatBonusInit": 0,
         "_grantFlatBonusAC": 0,
@@ -85514,16 +85521,50 @@
           "passives": true,
           "senses": true,
           "defenses": true,
-          "feats": false,
-          "languages": false,
-          "proficiencies": false,
-          "jump": true,
-          "knownSel": false
+          "feats": true,
+          "languages": true,
+          "proficiencies": true,
+          "jump": true
         },
         "_topOpen": false,
-        "passivePerception": 11,
-        "passiveInsight": 11,
-        "acEffective": 13,
+        "miscFeatures": [
+          "Magic Initiate (Druid)"
+        ],
+        "_originFeatGranted": "Magic Initiate (Druid)",
+        "_subActGroups": {
+          "66_Primal Order": "Magician"
+        },
+        "_charGrants": {
+          "class2_66_Primal Order": [
+            {
+              "type": "resistance",
+              "target": "Bludgeoning"
+            },
+            {
+              "type": "resistance",
+              "target": "Cold"
+            },
+            {
+              "type": "resistance",
+              "target": "Fire"
+            },
+            {
+              "type": "resistance",
+              "target": "Lightning"
+            },
+            {
+              "type": "expertise",
+              "target": "Nature"
+            },
+            {
+              "type": "prof",
+              "target": "Heavy Armor"
+            }
+          ]
+        },
+        "passivePerception": 10,
+        "passiveInsight": 10,
+        "acEffective": 0,
         "hpMax": 0,
         "_slotTotal": {
           "1": 4,
@@ -85539,27 +85580,6 @@
         },
         "_trackersForDm": [
           {
-            "key": "sub_battle_master_superiority_dice",
-            "label": "Superiority Dice",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "SR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 149
-          },
-          {
-            "key": "race_goliath_large_form",
-            "label": "Large Form",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_raceSync": true
-          },
-          {
             "key": "sub_battle_master_superiority_die",
             "label": "Superiority Die",
             "max": 1,
@@ -85571,10 +85591,21 @@
             "_syncSourceId": 149
           },
           {
+            "key": "sub_battle_master_superiority_dice",
+            "label": "Superiority Dice",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "SR",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 149
+          },
+          {
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
-            "max": 3,
-            "cur": 3,
+            "max": 2,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -85594,53 +85625,7 @@
             "_syncSourceId": 66
           }
         ],
-        "saveDcEffective": null,
-        "_knownSelections": {
-          "144_Weapon Mastery": [
-            "Battleaxe",
-            "Maul",
-            "Spear"
-          ],
-          "149_Combat Superiority": [
-            "Riposte",
-            "Precision Attack",
-            "Rally"
-          ]
-        },
-        "acAdjust": 0,
-        "_panelAcAdj": 0,
-        "hpAdjust": 0,
-        "speedAdjust": 0,
-        "_panelSpeedAdj": 0,
-        "saveDcAdjust": 0,
-        "_panelSaveDcAdj": 0,
-        "hpCurrent": 0,
-        "hpTemp": 0,
-        "_slotUsed": {},
-        "_hitDiceUsed": {},
-        "_concentratingOn": null,
-        "conditions": [],
-        "stats": {
-          "Dexterity": 10,
-          "Wisdom": 11,
-          "Constitution": 12
-        },
-        "miscFeatures": [
-          "Magic Initiate (Druid)"
-        ],
-        "_originFeatGranted": "Magic Initiate (Druid)",
-        "_originAsi": {
-          "Wisdom": 1,
-          "Constitution": 2
-        },
-        "_qsAdjOpen": false,
-        "_subActGroups": {
-          "66_Primal Order": "Warden"
-        },
-        "_originAsiApplied": {
-          "Wisdom": 1,
-          "Constitution": 2
-        }
+        "saveDcEffective": null
       }
     ],
     "unassignedSpells": [],
@@ -92512,6 +92497,7 @@
       }
     ]
   },
-  "nextId": 407,
-  "_updated": 1785936688879
+  "nextId": 408,
+  "_updated": 1785936982642,
+  "_unchanged": true
 }

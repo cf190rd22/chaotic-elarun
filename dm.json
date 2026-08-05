@@ -59724,7 +59724,7 @@
         "_qsHdOpen": false,
         "_grantMinAC": [],
         "_grantAbilBonus": {},
-        "_grantSenses": [],
+        "_grantSenses": {},
         "originId": null,
         "originName": "",
         "stats": {
@@ -92514,6 +92514,5 @@
     ]
   },
   "nextId": 408,
-  "_updated": 1785939037471,
-  "_unchanged": true
+  "_updated": 1785941027961
 }

@@ -59730,7 +59730,8 @@
         "stats": {
           "Dexterity": 10,
           "Strength": 10
-        }
+        },
+        "_grantWeaponDamage": []
       },
       {
         "id": 157,
@@ -92514,5 +92515,5 @@
     ]
   },
   "nextId": 408,
-  "_updated": 1785941027961
+  "_updated": 1785943683791
 }

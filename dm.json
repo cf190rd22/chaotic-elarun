@@ -84791,8 +84791,8 @@
         "cls": "Fighter",
         "cls2": "Druid",
         "race": "Elf",
-        "originId": "guide",
-        "originName": "Guide",
+        "originId": "hermit",
+        "originName": "Hermit",
         "abilities": {
           "Strength": {
             "score": 10,
@@ -84990,7 +84990,7 @@
           },
           "Medicine": {
             "bonus": 0,
-            "state": "none",
+            "state": "prof",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -84999,7 +84999,8 @@
             "_grantProf": false,
             "_grantProfLevel": null,
             "_grantBonus": 0,
-            "_grantSources": []
+            "_grantSources": [],
+            "_originGrant": true
           },
           "Nature": {
             "bonus": 0,
@@ -85057,7 +85058,7 @@
           },
           "Religion": {
             "bonus": 0,
-            "state": "none",
+            "state": "prof",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -85066,7 +85067,8 @@
             "_grantProf": false,
             "_grantProfLevel": null,
             "_grantBonus": 0,
-            "_grantSources": []
+            "_grantSources": [],
+            "_originGrant": true
           },
           "Sleight of Hand": {
             "bonus": 0,
@@ -85122,7 +85124,7 @@
         "languages": "",
         "armorProfs": "",
         "weaponProfs": "",
-        "toolProfs": "",
+        "toolProfs": "Herbalism Kit",
         "defenses": "",
         "notes": "",
         "overrides": {},
@@ -85517,14 +85519,16 @@
         "_secCollapsed": {
           "core": true,
           "saves": true,
-          "skills": true,
+          "skills": false,
           "passives": true,
           "senses": true,
           "defenses": true,
           "feats": true,
           "languages": true,
           "proficiencies": true,
-          "jump": true
+          "jump": true,
+          "knownSel": false,
+          "abilities": true
         },
         "_topOpen": false,
         "miscFeatures": [
@@ -85625,7 +85629,19 @@
             "_syncSourceId": 66
           }
         ],
-        "saveDcEffective": null
+        "saveDcEffective": null,
+        "variantChoices": {
+          "31": "High Elf"
+        },
+        "_knownSelections": {
+          "149_Combat Superiority": [
+            "Commanding Presence",
+            "Disarming Attack",
+            "Bait and Switch",
+            "Lunging Attack",
+            "Menacing Attack"
+          ]
+        }
       }
     ],
     "unassignedSpells": [],
@@ -92498,5 +92514,6 @@
     ]
   },
   "nextId": 408,
-  "_updated": 1785938754903
+  "_updated": 1785939037471,
+  "_unchanged": true
 }

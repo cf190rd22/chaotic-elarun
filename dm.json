@@ -27773,11 +27773,6 @@
           },
           {
             "level": 2,
-            "name": "Action Surge (one use)",
-            "description": ""
-          },
-          {
-            "level": 2,
             "name": "Tactical Mind",
             "description": "You have a mind for tactics on and off the battlefield. When you fail an ability check, you can expend a use of your Second Wind to push yourself toward success. Rather than regaining Hit Points, you roll 1d10 and add the number rolled to the ability check, potentially turning it into a success. If the check still fails, this use of Second Wind isn’t expended."
           },
@@ -33071,171 +33066,83 @@
             "knownOptions": [
               {
                 "name": "Ambush",
-                "desc": ""
-              },
-              {
-                "name": "When you make a Dexterity (Stealth) check or an Initiative roll, you can expend one Superiority Die and add the die to the roll, unless you have the Incapacitated condition.",
-                "desc": ""
+                "desc": "When you make a Dexterity (Stealth) check or an Initiative roll, you can expend one Superiority Die and add the die to the roll, unless you have the Incapacitated condition."
               },
               {
                 "name": "Bait and Switch",
-                "desc": ""
-              },
-              {
-                "name": "When you’re within 5 feet of a creature on your turn, you can expend one Superiority Die and switch places with that creature, provided you spend at least 5 feet of movement and the creature is willing and doesn’t have the Incapacitated condition. This movement doesn’t provoke Opportunity Attacks.",
-                "desc": ""
-              },
-              {
-                "name": "Roll the Superiority Die",
-                "desc": ""
-              },
-              {
-                "name": "Until the start of your next turn, you or the other creature (your choice) gains a bonus to AC equal to the number rolled.",
-                "desc": ""
+                "desc": "When you’re within 5 feet of a creature on your turn, you can expend one Superiority Die and switch places with that creature, provided you spend at least 5 feet of movement and the creature is willing and doesn’t have the Incapacitated condition. This movement doesn’t provoke Opportunity Attacks. Until the start of your next turn, you or the other creature (your choice) gains a bonus to AC equal to the number rolled."
               },
               {
                 "name": "Commander’s Strike",
-                "desc": ""
-              },
-              {
-                "name": "When you take the Attack action on your turn, you can replace one of your attacks to direct one of your companions to strike. When you do so, choose a willing creature who can see or hear you and expend one Superiority Die. That creature can immediately use its Reaction to make one attack with a weapon or an Unarmed Strike, adding the Superiority Die to the attack’s damage roll on a hit.",
-                "desc": ""
+                "desc": "When you take the Attack action on your turn, you can replace one of your attacks to direct one of your companions to strike. When you do so, choose a willing creature who can see or hear you and expend one Superiority Die. That creature can immediately use its Reaction to make one attack with a weapon or an Unarmed Strike, adding the Superiority Die to the attack’s damage roll on a hit."
               },
               {
                 "name": "Commanding Presence",
-                "desc": ""
-              },
-              {
-                "name": "When you make a Charisma (Intimidation, Performance, or Persuasion) check, you can expend one Superiority Die and add that die to the roll.",
-                "desc": ""
+                "desc": "When you make a Charisma (Intimidation, Performance, or Persuasion) check, you can expend one Superiority Die and add that die to the roll."
               },
               {
                 "name": "Disarming Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll, you can expend one Superiority Die to attempt to disarm the target. Add the Superiority Die roll to the attack’s damage roll. The target must succeed on a Strength Saving Throw or drop one object of your choice that it’s holding, with the object landing in its space.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll, you can expend one Superiority Die to attempt to disarm the target. Add the Superiority Die roll to the attack’s damage roll. The target must succeed on a Strength Saving Throw or drop one object of your choice that it’s holding, with the object landing in its space."
               },
               {
                 "name": "Distracting Strike",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll, you can expend one Superiority Die to distract the target. Add the Superiority Die roll to the attack’s damage roll. The next attack roll against the target by an attacker other than you has Advantage if the attack is made before the start of your next turn.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll, you can expend one Superiority Die to distract the target. Add the Superiority Die roll to the attack’s damage roll. The next attack roll against the target by an attacker other than you has Advantage if the attack is made before the start of your next turn."
               },
               {
                 "name": "Evasive Footwork",
-                "desc": ""
-              },
-              {
-                "name": "As a Bonus Action, you can expend one Superiority Die and take the Disengage action. You also roll the die and add the number rolled to your AC until the start of your next turn.",
-                "desc": ""
+                "desc": "As a Bonus Action, you can expend one Superiority Die and take the Disengage action. You also roll the die and add the number rolled to your AC until the start of your next turn."
               },
               {
                 "name": "Feinting Attack",
-                "desc": ""
-              },
-              {
-                "name": "As a Bonus Action, you can expend one Superiority Die to feint, choosing one creature within 5 feet of yourself as your target. You have Advantage on your next attack roll against that target this turn. If that attack hits, add the Superiority Die to the attack’s damage roll.",
-                "desc": ""
+                "desc": "As a Bonus Action, you can expend one Superiority Die to feint, choosing one creature within 5 feet of yourself as your target. You have Advantage on your next attack roll against that target this turn. If that attack hits, add the Superiority Die to the attack’s damage roll."
               },
               {
                 "name": "Goading Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll, you can expend one Superiority Die to attempt to goad the target into attacking you. Add the Superiority Die to the attack’s damage roll. The target must succeed on a Wisdom Saving Throw or have Disadvantage on attack rolls against targets other than you until the end of your next turn.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll, you can expend one Superiority Die to attempt to goad the target into attacking you. Add the Superiority Die to the attack’s damage roll. The target must succeed on a Wisdom Saving Throw or have Disadvantage on attack rolls against targets other than you until the end of your next turn."
               },
               {
                 "name": "Lunging Attack",
-                "desc": ""
-              },
-              {
-                "name": "As a Bonus Action, you can expend one Superiority Die and take the Dash action. If you move at least 5 feet in a straight line immediately before hitting with a melee attack as part of the Attack action on this turn, you can add the Superiority Die to the attack’s damage roll.",
-                "desc": ""
+                "desc": "As a Bonus Action, you can expend one Superiority Die and take the Dash action. If you move at least 5 feet in a straight line immediately before hitting with a melee attack as part of the Attack action on this turn, you can add the Superiority Die to the attack’s damage roll."
               },
               {
                 "name": "Maneuvering Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll, you can expend one Superiority Die to maneuver one of your comrades into another position. Add the Superiority Die roll to the attack’s damage roll, and choose a willing creature who can see or hear you. That creature can use its Reaction to move up to half its Speed without provoking an Opportunity Attack from the target of your attack.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll, you can expend one Superiority Die to maneuver one of your comrades into another position. Add the Superiority Die roll to the attack’s damage roll, and choose a willing creature who can see or hear you. That creature can use its Reaction to move up to half its Speed without provoking an Opportunity Attack from the target of your attack."
               },
               {
                 "name": "Menacing Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll, you can expend one Superiority Die to attempt to frighten the target. Add the Superiority Die to the attack’s damage roll. The target must succeed on a Wisdom Saving Throw or have the Frightened condition until the end of your next turn.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll, you can expend one Superiority Die to attempt to frighten the target. Add the Superiority Die to the attack’s damage roll. The target must succeed on a Wisdom Saving Throw or have the Frightened condition until the end of your next turn."
               },
               {
                 "name": "Parry",
-                "desc": ""
-              },
-              {
-                "name": "When another creature damages you with a melee attack roll, you can take a Reaction and expend one Superiority Die to reduce the damage by the number you roll on your Superiority Die plus your Strength or Dexterity modifier (your choice).",
-                "desc": ""
+                "desc": "When another creature damages you with a melee attack roll, you can take a Reaction and expend one Superiority Die to reduce the damage by the number you roll on your Superiority Die plus your Strength or Dexterity modifier (your choice)."
               },
               {
                 "name": "Precision Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you miss with an attack roll, you can expend one Superiority Die, roll that die, and add it to the attack roll, potentially causing the attack to hit.",
-                "desc": ""
+                "desc": "When you miss with an attack roll, you can expend one Superiority Die, roll that die, and add it to the attack roll, potentially causing the attack to hit."
               },
               {
                 "name": "Pushing Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die to attempt to drive the target back. Add the Superiority Die to the attack’s damage roll. If the target is Large or smaller, it must succeed on a Strength Saving Throw or be pushed up to 15 feet directly away from you.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die to attempt to drive the target back. Add the Superiority Die to the attack’s damage roll. If the target is Large or smaller, it must succeed on a Strength Saving Throw or be pushed up to 15 feet directly away from you."
               },
               {
                 "name": "Rally",
-                "desc": ""
-              },
-              {
-                "name": "As a Bonus Action, you can expend one Superiority Die to bolster the resolve of a companion. Choose an ally of yours within 30 feet of yourself who can see or hear you. That creature gains Temporary Hit Points equal to the Superiority Die roll plus half your Fighter level (round down).",
-                "desc": ""
+                "desc": "As a Bonus Action, you can expend one Superiority Die to bolster the resolve of a companion. Choose an ally of yours within 30 feet of yourself who can see or hear you. That creature gains Temporary Hit Points equal to the Superiority Die roll plus half your Fighter level (round down)."
               },
               {
                 "name": "Riposte",
-                "desc": ""
-              },
-              {
-                "name": "When a creature misses you with a melee attack roll, you can take a Reaction and expend one Superiority Die to make a melee attack roll with a weapon or an Unarmed Strike against the creature. If you hit, add the Superiority Die to the attack’s damage.",
-                "desc": ""
+                "desc": "When a creature misses you with a melee attack roll, you can take a Reaction and expend one Superiority Die to make a melee attack roll with a weapon or an Unarmed Strike against the creature. If you hit, add the Superiority Die to the attack’s damage."
               },
               {
                 "name": "Sweeping Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with a melee attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die to attempt to damage another creature. Choose another creature within 5 feet of the original target and within your reach. If the original attack roll would hit the second creature, it takes damage equal to the number you roll on your Superiority Die. The damage is of the same type dealt by the original attack.",
-                "desc": ""
+                "desc": "When you hit a creature with a melee attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die to attempt to damage another creature. Choose another creature within 5 feet of the original target and within your reach. If the original attack roll would hit the second creature, it takes damage equal to the number you roll on your Superiority Die. The damage is of the same type dealt by the original attack."
               },
               {
                 "name": "Tactical Assessment",
-                "desc": ""
-              },
-              {
-                "name": "When you make an Intelligence (History or Investigation) check or a Wisdom (Insight) check, you can expend one Superiority Die and add that die to the ability check.",
-                "desc": ""
+                "desc": "When you make an Intelligence (History or Investigation) check or a Wisdom (Insight) check, you can expend one Superiority Die and add that die to the ability check."
               },
               {
                 "name": "Trip Attack",
-                "desc": ""
-              },
-              {
-                "name": "When you hit a creature with an attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die and add the die to the attack’s damage roll. If the target is Large or smaller, it must succeed on a Strength Saving Throw or have the Prone condition.",
-                "desc": ""
+                "desc": "When you hit a creature with an attack roll using a weapon or an Unarmed Strike, you can expend one Superiority Die and add the die to the attack’s damage roll. If the target is Large or smaller, it must succeed on a Strength Saving Throw or have the Prone condition."
               }
             ],
             "knownCount": "TIER(LVL,3:3,7:5,10:7,15:9)"
@@ -85006,13 +84913,13 @@
         "subclassId": 149,
         "classId2": null,
         "subclassId2": null,
-        "level1": 2,
+        "level1": 7,
         "level2": null,
         "raceId": 33,
         "featIds": [
           168
         ],
-        "level": 2,
+        "level": 7,
         "cls": "Fighter",
         "cls2": "",
         "race": "Goliath",
@@ -85511,17 +85418,6 @@
         ],
         "trackers": [
           {
-            "key": "sub_battle_master_superiority_die",
-            "label": "Superiority Die",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 149
-          },
-          {
             "key": "sub_battle_master_superiority_dice",
             "label": "Superiority Dice",
             "max": 1,
@@ -85536,7 +85432,7 @@
             "key": "race_goliath_large_form",
             "label": "Large Form",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -85552,6 +85448,17 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 168
+          },
+          {
+            "key": "sub_battle_master_superiority_die",
+            "label": "Superiority Die",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "LR",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 149
           }
         ],
         "_grantImmunities": [],
@@ -85625,7 +85532,9 @@
         "passiveInsight": 11,
         "acEffective": 13,
         "hpMax": 0,
-        "_slotTotal": {},
+        "_slotTotal": {
+          "1": 3
+        },
         "_slotUsedCompact": {},
         "activeModes": [],
         "deathSaves": {
@@ -85633,17 +85542,6 @@
           "fail": 0
         },
         "_trackersForDm": [
-          {
-            "key": "sub_battle_master_superiority_die",
-            "label": "Superiority Die",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 149
-          },
           {
             "key": "sub_battle_master_superiority_dice",
             "label": "Superiority Dice",
@@ -85659,7 +85557,7 @@
             "key": "race_goliath_large_form",
             "label": "Large Form",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -85675,6 +85573,17 @@
             "_custom": true,
             "_featSync": true,
             "_syncSourceId": 168
+          },
+          {
+            "key": "sub_battle_master_superiority_die",
+            "label": "Superiority Die",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "LR",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 149
           }
         ],
         "saveDcEffective": null,
@@ -85683,8 +85592,26 @@
             "Battleaxe",
             "Maul",
             "Spear"
+          ],
+          "149_Combat Superiority": [
+            "Riposte",
+            "Precision Attack",
+            "Rally"
           ]
-        }
+        },
+        "acAdjust": 0,
+        "_panelAcAdj": 0,
+        "hpAdjust": 0,
+        "speedAdjust": 0,
+        "_panelSpeedAdj": 0,
+        "saveDcAdjust": 0,
+        "_panelSaveDcAdj": 0,
+        "hpCurrent": 0,
+        "hpTemp": 0,
+        "_slotUsed": {},
+        "_hitDiceUsed": {},
+        "_concentratingOn": null,
+        "conditions": []
       }
     ],
     "unassignedSpells": [],
@@ -92557,6 +92484,5 @@
     ]
   },
   "nextId": 407,
-  "_updated": 1785922462294,
-  "_unchanged": true
+  "_updated": 1785922919196
 }

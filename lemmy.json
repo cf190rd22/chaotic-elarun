@@ -18453,7 +18453,8 @@
         "_autoCalcSkills": true,
         "spellcastingAbility": "CHA",
         "_slotUsed": {
-          "399-L2": 1
+          "399-L2": 1,
+          "399-L1": 1
         },
         "acAdjust": 0,
         "_panelAcAdj": 0,
@@ -18853,6 +18854,7 @@
         "acEffective": 17,
         "hpMax": 45,
         "_slotUsedCompact": {
+          "1": 1,
           "2": 1
         },
         "_featAtypes": {
@@ -19020,5 +19022,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786192369904
+  "_updated": 1786192432551
 }

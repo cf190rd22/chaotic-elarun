@@ -14052,7 +14052,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false,
+            "_singleUsed": true,
             "_dmAllow": true,
             "_dmAllowNote": "Mac-Fuirmidh Cittern",
             "_dmAllowSource": "Class"
@@ -18299,7 +18299,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 0,
+            "cur": 1,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18463,7 +18463,7 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 1,
+        "hpCurrent": 10,
         "hpTemp": 0,
         "_concentratingOn": null,
         "conditions": [],
@@ -18882,7 +18882,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 0,
+            "cur": 1,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -19023,6 +19023,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786204889449,
-  "_unchanged": true
+  "_updated": 1786204939315
 }

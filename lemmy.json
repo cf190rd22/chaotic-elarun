@@ -18961,7 +18961,7 @@
         "_advDisadv": null,
         "statsLocked": false,
         "_qsHdOpen": true,
-        "gold": 5937,
+        "gold": 5947,
         "sp": 0,
         "pp": 50,
         "_hitDiceUsed": {}
@@ -19022,6 +19022,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786193790930,
-  "_unchanged": true
+  "_updated": 1786193793189
 }

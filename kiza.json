@@ -15451,7 +15451,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 45,
+        "hpCurrent": 61,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -16278,6 +16278,5 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786196306064,
-  "_unchanged": true
+  "_updated": 1786196405653
 }

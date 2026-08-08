@@ -16077,7 +16077,7 @@
         "_slotUsedCompact": {},
         "deathSaves": {
           "pass": 0,
-          "fail": 0
+          "fail": 1
         },
         "_trackersForDm": [
           {
@@ -16251,6 +16251,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786204957650,
+  "_updated": 1786205077650,
   "_unchanged": true
 }

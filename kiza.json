@@ -14447,9 +14447,7 @@
             "_syncSourceId": 70,
             "_syncMinLevel": 2,
             "_freecast": true,
-            "_singleUse": false,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_singleUse": false
           },
           {
             "name": "Find Steed",
@@ -14471,9 +14469,7 @@
             "_syncSourceId": 70,
             "_syncMinLevel": 5,
             "_freecast": true,
-            "_singleUse": false,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_singleUse": false
           },
           {
             "name": "Armor of Agathys",
@@ -14494,8 +14490,7 @@
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
             "_syncMinLevel": 3,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_lastCastUpcast": 1
           },
           {
             "name": "Command",
@@ -14515,9 +14510,7 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 3,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 3
           },
           {
             "name": "Hold Person",
@@ -14538,9 +14531,7 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 5,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 5
           },
           {
             "name": "Spiritual Weapon",
@@ -14561,9 +14552,7 @@
             "_subclassSync": true,
             "_syncSourceName": "Path of the Chaos Knight",
             "_syncSourceId": 93,
-            "_syncMinLevel": 5,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 5
           }
         ],
         "actions": [
@@ -14606,7 +14595,7 @@
             "save": "",
             "notes": "Concentration, up to 1 min",
             "desc": "Choose a Humanoid that you can see within range. The target must succeed on a Wisdom saving throw or have the Paralyzed condition for the duration. At the end of each of its turns, the target repeats the save, ending the spell on itself on a success.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional Humanoid for each spell slot level above 2.",
-            "fav": true,
+            "fav": false,
             "used": false
           },
           {
@@ -14738,7 +14727,7 @@
             "save": "",
             "effect": "",
             "notes": "",
-            "desc": "4 Charges\nArmor Class: +3\nYou gain a +1 bonus to Armor Class while wielding this shield.\nThe shield has 4 charges. While holding it, when a Large or smaller creature within 5 feet of you hits you with a melee attack roll, you can take a Reaction to expend 1 of the shield’s charges and push the attacker up to 15 feet straight away. The shield regains 1d4 expended charges daily at dawn.",
+            "desc": "4 Charges\nArmor Class: +3\nYou gain a +1 bonus to Armor Class while wielding this shield.\nThe shield has 4 charges. While holding it, when a Large or smaller creature within 5 feet of you hits you with a melee attack roll, you can take a Reaction to expend 1 of the shield’s charges and push the attacker up to 15 feet straight away. The shield regains 1d4 expended charges daily at dawn.\n\nAfter Kiza slays a dragon. She claims the lower jaw and hopes to have it attached to this shield.",
             "fav": true,
             "used": false,
             "_actionAdj": {
@@ -14980,8 +14969,7 @@
             "_modeAttackBonus": 0,
             "_modeDmgBonus": 0,
             "_modeResistance": "",
-            "_flag": true,
-            "_modeActive": true
+            "_flag": true
           },
           {
             "name": "Lay on Hands",
@@ -15090,8 +15078,7 @@
             "_groupLabel": "Channel Divinity",
             "_playerSetMode": true,
             "_modeConsumesTracker": "Chaotic Wounds",
-            "_libHasMode": true,
-            "_modeActive": false
+            "_libHasMode": true
           },
           {
             "name": "CD:  Channel Chaos",
@@ -15180,7 +15167,7 @@
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
             "_flag": true,
-            "_modeActive": false
+            "_modeActive": true
           },
           {
             "name": "Lvl 7: Fire Resistance",
@@ -15282,36 +15269,6 @@
             "_syncMinLevel": 1
           },
           {
-            "name": "Adamantine Plate*",
-            "kind": "item",
-            "_fromItem": true,
-            "atype": "other",
-            "source": "Plate",
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "effect": "",
-            "notes": "Add 1D4 dice to all Stealth rolls.",
-            "desc": "Armor Class: 18\nThis suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you’re wearing it, any Critical Hit against you becomes a normal hit.",
-            "fav": false,
-            "used": false,
-            "_actionAdj": {
-              "ac": ">=18",
-              "acDur": "",
-              "maxHp": "",
-              "maxHpDur": "",
-              "tempHp": "",
-              "tempHpDur": "",
-              "speed": "",
-              "speedDur": "",
-              "saveDc": "",
-              "saveDcDur": "",
-              "advSkills": [],
-              "advSkillsDur": ""
-            }
-          },
-          {
             "name": "Claws",
             "_libName": "Claws",
             "kind": "feat",
@@ -15335,7 +15292,7 @@
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_deflection",
             "label": "Chaos: Deflection",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -15356,10 +15313,22 @@
             "_catId": 1784109406003
           },
           {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919
+          },
+          {
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 35,
-            "cur": 35,
+            "cur": 11,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -15373,7 +15342,7 @@
             "key": "cls_chaos_knight_channel_divinity",
             "label": "Channel Divinity",
             "max": 2,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -15401,7 +15370,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 18,
-            "cur": 18,
+            "cur": 0,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -15410,19 +15379,6 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919,
-            "_origIdx": 3
           },
           {
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
@@ -15439,7 +15395,9 @@
             "_origIdx": 1
           }
         ],
-        "_slotUsed": {},
+        "_slotUsed": {
+          "157-L2": 1
+        },
         "_defTags": [
           {
             "type": "resistance",
@@ -15449,7 +15407,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 45,
+        "hpCurrent": 74,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -15514,8 +15472,7 @@
             "size": "Tiny",
             "speed": "50 ft.",
             "speedType": "",
-            "subtypes": "",
-            "tempHp": 0
+            "subtypes": ""
           }
         ],
         "items": [
@@ -15633,7 +15590,7 @@
           {
             "name": "Repulsion Shield",
             "subtype": "Shield",
-            "desc": "4 Charges\nArmor Class: +3\nYou gain a +1 bonus to Armor Class while wielding this shield.\nThe shield has 4 charges. While holding it, when a Large or smaller creature within 5 feet of you hits you with a melee attack roll, you can take a Reaction to expend 1 of the shield’s charges and push the attacker up to 15 feet straight away. The shield regains 1d4 expended charges daily at dawn.",
+            "desc": "4 Charges\nArmor Class: +3\nYou gain a +1 bonus to Armor Class while wielding this shield.\nThe shield has 4 charges. While holding it, when a Large or smaller creature within 5 feet of you hits you with a melee attack roll, you can take a Reaction to expend 1 of the shield’s charges and push the attacker up to 15 feet straight away. The shield regains 1d4 expended charges daily at dawn.\n\nAfter Kiza slays a dragon. She claims the lower jaw and hopes to have it attached to this shield.",
             "actionType": "reaction",
             "rarity": "uncommon",
             "tags": [
@@ -15688,12 +15645,12 @@
           },
           {
             "name": "Dread Helm",
-            "itemType": "Wondrous item",
             "subtype": "Wondrous Item",
-            "rarity": "common",
-            "weight": "--",
-            "source": "Dungeon Master’s Guide, pg. 137",
-            "desc": "This fearsome steel helm makes your eyes glow red and hides the rest of your face in shadow while you wear it."
+            "desc": "This fearsome steel helm makes your eyes glow red and hides the rest of your face in shadow while you wear it.\n\nAfter slaying a few dragons. \nKiza adds a bone eye socket piece to the left horn",
+            "tags": [],
+            "proficient": false,
+            "_grants": [],
+            "_actionAdjDuration": ""
           },
           {
             "name": "Fine Clothes",
@@ -15863,7 +15820,8 @@
             "weight": "4lb.",
             "notes": "Versatile (1d10), Topple · Melee, Reach 5ft., Slashing",
             "source": "Grim Hollow: Player Pack",
-            "desc": "In Backpack\nCharges\nBane(1st) • Legacy\n1 Charge\nBanishment(4th) • Legacy\n1 Charge\nBestow Curse(3rd) • Legacy\n1 Charge\nIncendiary Cloud(8th) • Legacy\n1 Charge\nBranding Smite(2nd) • Legacy\n1 Charge\nThe blades of this axe smolder with an inner light. The dark wooden handle is accented with silver.\nWhen the celestial realm turned back yet another assault from the forces of evil, a fiendish forge master received a vision, allowing them to craft a battleaxe like no other. With the might of Ardor, the fiends now possess a weapon capable of striking down the celestial forces.\nArdor now lies in the fiendish realm’s hidden vaults, waiting to be wielded when the forces of darkness make their ultimate strike to consume the world. The fiends don’t realize that an equally powerful weapon rests in the hands of the celestials who wage eternal war against them. The fates who inspired the forge master to craft Ardor also sent a vision to a smith of heaven in the interest of maintaining the balance of power.\nAxe of Hell. This magic battleaxe grants a +3 bonus to attack and damage rolls made with it. When you hit with an attack using it, the target takes an extra 3d10 necrotic damage.\nChampion of Evil. While holding the battleaxe, you are immune to the charmed, frightened, paralyzed, poisoned, and stunned conditions.\nArdor’s Pursuit. As a bonus action, you can release Ardor to hover magically in an unoccupied space within 5 feet of you. If you can see the battleaxe, you can mentally command it as a bonus action to fly up to 50 feet and either make one attack against a target or return to your hands. If any effect targets the hovering axe, you are considered to be holding it. The hovering axe falls if the attuned user dies.\nSpells. While the axe is on your person, you can use an action to cast one of the following spells (save DC 18): bane, banishment, bestow curse, branding smite, or incendiary cloud. Once you use the axe to cast a spell, that spell can’t be cast again from it until the next dawn.\nDestroying the Axe. The only thing capable of damaging the battleaxe is its celestial twin Zeal. A creature wielding Zeal can choose to attack Ardor, which has an AC of 21 and 300 hit points. No other creature or object can damage Ardor.\nMastery: Topple (Battleaxe)\nYour training with weapons allows you to use the mastery property of Battleaxes:\nTopple. If you hit a creature with a Battleaxe, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition."
+            "desc": "In Backpack\nCharges\nBane(1st) • Legacy\n1 Charge\nBanishment(4th) • Legacy\n1 Charge\nBestow Curse(3rd) • Legacy\n1 Charge\nIncendiary Cloud(8th) • Legacy\n1 Charge\nBranding Smite(2nd) • Legacy\n1 Charge\nThe blades of this axe smolder with an inner light. The dark wooden handle is accented with silver.\nWhen the celestial realm turned back yet another assault from the forces of evil, a fiendish forge master received a vision, allowing them to craft a battleaxe like no other. With the might of Ardor, the fiends now possess a weapon capable of striking down the celestial forces.\nArdor now lies in the fiendish realm’s hidden vaults, waiting to be wielded when the forces of darkness make their ultimate strike to consume the world. The fiends don’t realize that an equally powerful weapon rests in the hands of the celestials who wage eternal war against them. The fates who inspired the forge master to craft Ardor also sent a vision to a smith of heaven in the interest of maintaining the balance of power.\nAxe of Hell. This magic battleaxe grants a +3 bonus to attack and damage rolls made with it. When you hit with an attack using it, the target takes an extra 3d10 necrotic damage.\nChampion of Evil. While holding the battleaxe, you are immune to the charmed, frightened, paralyzed, poisoned, and stunned conditions.\nArdor’s Pursuit. As a bonus action, you can release Ardor to hover magically in an unoccupied space within 5 feet of you. If you can see the battleaxe, you can mentally command it as a bonus action to fly up to 50 feet and either make one attack against a target or return to your hands. If any effect targets the hovering axe, you are considered to be holding it. The hovering axe falls if the attuned user dies.\nSpells. While the axe is on your person, you can use an action to cast one of the following spells (save DC 18): bane, banishment, bestow curse, branding smite, or incendiary cloud. Once you use the axe to cast a spell, that spell can’t be cast again from it until the next dawn.\nDestroying the Axe. The only thing capable of damaging the battleaxe is its celestial twin Zeal. A creature wielding Zeal can choose to attack Ardor, which has an AC of 21 and 300 hit points. No other creature or object can damage Ardor.\nMastery: Topple (Battleaxe)\nYour training with weapons allows you to use the mastery property of Battleaxes:\nTopple. If you hit a creature with a Battleaxe, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
+            "equipped": true
           },
           {
             "name": "Boots of Striding and Springing",
@@ -16038,7 +15996,7 @@
         "_secCollapsed": {
           "quickStats": false,
           "saves": true,
-          "skills": true,
+          "skills": false,
           "passives": true,
           "senses": true,
           "defenses": true,
@@ -16097,11 +16055,13 @@
           "2": 3
         },
         "activeModes": [
-          "Blessing of the Elandran Cleric"
+          "Aura of Chaos"
         ],
         "acEffective": 22,
         "hpMax": 74,
-        "_slotUsedCompact": {},
+        "_slotUsedCompact": {
+          "2": 1
+        },
         "deathSaves": {
           "pass": 0,
           "fail": 0
@@ -16111,7 +16071,7 @@
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_deflection",
             "label": "Chaos: Deflection",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -16132,10 +16092,22 @@
             "_catId": 1784109406003
           },
           {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919
+          },
+          {
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 35,
-            "cur": 35,
+            "cur": 11,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -16149,7 +16121,7 @@
             "key": "cls_chaos_knight_channel_divinity",
             "label": "Channel Divinity",
             "max": 2,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -16177,7 +16149,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 18,
-            "cur": 18,
+            "cur": 0,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -16186,19 +16158,6 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919,
-            "_origIdx": 3
           },
           {
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
@@ -16217,7 +16176,11 @@
         ],
         "saveDcEffective": 14,
         "_dmHidden": true,
-        "_hitDiceUsed": {}
+        "heroicInspiration": true,
+        "_qsAdjOpen": true,
+        "_restNotesOpen": true,
+        "_restSectionOpen_short": true,
+        "_restSectionOpen_long": false
       }
     ],
     "_exportedAt": 1784299476169,
@@ -16273,7 +16236,7 @@
       89
     ]
   },
-  "nextId": 398,
-  "_updated": 1786192500910,
+  "nextId": 401,
+  "_updated": 1786192533413,
   "_unchanged": true
 }

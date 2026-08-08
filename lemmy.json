@@ -18958,7 +18958,7 @@
         ],
         "saveDcEffective": 14,
         "_dmHidden": true,
-        "_advDisadv": null,
+        "_advDisadv": "disadv",
         "statsLocked": false,
         "_qsHdOpen": true,
         "gold": 5947,
@@ -19022,5 +19022,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786201085024
+  "_updated": 1786201197566,
+  "_unchanged": true
 }

@@ -15284,36 +15284,6 @@
             "effect": ""
           },
           {
-            "name": "Adamantine Plate*",
-            "kind": "item",
-            "_fromItem": true,
-            "atype": "other",
-            "source": "Plate",
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "effect": "",
-            "notes": "Add 1D4 dice to all Stealth rolls.",
-            "desc": "Armor Class: 18\nThis suit of armor is reinforced with adamantine, one of the hardest substances in existence. While you’re wearing it, any Critical Hit against you becomes a normal hit.",
-            "fav": false,
-            "used": false,
-            "_actionAdj": {
-              "ac": ">=18",
-              "acDur": "",
-              "maxHp": "",
-              "maxHpDur": "",
-              "tempHp": "",
-              "tempHpDur": "",
-              "speed": "",
-              "speedDur": "",
-              "saveDc": "",
-              "saveDcDur": "",
-              "advSkills": [],
-              "advSkillsDur": ""
-            }
-          },
-          {
             "name": "Claws",
             "_libName": "Claws",
             "kind": "feat",
@@ -16279,6 +16249,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786198240241,
+  "_updated": 1786198360211,
   "_unchanged": true
 }

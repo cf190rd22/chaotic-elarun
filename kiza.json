@@ -16076,7 +16076,7 @@
         "hpMax": 74,
         "_slotUsedCompact": {},
         "deathSaves": {
-          "pass": 0,
+          "pass": 1,
           "fail": 1
         },
         "_trackersForDm": [
@@ -16251,6 +16251,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786205197652,
+  "_updated": 1786205317618,
   "_unchanged": true
 }

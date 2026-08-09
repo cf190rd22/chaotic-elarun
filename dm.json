@@ -63299,7 +63299,8 @@
         "_grantFlatBonusDamageThrown": 0,
         "_grantMinAC": [],
         "_grantAbilBonus": {},
-        "_grantSenses": []
+        "_grantSenses": {},
+        "_grantWeaponDamage": []
       },
       {
         "id": 159,
@@ -72693,7 +72694,8 @@
         "_grantFlatBonusDamageThrown": 0,
         "_grantMinAC": [],
         "_grantAbilBonus": {},
-        "_grantSenses": []
+        "_grantSenses": {},
+        "_grantWeaponDamage": []
       },
       {
         "id": 241,
@@ -78657,7 +78659,8 @@
           "feats": true,
           "languages": true,
           "proficiencies": true,
-          "jump": true
+          "jump": true,
+          "spellSlots": false
         },
         "_topOpen": false,
         "_collapsedActSubgroups": {},
@@ -78681,7 +78684,8 @@
         "_itemTagsCollapsed": true,
         "_grantMinAC": [],
         "_grantAbilBonus": {},
-        "_grantSenses": []
+        "_grantSenses": {},
+        "_grantWeaponDamage": []
       },
       {
         "id": 242,
@@ -84600,8 +84604,8 @@
         "_collapsedSpLevels": {
           "4": false
         },
-        "_qsAdjOpen": true,
-        "_restNotesOpen": true,
+        "_qsAdjOpen": false,
+        "_restNotesOpen": false,
         "shortRestNotes": "+ Give Inspiration",
         "longRestNotes": "+ Give Inspiration",
         "_trackerCats": [
@@ -84772,7 +84776,8 @@
         "_grantFlatBonusDamageThrown": 0,
         "_grantMinAC": [],
         "_grantAbilBonus": {},
-        "_grantSenses": []
+        "_grantSenses": {},
+        "_grantWeaponDamage": []
       },
       {
         "id": 408,
@@ -85511,14 +85516,7 @@
         "_grantHeroicInspiration": false,
         "_grantAttuneSlots": 0,
         "_grantSenses": {},
-        "_grantWeaponDamage": [
-          {
-            "formula": "+1d6",
-            "damageType": "Fire",
-            "filter": "melee",
-            "src": "Feature: race_31_Elven Lineage"
-          }
-        ],
+        "_grantWeaponDamage": [],
         "_grantExtraCantrips": {},
         "_grantExtraCantripDetails": [],
         "_grantAbilModSkills": [],
@@ -85583,14 +85581,7 @@
         },
         "_slotUsed": {},
         "_charGrants": {
-          "race_31_Elven Lineage": [
-            {
-              "type": "weaponDamage",
-              "filter": "melee",
-              "formula": "+1d6",
-              "damageType": "Fire"
-            }
-          ]
+          "race_31_Elven Lineage": []
         },
         "_collapsedActSubgroups": {},
         "passivePerception": 10,
@@ -85667,7 +85658,14 @@
             "_syncSourceId": 139
           }
         ],
-        "saveDcEffective": null
+        "saveDcEffective": null,
+        "customFeats": [
+          {
+            "name": "Skilled",
+            "source": "Background"
+          }
+        ],
+        "_originFeatGranted": "Skilled"
       }
     ],
     "unassignedSpells": [],
@@ -92540,5 +92538,6 @@
     ]
   },
   "nextId": 409,
-  "_updated": 1786269617912
+  "_updated": 1786269902343,
+  "_unchanged": true
 }

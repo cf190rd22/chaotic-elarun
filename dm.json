@@ -59531,7 +59531,7 @@
         },
         "activeModes": [],
         "acEffective": 18,
-        "hpMax": 52,
+        "hpMax": 45,
         "_slotUsedCompact": {
           "1": 1,
           "2": 1,
@@ -78565,7 +78565,7 @@
         "passivePerception": 9,
         "passiveInsight": 12,
         "acEffective": 16,
-        "hpMax": 47,
+        "hpMax": 32,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -85587,7 +85587,7 @@
         "passivePerception": 10,
         "passiveInsight": 10,
         "acEffective": 0,
-        "hpMax": 0,
+        "hpMax": 38,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -92538,5 +92538,5 @@
     ]
   },
   "nextId": 409,
-  "_updated": 1786476275252
+  "_updated": 1786648870546
 }

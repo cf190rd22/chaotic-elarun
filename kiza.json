@@ -12954,7 +12954,7 @@
         "subclassId": 93,
         "classId2": null,
         "subclassId2": null,
-        "level1": 7,
+        "level1": 8,
         "level2": null,
         "raceId": 73,
         "featIds": [
@@ -12963,7 +12963,7 @@
           171,
           257
         ],
-        "level": 7,
+        "level": 8,
         "cls": "Chaos Knight",
         "cls2": "",
         "race": "Leonin",
@@ -16250,6 +16250,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786795056737,
+  "_updated": 1786796116727,
   "_unchanged": true
 }

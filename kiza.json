@@ -12969,8 +12969,8 @@
         "race": "Leonin",
         "abilities": {
           "Strength": {
-            "score": 16,
-            "mod": 3
+            "score": 18,
+            "mod": 4
           },
           "Dexterity": {
             "score": 15,
@@ -12994,7 +12994,7 @@
           }
         },
         "saves": {
-          "Strength": 1,
+          "Strength": 2,
           "Dexterity": 0,
           "Constitution": 2,
           "Intelligence": -2,
@@ -13095,7 +13095,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 4,
+            "bonus": 5,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -13294,7 +13294,7 @@
           "Insight": 10
         },
         "ac": "12",
-        "hp": "74",
+        "hp": "84",
         "speed": "35ft",
         "initiative": "+2",
         "profBonus": "+3",
@@ -15421,7 +15421,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 74,
+        "hpCurrent": 84,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -16069,7 +16069,7 @@
         },
         "activeModes": [],
         "acEffective": 22,
-        "hpMax": 74,
+        "hpMax": 84,
         "_slotUsedCompact": {},
         "deathSaves": {
           "pass": 0,
@@ -16250,6 +16250,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786797436759,
+  "_updated": 1786797556758,
   "_unchanged": true
 }

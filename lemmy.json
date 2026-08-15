@@ -18817,12 +18817,7 @@
         "_hideAdjHighlight": true,
         "_hideUnassigned": true,
         "_spFiltersCollapsed": true,
-        "_collapsedSpLevels": {
-          "1": false,
-          "2": false,
-          "3": false,
-          "4": false
-        },
+        "_collapsedSpLevels": {},
         "_qsAdjOpen": true,
         "_restNotesOpen": false,
         "shortRestNotes": "+ Give Inspiration",
@@ -19044,6 +19039,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786798835879,
-  "_unchanged": true
+  "_updated": 1786798937777
 }

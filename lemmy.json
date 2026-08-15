@@ -18373,6 +18373,25 @@
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance",
             "_origIdx": 7
+          },
+          {
+            "key": "_custom_1786797549976",
+            "label": "Portent dice",
+            "max": 1,
+            "cur": 1,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "boxes",
+            "_origIdx": 8
+          },
+          {
+            "key": "_custom_1786797585106",
+            "label": "Portent dice",
+            "max": 16,
+            "cur": 16,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
           }
         ],
         "_grantImmunities": [],
@@ -18424,9 +18443,9 @@
           "senses": true,
           "defenses": true,
           "feats": true,
-          "languages": true,
+          "languages": false,
           "proficiencies": false,
-          "jump": false,
+          "jump": true,
           "progression": false,
           "abilities": false
         },
@@ -18947,6 +18966,25 @@
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance",
             "_origIdx": 7
+          },
+          {
+            "key": "_custom_1786797549976",
+            "label": "Portent dice",
+            "max": 1,
+            "cur": 1,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "boxes",
+            "_origIdx": 8
+          },
+          {
+            "key": "_custom_1786797585106",
+            "label": "Portent dice",
+            "max": 16,
+            "cur": 16,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
           }
         ],
         "saveDcEffective": 14,
@@ -19019,6 +19057,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786797469860,
+  "_updated": 1786797589850,
   "_unchanged": true
 }

@@ -15280,7 +15280,7 @@
               "control"
             ],
             "_syncMinLevel": 1,
-            "_flag": true,
+            "_flag": false,
             "effect": ""
           },
           {
@@ -15331,7 +15331,7 @@
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 35,
-            "cur": 35,
+            "cur": 40,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -16104,7 +16104,7 @@
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 35,
-            "cur": 35,
+            "cur": 40,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -16250,6 +16250,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786798653463,
+  "_updated": 1786799544785,
   "_unchanged": true
 }

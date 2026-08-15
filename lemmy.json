@@ -17501,48 +17501,42 @@
             "_singleUsed": false
           },
           {
+            "name": "Silence",
+            "level": 2,
+            "school": "Illusion",
+            "time": "Action",
+            "range": "120ft",
+            "area": "20ft sphere",
+            "_effectManual": false,
+            "_noScale": false,
+            "components": "V, S",
+            "duration": "10 minutes",
+            "concentration": false,
+            "ritual": false,
+            "desc": "For the duration, no sound can be created within or pass through a 20-foot-radius Sphere centered on a point you choose within range. Any creature or object entirely inside the Sphere has Immunity to Thunder damage, and creatures have the Deafened condition while entirely inside it. Casting a spell that includes a Verbal component is impossible there",
+            "_castAlert": "Remember to concentrate",
+            "tags": [],
+            "_freecast": false,
+            "_singleUse": false,
+            "_spellAdjDuration": ""
+          },
+          {
             "name": "Power Word Heal",
-            "level": 9,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "effect": "Prone",
-            "desc": "A wave of healing energy washes over one creature you can see within range. The target regains all its Hit Points. If the creature has the Charmed, Frightened, Paralyzed, Poisoned, or Stunned condition, the condition ends. If the creature has the Prone condition, it can use its Reaction to stand up.",
-            "area": "",
-            "hit": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
+            "level": 20,
             "_assigned": false,
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 20
           },
           {
             "name": "Power Word Kill",
-            "level": 9,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "60 feet",
-            "components": "V",
-            "duration": "Instantaneous",
-            "effect": "12d12 Psychic",
-            "desc": "You compel one creature you can see within range to die. If the target has 100 Hit Points or fewer, it dies. Otherwise, it takes 12d12 Psychic damage.",
-            "area": "",
-            "hit": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
+            "level": 20,
             "_assigned": false,
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20,
-            "_freecasted": false,
-            "_singleUsed": false
+            "_syncMinLevel": 20
           }
         ],
         "actions": [
@@ -18054,41 +18048,23 @@
             "_modeActive": false
           },
           {
-            "name": "Bardic Inspiration",
-            "_libName": "Bardic Inspiration",
+            "name": "Bardic Inspiration (!)",
+            "_libName": "Bardic Inspiration (!)",
             "kind": "feat",
-            "atype": "feature",
+            "atype": "bonus",
             "source": "Bard",
-            "_syncSourceId": 65,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.</p><details open=\"\"><summary>Using Bardic Inspiration</summary><div class=\"det-body\"><p>As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.</p><p>Once within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.</p></div></details><details open=\"\"><summary>Number of Uses</summary><div class=\"det-body\"><p>You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.</p></div></details><details open=\"\"><summary>At Higher Levels</summary><div class=\"det-body\"><p>Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.</p></div></details>",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Font of Inspiration",
-            "_libName": "Font of Inspiration",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Bard",
-            "_syncSourceId": 65,
-            "_syncMinLevel": 5,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You now regain all your expended uses of Bardic Inspiration when you finish a Short or Long Rest.\n\nIn addition, you can expend a spell slot (no action required) to regain one expended use of Bardic Inspiration.",
+            "desc": "You can supernaturally inspire others through words, music, or dance. This inspiration is represented by your Bardic Inspiration die, which is a d6.\n\nUsing Bardic Inspiration. As a Bonus Action, you can inspire another creature within 60 feet of yourself who can see or hear you. That creature gains one of your Bardic Inspiration dice. A creature can have only one Bardic Inspiration die at a time.\n\nOnce within the next hour when the creature fails a D20 Test, the creature can roll the Bardic Inspiration die and add the number rolled to the d20, potentially turning the failure into a success. A Bardic Inspiration die is expended when it’s rolled.\n\nNumber of Uses. You can confer a Bardic Inspiration die a number of times equal to your Charisma modifier (minimum of once), and you regain all expended uses when you finish a Long Rest.\n\nAt Higher Levels. Your Bardic Inspiration die changes when you reach certain Bard levels, as shown in the Bardic Die column of the Bard Features table. The die becomes a d8 at level 5, a d10 at level 10, and a d12 at level 15.",
             "fav": false,
             "used": false,
-            "_flag": true
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 65
           },
           {
             "name": "Countercharm",
@@ -18096,17 +18072,18 @@
             "kind": "feat",
             "atype": "reaction",
             "source": "Bard",
-            "_syncSourceId": 65,
-            "_syncMinLevel": 7,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can use musical notes or words of power to disrupt mind-influencing effects. If you or a creature within 30 feet of you fails a saving throw against an effect that applies the Charmed or Frightened condition, you can take a Reaction to cause the save to be rerolled, and the new roll has Advantage.</p>",
+            "desc": "You can use musical notes or words of power to disrupt mind-influencing effects. If you or a creature within 30 feet of you fails a saving throw against an effect that applies the Charmed or Frightened condition, you can take a Reaction to cause the save to be rerolled, and the new roll has Advantage.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 7,
+            "_syncSourceId": 65
           },
           {
             "name": "Flourish - Defensive",
@@ -18134,12 +18111,9 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": false,
-            "_flag": true,
-            "_libHasMode": true,
-            "_modeConsumesTracker": "Bardic Inspiration",
-            "_modeBonusAskField": "ac",
-            "_modeDuration": "turn",
-            "_modeActive": false
+            "_modeAdvSaves": [],
+            "_modeAdvAbilChecks": [],
+            "_flag": true
           },
           {
             "name": "Flourish - Slashing",
@@ -18224,53 +18198,33 @@
             "kind": "feat",
             "atype": "bonus",
             "source": "Orc",
-            "_syncSourceId": 34,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.</p><p>You can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.</p>",
+            "desc": "You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.\nYou can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.",
             "fav": false,
-            "used": false
-          },
-          {
-            "name": "Darkvision",
-            "_libName": "Darkvision",
-            "kind": "feat",
-            "atype": "other",
-            "source": "Orc",
-            "_syncSourceId": 34,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You have Darkvision with a range of 120 feet.",
-            "fav": false,
-            "used": false
+            "used": false,
+            "_raceSync": true
           },
           {
             "name": "Relentless Endurance",
             "_libName": "Relentless Endurance",
             "kind": "feat",
-            "atype": "feature",
+            "atype": "other",
             "source": "Orc",
-            "_syncSourceId": 34,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
             "hit": "",
             "damage": "",
+            "damageType": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.</p>",
+            "desc": "When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_raceSync": true
           }
         ],
         "trackers": [
@@ -18319,47 +18273,34 @@
             "_syncSourceId": 257
           },
           {
-            "key": "cls_bard_bardic_inspiration_(1-4)",
-            "label": "Bardic Inspiration (1-4)",
+            "key": "_custom_1786797585106",
+            "label": "Portent dice",
+            "max": 20,
+            "cur": 16,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
+          },
+          {
+            "key": "cls_bard_bardic_inspiration_(!)",
+            "label": "Bardic Inspiration (!)",
             "max": 3,
-            "cur": 0,
+            "cur": 3,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 1,
-            "maxLevel": 4
+            "_syncSourceId": 65
           },
           {
-            "key": "cls_bard_bardic_inspiration_(5+)",
-            "label": "Bardic Inspiration (5+)",
-            "max": 3,
-            "cur": 0,
+            "key": "race_orc_adrenaline_rush_(1)",
+            "label": "Adrenaline Rush (1)",
+            "max": 2,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 5,
-            "maxLevel": 20,
-            "_catId": 1784152083378,
-            "actionLink": "Bardic Inspiration"
-          },
-          {
-            "key": "race_orc_adrenaline_rush",
-            "label": "Adrenaline Rush",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "short",
-            "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF",
-            "_catId": 1784152083378,
-            "actionLink": "Adrenaline Rush"
+            "_raceSync": true
           },
           {
             "key": "race_orc_relentless_endurance",
@@ -18371,17 +18312,7 @@
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance",
-            "_origIdx": 7
-          },
-          {
-            "key": "_custom_1786797585106",
-            "label": "Portent dice",
-            "max": 20,
-            "cur": 16,
-            "reset": "",
-            "_custom": true,
-            "_trackerType": "hp"
+            "actionLink": "Relentless Endurance"
           }
         ],
         "_grantImmunities": [],
@@ -18817,7 +18748,9 @@
         "_hideAdjHighlight": true,
         "_hideUnassigned": true,
         "_spFiltersCollapsed": false,
-        "_collapsedSpLevels": {},
+        "_collapsedSpLevels": {
+          "2": false
+        },
         "_qsAdjOpen": true,
         "_restNotesOpen": false,
         "shortRestNotes": "+ Give Inspiration",
@@ -18918,33 +18851,34 @@
             "_syncSourceId": 257
           },
           {
-            "key": "cls_bard_bardic_inspiration_(5+)",
-            "label": "Bardic Inspiration (5+)",
-            "max": 3,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "short",
+            "key": "_custom_1786797585106",
+            "label": "Portent dice",
+            "max": 20,
+            "cur": 16,
+            "reset": "",
             "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 65,
-            "maxFormula": "CHA",
-            "minLevel": 5,
-            "maxLevel": 20,
-            "_catId": 1784152083378,
-            "actionLink": "Bardic Inspiration"
+            "_trackerType": "hp"
           },
           {
-            "key": "race_orc_adrenaline_rush",
-            "label": "Adrenaline Rush",
+            "key": "cls_bard_bardic_inspiration_(!)",
+            "label": "Bardic Inspiration (!)",
             "max": 3,
-            "cur": 0,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 65
+          },
+          {
+            "key": "race_orc_adrenaline_rush_(1)",
+            "label": "Adrenaline Rush (1)",
+            "max": 2,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "short",
             "_custom": true,
-            "_raceSync": true,
-            "maxFormula": "PROF",
-            "_catId": 1784152083378,
-            "actionLink": "Adrenaline Rush"
+            "_raceSync": true
           },
           {
             "key": "race_orc_relentless_endurance",
@@ -18956,17 +18890,7 @@
             "_custom": true,
             "_raceSync": true,
             "_catId": 1784152083378,
-            "actionLink": "Relentless Endurance",
-            "_origIdx": 7
-          },
-          {
-            "key": "_custom_1786797585106",
-            "label": "Portent dice",
-            "max": 20,
-            "cur": 16,
-            "reset": "",
-            "_custom": true,
-            "_trackerType": "hp"
+            "actionLink": "Relentless Endurance"
           }
         ],
         "saveDcEffective": 14,
@@ -19039,6 +18963,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786799075880,
-  "_unchanged": true
+  "_updated": 1786799174505
 }

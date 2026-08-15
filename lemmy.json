@@ -17537,6 +17537,26 @@
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
             "_syncMinLevel": 20
+          },
+          {
+            "name": "Silence",
+            "level": 2,
+            "school": "Illusion",
+            "time": "Action",
+            "range": "120ft",
+            "area": "20ft radius",
+            "_effectManual": false,
+            "_noScale": false,
+            "components": "V, S",
+            "duration": "10 minutes",
+            "concentration": false,
+            "ritual": false,
+            "desc": "For the duration, no sound can be created within or pass through a 20-foot-radius Sphere centered on a point you choose within range. Any creature or object entirely inside the Sphere has Immunity to Thunder damage, and creatures have the Deafened condition while entirely inside it. Casting a spell that includes a Verbal component is impossible there",
+            "_castAlert": "Concentration",
+            "tags": [],
+            "_freecast": false,
+            "_singleUse": false,
+            "_spellAdjDuration": ""
           }
         ],
         "actions": [
@@ -18963,5 +18983,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786799174505
+  "_updated": 1786799315882,
+  "_unchanged": true
 }

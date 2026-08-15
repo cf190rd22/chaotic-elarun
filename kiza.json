@@ -16191,7 +16191,8 @@
         },
         "exhaustionLevel": 1,
         "_qsHdOpen": true,
-        "_wasDying": false
+        "_wasDying": false,
+        "heroicInspiration": true
       }
     ],
     "_exportedAt": 1784299476169,
@@ -16249,6 +16250,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786797316742,
+  "_updated": 1786797436759,
   "_unchanged": true
 }

@@ -18971,12 +18971,12 @@
         "_dmHidden": true,
         "_advDisadv": "disadv",
         "statsLocked": false,
-        "_qsHdOpen": true,
+        "_qsHdOpen": false,
         "gold": 5947,
         "sp": 0,
         "pp": 50,
         "_hitDiceUsed": {
-          "d8": 6
+          "d8": 8
         },
         "_wasDying": false,
         "_playerNotes": {}
@@ -19037,5 +19037,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786797624466
+  "_updated": 1786797709896,
+  "_unchanged": true
 }

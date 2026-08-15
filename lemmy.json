@@ -18375,19 +18375,9 @@
             "_origIdx": 7
           },
           {
-            "key": "_custom_1786797549976",
-            "label": "Portent dice",
-            "max": 1,
-            "cur": 1,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "boxes",
-            "_origIdx": 8
-          },
-          {
             "key": "_custom_1786797585106",
             "label": "Portent dice",
-            "max": 16,
+            "max": 20,
             "cur": 16,
             "reset": "",
             "_custom": true,
@@ -18968,19 +18958,9 @@
             "_origIdx": 7
           },
           {
-            "key": "_custom_1786797549976",
-            "label": "Portent dice",
-            "max": 1,
-            "cur": 1,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "boxes",
-            "_origIdx": 8
-          },
-          {
             "key": "_custom_1786797585106",
             "label": "Portent dice",
-            "max": 16,
+            "max": 20,
             "cur": 16,
             "reset": "",
             "_custom": true,
@@ -19057,6 +19037,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786797589850,
-  "_unchanged": true
+  "_updated": 1786797624466
 }

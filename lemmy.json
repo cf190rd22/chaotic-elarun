@@ -13046,7 +13046,8 @@
         "featIds": [
           169,
           400,
-          257
+          257,
+          188
         ],
         "level": 8,
         "cls": "Bard",
@@ -13062,7 +13063,7 @@
             "mod": 2
           },
           "Constitution": {
-            "score": 12,
+            "score": 13,
             "mod": 1
           },
           "Intelligence": {
@@ -13394,7 +13395,10 @@
         "notes": "",
         "overrides": {},
         "choices": {
-          "sub_69_Fighting Style_choice": "Two-Weapon Fighting"
+          "sub_69_Fighting Style_choice": "Two-Weapon Fighting",
+          "class_65_Ability Score Improvement_choice": "Heavily armoured ",
+          "class_65_Ability Score Improvement_asi": "",
+          "feat_188_Heavily Armored_choice": "Constitution "
         },
         "customFeatures": [],
         "spells": [
@@ -19024,5 +19028,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786796241996
+  "_updated": 1786796343414,
+  "_unchanged": true
 }

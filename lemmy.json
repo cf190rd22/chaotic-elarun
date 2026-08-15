@@ -13040,7 +13040,7 @@
         "subclassId": 69,
         "classId2": null,
         "subclassId2": null,
-        "level1": 7,
+        "level1": 8,
         "level2": null,
         "raceId": 34,
         "featIds": [
@@ -13048,7 +13048,7 @@
           400,
           257
         ],
-        "level": 7,
+        "level": 8,
         "cls": "Bard",
         "cls2": "",
         "race": "Orc",
@@ -18849,7 +18849,7 @@
           "1": 4,
           "2": 3,
           "3": 3,
-          "4": 1
+          "4": 2
         },
         "activeModes": [],
         "acEffective": 17,
@@ -19024,5 +19024,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786796004693
+  "_updated": 1786796050985
 }

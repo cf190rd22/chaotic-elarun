@@ -8135,8 +8135,8 @@
         "subclassId": 139,
         "classId2": null,
         "subclassId2": null,
-        "level": 7,
-        "level1": 7,
+        "level": 8,
+        "level1": 8,
         "level2": null,
         "raceId": 3,
         "cls": "Druid",
@@ -14653,99 +14653,51 @@
           },
           {
             "name": "Misty Step",
-            "level": 2,
-            "time": "Action",
-            "_effectManual": false,
-            "_noScale": false,
-            "concentration": false,
-            "ritual": false,
-            "tags": [],
+            "level": 3,
             "_assigned": true,
-            "_freecast": false,
-            "_singleUse": false,
-            "_freecasted": false,
-            "_classSync": false,
             "_subclassSync": true,
-            "_raceSync": false,
-            "_syncSourceName": "Circle of the Land",
-            "_spellAdjActive": false,
-            "_spellAdjDuration": ""
+            "_syncMinLevel": 3,
+            "group": "Temperate Land"
           },
           {
             "name": "Shocking Grasp",
-            "level": 0,
-            "time": "Action",
-            "_effectManual": false,
-            "_noScale": false,
-            "concentration": false,
-            "ritual": false,
-            "tags": [],
+            "level": 3,
             "_assigned": true,
-            "_freecast": false,
-            "_singleUse": false,
-            "_freecasted": false,
-            "_classSync": false,
             "_subclassSync": true,
-            "_raceSync": false,
-            "_syncSourceName": "Circle of the Land",
-            "_spellAdjActive": false,
-            "_spellAdjDuration": ""
+            "_syncMinLevel": 3,
+            "group": "Temperate Land"
           },
           {
             "name": "Sleep",
-            "level": 1,
-            "time": "Action",
-            "_effectManual": false,
-            "_noScale": false,
-            "concentration": false,
-            "ritual": false,
-            "tags": [],
+            "level": 3,
             "_assigned": true,
-            "_freecast": false,
-            "_singleUse": false,
-            "_freecasted": false,
-            "_classSync": false,
             "_subclassSync": true,
-            "_raceSync": false,
-            "_syncSourceName": "Circle of the Land",
-            "_spellAdjActive": false,
-            "_spellAdjDuration": ""
+            "_syncMinLevel": 3,
+            "group": "Temperate Land"
           },
           {
             "name": "Lightning Bolt",
             "level": 5,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 5,
-            "group": "Temperate Land",
-            "_freecasted": false,
-            "_singleUsed": false
+            "group": "Temperate Land"
           },
           {
             "name": "Freedom of Movement",
             "level": 7,
             "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 7,
-            "group": "Temperate Land",
-            "_freecasted": false,
-            "_singleUsed": false
+            "group": "Temperate Land"
           },
           {
             "name": "Tree Stride",
             "level": 9,
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
             "_syncMinLevel": 9,
-            "group": "Temperate Land",
-            "_freecasted": false,
-            "_singleUsed": false
+            "group": "Temperate Land"
           }
         ],
         "_grantImmunities": [],
@@ -14871,7 +14823,7 @@
           "core": true,
           "jump": true,
           "spellSlots": false,
-          "progression": false,
+          "progression": true,
           "abilities": true
         },
         "_topOpen": false,
@@ -14889,7 +14841,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": false,
+        "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_0": [
@@ -14937,7 +14889,7 @@
           "1": 4,
           "2": 3,
           "3": 3,
-          "4": 1
+          "4": 2
         },
         "activeModes": [],
         "acEffective": 18,
@@ -15179,5 +15131,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1786797417572
+  "_updated": 1786804051647
 }

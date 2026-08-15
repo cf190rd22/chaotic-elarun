@@ -14495,7 +14495,8 @@
             "_syncSourceId": 93,
             "_syncMinLevel": 3,
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_lastCastUpcast": 1
           },
           {
             "name": "Command",
@@ -15411,7 +15412,9 @@
             "_origIdx": 1
           }
         ],
-        "_slotUsed": {},
+        "_slotUsed": {
+          "157-L2": 1
+        },
         "_defTags": [
           {
             "type": "resistance",
@@ -15422,7 +15425,7 @@
         "hpAdjust": 0,
         "speedAdjust": 0,
         "hpCurrent": 84,
-        "hpTemp": 0,
+        "hpTemp": 10,
         "_adjOpen": false,
         "_topOpen": false,
         "statblocks": [
@@ -16059,7 +16062,7 @@
             "collapsed": false
           }
         ],
-        "_actQRCollapsed": false,
+        "_actQRCollapsed": true,
         "_grantedSpells": [],
         "passivePerception": 13,
         "passiveInsight": 10,
@@ -16070,7 +16073,9 @@
         "activeModes": [],
         "acEffective": 22,
         "hpMax": 84,
-        "_slotUsedCompact": {},
+        "_slotUsedCompact": {
+          "2": 1
+        },
         "deathSaves": {
           "pass": 0,
           "fail": 0
@@ -16250,6 +16255,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786799904801,
+  "_updated": 1786800024830,
   "_unchanged": true
 }

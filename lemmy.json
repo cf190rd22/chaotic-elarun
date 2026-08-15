@@ -18816,7 +18816,7 @@
         ],
         "_hideAdjHighlight": true,
         "_hideUnassigned": true,
-        "_spFiltersCollapsed": true,
+        "_spFiltersCollapsed": false,
         "_collapsedSpLevels": {},
         "_qsAdjOpen": true,
         "_restNotesOpen": false,
@@ -19039,5 +19039,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786798937777
+  "_updated": 1786799028756
 }

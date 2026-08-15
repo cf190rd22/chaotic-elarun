@@ -13396,8 +13396,8 @@
         "overrides": {},
         "choices": {
           "sub_69_Fighting Style_choice": "Two-Weapon Fighting",
-          "class_65_Ability Score Improvement_choice": "Heavily armoured ",
-          "class_65_Ability Score Improvement_asi": "",
+          "class_65_Ability Score Improvement_choice": "Heavily rmoured ",
+          "class_65_Ability Score Improvement_asi": "Heavily Armoured",
           "feat_188_Heavily Armored_choice": "Constitution "
         },
         "customFeatures": [],
@@ -19028,6 +19028,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786796590132,
+  "_updated": 1786796749859,
   "_unchanged": true
 }

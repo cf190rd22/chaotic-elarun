@@ -18446,7 +18446,7 @@
           "feats": true,
           "languages": true,
           "proficiencies": false,
-          "jump": true,
+          "jump": false,
           "progression": false,
           "abilities": false
         },
@@ -19024,6 +19024,5 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786795191126,
-  "_unchanged": true
+  "_updated": 1786795217468
 }

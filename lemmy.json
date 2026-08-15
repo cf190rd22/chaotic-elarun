@@ -13046,7 +13046,8 @@
         "featIds": [
           169,
           400,
-          257
+          257,
+          216
         ],
         "level": 8,
         "cls": "Bard",
@@ -19043,5 +19044,6 @@
     "conditionDescs": {}
   },
   "nextId": 400,
-  "_updated": 1786798785579
+  "_updated": 1786798835879,
+  "_unchanged": true
 }

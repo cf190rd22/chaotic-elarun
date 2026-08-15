@@ -15421,7 +15421,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 20,
+        "hpCurrent": 74,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -16187,7 +16187,7 @@
         "saveDcEffective": 14,
         "_dmHidden": true,
         "_hitDiceUsed": {
-          "d10": 5
+          "d10": 6
         },
         "exhaustionLevel": 1,
         "_qsHdOpen": true,
@@ -16249,6 +16249,6 @@
     "conditionDescs": {}
   },
   "nextId": 398,
-  "_updated": 1786797196719,
+  "_updated": 1786797316742,
   "_unchanged": true
 }

@@ -59764,27 +59764,33 @@
         "abilities": {
           "Strength": {
             "score": 16,
-            "mod": 3
+            "mod": 3,
+            "_grantScoreBoost": 0
           },
           "Dexterity": {
             "score": 15,
-            "mod": 2
+            "mod": 2,
+            "_grantScoreBoost": 0
           },
           "Constitution": {
             "score": 18,
-            "mod": 4
+            "mod": 4,
+            "_grantScoreBoost": 0
           },
           "Intelligence": {
             "score": 11,
-            "mod": 0
+            "mod": 0,
+            "_grantScoreBoost": 0
           },
           "Wisdom": {
             "score": 11,
-            "mod": 0
+            "mod": 0,
+            "_grantScoreBoost": 0
           },
           "Charisma": {
             "score": 16,
-            "mod": 3
+            "mod": 3,
+            "_grantScoreBoost": 0
           }
         },
         "saves": {
@@ -63307,7 +63313,8 @@
         "_grantMinAC": [],
         "_grantAbilBonus": {},
         "_grantSenses": {},
-        "_grantWeaponDamage": []
+        "_grantWeaponDamage": [],
+        "_grantSourcesAbilScore": {}
       },
       {
         "id": 159,
@@ -63327,27 +63334,33 @@
         "abilities": {
           "Strength": {
             "score": 11,
-            "mod": 0
+            "mod": 0,
+            "_grantScoreBoost": 0
           },
           "Dexterity": {
             "score": 13,
-            "mod": 1
+            "mod": 1,
+            "_grantScoreBoost": 0
           },
           "Constitution": {
             "score": 12,
-            "mod": 1
+            "mod": 1,
+            "_grantScoreBoost": 0
           },
           "Intelligence": {
             "score": 14,
-            "mod": 2
+            "mod": 2,
+            "_grantScoreBoost": 0
           },
           "Wisdom": {
             "score": 14,
-            "mod": 2
+            "mod": 2,
+            "_grantScoreBoost": 0
           },
           "Charisma": {
             "score": 16,
-            "mod": 3
+            "mod": 3,
+            "_grantScoreBoost": 0
           }
         },
         "saves": {
@@ -72702,7 +72715,8 @@
         "_grantMinAC": [],
         "_grantAbilBonus": {},
         "_grantSenses": {},
-        "_grantWeaponDamage": []
+        "_grantWeaponDamage": [],
+        "_grantSourcesAbilScore": {}
       },
       {
         "id": 241,
@@ -84787,47 +84801,56 @@
         "_grantWeaponDamage": []
       },
       {
-        "id": 408,
-        "name": "asdasdasd",
+        "id": 409,
+        "name": "sdfy57heauety",
         "player": "",
         "classId": 66,
         "subclassId": 139,
         "classId2": null,
         "subclassId2": null,
-        "level1": 7,
+        "level1": 8,
         "level2": null,
         "raceId": 31,
-        "featIds": [],
-        "level": 7,
+        "featIds": [
+          166,
+          216
+        ],
+        "level": 8,
         "cls": "Druid",
         "cls2": "",
         "race": "Elf",
-        "originId": "scribe",
-        "originName": "Scribe",
+        "originId": "guide",
+        "originName": "Guide",
         "abilities": {
           "Strength": {
             "score": 10,
-            "mod": 0
+            "mod": 0,
+            "_grantScoreBoost": 0
           },
           "Dexterity": {
-            "score": 12,
-            "mod": 1
+            "score": 15,
+            "mod": 2,
+            "_grantScoreBoost": 1
           },
           "Constitution": {
-            "score": 10,
-            "mod": 0
+            "score": 13,
+            "mod": 1,
+            "_grantScoreBoost": 0
           },
           "Intelligence": {
-            "score": 11,
-            "mod": 0
+            "score": 12,
+            "mod": 1,
+            "_grantScoreBoost": 0
           },
           "Wisdom": {
-            "score": 10,
-            "mod": 0
+            "score": 17,
+            "mod": 3,
+            "_grantScoreBoost": 0
           },
           "Charisma": {
-            "score": 10,
-            "mod": 0
+            "score": 8,
+            "mod": -1,
+            "_grantScoreBoost": 0
           }
         },
         "saves": {},
@@ -84988,7 +85011,7 @@
           },
           "Investigation": {
             "bonus": 0,
-            "state": "prof",
+            "state": "none",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -85027,7 +85050,7 @@
           },
           "Perception": {
             "bonus": 0,
-            "state": "prof",
+            "state": "none",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -85092,7 +85115,7 @@
           },
           "Stealth": {
             "bonus": 0,
-            "state": "none",
+            "state": "prof",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -85101,11 +85124,12 @@
             "_grantProf": false,
             "_grantProfLevel": null,
             "_grantBonus": 0,
-            "_grantSources": []
+            "_grantSources": [],
+            "_originGrant": true
           },
           "Survival": {
             "bonus": 0,
-            "state": "none",
+            "state": "prof",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -85114,7 +85138,8 @@
             "_grantProf": false,
             "_grantProfLevel": null,
             "_grantBonus": 0,
-            "_grantSources": []
+            "_grantSources": [],
+            "_originGrant": true
           }
         },
         "passives": {
@@ -85137,163 +85162,19 @@
         "overrides": {},
         "choices": {},
         "customFeatures": [],
-        "spells": [
-          {
-            "name": "Detect Magic",
-            "level": 1,
-            "school": "Divination",
-            "time": "A",
-            "range": "Self",
-            "components": "V, S",
-            "duration": "Concentration, up to 10 min",
-            "desc": "For the duration, you sense the presence of magical effects within 30 feet of yourself. If you sense such effects, you can take the Magic action to see a faint aura around any visible creature or object in the area that bears the magic, and if an effect was created by a spell, you learn the spell’s school of magic.\nThe spell is blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Bard",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_raceSync": true,
-            "_syncSourceName": "Elven Lineage",
-            "group": "High"
-          },
-          {
-            "name": "Misty Step",
-            "level": 2,
-            "school": "Conjuration",
-            "time": "BA",
-            "range": "Self",
-            "components": "V",
-            "duration": "Instantaneous",
-            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_raceSync": true,
-            "_syncSourceName": "Elven Lineage",
-            "group": "High"
-          }
+        "_lvHpOpen": true,
+        "_hpLevels": [
+          8,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
         ],
+        "spells": [],
         "actions": [
-          {
-            "name": "Druidic",
-            "_libName": "Druidic",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You know Druidic, the secret language of Druids. While learning this ancient tongue, you also unlocked the magic of communicating with animals; you always have the Speak with Animals spell prepared.\n\nYou can use Druidic to leave hidden messages. You and others who know Druidic automatically spot such a message. Others spot the message’s presence with a successful DC 15 Intelligence (Investigation) check but can’t decipher it without magic.",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 1,
-            "_syncSourceId": 66
-          },
-          {
-            "name": "Lvl 1: Primal Order: Magician",
-            "_libName": "Lvl 1: Primal Order: Magician",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 1,
-            "_syncSourceId": 66,
-            "group": "Magician"
-          },
-          {
-            "name": "Lvl 2: Wild Companion",
-            "_libName": "Lvl 2: Wild Companion",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You can summon a nature spirit that assumes an animal form to aid you. As a Magic action, you can expend a spell slot or a use of Wild Shape to cast the Find Familiar spell without Material components.\n\nWhen you cast the spell in this way, the familiar is Fey and disappears when you finish a Long Rest.",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 2,
-            "_syncSourceId": 66
-          },
-          {
-            "name": "Wild Shape",
-            "_libName": "Wild Shape",
-            "kind": "feat",
-            "atype": "other",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "The power of nature allows you to assume the form of an animal. As a Bonus Action, you shape-shift into a Beast form that you have learned for this feature (see “Known Forms” below). You stay in that form for a number of hours equal to half your Druid level or until you use Wild Shape again, have the Incapacitated condition, or die. You can also leave the form early as a Bonus Action.\n\nNumber of Uses. You can use Wild Shape twice. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.\n\nYou gain additional uses when you reach certain Druid levels, as shown in the Wild Shape column of the Druid Features table.\n\nKnown Forms. You know four Beast forms for this feature, chosen from among Beast stat blocks that have a maximum Challenge Rating of 1/4 and that lack a Fly Speed. Whenever you finish a Long Rest, you can replace one of your known forms with another eligible form.\n\nWhen you reach certain Druid levels, your number of known forms and the maximum Challenge Rating for those forms increases, as shown in the Beast Shapes table. In addition, starting at level 8, you can adopt a form that has a Fly Speed.\n\nWhen choosing known forms, you may look in the Monster Manual or elsewhere for eligible Beasts if the Dungeon Master permits you to do so.\n\nBeast Shapes\n  Druid Level | Known Forms | Max CR | Fly Speed\n  2 | 4 | 1/4 | No\n  4 | 6 | 1/2 | No\n  8 | 8 | 1 | Yes\nRules While Shape-Shifted. While in a form, you retain your personality, memories, and ability to speak, and the following rules apply:\n\nTemporary Hit Points. When you assume a Wild Shape form, you gain a number of Temporary Hit Points equal to your Druid level.\n\nGame Statistics. Your game statistics are replaced by the Beast’s stat block, but you retain your creature type; Hit Points; Hit Point Dice; Intelligence, Wisdom, and Charisma scores; class features; languages; and feats. You also retain your skill and saving throw proficiencies and use your Proficiency Bonus for them, in addition to gaining the proficiencies of the creature. If a skill or saving throw modifier in the Beast’s stat block is higher than yours, use the one in the stat block.\n\nNo Spellcasting. You can’t cast spells, but shape-shifting doesn’t break your Concentration or otherwise interfere with a spell you’ve already cast.\n\nObjects. Your ability to handle objects is determined by the form’s limbs rather than your own. In addition, you choose whether your equipment falls in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the DM decides whether it’s practical for the new form to wear a piece of equipment based on the creature’s size and shape. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with the form. Equipment that merges with the form has no effect while you’re in that form.",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 2,
-            "_syncSourceId": 66
-          },
-          {
-            "name": "Wild Resurgence: Regain Spell Slot",
-            "_libName": "Wild Resurgence: Regain Spell Slot",
-            "kind": "feat",
-            "atype": "other",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "Once per long rest, if you have no uses of Wild Shape left, you can give yourself one use by expending a spell slot (no action required).",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 5,
-            "_syncSourceId": 66
-          },
-          {
-            "name": "Wild Resurgence: Regain Wild Shape",
-            "_libName": "Wild Resurgence: Regain Wild Shape",
-            "kind": "feat",
-            "atype": "other",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "Once on each of your turns, you can expend one use of Wild Shape (no action required) to give yourself a level 1 spell slot, but you can’t do so again until you finish a Long Rest.",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 5,
-            "_syncSourceId": 66
-          },
           {
             "name": "Circle of the Land Spells",
             "_libName": "Circle of the Land Spells",
@@ -85426,58 +85307,102 @@
             "_raceSync": true
           },
           {
-            "name": "Detect Magic",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Divination",
+            "name": "Druidic",
+            "_libName": "Druidic",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Druid",
             "hit": "",
             "damage": "",
-            "range": "Self",
+            "damageType": "",
+            "range": "",
             "save": "",
-            "notes": "Concentration, up to 10 min",
-            "desc": "For the duration, you sense the presence of magical effects within 30 feet of yourself. If you sense such effects, you can take the Magic action to see a faint aura around any visible creature or object in the area that bears the magic, and if an effect was created by a spell, you learn the spell’s school of magic.\nThe spell is blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead.",
+            "notes": "",
+            "desc": "You know Druidic, the secret language of Druids. While learning this ancient tongue, you also unlocked the magic of communicating with animals; you always have the Speak with Animals spell prepared.\n\nYou can use Druidic to leave hidden messages. You and others who know Druidic automatically spot such a message. Others spot the message’s presence with a successful DC 15 Intelligence (Investigation) check but can’t decipher it without magic.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 66
           },
           {
-            "name": "Misty Step",
-            "kind": "spell",
-            "atype": "bonus",
-            "source": "Conjuration",
+            "name": "Lvl 2: Wild Companion",
+            "_libName": "Lvl 2: Wild Companion",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Druid",
             "hit": "",
             "damage": "",
-            "range": "Self",
+            "damageType": "",
+            "range": "",
             "save": "",
-            "notes": "Instantaneous",
-            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
+            "notes": "",
+            "desc": "You can summon a nature spirit that assumes an animal form to aid you. As a Magic action, you can expend a spell slot or a use of Wild Shape to cast the Find Familiar spell without Material components.\n\nWhen you cast the spell in this way, the familiar is Fey and disappears when you finish a Long Rest.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 2,
+            "_syncSourceId": 66
+          },
+          {
+            "name": "Wild Shape",
+            "_libName": "Wild Shape",
+            "kind": "feat",
+            "atype": "other",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "The power of nature allows you to assume the form of an animal. As a Bonus Action, you shape-shift into a Beast form that you have learned for this feature (see “Known Forms” below). You stay in that form for a number of hours equal to half your Druid level or until you use Wild Shape again, have the Incapacitated condition, or die. You can also leave the form early as a Bonus Action.\n\nNumber of Uses. You can use Wild Shape twice. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.\n\nYou gain additional uses when you reach certain Druid levels, as shown in the Wild Shape column of the Druid Features table.\n\nKnown Forms. You know four Beast forms for this feature, chosen from among Beast stat blocks that have a maximum Challenge Rating of 1/4 and that lack a Fly Speed. Whenever you finish a Long Rest, you can replace one of your known forms with another eligible form.\n\nWhen you reach certain Druid levels, your number of known forms and the maximum Challenge Rating for those forms increases, as shown in the Beast Shapes table. In addition, starting at level 8, you can adopt a form that has a Fly Speed.\n\nWhen choosing known forms, you may look in the Monster Manual or elsewhere for eligible Beasts if the Dungeon Master permits you to do so.\n\nBeast Shapes\n  Druid Level | Known Forms | Max CR | Fly Speed\n  2 | 4 | 1/4 | No\n  4 | 6 | 1/2 | No\n  8 | 8 | 1 | Yes\nRules While Shape-Shifted. While in a form, you retain your personality, memories, and ability to speak, and the following rules apply:\n\nTemporary Hit Points. When you assume a Wild Shape form, you gain a number of Temporary Hit Points equal to your Druid level.\n\nGame Statistics. Your game statistics are replaced by the Beast’s stat block, but you retain your creature type; Hit Points; Hit Point Dice; Intelligence, Wisdom, and Charisma scores; class features; languages; and feats. You also retain your skill and saving throw proficiencies and use your Proficiency Bonus for them, in addition to gaining the proficiencies of the creature. If a skill or saving throw modifier in the Beast’s stat block is higher than yours, use the one in the stat block.\n\nNo Spellcasting. You can’t cast spells, but shape-shifting doesn’t break your Concentration or otherwise interfere with a spell you’ve already cast.\n\nObjects. Your ability to handle objects is determined by the form’s limbs rather than your own. In addition, you choose whether your equipment falls in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the DM decides whether it’s practical for the new form to wear a piece of equipment based on the creature’s size and shape. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with the form. Equipment that merges with the form has no effect while you’re in that form.",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 2,
+            "_syncSourceId": 66
+          },
+          {
+            "name": "Wild Resurgence: Regain Spell Slot",
+            "_libName": "Wild Resurgence: Regain Spell Slot",
+            "kind": "feat",
+            "atype": "other",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Once per long rest, if you have no uses of Wild Shape left, you can give yourself one use by expending a spell slot (no action required).",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 5,
+            "_syncSourceId": 66
+          },
+          {
+            "name": "Wild Resurgence: Regain Wild Shape",
+            "_libName": "Wild Resurgence: Regain Wild Shape",
+            "kind": "feat",
+            "atype": "other",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Once on each of your turns, you can expend one use of Wild Shape (no action required) to give yourself a level 1 spell slot, but you can’t do so again until you finish a Long Rest.",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 5,
+            "_syncSourceId": 66
           }
         ],
         "trackers": [
-          {
-            "key": "cls_druid_wild_shape",
-            "label": "Wild Shape",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 66,
-            "maxFormula": "LVL>=17?4:LVL>=6?3:LVL>=2?2:0"
-          },
-          {
-            "key": "cls_druid_wild_resur:_regain_spell_slot",
-            "label": "Wild Resur: Regain Spell Slot",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 66
-          },
           {
             "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
             "label": "Nat.Recovery: Recover Spell Slots",
@@ -85510,11 +85435,51 @@
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 139
+          },
+          {
+            "key": "cls_druid_wild_shape",
+            "label": "Wild Shape",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 66,
+            "maxFormula": "LVL>=17?4:LVL>=6?3:LVL>=2?2:0"
+          },
+          {
+            "key": "cls_druid_wild_resur:_regain_spell_slot",
+            "label": "Wild Resur: Regain Spell Slot",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 66
+          },
+          {
+            "key": "custom_portent_1786992389019",
+            "label": "Portent",
+            "cur": 13,
+            "max": 13,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "reminder"
           }
         ],
         "_grantImmunities": [],
         "_grantResistances": [],
         "_grantVulnerabilities": [],
+        "_grantSourcesAbilScore": {
+          "Dexterity": [
+            {
+              "src": "feat_216",
+              "val": 1
+            }
+          ]
+        },
         "_grantLanguages": [],
         "_grantFeats": [],
         "_grantArmorProfs": [],
@@ -85564,6 +85529,10 @@
           "maxHp": 0,
           "tempHp": 0
         },
+        "_originAsiApplied": {
+          "Wisdom": 2,
+          "Dexterity": 1
+        },
         "_secCollapsed": {
           "core": true,
           "saves": true,
@@ -85577,29 +85546,37 @@
           "jump": true
         },
         "_topOpen": false,
-        "_subActGroups": {
-          "66_Primal Order": "Magician"
-        },
         "variantChoices": {
           "31": "High Elf"
         },
-        "_raceSpellGroups": {
-          "race_31_Elven Lineage": "High"
-        },
-        "_slotUsed": {},
-        "_charGrants": {
-          "race_31_Elven Lineage": []
-        },
-        "_collapsedActSubgroups": {},
+        "customFeats": [
+          {
+            "name": "Magic Initiate (Druid)",
+            "source": "Background"
+          }
+        ],
+        "_originFeatGranted": "Magic Initiate (Druid)",
+        "_appliedSuggestions": [
+          {
+            "srcKey": "feat_216",
+            "grant": {
+              "type": "abilityScore",
+              "target": "Dexterity",
+              "value": 1
+            }
+          }
+        ],
+        "_qsAdjOpen": true,
+        "_restNotesOpen": false,
         "passivePerception": 10,
         "passiveInsight": 10,
         "acEffective": 0,
-        "hpMax": 0,
+        "hpMax": 51,
         "_slotTotal": {
           "1": 4,
           "2": 3,
           "3": 3,
-          "4": 1
+          "4": 2
         },
         "_slotUsedCompact": {},
         "activeModes": [],
@@ -85608,29 +85585,6 @@
           "fail": 0
         },
         "_trackersForDm": [
-          {
-            "key": "cls_druid_wild_shape",
-            "label": "Wild Shape",
-            "max": 3,
-            "cur": 3,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 66,
-            "maxFormula": "LVL>=17?4:LVL>=6?3:LVL>=2?2:0"
-          },
-          {
-            "key": "cls_druid_wild_resur:_regain_spell_slot",
-            "label": "Wild Resur: Regain Spell Slot",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_classSync": true,
-            "_syncSourceId": 66
-          },
           {
             "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
             "label": "Nat.Recovery: Recover Spell Slots",
@@ -85663,17 +85617,41 @@
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 139
-          }
-        ],
-        "saveDcEffective": null,
-        "customFeats": [
+          },
           {
-            "name": "Skilled",
-            "source": "Background"
+            "key": "cls_druid_wild_shape",
+            "label": "Wild Shape",
+            "max": 3,
+            "cur": 3,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 66,
+            "maxFormula": "LVL>=17?4:LVL>=6?3:LVL>=2?2:0"
+          },
+          {
+            "key": "cls_druid_wild_resur:_regain_spell_slot",
+            "label": "Wild Resur: Regain Spell Slot",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 66
+          },
+          {
+            "key": "custom_portent_1786992389019",
+            "label": "Portent",
+            "cur": 13,
+            "max": 13,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "reminder"
           }
         ],
-        "_originFeatGranted": "Skilled",
-        "conditions": []
+        "saveDcEffective": null
       }
     ],
     "unassignedSpells": [],
@@ -92545,6 +92523,7 @@
       }
     ]
   },
-  "nextId": 409,
-  "_updated": 1786992147226
+  "nextId": 410,
+  "_updated": 1786992432583,
+  "_unchanged": true
 }

@@ -59135,7 +59135,7 @@
         "_grantSourcesAbilScore": {
           "Dexterity": [
             {
-              "src": "feat_216",
+              "src": "Weapon Master",
               "val": 1
             }
           ]
@@ -66186,6 +66186,5 @@
     "conditionDescs": {}
   },
   "nextId": 410,
-  "_updated": 1786998657525,
-  "_unchanged": true
+  "_updated": 1786998761950
 }

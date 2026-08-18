@@ -52460,6 +52460,17 @@
             "atype": "Additional Feature"
           }
         ]
+      },
+      {
+        "id": 410,
+        "name": "Foresight",
+        "features": [
+          {
+            "level": 0,
+            "name": "Foresight",
+            "description": "Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.\nEach foretelling roll can be used only once. When you finish a Long Rest, you lose any unused foretelling rolls."
+          }
+        ]
       }
     ],
     "characters": [
@@ -66185,6 +66196,7 @@
     ],
     "conditionDescs": {}
   },
-  "nextId": 410,
-  "_updated": 1787076670513
+  "nextId": 411,
+  "_updated": 1787076903706,
+  "_unchanged": true
 }

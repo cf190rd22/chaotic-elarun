@@ -58337,7 +58337,7 @@
         "_grantArmorProfs": [],
         "_grantWeaponProfs": [],
         "_grantToolProfs": [],
-        "_grantHeroicInspiration": false,
+        "_grantHeroicInspiration": true,
         "_grantAttuneSlots": 0,
         "_grantExtraCantrips": {},
         "_grantExtraCantripDetails": [],
@@ -72811,5 +72811,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787080823101
+  "_updated": 1787082571288
 }

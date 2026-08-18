@@ -59300,7 +59300,7 @@
         "subclassId": 139,
         "classId2": null,
         "subclassId2": null,
-        "level": 8,
+        "level": "8",
         "level1": 8,
         "level2": null,
         "raceId": 3,
@@ -59640,7 +59640,7 @@
           "Insight": 17
         },
         "ac": "12",
-        "hp": "",
+        "hp": "59",
         "speed": "30ft",
         "initiative": "+2",
         "profBonus": "+3",
@@ -65645,7 +65645,8 @@
           "feats": true,
           "languages": true,
           "proficiencies": true,
-          "jump": true
+          "jump": true,
+          "quickStats": false
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
@@ -65665,7 +65666,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 18,
-        "hpMax": 0,
+        "hpMax": 59,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -65784,7 +65785,8 @@
           }
         ],
         "saveDcEffective": null,
-        "_qsHdOpen": true
+        "_qsHdOpen": true,
+        "_qsAdjOpen": true
       }
     ],
     "unassignedSpells": [],
@@ -72658,6 +72660,6 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787079021107,
+  "_updated": 1787079141098,
   "_unchanged": true
 }

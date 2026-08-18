@@ -50899,31 +50899,25 @@
           {
             "level": 0,
             "name": "Darkvision",
-            "description": "<p>You have Darkvision with a range of 120 feet.</p>",
-            "atype": "Additional Feature",
-            "knownOptions": [],
-            "knownCount": null
+            "description": "You have Darkvision with a range of 120 feet."
           },
           {
             "level": 0,
             "name": "Dwarven Resilience",
-            "description": "<details open=\"\"><summary>You have Resistance to Poison damage</summary><div class=\"det-body\"><p>You also have Advantage on saving throws you make to avoid or end the Poisoned condition.</p></div></details>",
+            "description": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "actions": [
               {
                 "name": "Dwarven Resilience: Poison",
                 "atype": "Additional Feature",
-                "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition."
+                "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
+                "_grants": [
+                  {
+                    "type": "resistance",
+                    "target": "poison"
+                  }
+                ]
               }
-            ],
-            "_grants": [
-              {
-                "type": "resistance",
-                "target": "poison",
-                "reset": "permanent"
-              }
-            ],
-            "knownOptions": [],
-            "knownCount": null
+            ]
           },
           {
             "level": 0,
@@ -50943,7 +50937,7 @@
           {
             "level": 0,
             "name": "Stonecunning",
-            "description": "<p>As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.</p><p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
+            "description": "You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
             "actions": [
               {
                 "name": "Tremorsense",
@@ -50959,9 +50953,7 @@
                 "reset": "long",
                 "maxFormula": "PROF"
               }
-            ],
-            "knownOptions": [],
-            "knownCount": null
+            ]
           }
         ],
         "variants": null,
@@ -51180,7 +51172,7 @@
           {
             "level": 0,
             "name": "Resourceful",
-            "description": "<p>You gain Heroic Inspiration whenever you finish a Long Rest.</p>",
+            "description": "You gain Heroic Inspiration whenever you finish a Long Rest.",
             "trackers": [
               {
                 "label": "Heroic Inspiration",
@@ -51188,16 +51180,7 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ],
-            "_grants": [
-              {
-                "type": "heroicInspiration",
-                "target": "",
-                "reset": "longRest"
-              }
-            ],
-            "knownOptions": [],
-            "knownCount": null
+            ]
           },
           {
             "level": 0,
@@ -51308,10 +51291,7 @@
           {
             "level": 0,
             "name": "Darkvision",
-            "description": "<p>You have Darkvision with a range of 120 feet.</p>",
-            "atype": "Additional Feature",
-            "knownOptions": [],
-            "knownCount": null
+            "description": "You have Darkvision with a range of 120 feet."
           },
           {
             "level": 0,
@@ -58337,7 +58317,7 @@
         "_grantArmorProfs": [],
         "_grantWeaponProfs": [],
         "_grantToolProfs": [],
-        "_grantHeroicInspiration": true,
+        "_grantHeroicInspiration": false,
         "_grantAttuneSlots": 0,
         "_grantExtraCantrips": {},
         "_grantExtraCantripDetails": [],
@@ -59703,7 +59683,8 @@
           174,
           257,
           258,
-          168
+          168,
+          410
         ],
         "customFeats": [],
         "currency": {},
@@ -60487,7 +60468,13 @@
             "fav": false,
             "used": false,
             "_raceSync": true,
-            "_syncMinLevel": 1
+            "_syncMinLevel": 1,
+            "_grants": [
+              {
+                "type": "resistance",
+                "target": "poison"
+              }
+            ]
           },
           {
             "name": "Tremorsense",
@@ -65635,9 +65622,7 @@
           }
         ],
         "_grantImmunities": [],
-        "_grantResistances": [
-          "poison"
-        ],
+        "_grantResistances": [],
         "_grantVulnerabilities": [],
         "_grantSourcesAbilScore": {},
         "_grantLanguages": [],
@@ -72811,5 +72796,6 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787082571288
+  "_updated": 1787082685395,
+  "_unchanged": true
 }

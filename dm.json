@@ -65783,7 +65783,8 @@
             "maxFormula": "PROF"
           }
         ],
-        "saveDcEffective": null
+        "saveDcEffective": null,
+        "_qsHdOpen": true
       }
     ],
     "unassignedSpells": [],
@@ -72657,6 +72658,6 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787078961107,
+  "_updated": 1787079021107,
   "_unchanged": true
 }

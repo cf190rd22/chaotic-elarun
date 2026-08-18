@@ -50899,19 +50899,31 @@
           {
             "level": 0,
             "name": "Darkvision",
-            "description": "You have Darkvision with a range of 120 feet."
+            "description": "<p>You have Darkvision with a range of 120 feet.</p>",
+            "atype": "Additional Feature",
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
             "name": "Dwarven Resilience",
-            "description": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
+            "description": "<details open=\"\"><summary>You have Resistance to Poison damage</summary><div class=\"det-body\"><p>You also have Advantage on saving throws you make to avoid or end the Poisoned condition.</p></div></details>",
             "actions": [
               {
                 "name": "Dwarven Resilience: Poison",
                 "atype": "Additional Feature",
                 "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition."
               }
-            ]
+            ],
+            "_grants": [
+              {
+                "type": "resistance",
+                "target": "poison",
+                "reset": "permanent"
+              }
+            ],
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
@@ -50931,7 +50943,7 @@
           {
             "level": 0,
             "name": "Stonecunning",
-            "description": "You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
+            "description": "<p>As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.</p><p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
             "actions": [
               {
                 "name": "Tremorsense",
@@ -50947,7 +50959,9 @@
                 "reset": "long",
                 "maxFormula": "PROF"
               }
-            ]
+            ],
+            "knownOptions": [],
+            "knownCount": null
           }
         ],
         "variants": null,
@@ -51166,7 +51180,7 @@
           {
             "level": 0,
             "name": "Resourceful",
-            "description": "You gain Heroic Inspiration whenever you finish a Long Rest.",
+            "description": "<p>You gain Heroic Inspiration whenever you finish a Long Rest.</p>",
             "trackers": [
               {
                 "label": "Heroic Inspiration",
@@ -51174,7 +51188,16 @@
                 "type": "boxes",
                 "reset": "long"
               }
-            ]
+            ],
+            "_grants": [
+              {
+                "type": "heroicInspiration",
+                "target": "",
+                "reset": "longRest"
+              }
+            ],
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
@@ -51285,7 +51308,10 @@
           {
             "level": 0,
             "name": "Darkvision",
-            "description": "You have Darkvision with a range of 120 feet."
+            "description": "<p>You have Darkvision with a range of 120 feet.</p>",
+            "atype": "Additional Feature",
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
@@ -60913,6 +60939,24 @@
             "desc": "Gain a Climb Speed or Swim Speed equal to your Speed for 1 minute.",
             "fav": false,
             "used": false
+          },
+          {
+            "name": "Darkvision",
+            "_libName": "Darkvision",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Dwarf",
+            "_syncSourceId": 3,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<p>You have Darkvision with a range of 120 feet.</p>",
+            "fav": false,
+            "used": false
           }
         ],
         "statblocks": [
@@ -65591,7 +65635,9 @@
           }
         ],
         "_grantImmunities": [],
-        "_grantResistances": [],
+        "_grantResistances": [
+          "poison"
+        ],
         "_grantVulnerabilities": [],
         "_grantSourcesAbilScore": {},
         "_grantLanguages": [],
@@ -65712,7 +65758,7 @@
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
-          "core": false,
+          "core": true,
           "saves": true,
           "skills": true,
           "passives": true,
@@ -72765,6 +72811,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787079941499,
-  "_unchanged": true
+  "_updated": 1787080823101
 }

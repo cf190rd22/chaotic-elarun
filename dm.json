@@ -58945,7 +58945,6 @@
             "desc": "During a short rest, recover expended spell slots totalling up to half Druid level (rounded up, max 5th level). 1/LR.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 6,
             "_syncSourceId": 139
           },
@@ -58964,7 +58963,8 @@
             "desc": "You don’t need to sleep, and magic can’t put you to sleep. You can finish a Long Rest in 4 hours if you spend those hours in a trancelike meditation, during which you retain consciousness.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Druidic",
@@ -59081,17 +59081,6 @@
             "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139
-          },
-          {
-            "key": "sub_circle_of_the_land_natural_recovery",
-            "label": "Natural Recovery",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 139
@@ -59263,17 +59252,6 @@
             "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139
-          },
-          {
-            "key": "sub_circle_of_the_land_natural_recovery",
-            "label": "Natural Recovery",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "uses",
-            "reset": "LR",
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 139
@@ -59662,7 +59640,7 @@
           "Insight": 17
         },
         "ac": "12",
-        "hp": "52",
+        "hp": "",
         "speed": "30ft",
         "initiative": "+2",
         "profBonus": "+3",
@@ -60196,17 +60174,6 @@
             "_syncSourceId": 139
           },
           {
-            "key": "sub_circle_of_the_land_natural_recovery",
-            "label": "Natural Recovery",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139
-          },
-          {
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
@@ -60464,7 +60431,6 @@
             "desc": "During a short rest, recover expended spell slots totalling up to half Druid level (rounded up, max 5th level). 1/LR.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 6,
             "_syncSourceId": 139
           },
@@ -60483,7 +60449,8 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Tremorsense",
@@ -60500,7 +60467,8 @@
             "desc": "From Stonecunning. As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.\n\nYou can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Guidance",
@@ -65668,7 +65636,7 @@
         "_slotUsed": {},
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
-          "core": true,
+          "core": false,
           "saves": true,
           "skills": true,
           "passives": true,
@@ -65682,7 +65650,7 @@
         "_topOpen": false,
         "_autoCalcSkills": true,
         "_hideAdjHighlight": true,
-        "hpCurrent": 52,
+        "hpCurrent": 0,
         "acAdjust": 0,
         "_panelAcAdj": 0,
         "hpAdjust": 0,
@@ -65697,7 +65665,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 18,
-        "hpMax": 52,
+        "hpMax": 0,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -65799,17 +65767,6 @@
             "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139
-          },
-          {
-            "key": "sub_circle_of_the_land_natural_recovery",
-            "label": "Natural Recovery",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "uses",
-            "reset": "LR",
             "_custom": true,
             "_subclassSync": true,
             "_syncSourceId": 139
@@ -72700,6 +72657,6 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787078901112,
+  "_updated": 1787078961107,
   "_unchanged": true
 }

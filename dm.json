@@ -32831,11 +32831,6 @@
                 "name": "Natural Recovery: Cast Circle Spell",
                 "atype": "Other",
                 "desc": "You can cast one of the level 1+ spells that you have prepared from your Circle Spells feature without expending a spell slot, and you must finish a Long Rest before you do so again."
-              },
-              {
-                "name": "Natural Recovery",
-                "atype": "Additional Feature",
-                "desc": "During a short rest, recover expended spell slots totalling up to half Druid level (rounded up, max 5th level). 1/LR."
               }
             ],
             "trackers": [
@@ -32850,12 +32845,6 @@
                 "max": 1,
                 "type": "boxes",
                 "reset": "long"
-              },
-              {
-                "label": "Natural Recovery",
-                "max": 1,
-                "reset": "LR",
-                "type": "uses"
               }
             ],
             "grants": [],
@@ -60210,7 +60199,7 @@
             "key": "sub_circle_of_the_land_natural_recovery",
             "label": "Natural Recovery",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "uses",
             "reset": "LR",
             "_custom": true,
@@ -60907,6 +60896,44 @@
             "attackAbility": "STR",
             "damageType": "Slashing",
             "proficient": false
+          },
+          {
+            "name": "Chaos: Anchor",
+            "_libName": "Chaos: Anchor",
+            "kind": "feat",
+            "atype": "reaction",
+            "source": "Blades of Chaos: Path of Passage",
+            "_featSync": true,
+            "_syncSourceId": 258,
+            "_syncMinLevel": 5,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<div>Reaction (1/LR): Once per Long Rest, you can anchor yourself to ignore being moved against your will, knocked Prone, or Grappled (if already Grappled, you simply cannot be moved).&nbsp;</div>",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Chaos: Movement",
+            "_libName": "Chaos: Movement",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Blades of Chaos: Path of Passage",
+            "_featSync": true,
+            "_syncSourceId": 258,
+            "_syncMinLevel": 7,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Gain a Climb Speed or Swim Speed equal to your Speed for 1 minute.",
+            "fav": false,
+            "used": false
           }
         ],
         "statblocks": [
@@ -65780,7 +65807,7 @@
             "key": "sub_circle_of_the_land_natural_recovery",
             "label": "Natural Recovery",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "uses",
             "reset": "LR",
             "_custom": true,
@@ -72673,6 +72700,6 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787078781112,
+  "_updated": 1787078901112,
   "_unchanged": true
 }

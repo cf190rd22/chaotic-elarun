@@ -58529,7 +58529,7 @@
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_grantSourcesAbilScore": {},
-        "_actQRCollapsed": true
+        "_actQRCollapsed": false
       },
       {
         "id": 409,
@@ -66235,5 +66235,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787247742137
+  "_updated": 1787247751346
 }

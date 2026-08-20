@@ -34094,6 +34094,17 @@
             ]
           }
         ]
+      },
+      {
+        "id": 398,
+        "name": "Foresight (Elarun)",
+        "features": [
+          {
+            "level": 0,
+            "name": "Foresight (Elarun)",
+            "description": "Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.\nEach foretelling roll can be used only once. When you finish a Long Rest, you lose any unused foretelling rolls."
+          }
+        ]
       }
     ],
     "libItems": [
@@ -47036,50 +47047,8 @@
         "_appliedSuggestions": []
       }
     ],
-    "_exportedAt": 1787253308413,
-    "_playerTokenEnc": [
-      103,
-      104,
-      112,
-      95,
-      82,
-      118,
-      107,
-      98,
-      67,
-      121,
-      56,
-      88,
-      49,
-      56,
-      89,
-      50,
-      56,
-      87,
-      77,
-      102,
-      80,
-      104,
-      85,
-      66,
-      67,
-      49,
-      115,
-      100,
-      82,
-      98,
-      113,
-      122,
-      65,
-      78,
-      50,
-      68,
-      103,
-      116,
-      72,
-      89
-    ]
+    "_exportedAt": 1787254035366
   },
   "nextId": 153,
-  "_updated": 1787253674444
+  "_updated": 1787254134807
 }

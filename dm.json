@@ -59304,7 +59304,7 @@
       },
       {
         "id": 411,
-        "name": "Ves (Rebuilt)",
+        "name": "Ves",
         "player": "",
         "classId": 66,
         "subclassId": 139,
@@ -65929,7 +65929,14 @@
             }
           }
         },
-        "_subSpellsCollapsed": true
+        "_subSpellsCollapsed": true,
+        "_actColCfg": {
+          "desktop": {
+            "hidden": {
+              "tags": true
+            }
+          }
+        }
       }
     ],
     "unassignedSpells": [],
@@ -72803,5 +72810,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787246427994
+  "_updated": 1787246535666
 }

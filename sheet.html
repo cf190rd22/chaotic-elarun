@@ -2206,9 +2206,9 @@ A magical scimitar…"></textarea>
 <!-- TOP NAV -->
 <div class="top-nav">
   <div class="nav-brand">DM <span>Reference</span></div>
-  <button class="nav-tab" onclick="showPage('characters')">Characters</button>
+  <button class="nav-tab active" onclick="showPage('characters')">Characters</button>
   <button class="nav-tab" onclick="showPage('dm')">DM</button>
-  <button class="nav-tab active" onclick="showPage('library')">Library</button>
+  <button class="nav-tab" onclick="showPage('library')">Library</button>
   <select id="mob-page-select" onchange="switchPageMob(this.value)" style="display:none;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);cursor:pointer;font-family:'dm sans',monospace;">
     <option value="characters">Characters</option>
     <option value="dm">DM</option>
@@ -2217,7 +2217,7 @@ A magical scimitar…"></textarea>
   <div class="nav-right">
     <div style="position:relative;display:inline-block;" id="opts-wrap">
       <button class="btn" onclick="toggleOptsMenu()" style="font-size:12px;" title="Options">Options ▾</button>
-      <div id="opts-menu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0px; z-index: 600; background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 5px; min-width: 180px; box-shadow: rgba(0, 0, 0, 0.35) 0px 6px 24px;">
+      <div id="opts-menu" style="display: block; position: absolute; top: calc(100% + 4px); right: 0px; z-index: 600; background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 5px; min-width: 180px; box-shadow: rgba(0, 0, 0, 0.35) 0px 6px 24px;">
         <button onclick="_syncCharAndReload();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 10px 14px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">☁ Use Latest Online Version</button>
         <button onclick="syncWithDM();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 10px 14px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⇅ Sync with DM</button>
         <div style="border-top:1px solid var(--border-light);margin:4px 2px;"></div>
@@ -2225,7 +2225,7 @@ A magical scimitar…"></textarea>
         <div style="border-top:1px solid var(--border-light);margin:4px 2px;"></div>
         <details style="margin:0;" open=""><summary style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-muted);font-size:12px;padding:6px 14px;border-radius:4px;cursor:pointer;list-style:none;font-weight:600;letter-spacing:0.04em;">▸ DM Tools</summary>
         <button onclick="openSlimExportPicker();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">👥 Player Export</button>
-        <button onclick="toggleOptsMenu();_requireDmAuth(function(){_dmSyncLibraryWithAuth();})" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬆ Sync Library (DM)</button>
+        <button onclick="toggleOptsMenu();_requireDmAuth(function(){_dmSyncLibraryWithAuth();})" style="display: block; width: 100%; text-align: left; background: var(--bg); border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬆ Sync Library (DM)</button>
         <div style="padding:4px 14px 2px 22px;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);">Export as CSV</div>
         <button onclick="exportFeatsCsv();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 6px 14px 6px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">📄 Export Feats CSV</button>
         <button onclick="exportClassesCsv();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 6px 14px 6px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">📄 Export Classes CSV</button>
@@ -2265,7 +2265,7 @@ A magical scimitar…"></textarea>
 </div>
 
 <!-- CHARACTERS PAGE -->
-<div class="page" id="page-characters">
+<div class="page active" id="page-characters">
   <!-- Sidebar: character list -->
   <div class="sidebar">
     <div class="sidebar-hdr" onclick="if(_isMobile)toggleSidebar()">
@@ -17409,7 +17409,7 @@ A magical scimitar…"></textarea>
 <!-- DM SPELLS PANEL -->
 
 <!-- LIBRARY PAGE -->
-<div class="page active" id="page-library">
+<div class="page" id="page-library">
   <div class="lib-page active" id="lib-page">
     <div class="lib-subnav">
       <button class="lib-tab" onclick="showLibSection('classes')">Classes</button>
@@ -21763,10 +21763,7 @@ In addition, while your Innate Sorcery feature is active, you can use up to two 
             <input type="text" placeholder="Filter…" oninput="buildLibLists()" style="flex:1;padding:5px 8px;border-radius:5px;font-size:12px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);outline:none;font-family:'dm sans',monospace;box-sizing:border-box;">
             <button class="btn btn-sm" onclick="_applyKBToAllLibraryFeats()" title="Apply D&amp;D 2024 knowledge base to all matching feats in the library" style="font-size:10px;white-space:nowrap;">⚡ Apply KB</button>
           </div>
-          <div class="sidebar-scroll" id="libFeatList"><div class="list-item" onclick="selectLibFeat(400)">
-          <div class="list-item-name">123</div>
-          <div class="list-item-meta">1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(174)">
+          <div class="sidebar-scroll" id="libFeatList"><div class="list-item" onclick="selectLibFeat(174)">
           <div class="list-item-name">Ability Score Improvement</div>
           <div class="list-item-meta">General · 1 feat</div>
         </div><div class="list-item" onclick="selectLibFeat(175)">
@@ -22008,79 +22005,7 @@ In addition, while your Innate Sorcery feature is active, you can use up to two 
           <div class="list-item-meta">General · 1 feat</div>
         </div></div>
         </div>
-        <div class="lib-detail"><div class="lib-detail-inner" id="libFeatDetail">
-    <input style="width: 100%; background: transparent; border-width: medium medium 1px; border-style: none none solid; border-color: currentcolor currentcolor transparent; border-image: initial; color: var(--text-primary); font-family: &quot;DM Sans&quot;, sans-serif; font-size: 21px; font-weight: 500; letter-spacing: -0.02em; outline: none; padding: 0px 0px 2px; margin-bottom: 4px; transition: border-color 0.15s;" onmouseenter="this.style.borderBottomColor='var(--border)'" onmouseleave="this.style.borderBottomColor=document.activeElement===this?'var(--accent-border)':'transparent'" onfocus="this.style.borderBottomColor='var(--accent-border)'" onblur="this.style.borderBottomColor='transparent'" value="Ability Score Improvement" onchange="updateLibEntryName('feats',174,this.value)">
-    
-    <div style="display:flex;gap:6px;margin-bottom:16px;margin-top:8px;">
-      <button class="btn btn-sm btn-danger" onclick="deleteLibEntry('feats',174)">Delete</button>
-      
-      
-      
-    </div>
-    
-    
-    
-    
-    <div class="feat-list"><div class="feat-item" id="lib-fi-174-0" data-type="feats" data-entry="174" data-idx="0">
-      <div class="feat-row" onclick="document.getElementById('lib-fi-174-0').classList.toggle('open')">
-        <span class="feat-toggle">▶</span>
-        <span class="feat-lv" id="lv-lib-fi-174-0">—</span>
-        <span class="feat-name-row" id="nm-lib-fi-174-0">Ability Score Improvement</span>
-      </div>
-      <div class="feat-expanded">
-        <div class="feat-action-row">
-          <button class="feat-edit-btn" onclick="document.getElementById('lib-fef-174-0').classList.toggle('open')">✎ Edit</button>
-          <button class="btn btn-sm" onclick="autoParseFeature('lib-fi-174-0','feats',174,0)" style="font-size:10px;">⟳ Parse</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteLibFeatureDom('lib-fi-174-0','feats',174,0)">Delete</button>
-        </div>
-        <div class="feat-desc" id="lib-desc-lib-fi-174-0"><p class="fd-intro">Prerequisite: Level 4+</p><p class="fd-intro">Increase one ability score of your choice by 2, or increase two ability scores of your choice by 1. This feat can't increase an ability score above 20.</p><details open=""><summary>Repeatable</summary><div class="det-body"><p class="fd-p">You can take this feat more than once.</p></div></details></div>
-        <div class="feat-edit-form" id="lib-fef-174-0">
-          <input class="feat-edit-name-inp" id="inp-nm-lib-fi-174-0" value="Ability Score Improvement" placeholder="Name">
-          <div style="display:flex;gap:8px;margin-top:6px;align-items:center;">
-            <input class="feat-edit-level-inp" id="inp-lv-lib-fi-174-0" type="number" value="0" min="0" max="20">
-            <span style="font-size:11px;color:var(--text-muted);">Level</span>
-          </div>
-          <div class="feat-wysiwyg-wrap" onclick="(function(e){const ed=document.getElementById('inp-desc-lib-fi-174-0');if(e.target===e.currentTarget&amp;&amp;ed){ed.focus();const r=document.createRange(),s=window.getSelection();r.selectNodeContents(ed);r.collapse(false);s.removeAllRanges();s.addRange(r);}})(event)">
-            <div class="feat-wysiwyg-toolbar">
-              <select class="fwt-select" title="Block format" onchange="document.execCommand('formatBlock',false,this.value);this.value='';document.getElementById('inp-desc-lib-fi-174-0').focus()">
-                <option value="">Format</option>
-                <option value="p">Paragraph</option>
-                <option value="h2">Heading 2</option>
-                <option value="h3">Heading 3</option>
-                <option value="blockquote">Quote</option>
-              </select>
-              <span class="fwt-sep"></span>
-              <button type="button" class="fwt-btn" title="Bold" onmousedown="event.preventDefault();document.execCommand('bold')"><b>B</b></button>
-              <button type="button" class="fwt-btn" title="Italic" onmousedown="event.preventDefault();document.execCommand('italic')"><i>I</i></button>
-              <button type="button" class="fwt-btn" title="Underline" onmousedown="event.preventDefault();document.execCommand('underline')"><u>U</u></button>
-              <span class="fwt-sep"></span>
-              <button type="button" class="fwt-btn" title="Bullet list" onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')">☰</button>
-              <button type="button" class="fwt-btn" title="Numbered list" onmousedown="event.preventDefault();document.execCommand('insertOrderedList')">№</button>
-              <button type="button" class="fwt-btn" title="Indent" onmousedown="event.preventDefault();document.execCommand('indent');document.getElementById('inp-desc-lib-fi-174-0').focus()">⇥</button>
-              <button type="button" class="fwt-btn" title="Outdent" onmousedown="event.preventDefault();document.execCommand('outdent');document.getElementById('inp-desc-lib-fi-174-0').focus()">⇤</button>
-              <span class="fwt-sep"></span>
-              <span class="fwt-swatch-wrap"><button type="button" class="fwt-swatch-btn" title="Text colour" onmousedown="event.preventDefault();fwtToggleSwatch('inp-desc-lib-fi-174-0-fore-panel')">A ▾</button><div class="fwt-swatch-panel" id="inp-desc-lib-fi-174-0-fore-panel"><div class="fwt-chip" style="background:var(--text);" data-hex="" title="Default" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--text-muted);" data-hex="" title="Muted" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent);" data-hex="" title="Accent" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-color);" data-hex="" title="Red" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-bar);" data-hex="" title="Green" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--xp-color);" data-hex="" title="Amber" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--spell-color);" data-hex="" title="Purple" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent-border);" data-hex="" title="Teal" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:#ffffff;" data-hex="#ffffff" title="White" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:#111111;" data-hex="#111111" title="Black" onmousedown="event.preventDefault();fwtApplyFore(this,'inp-desc-${itemId}')"></div></div></span>
-              <span class="fwt-swatch-wrap"><button type="button" class="fwt-swatch-btn" title="Highlight colour" onmousedown="event.preventDefault();fwtToggleSwatch('inp-desc-lib-fi-174-0-hl-panel')">H ▾</button><div class="fwt-swatch-panel" id="inp-desc-lib-fi-174-0-hl-panel"><div class="fwt-chip" style="background:transparent;" data-hex="transparent" title="None" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--xp-dim);" data-hex="" title="Yellow" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent-dim);" data-hex="" title="Blue" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-dim);" data-hex="" title="Green" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-dim-bad);" data-hex="" title="Red" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--spell-dim);" data-hex="" title="Purple" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--surface);" data-hex="" title="Surface" onmousedown="event.preventDefault();fwtApplyHL(this,'inp-desc-${itemId}')"></div></div></span>
-              <span class="fwt-sep"></span>
-              <button type="button" class="fwt-btn" title="Insert table" style="width:auto;padding:0 5px;font-size:10px;" onmousedown="event.preventDefault();insertFeatTable('inp-desc-lib-fi-174-0')">⊞ Table</button>
-              <button type="button" class="fwt-btn" title="Insert collapsible section" style="width:auto;padding:0 5px;font-size:10px;" onmousedown="event.preventDefault();insertFeatSection('inp-desc-lib-fi-174-0')">▶ Section</button>
-              <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
-              <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
-            </div>
-            <div class="feat-edit-body" id="inp-desc-lib-fi-174-0" contenteditable="true" data-placeholder="Description…"><p>Prerequisite: Level 4+</p><p>Increase one ability score of your choice by 2, or increase two ability scores of your choice by 1. This feat can't increase an ability score above 20.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Repeatable</summary><div class="det-body"><p>You can take this feat more than once.</p></div></details></div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <button class="btn btn-sm btn-success" onclick="saveLibFeatureDom('lib-fi-174-0','feats',174,0)">✓ Save</button>
-            <button class="feat-edit-btn" onclick="document.getElementById('lib-fef-174-0').classList.remove('open')">Cancel</button>
-          </div>
-        </div>
-        
-        
-        
-        
-      </div>
-    </div></div>
-    <button class="feat-add-btn" onclick="addLibFeature('feats',174)">+ Add Feature</button></div></div>
+        <div class="lib-detail"><div class="lib-detail-inner" id="libFeatDetail"><div class="welcome"><div class="welcome-icon">📖</div><h2>Select an entry</h2></div></div></div>
       </div>
 
       <!-- DEFAULT SPELLS SECTION -->
@@ -68754,4 +68679,4 @@ Adv Sorc AR, Sorc Spell DC +1.</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;">
       <button class="btn btn-sm" onclick="toggleActionMode(241,2)" style="font-size:11px;padding:4px 10px;color:var(--amber);border-color:rgba(240,185,107,0.4);">⚡ Activate</button>
     </div>
-  </div><div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border-light);"><button class="btn btn-sm" onclick="closeActDetail(241);toggleActEdit(241,2)" style="font-size:11px;padding:4px 10px;">✎ Full Edit</button><button class="btn btn-sm btn-danger" onclick="closeActDetail(241);deleteAction(241,2)" style="font-size:11px;padding:4px 10px;">✕ Delete</button></div></div></div><div id="_sync-indicator" style="position: fixed; bottom: 14px; right: 16px; z-index: 99990; display: flex; align-items: center; gap: 6px; font-family: &quot;DM Sans&quot;, sans-serif; font-size: 11px; opacity: 0; transition: opacity 0.3s; pointer-events: none; color: var(--green,#98c379);"><span style="font-size:11px;line-height:1;">✓</span></div></body></html>
+  </div><div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border-light);"><button class="btn btn-sm" onclick="closeActDetail(241);toggleActEdit(241,2)" style="font-size:11px;padding:4px 10px;">✎ Full Edit</button><button class="btn btn-sm btn-danger" onclick="closeActDetail(241);deleteAction(241,2)" style="font-size:11px;padding:4px 10px;">✕ Delete</button></div></div></div><div id="_sync-indicator" style="position: fixed; bottom: 14px; right: 16px; z-index: 99990; display: flex; align-items: center; gap: 6px; font-family: &quot;DM Sans&quot;, sans-serif; font-size: 11px; opacity: 1; transition: opacity 0.3s; pointer-events: none; color: var(--text-muted);"><span style="display:inline-block;animation:_spin 1s linear infinite;font-size:13px;line-height:1;">⟳</span></div></body></html>

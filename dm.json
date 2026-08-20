@@ -65903,7 +65903,14 @@
         "_hideUnassigned": true,
         "_charGrants": {},
         "_appliedSuggestions": [],
-        "spellcastingAbility": "WIS"
+        "spellcastingAbility": "WIS",
+        "_spColCfg": {
+          "desktop": {
+            "hidden": {
+              "tags": true
+            }
+          }
+        }
       }
     ],
     "unassignedSpells": [],
@@ -72777,5 +72784,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787246039727
+  "_updated": 1787246058163
 }

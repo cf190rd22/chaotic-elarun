@@ -14190,6 +14190,17 @@
           "description": "Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.\nEach foretelling roll can be used only once. When you finish a Long Rest, you lose any unused foretelling rolls."
         }
       ]
+    },
+    {
+      "id": 399,
+      "name": "Test123",
+      "features": [
+        {
+          "level": 0,
+          "name": "Test123",
+          "description": ""
+        }
+      ]
     }
   ],
   "spellLists": [
@@ -47783,5 +47794,5 @@
       "section": ""
     }
   ],
-  "_nextId": 399
+  "_nextId": 400
 }

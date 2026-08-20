@@ -40350,17 +40350,7 @@
           {
             "level": 0,
             "name": "Dwarven Toughness",
-            "description": "<p>Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level.</p>",
-            "_grants": [
-              {
-                "type": "flatBonus",
-                "target": "maxHp",
-                "reset": "permanent",
-                "value": "+LVL"
-              }
-            ],
-            "knownOptions": [],
-            "knownCount": null
+            "description": "Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level."
           },
           {
             "level": 0,
@@ -43042,7 +43032,8 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": true,
-            "_libHasMode": true
+            "_modeAdvSaves": [],
+            "_modeAdvAbilChecks": []
           },
           {
             "name": "Font of Magic",
@@ -43221,24 +43212,6 @@
             "save": "",
             "notes": "",
             "desc": "Once per Long Rest, you can cast invisibility on yourself for 1 minute. This does not require a spell slot. ",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Innate Sorcery",
-            "_libName": "Innate Sorcery",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Sorcerer",
-            "_syncSourceId": 61,
-            "_syncMinLevel": 1,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
             "fav": false,
             "used": false
           }
@@ -43972,9 +43945,7 @@
             "_syncSourceId": 158,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB",
-            "_raceSync": true,
-            "_syncSourceName": "Gnomish Lineage"
+            "_sourceBook": "PHB"
           },
           {
             "name": "Mold Earth",
@@ -52620,14 +52591,13 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true,
-            "_syncMinLevel": 1
+            "_raceSync": true
           },
           {
             "name": "Stonecunning",
             "_libName": "Stonecunning",
             "kind": "feat",
-            "atype": "bonus",
+            "atype": "feature",
             "source": "Dwarf",
             "_syncSourceId": 3,
             "_syncMinLevel": 1,
@@ -55813,6 +55783,30 @@
             "_singleUsed": false
           },
           {
+            "name": "Freedom of Movement",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a leather strap)",
+            "duration": "1 h",
+            "effect": "Paralyzed ↑",
+            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
+            "area": "",
+            "hit": "",
+            "source": "Druid",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_classListImport": true,
+            "_syncSourceId": 139,
+            "group": "Temperate Land",
+            "_freecasted": false,
+            "_singleUsed": false,
+            "_subclassSync": true,
+            "_syncSourceName": "Circle of the Land",
+            "_syncMinLevel": 7
+          },
+          {
             "name": "Giant Insect",
             "level": 4,
             "school": "Conjuration",
@@ -56477,6 +56471,31 @@
             "_sourceBook": "XGTE",
             "_freecasted": false,
             "_singleUsed": false
+          },
+          {
+            "name": "Tree Stride",
+            "level": 5,
+            "school": "Conjuration",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
+            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Druid",
+            "_sourceBook": "PHB",
+            "_assigned": false,
+            "_classListImport": true,
+            "_syncSourceId": 139,
+            "group": "Temperate Land",
+            "_freecasted": false,
+            "_singleUsed": false,
+            "_subclassSync": true,
+            "_syncSourceName": "Circle of the Land",
+            "_syncMinLevel": 9
           },
           {
             "name": "Wall of Stone",
@@ -57549,49 +57568,6 @@
             "_syncSourceId": 139,
             "_syncMinLevel": 5,
             "group": "Temperate Land"
-          },
-          {
-            "name": "Freedom of Movement",
-            "level": 4,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S, M (a leather strap)",
-            "duration": "1 h",
-            "effect": "Paralyzed ↑",
-            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
-            "area": "",
-            "hit": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
-            "_syncMinLevel": 7,
-            "group": "Temperate Land"
-          },
-          {
-            "name": "Tree Stride",
-            "level": 5,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "Self",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_subclassSync": true,
-            "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139,
-            "_syncMinLevel": 9,
-            "group": "Temperate Land"
           }
         ],
         "_grantImmunities": [],
@@ -57625,7 +57601,7 @@
         "_grantFlatBonusHit": 0,
         "_grantFlatBonusDamage": 0,
         "_grantFlatBonusDC": 0,
-        "_grantFlatBonusMaxHp": 7,
+        "_grantFlatBonusMaxHp": 0,
         "_grantSourcesSpeed": [],
         "_grantSourcesAC": [
           {
@@ -57766,7 +57742,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 17,
-        "hpMax": 59,
+        "hpMax": 52,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -63862,5 +63838,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1787249664077
+  "_updated": 1787249640578
 }

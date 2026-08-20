@@ -60240,18 +60240,6 @@
             "actionLink": "Natural Recovery: Recover Spell Slots"
           },
           {
-            "key": "sub_circle_of_the_land_natural_recovery",
-            "label": "Natural Recovery",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139,
-            "_catId": 1784109512027
-          },
-          {
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
@@ -61127,7 +61115,6 @@
             "desc": "During a short rest, recover expended spell slots totalling up to half Druid level (rounded up, max 5th level). 1/LR.",
             "fav": false,
             "used": false,
-            "_subclassSync": true,
             "_syncMinLevel": 6,
             "_syncSourceId": 139
           },
@@ -61146,7 +61133,8 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Tremorsense",
@@ -61163,7 +61151,8 @@
             "desc": "From Stonecunning. As a Bonus Action, you gain Tremorsense with a range of 60 feet for 10 minutes. You must be on a stone surface or touching a stone surface to use this Tremorsense. The stone can be natural or worked.\n\nYou can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Lvl 1: Primal Order: Magician",
@@ -65895,51 +65884,131 @@
           },
           {
             "name": "Misty Step",
-            "level": 3,
+            "level": 2,
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Temperate Land"
+            "group": "Temperate Land",
+            "effect": "",
+            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
+            "school": "Conjuration",
+            "time": "BA",
+            "range": "Self",
+            "area": "",
+            "components": "V",
+            "duration": "Instantaneous",
+            "hit": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Shocking Grasp",
-            "level": 3,
+            "level": 0,
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Temperate Land"
+            "group": "Temperate Land",
+            "effect": "1d8 Lightning ↑",
+            "desc": "Lightning springs from you to a creature that you try to touch. Make a melee spell attack against the target. On a hit, the target takes 1d8 Lightning damage, and it can’t make Opportunity Attacks until the start of its next turn.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d8 when you reach levels 5 (2d8), 11 (3d8), and 17 (4d8).",
+            "school": "Evocation",
+            "time": "A",
+            "range": "Touch",
+            "area": "",
+            "components": "V, S",
+            "duration": "Instantaneous",
+            "hit": "Attack",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Sleep",
-            "level": 3,
+            "level": 1,
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Temperate Land"
+            "group": "Temperate Land",
+            "effect": "Incapacitated/Unconscious",
+            "desc": "Each creature of your choice in a 5-foot-radius Sphere centered on a point within range must succeed on a Wisdom saving throw or have the Incapacitated condition until the end of its next turn, at which point it must repeat the save. If the target fails the second save, the target has the Unconscious condition for the duration. The spell ends on a target if it takes damage or someone within 5 feet of it takes an action to shake it out of the spell’s effect.\nCreatures that don’t sleep, such as elves, or that have Immunity to the Exhaustion condition automatically succeed on saves against this spell.",
+            "school": "Enchantment",
+            "time": "A",
+            "range": "60 feet",
+            "area": "5ft. radius Sphere",
+            "components": "V, S, M (a pinch of sand or rose petals)",
+            "duration": "Concentration, up to 1 min",
+            "hit": "WIS",
+            "concentration": true,
+            "source": "Bard",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Lightning Bolt",
-            "level": 5,
+            "level": 3,
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 5,
-            "group": "Temperate Land"
+            "group": "Temperate Land",
+            "effect": "8d6 Lightning ↑",
+            "desc": "A stroke of lightning forming a 100-foot-long, 5-foot-wide Line blasts out from you in a direction you choose. Each creature in the Line makes a Dexterity saving throw, taking 8d6 Lightning damage on a failed save or half as much damage on a successful one.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 3.",
+            "school": "Evocation",
+            "time": "A",
+            "range": "Self",
+            "area": "5ft. Line",
+            "components": "V, S, M (a bit of fur and a crystal rod)",
+            "duration": "Instantaneous",
+            "hit": "DEX",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Freedom of Movement",
-            "level": 7,
+            "level": 4,
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 7,
-            "group": "Temperate Land"
+            "group": "Temperate Land",
+            "effect": "Paralyzed ↑",
+            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "area": "",
+            "components": "V, S, M (a leather strap)",
+            "duration": "1 h",
+            "hit": "",
+            "source": "Bard",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Tree Stride",
-            "level": 9,
+            "level": 5,
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 9,
-            "group": "Temperate Land"
+            "group": "Temperate Land",
+            "effect": "",
+            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
+            "school": "Conjuration",
+            "time": "A",
+            "range": "Self",
+            "area": "",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
+            "hit": "",
+            "concentration": true,
+            "source": "Ranger",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           }
         ],
         "_grantImmunities": [],
@@ -66082,7 +66151,7 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": false,
+        "_subSpellsCollapsed": true,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
@@ -66232,18 +66301,6 @@
             "_syncSourceId": 139,
             "_catId": 1784109512027,
             "actionLink": "Natural Recovery: Recover Spell Slots"
-          },
-          {
-            "key": "sub_circle_of_the_land_natural_recovery",
-            "label": "Natural Recovery",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "uses",
-            "reset": "LR",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139,
-            "_catId": 1784109512027
           },
           {
             "key": "race_dwarf_stonecunning",
@@ -67513,7 +67570,7 @@
             "name": "Fog Cloud",
             "level": 1,
             "school": "Conjuration",
-            "time": "Action",
+            "time": "A",
             "range": "120 feet",
             "area": "20ft. radius Sphere",
             "_effectManual": false,
@@ -67522,7 +67579,7 @@
             "duration": "Concentration, up to 1 h",
             "concentration": true,
             "ritual": false,
-            "desc": "<p>You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.</p>",
+            "desc": "You create a 20-foot-radius Sphere of fog centered on a point within range. The Sphere is Heavily Obscured. It lasts for the duration or until a strong wind (such as one created by Gust of Wind) disperses it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The fog’s radius increases by 20 feet for each spell slot level above 1.",
             "tags": [],
             "_assigned": true,
             "_freecast": false,
@@ -67534,7 +67591,9 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": false,
+            "effect": "",
+            "hit": ""
           },
           {
             "name": "Ghost Light",
@@ -68858,7 +68917,7 @@
             "name": "Fly",
             "level": 3,
             "school": "Transmutation",
-            "time": "Action",
+            "time": "A",
             "range": "Touch",
             "_effectManual": false,
             "_noScale": false,
@@ -68866,7 +68925,7 @@
             "duration": "Concentration, up to 10 min",
             "concentration": true,
             "ritual": false,
-            "desc": "<p>You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.<br>───────────────────<br>At Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.</p>",
+            "desc": "You touch a willing creature. For the duration, the target gains a Fly Speed of 60 feet and can hover. When the spell ends, the target falls if it is still aloft unless it can stop the fall.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 3.",
             "tags": [],
             "_assigned": true,
             "_freecast": false,
@@ -68878,7 +68937,10 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": false,
+            "effect": "",
+            "area": "",
+            "hit": ""
           },
           {
             "name": "Glyph of Warding",
@@ -70803,7 +70865,8 @@
             "_syncSourceName": "Blades of Chaos: Path of Storm",
             "_singleUse": true,
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_freecast": true
           },
           {
             "name": "Silence",
@@ -70827,21 +70890,43 @@
           },
           {
             "name": "Power Word Heal",
-            "level": 20,
+            "level": 9,
             "_assigned": false,
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20
+            "_syncMinLevel": 20,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "60 feet",
+            "components": "V",
+            "duration": "Instantaneous",
+            "effect": "Prone",
+            "desc": "A wave of healing energy washes over one creature you can see within range. The target regains all its Hit Points. If the creature has the Charmed, Frightened, Paralyzed, Poisoned, or Stunned condition, the condition ends. If the creature has the Prone condition, it can use its Reaction to stand up.",
+            "area": "",
+            "hit": "",
+            "source": "Bard",
+            "_sourceBook": "PHB"
           },
           {
             "name": "Power Word Kill",
-            "level": 20,
+            "level": 9,
             "_assigned": false,
             "_classSync": true,
             "_syncSourceName": "Bard",
             "_syncSourceId": 65,
-            "_syncMinLevel": 20
+            "_syncMinLevel": 20,
+            "school": "Enchantment",
+            "time": "A",
+            "range": "60 feet",
+            "components": "V",
+            "duration": "Instantaneous",
+            "effect": "12d12 Psychic",
+            "desc": "You compel one creature you can see within range to die. If the target has 100 Hit Points or fewer, it dies. Otherwise, it takes 12d12 Psychic damage.",
+            "area": "",
+            "hit": "",
+            "source": "Bard",
+            "_sourceBook": "PHB"
           },
           {
             "name": "Silence",
@@ -71433,16 +71518,6 @@
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "_syncSourceId": 69,
-            "_modeLabel": "Defensive Flourish",
-            "_modeNotes": "",
-            "_modeDcBonus": 0,
-            "_modeAcBonus": 0,
-            "_modeAttackBonus": 0,
-            "_modeDmgBonus": 0,
-            "_modeResistance": "",
-            "_modeAdvAll": false,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": [],
             "_flag": true
           },
           {
@@ -71499,9 +71574,10 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<p>At 3rd level, you learn to perform impressive displays of martial prowess and speed.</p><p>Whenever you take the Attack action on your turn, your walking speed increases by 10 feet until the end of the turn, and if a weapon attack that you make as part of this action hits a creature, you can use one of the following Blade Flourish options of your choice. You can use only one Blade Flourish option per turn.</p><details open=\"\"><summary>Defensive Flourish</summary><div class=\"det-body\"><p>You can expend one use of your Bardic Inspiration to cause the weapon to deal extra damage to the target you hit. The damage equals the number you roll on the Bardic Inspiration die. You also add the number rolled to your AC until the start of your next turn.</p></div></details><details open=\"\"><summary>Slashing Flourish</summary><div class=\"det-body\"><p>You can expend one use of your Bardic Inspiration to cause the weapon to deal extra damage to the target you hit and to any other creature of your choice that you can see within 5 feet of you. The damage equals the number you roll on the Bardic Inspiration die.</p></div></details><details open=\"\"><summary>Mobile Flourish</summary><div class=\"det-body\"><p>You can expend one use of your Bardic Inspiration to cause the weapon to deal extra damage to the target you hit. The damage equals the number you roll on the Bardic Inspiration die. You can also push the target up to 5 feet away from you, plus a number of feet equal to the number you roll on that die. You can then immediately use your reaction to move up to your walking speed to an unoccupied space within 5 feet of the target.</p></div></details>",
+            "desc": "When you take the Attack action, your speed increases by 10 ft and you can use a Bardic Inspiration die for a Defensive, Slashing, or Mobile Flourish.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_subclassSync": true
           },
           {
             "name": "Extra Attack",
@@ -71537,7 +71613,8 @@
             "desc": "You can take the Dash action as a Bonus Action. When you do so, you gain a number of Temporary Hit Points equal to your Proficiency Bonus.\nYou can use this trait a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Short or Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
             "name": "Relentless Endurance",
@@ -71554,7 +71631,27 @@
             "desc": "When you are reduced to 0 Hit Points but not killed outright, you can drop to 1 Hit Point instead. Once you use this trait, you can’t do so again until you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
+          },
+          {
+            "name": "Fighting Style",
+            "_libName": "Fighting Style",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "College of Swords",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You adopt a style of fighting as your specialty. Choose one of the following options. You can’t take a Fighting Style option more than once, even if something in the game lets you choose again.\n\nDueling\nWhen you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus to damage rolls with that weapon.\n\nTwo-Weapon Fighting\nWhen you engage in two-weapon fighting, you can add your ability modifier to the damage of the second attack.",
+            "fav": false,
+            "used": false,
+            "_subclassSync": true,
+            "_syncMinLevel": 3,
+            "_syncSourceId": 69
           }
         ],
         "trackers": [
@@ -71643,6 +71740,17 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "sub_college_of_swords_bardic_inspiration_die",
+            "label": "Bardic Inspiration Die",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "LR",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 69
           }
         ],
         "_grantImmunities": [],
@@ -72220,6 +72328,17 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "sub_college_of_swords_bardic_inspiration_die",
+            "label": "Bardic Inspiration Die",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "uses",
+            "reset": "LR",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 69
           }
         ],
         "saveDcEffective": 14,
@@ -79119,5 +79238,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787248622580
+  "_updated": 1787248672814
 }

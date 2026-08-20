@@ -60141,7 +60141,7 @@
           "139_Circle of the Land Spells": "Temperate Land"
         },
         "_subActGroups": {
-          "66_Primal Order": "",
+          "66_Primal Order": "Magician",
           "66_Elemental Fury": "Potent Spellcasting"
         },
         "_subTrkGroups": {},
@@ -61164,6 +61164,26 @@
             "fav": false,
             "used": false,
             "_raceSync": true
+          },
+          {
+            "name": "Lvl 1: Primal Order: Magician",
+            "_libName": "Lvl 1: Primal Order: Magician",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 66,
+            "group": "Magician"
           }
         ],
         "statblocks": [
@@ -79099,5 +79119,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787248561050
+  "_updated": 1787248569165
 }

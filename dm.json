@@ -65928,7 +65928,8 @@
               "tags": true
             }
           }
-        }
+        },
+        "_subSpellsCollapsed": true
       }
     ],
     "unassignedSpells": [],
@@ -72802,5 +72803,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787246404503
+  "_updated": 1787246427994
 }

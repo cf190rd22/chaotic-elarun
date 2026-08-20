@@ -65936,7 +65936,8 @@
               "tags": true
             }
           }
-        }
+        },
+        "_collapsedSpLevels": {}
       }
     ],
     "unassignedSpells": [],
@@ -72810,6 +72811,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787246577771,
-  "_unchanged": true
+  "_updated": 1787246676792
 }

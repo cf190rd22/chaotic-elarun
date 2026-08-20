@@ -58468,7 +58468,8 @@
         "_grantAbilBonus": {},
         "_grantSenses": {},
         "_grantWeaponDamage": [],
-        "_grantSourcesAbilScore": {}
+        "_grantSourcesAbilScore": {},
+        "_actQRCollapsed": true
       },
       {
         "id": 409,
@@ -72811,5 +72812,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787247267339
+  "_updated": 1787247284752
 }

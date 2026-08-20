@@ -58298,7 +58298,7 @@
             "desc": "In Backpack\nA Waterskin holds up to 4 pints. If you don’t drink sufficient water, you risk dehydration."
           }
         ],
-        "_actFiltersCollapsed": false,
+        "_actFiltersCollapsed": true,
         "_actAtypeFilter": "all",
         "_actFilter": "all",
         "spellSaveDC": "16",
@@ -72812,5 +72812,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787247284752
+  "_updated": 1787247297230
 }

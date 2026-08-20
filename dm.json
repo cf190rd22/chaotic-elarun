@@ -65646,7 +65646,7 @@
         "_grantFlatBonusDamageFinesse": 0,
         "_grantFlatBonusDamageThrown": 0,
         "_grantFlatBonusDC": 0,
-        "_grantFlatBonusMaxHp": 8,
+        "_grantFlatBonusMaxHp": 0,
         "_grantSourcesSpeed": [],
         "_grantSourcesAC": [
           {
@@ -65758,7 +65758,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 18,
-        "hpMax": 59,
+        "hpMax": 51,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -72780,5 +72780,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787222939171
+  "_updated": 1787222949849
 }

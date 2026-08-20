@@ -40329,19 +40329,38 @@
           {
             "level": 0,
             "name": "Dwarven Resilience",
-            "description": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
+            "description": "<details open=\"\"><summary>You have Resistance to Poison damage</summary><div class=\"det-body\"><p>You also have Advantage on saving throws you make to avoid or end the Poisoned condition.</p></div></details>",
             "actions": [
               {
                 "name": "Dwarven Resilience: Poison",
                 "atype": "Additional Feature",
                 "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition."
               }
-            ]
+            ],
+            "_grants": [
+              {
+                "type": "resistance",
+                "target": "poison",
+                "reset": "permanent"
+              }
+            ],
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
             "name": "Dwarven Toughness",
-            "description": "Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level."
+            "description": "<p>Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level.</p>",
+            "_grants": [
+              {
+                "type": "flatBonus",
+                "target": "maxHp",
+                "reset": "permanent",
+                "value": "+LVL"
+              }
+            ],
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
@@ -43023,8 +43042,7 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": true,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": []
+            "_libHasMode": true
           },
           {
             "name": "Font of Magic",
@@ -43203,6 +43221,24 @@
             "save": "",
             "notes": "",
             "desc": "Once per Long Rest, you can cast invisibility on yourself for 1 minute. This does not require a spell slot. ",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Innate Sorcery",
+            "_libName": "Innate Sorcery",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
             "fav": false,
             "used": false
           }
@@ -43936,7 +43972,9 @@
             "_syncSourceId": 158,
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_raceSync": true,
+            "_syncSourceName": "Gnomish Lineage"
           },
           {
             "name": "Mold Earth",
@@ -51906,7 +51944,8 @@
             "notes": "",
             "desc": "This silver and gold necklace hums with a healing energy when you speak certain arcane words. Whenever you cast the healing word or mass healing word spell, you can grant one target of the spell 4 temporary hit points for each d4 that rolled a 4. If you roll a 1 on a d4, you can reroll the die. You must use the new roll.  \n\nIn addition, whenever you make an ability check to calm, heal, or otherwise soothe another creature, you can roll a d4 and add it to the total. Once this property of the necklace has been used, it can't be used again until you or another creature has cast healing word or mass healing word while wearing the necklace.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Seer's Starlight Cloak",
@@ -51922,7 +51961,8 @@
             "notes": "",
             "desc": "Charges\nVersion:\n1\nThis deep purple cloak is hemmed with a silver lining that radiates into starburst patterns around the head and arms. When in darkness, tiny stars can be seen from within the cloak's fabric. A constellation of stars in the shape of an eye can always be seen on the front of the cloak's dramatic hood. While wearing the cloak, you can use an action to cast the guidance spell.  While you can see the night sky and are wearing the cloak, you can use an action to cast the augury spell. When you do, the omens are represented by the number of shooting stars that appear in the sky:  Three or more shooting stars, for good results One shooting star, for bad results Two shooting stars, for both good and bad results Nothing, for results that aren't especially good or bad\nOnce this property of the cloak has been used, it can't be used again until the next dusk.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Eyes of Minute Seeing",
@@ -51938,7 +51978,8 @@
             "notes": "",
             "desc": "These crystal lenses fit over the eyes. While wearing them, you can see much better than normal out to a range of 1 foot. You have advantage on Intelligence (Investigation) checks that rely on sight while searching an area or studying an object within that range.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Healer's Kit",
@@ -51954,7 +51995,8 @@
             "notes": "",
             "desc": "A Healer’s Kit has ten uses. As a Utilize action, you can expend one of its uses to stabilize an Unconscious creature that has 0 Hit Points without needing to make a Wisdom (Medicine) check.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Potion of Comprehension",
@@ -51970,7 +52012,8 @@
             "notes": "",
             "desc": "When you drink this potion, you gain the effect of the Comprehend Languages spell for 1 hour.\n\nThis potion’s liquid is a clear concoction with bits of salt and soot swirling in it.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Potion of Healing",
@@ -51986,7 +52029,8 @@
             "notes": "",
             "desc": "This potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Quarterstaff",
@@ -52004,7 +52048,8 @@
             "notes": "Versatile (1d8), Topple · Melee, Reach 5ft., Bludgeoning",
             "desc": "Proficiency with a Quarterstaff allows you to add your proficiency bonus to the attack roll for any attack you make with it.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Scimitar",
@@ -52022,7 +52067,8 @@
             "notes": "Finesse, Light, Nick · Melee, Reach 5ft., Slashing",
             "desc": "Proficiency with a Scimitar allows you to add your proficiency bonus to the attack roll for any attack you make with it.",
             "fav": false,
-            "used": false
+            "used": false,
+            "proficient": false
           },
           {
             "name": "Chaos: Anchor",
@@ -52049,20 +52095,6 @@
             "save": "",
             "notes": "",
             "desc": "Gain a Climb Speed or Swim Speed equal to your Speed for 1 minute.",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Stonecunning",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Race",
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
             "fav": false,
             "used": false
           },
@@ -52277,20 +52309,6 @@
             "used": false
           },
           {
-            "name": "Speak with Plants",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Transmutation",
-            "hit": "",
-            "damage": "",
-            "range": "Self",
-            "save": "",
-            "notes": "10 min",
-            "desc": "You imbue plants in an immobile 30-foot Emanation with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.\nYou can also turn Difficult Terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into Difficult Terrain that lasts for the duration.\nThe spell doesn’t enable plants to uproot themselves and move about, but they can move their branches, tendrils, and stalks for you.\nIf a Plant creature is in the area, you can communicate with it as if you shared a common language.",
-            "fav": false,
-            "used": false
-          },
-          {
             "name": "Ride the Lightning",
             "kind": "spell",
             "atype": "action",
@@ -52329,6 +52347,44 @@
             "save": "",
             "notes": "Instantaneous",
             "desc": "You hurl a mote of fire at a creature or an object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Fire damage. A flammable object hit by this spell starts burning if it isn’t being worn or carried.\n───────────────────\nAt Higher Levels: Cantrip Upgrade. The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10).",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Chaos: Anchor",
+            "_libName": "Chaos: Anchor",
+            "kind": "feat",
+            "atype": "reaction",
+            "source": "Blades of Chaos: Path of Passage",
+            "_featSync": true,
+            "_syncSourceId": 258,
+            "_syncMinLevel": 5,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<div>Reaction (1/LR): Once per Long Rest, you can anchor yourself to ignore being moved against your will, knocked Prone, or Grappled (if already Grappled, you simply cannot be moved).&nbsp;</div>",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Chaos: Movement",
+            "_libName": "Chaos: Movement",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Blades of Chaos: Path of Passage",
+            "_featSync": true,
+            "_syncSourceId": 258,
+            "_syncMinLevel": 7,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Gain a Climb Speed or Swim Speed equal to your Speed for 1 minute.",
             "fav": false,
             "used": false
           },
@@ -52564,43 +52620,24 @@
             "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "fav": false,
             "used": false,
-            "_raceSync": true
+            "_raceSync": true,
+            "_syncMinLevel": 1
           },
           {
-            "name": "Chaos: Anchor",
-            "_libName": "Chaos: Anchor",
+            "name": "Stonecunning",
+            "_libName": "Stonecunning",
             "kind": "feat",
-            "atype": "reaction",
-            "source": "Blades of Chaos: Path of Passage",
-            "_featSync": true,
-            "_syncSourceId": 258,
-            "_syncMinLevel": 5,
+            "atype": "bonus",
+            "source": "Dwarf",
+            "_syncSourceId": 3,
+            "_syncMinLevel": 1,
             "_featureAsAction": true,
             "hit": "",
             "damage": "",
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "<div>Reaction (1/LR): Once per Long Rest, you can anchor yourself to ignore being moved against your will, knocked Prone, or Grappled (if already Grappled, you simply cannot be moved).&nbsp;</div>",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Chaos: Movement",
-            "_libName": "Chaos: Movement",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Blades of Chaos: Path of Passage",
-            "_featSync": true,
-            "_syncSourceId": 258,
-            "_syncMinLevel": 7,
-            "_featureAsAction": true,
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "Gain a Climb Speed or Swim Speed equal to your Speed for 1 minute.",
+            "desc": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
             "fav": false,
             "used": false
           }
@@ -54075,7 +54112,9 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_sourceBook": "PHB",
-            "_singleUsed": false
+            "_singleUsed": false,
+            "source": "Druid",
+            "effect": ""
           },
           {
             "name": "Thorn Armor",
@@ -55774,27 +55813,6 @@
             "_singleUsed": false
           },
           {
-            "name": "Freedom of Movement",
-            "level": 4,
-            "school": "Abjuration",
-            "time": "A",
-            "range": "Touch",
-            "components": "V, S, M (a leather strap)",
-            "duration": "1 h",
-            "effect": "Paralyzed ↑",
-            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
-            "area": "",
-            "hit": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classListImport": true,
-            "_syncSourceId": 139,
-            "group": "Temperate Land",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
             "name": "Giant Insect",
             "level": 4,
             "school": "Conjuration",
@@ -56457,28 +56475,6 @@
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
-            "_freecasted": false,
-            "_singleUsed": false
-          },
-          {
-            "name": "Tree Stride",
-            "level": 5,
-            "school": "Conjuration",
-            "time": "A",
-            "range": "Self",
-            "components": "V, S",
-            "duration": "Concentration, up to 1 min",
-            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Druid",
-            "_sourceBook": "PHB",
-            "_assigned": false,
-            "_classListImport": true,
-            "_syncSourceId": 139,
-            "group": "Temperate Land",
             "_freecasted": false,
             "_singleUsed": false
           },
@@ -57470,29 +57466,6 @@
             "_singleUsed": false
           },
           {
-            "name": "Speak with Animals",
-            "level": 1,
-            "school": "Divination",
-            "time": "Action",
-            "range": "Self",
-            "components": "V, S",
-            "duration": "10 min",
-            "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
-            "source": "Druid",
-            "_effectManual": false,
-            "concentration": false,
-            "ritual": true,
-            "_spellAdjDuration": "",
-            "_noScale": false,
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_classSync": true,
-            "_syncSourceName": "Druid",
-            "_syncSourceId": 66,
-            "_syncMinLevel": 1,
-            "effect": ""
-          },
-          {
             "name": "Misty Step",
             "level": 2,
             "school": "Conjuration",
@@ -57576,10 +57549,55 @@
             "_syncSourceId": 139,
             "_syncMinLevel": 5,
             "group": "Temperate Land"
+          },
+          {
+            "name": "Freedom of Movement",
+            "level": 4,
+            "school": "Abjuration",
+            "time": "A",
+            "range": "Touch",
+            "components": "V, S, M (a leather strap)",
+            "duration": "1 h",
+            "effect": "Paralyzed ↑",
+            "desc": "You touch a willing creature. For the duration, the target’s movement is unaffected by Difficult Terrain, and spells and other magical effects can neither reduce the target’s Speed nor cause the target to have the Paralyzed or Restrained conditions. The target also has a Swim Speed equal to its Speed.\nIn addition, the target can spend 5 feet of movement to automatically escape from nonmagical restraints, such as manacles or a creature imposing the Grappled condition on it.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 4.",
+            "area": "",
+            "hit": "",
+            "source": "Druid",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_subclassSync": true,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139,
+            "_syncMinLevel": 7,
+            "group": "Temperate Land"
+          },
+          {
+            "name": "Tree Stride",
+            "level": 5,
+            "school": "Conjuration",
+            "time": "A",
+            "range": "Self",
+            "components": "V, S",
+            "duration": "Concentration, up to 1 min",
+            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
+            "concentration": true,
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Druid",
+            "_sourceBook": "PHB",
+            "_assigned": false,
+            "_subclassSync": true,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139,
+            "_syncMinLevel": 9,
+            "group": "Temperate Land"
           }
         ],
         "_grantImmunities": [],
-        "_grantResistances": [],
+        "_grantResistances": [
+          "poison"
+        ],
         "_grantVulnerabilities": [],
         "_grantLanguages": [],
         "_grantFeats": [],
@@ -57607,7 +57625,7 @@
         "_grantFlatBonusHit": 0,
         "_grantFlatBonusDamage": 0,
         "_grantFlatBonusDC": 0,
-        "_grantFlatBonusMaxHp": 0,
+        "_grantFlatBonusMaxHp": 7,
         "_grantSourcesSpeed": [],
         "_grantSourcesAC": [
           {
@@ -57748,7 +57766,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 17,
-        "hpMax": 52,
+        "hpMax": 59,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -57870,7 +57888,9 @@
           }
         ],
         "saveDcEffective": 15,
-        "conditions": []
+        "conditions": [],
+        "_charGrants": {},
+        "_appliedSuggestions": []
       }
     ],
     "unassignedSpells": [],
@@ -63842,5 +63862,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1787249611610
+  "_updated": 1787249664077
 }

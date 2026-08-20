@@ -2206,9 +2206,9 @@ A magical scimitar…"></textarea>
 <!-- TOP NAV -->
 <div class="top-nav">
   <div class="nav-brand">DM <span>Reference</span></div>
-  <button class="nav-tab" onclick="showPage('characters')">Characters</button>
+  <button class="nav-tab active" onclick="showPage('characters')">Characters</button>
   <button class="nav-tab" onclick="showPage('dm')">DM</button>
-  <button class="nav-tab active" onclick="showPage('library')">Library</button>
+  <button class="nav-tab" onclick="showPage('library')">Library</button>
   <select id="mob-page-select" onchange="switchPageMob(this.value)" style="display:none;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);cursor:pointer;font-family:'dm sans',monospace;">
     <option value="characters">Characters</option>
     <option value="dm">DM</option>
@@ -2232,14 +2232,14 @@ A magical scimitar…"></textarea>
         <button onclick="exportSubclassesCsv();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 6px 14px 6px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">📄 Export Subclasses CSV</button>
         <button onclick="exportDefaultSpellsCsv();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 6px 14px 6px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">📄 Export Default Spells CSV</button>
         </details>
-        <details style="margin:0;"><summary style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-muted);font-size:12px;padding:6px 14px;border-radius:4px;cursor:pointer;list-style:none;font-weight:600;letter-spacing:0.04em;">▸ Admin / Data</summary>
+        <details style="margin:0;" open=""><summary style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-muted);font-size:12px;padding:6px 14px;border-radius:4px;cursor:pointer;list-style:none;font-weight:600;letter-spacing:0.04em;">▸ Admin / Data</summary>
         <button onclick="showRemoteSyncModal();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⚙ Online Sync Settings</button>
         <button onclick="(function(){ var url=localStorage.getItem('librarySyncUrl'); if(!url){alert('No library URL configured.');return;} _toast('Syncing full library…'); syncLibraryFromUrl(url, function(err){ _toast(err ? '✗ '+err.message : '✓ Full library synced'); }); })();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">📚 Pull Library from URL</button>
         <button onclick="toggleOptsMenu();_dmPullCharsFromRepo()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬇ Import Player Characters</button>
         <button onclick="toggleOptsMenu();_dmPushAllCharsToRepo()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬆ Save Characters to GitHub</button>
         <button onclick="toggleOptsMenu();_requireDmAuth(function(){_pushSheetToRepo();})" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬆ Push App Update to Players</button>
-        <button onclick="exportAllData();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬇ Download All Data (JSON)</button>
-        <button onclick="document.getElementById('import-all-data-input').click();toggleOptsMenu()" style="display: block; width: 100%; text-align: left; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: var(--text-primary); font-size: 13px; padding: 8px 14px 8px 22px; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬆ Restore from JSON File</button>
+        <button onclick="exportAllData();toggleOptsMenu()" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-primary);font-size:13px;padding:8px 14px 8px 22px;border-radius:4px;cursor:pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬇ Download All Data (JSON)</button>
+        <button onclick="document.getElementById('import-all-data-input').click();toggleOptsMenu()" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-primary);font-size:13px;padding:8px 14px 8px 22px;border-radius:4px;cursor:pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">⬆ Restore from JSON File</button>
         <button onclick="document.getElementById('import-library-file-input').click();toggleOptsMenu()" style="display:block;width:100%;text-align:left;background:transparent;border:none;color:var(--text-primary);font-size:13px;padding:8px 14px 8px 22px;border-radius:4px;cursor:pointer;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">📚 Import library.json (update library only)</button>
         </details>
         <div style="border-top:1px solid var(--border-light);margin:4px 2px;"></div>
@@ -2265,7 +2265,7 @@ A magical scimitar…"></textarea>
 </div>
 
 <!-- CHARACTERS PAGE -->
-<div class="page" id="page-characters">
+<div class="page active" id="page-characters">
   <!-- Sidebar: character list -->
   <div class="sidebar">
     <div class="sidebar-hdr" onclick="if(_isMobile)toggleSidebar()">
@@ -2718,7 +2718,7 @@ A magical scimitar…"></textarea>
           
         </div>
       </div>
-    <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;"><button onclick="_openFeatSetupModal(157,204)" title="Tap to apply grants for this feat" style="display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,0.12);border:1px solid var(--amber-border);border-radius:12px;padding:2px 8px;font-size:11px;color:var(--amber);cursor:pointer;font-family:'DM Sans',sans-serif;"><span style="font-size:10px;font-weight:700;">!</span>Sentinel</button><span class="tag-pill">Skilled</span><span class="tag-pill">Blessing of the Elandran Cleric</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;"><span class="tag-pill">Foresight (Elarun)</span><button onclick="_openFeatSetupModal(157,204)" title="Tap to apply grants for this feat" style="display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,0.12);border:1px solid var(--amber-border);border-radius:12px;padding:2px 8px;font-size:11px;color:var(--amber);cursor:pointer;font-family:'DM Sans',sans-serif;"><span style="font-size:10px;font-weight:700;">!</span>Sentinel</button><span class="tag-pill">Skilled</span><span class="tag-pill">Blessing of the Elandran Cleric</span></div>
     </div>
     <div class="sec" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleMidSection(157,'languages')"><span>Languages</span><span style="font-size:10px;color:var(--text-muted);">▸</span></div>
     <div id="midsec-157-languages" style="display:none;">
@@ -4826,10 +4826,10 @@ A magical scimitar…"></textarea>
         <div class="feat-row" onclick="document.getElementById('fi-157-feat-1').classList.toggle('open')">
           <span class="feat-toggle">▶</span>
           <span class="feat-lv">—</span>
-          <span class="feat-name-row" id="cnm-fi-157-feat-1">Sentinel <span onclick="event.stopPropagation();setFeatDone(157," feat_204_sentinel",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
+          <span class="feat-name-row" id="cnm-fi-157-feat-1">Foresight (Elarun) <span onclick="event.stopPropagation();setFeatDone(157," feat_398_foresight="" (elarun)",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
           
           <span class="feat-overridden" id="cov-fi-157-feat-1" style="display:none">edited</span>
-          <span class="feat-source">Sentinel</span>
+          <span class="feat-source">Foresight (Elarun)</span>
         </div>
         
         <div class="feat-expanded">
@@ -4837,7 +4837,7 @@ A magical scimitar…"></textarea>
             <button class="feat-edit-btn" onclick="document.getElementById('fef-157-feat-1').classList.toggle('open')">✎ Edit</button>
             
             
-            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_204_Sentinel',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
+            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_398_Foresight (Elarun)',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
               <option value="">Sync→</option>
               <option value="action">Action</option>
               <option value="bonus">Bonus</option>
@@ -4846,22 +4846,22 @@ A magical scimitar…"></textarea>
               <option value="feature">Additional</option>
             </select>
             
-            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_204_Sentinel&quot;,&quot;Sentinel&quot;,&quot;Prerequisite: Level 4+, Strength or Dexterity 13+\n\nAbility Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.\nGuardian. Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.\nHalt. When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.&quot;,&quot;Sentinel&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
+            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_398_Foresight (Elarun)&quot;,&quot;Foresight (Elarun)&quot;,&quot;Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.\nEach foretelling roll can be used only once. When you finish a Long Rest, you lose any unused foretelling rolls.&quot;,&quot;Foresight (Elarun)&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
           </div>
-          <div class="feat-desc" id="desc-fi-157-feat-1"><p class="fd-intro">Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary>Ability Score Increase</summary><div class="det-body"><p class="fd-p">Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary>Guardian</summary><div class="det-body"><p class="fd-p">Immediately after a creature within <strong><em>5 feet</em></strong> of you takes the <strong><em>Disengage</em></strong> action or hits a target other than you with an attack, you can make an <strong><em>Opportunity Attack</em></strong> against that creature.</p></div></details><details open=""><summary>Halt</summary><div class="det-body"><p class="fd-p">When you hit a creature with an <strong><em>Opportunity Attack</em></strong>, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
+          <div class="feat-desc" id="desc-fi-157-feat-1"><p class="fd-intro">Whenever you finish a <strong><em>Long Rest</em></strong>, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.</p><details open=""><summary>Each foretelling roll can be used only once</summary><div class="det-body"><p class="fd-p">When you finish a <strong><em>Long Rest</em></strong>, you lose any unused foretelling rolls.</p></div></details></div>
           
         <details class="feat-choice" style="margin-top:10px;">
           <summary style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;">
             <span style="font-size:8px;opacity:0.7;">▶</span> This character chose
           </summary>
           <div style="margin-top:6px;">
-          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_204_Sentinel_choice',this.value)">
+          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_398_Foresight (Elarun)_choice',this.value)">
           </div>
         </details>
           
           
           <div class="feat-edit-form" id="fef-157-feat-1">
-            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-1" value="Sentinel" placeholder="Feature name">
+            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-1" value="Foresight (Elarun)" placeholder="Feature name">
             <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
               <select class="feat-edit-level-inp" id="cinp-lv-fi-157-feat-1"><option value="0" selected="">Lv 0</option><option value="1">Lv 1</option><option value="2">Lv 2</option><option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option><option value="6">Lv 6</option><option value="7">Lv 7</option><option value="8">Lv 8</option><option value="9">Lv 9</option><option value="10">Lv 10</option><option value="11">Lv 11</option><option value="12">Lv 12</option><option value="13">Lv 13</option><option value="14">Lv 14</option><option value="15">Lv 15</option><option value="16">Lv 16</option><option value="17">Lv 17</option><option value="18">Lv 18</option><option value="19">Lv 19</option><option value="20">Lv 20</option></select>
               <span style="font-size:11px;color:var(--text-muted);">Level</span>
@@ -4893,10 +4893,10 @@ A magical scimitar…"></textarea>
                 <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
                 <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
               </div>
-              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-1" contenteditable="true" data-placeholder="Description…"><p>Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Ability Score Increase</summary><div class="det-body"><p>Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Guardian</summary><div class="det-body"><p>Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Halt</summary><div class="det-body"><p>When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
+              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-1" contenteditable="true" data-placeholder="Description…"><p>Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Each foretelling roll can be used only once</summary><div class="det-body"><p>When you finish a Long Rest, you lose any unused foretelling rolls.</p></div></details></div>
             </div>
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-1',157,'feat_204_Sentinel','feat',1)">✓ Save</button>
+              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-1',157,'feat_398_Foresight (Elarun)','feat',1)">✓ Save</button>
               <button class="feat-edit-btn" onclick="document.getElementById('fef-157-feat-1').classList.remove('open')">Cancel</button>
             </div>
           </div>
@@ -4905,10 +4905,10 @@ A magical scimitar…"></textarea>
         <div class="feat-row" onclick="document.getElementById('fi-157-feat-2').classList.toggle('open')">
           <span class="feat-toggle">▶</span>
           <span class="feat-lv">—</span>
-          <span class="feat-name-row" id="cnm-fi-157-feat-2">Skilled <span onclick="event.stopPropagation();setFeatDone(157," feat_171_skilled",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
+          <span class="feat-name-row" id="cnm-fi-157-feat-2">Sentinel <span onclick="event.stopPropagation();setFeatDone(157," feat_204_sentinel",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
           
           <span class="feat-overridden" id="cov-fi-157-feat-2" style="display:none">edited</span>
-          <span class="feat-source">Skilled</span>
+          <span class="feat-source">Sentinel</span>
         </div>
         
         <div class="feat-expanded">
@@ -4916,7 +4916,7 @@ A magical scimitar…"></textarea>
             <button class="feat-edit-btn" onclick="document.getElementById('fef-157-feat-2').classList.toggle('open')">✎ Edit</button>
             
             
-            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_171_Skilled',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
+            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_204_Sentinel',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
               <option value="">Sync→</option>
               <option value="action">Action</option>
               <option value="bonus">Bonus</option>
@@ -4925,22 +4925,22 @@ A magical scimitar…"></textarea>
               <option value="feature">Additional</option>
             </select>
             
-            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_171_Skilled&quot;,&quot;Skilled&quot;,&quot;You gain proficiency in any combination of three skills or tools of your choice.\nRepeatable. You can take this feat more than once.&quot;,&quot;Skilled&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
+            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_204_Sentinel&quot;,&quot;Sentinel&quot;,&quot;Prerequisite: Level 4+, Strength or Dexterity 13+\n\nAbility Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.\nGuardian. Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.\nHalt. When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.&quot;,&quot;Sentinel&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
           </div>
-          <div class="feat-desc" id="desc-fi-157-feat-2"><p class="fd-intro">You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary>Repeatable</summary><div class="det-body"><p class="fd-p">You can take this feat more than once.</p></div></details></div>
+          <div class="feat-desc" id="desc-fi-157-feat-2"><p class="fd-intro">Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary>Ability Score Increase</summary><div class="det-body"><p class="fd-p">Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary>Guardian</summary><div class="det-body"><p class="fd-p">Immediately after a creature within <strong><em>5 feet</em></strong> of you takes the <strong><em>Disengage</em></strong> action or hits a target other than you with an attack, you can make an <strong><em>Opportunity Attack</em></strong> against that creature.</p></div></details><details open=""><summary>Halt</summary><div class="det-body"><p class="fd-p">When you hit a creature with an <strong><em>Opportunity Attack</em></strong>, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
           
         <details class="feat-choice" style="margin-top:10px;">
           <summary style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;">
             <span style="font-size:8px;opacity:0.7;">▶</span> This character chose
           </summary>
           <div style="margin-top:6px;">
-          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_171_Skilled_choice',this.value)">
+          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_204_Sentinel_choice',this.value)">
           </div>
         </details>
           
           
           <div class="feat-edit-form" id="fef-157-feat-2">
-            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-2" value="Skilled" placeholder="Feature name">
+            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-2" value="Sentinel" placeholder="Feature name">
             <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
               <select class="feat-edit-level-inp" id="cinp-lv-fi-157-feat-2"><option value="0" selected="">Lv 0</option><option value="1">Lv 1</option><option value="2">Lv 2</option><option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option><option value="6">Lv 6</option><option value="7">Lv 7</option><option value="8">Lv 8</option><option value="9">Lv 9</option><option value="10">Lv 10</option><option value="11">Lv 11</option><option value="12">Lv 12</option><option value="13">Lv 13</option><option value="14">Lv 14</option><option value="15">Lv 15</option><option value="16">Lv 16</option><option value="17">Lv 17</option><option value="18">Lv 18</option><option value="19">Lv 19</option><option value="20">Lv 20</option></select>
               <span style="font-size:11px;color:var(--text-muted);">Level</span>
@@ -4972,11 +4972,90 @@ A magical scimitar…"></textarea>
                 <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
                 <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
               </div>
-              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-2" contenteditable="true" data-placeholder="Description…"><p>You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Repeatable</summary><div class="det-body"><p>You can take this feat more than once.</p></div></details></div>
+              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-2" contenteditable="true" data-placeholder="Description…"><p>Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Ability Score Increase</summary><div class="det-body"><p>Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Guardian</summary><div class="det-body"><p>Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Halt</summary><div class="det-body"><p>When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
             </div>
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-2',157,'feat_171_Skilled','feat',2)">✓ Save</button>
+              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-2',157,'feat_204_Sentinel','feat',2)">✓ Save</button>
               <button class="feat-edit-btn" onclick="document.getElementById('fef-157-feat-2').classList.remove('open')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div><div class="feat-item" id="fi-157-feat-3">
+        <div class="feat-row" onclick="document.getElementById('fi-157-feat-3').classList.toggle('open')">
+          <span class="feat-toggle">▶</span>
+          <span class="feat-lv">—</span>
+          <span class="feat-name-row" id="cnm-fi-157-feat-3">Skilled <span onclick="event.stopPropagation();setFeatDone(157," feat_171_skilled",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
+          
+          <span class="feat-overridden" id="cov-fi-157-feat-3" style="display:none">edited</span>
+          <span class="feat-source">Skilled</span>
+        </div>
+        
+        <div class="feat-expanded">
+          <div class="feat-action-row" style="margin-top:0;margin-bottom:8px;">
+            <button class="feat-edit-btn" onclick="document.getElementById('fef-157-feat-3').classList.toggle('open')">✎ Edit</button>
+            
+            
+            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_171_Skilled',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
+              <option value="">Sync→</option>
+              <option value="action">Action</option>
+              <option value="bonus">Bonus</option>
+              <option value="reaction">Reaction</option>
+              <option value="other">Other</option>
+              <option value="feature">Additional</option>
+            </select>
+            
+            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_171_Skilled&quot;,&quot;Skilled&quot;,&quot;You gain proficiency in any combination of three skills or tools of your choice.\nRepeatable. You can take this feat more than once.&quot;,&quot;Skilled&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
+          </div>
+          <div class="feat-desc" id="desc-fi-157-feat-3"><p class="fd-intro">You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary>Repeatable</summary><div class="det-body"><p class="fd-p">You can take this feat more than once.</p></div></details></div>
+          
+        <details class="feat-choice" style="margin-top:10px;">
+          <summary style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;">
+            <span style="font-size:8px;opacity:0.7;">▶</span> This character chose
+          </summary>
+          <div style="margin-top:6px;">
+          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_171_Skilled_choice',this.value)">
+          </div>
+        </details>
+          
+          
+          <div class="feat-edit-form" id="fef-157-feat-3">
+            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-3" value="Skilled" placeholder="Feature name">
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+              <select class="feat-edit-level-inp" id="cinp-lv-fi-157-feat-3"><option value="0" selected="">Lv 0</option><option value="1">Lv 1</option><option value="2">Lv 2</option><option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option><option value="6">Lv 6</option><option value="7">Lv 7</option><option value="8">Lv 8</option><option value="9">Lv 9</option><option value="10">Lv 10</option><option value="11">Lv 11</option><option value="12">Lv 12</option><option value="13">Lv 13</option><option value="14">Lv 14</option><option value="15">Lv 15</option><option value="16">Lv 16</option><option value="17">Lv 17</option><option value="18">Lv 18</option><option value="19">Lv 19</option><option value="20">Lv 20</option></select>
+              <span style="font-size:11px;color:var(--text-muted);">Level</span>
+            </div>
+            <div class="feat-wysiwyg-wrap" onclick="(function(e){const ed=document.getElementById('cinp-desc-fi-157-feat-3');if(e.target===e.currentTarget&amp;&amp;ed){ed.focus();const r=document.createRange(),s=window.getSelection();r.selectNodeContents(ed);r.collapse(false);s.removeAllRanges();s.addRange(r);}})(event)">
+              <div class="feat-wysiwyg-toolbar" id="fwt-fi-157-feat-3">
+                <select class="fwt-select" title="Block format" onchange="document.execCommand('formatBlock',false,this.value);this.value='';document.getElementById('cinp-desc-fi-157-feat-3').focus()">
+                  <option value="">Format</option>
+                  <option value="p">Paragraph</option>
+                  <option value="h2">Heading 2</option>
+                  <option value="h3">Heading 3</option>
+                  <option value="blockquote">Quote</option>
+                </select>
+                <span class="fwt-sep"></span>
+                <button type="button" class="fwt-btn" title="Bold" onmousedown="event.preventDefault();document.execCommand('bold')"><b>B</b></button>
+                <button type="button" class="fwt-btn" title="Italic" onmousedown="event.preventDefault();document.execCommand('italic')"><i>I</i></button>
+                <button type="button" class="fwt-btn" title="Underline" onmousedown="event.preventDefault();document.execCommand('underline')"><u>U</u></button>
+                <span class="fwt-sep"></span>
+                <button type="button" class="fwt-btn" title="Bullet list" onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')">☰</button>
+                <button type="button" class="fwt-btn" title="Numbered list" onmousedown="event.preventDefault();document.execCommand('insertOrderedList')">№</button>
+                <button type="button" class="fwt-btn" title="Indent" onmousedown="event.preventDefault();document.execCommand('indent');document.getElementById('cinp-desc-fi-157-feat-3').focus()">⇥</button>
+                <button type="button" class="fwt-btn" title="Outdent" onmousedown="event.preventDefault();document.execCommand('outdent');document.getElementById('cinp-desc-fi-157-feat-3').focus()">⇤</button>
+                <span class="fwt-sep"></span>
+                <span class="fwt-swatch-wrap"><button type="button" class="fwt-swatch-btn" title="Text colour" onmousedown="event.preventDefault();fwtToggleSwatch('cinp-desc-fi-157-feat-3-fore-panel')">A ▾</button><div class="fwt-swatch-panel" id="cinp-desc-fi-157-feat-3-fore-panel"><div class="fwt-chip" style="background:var(--text);" data-hex="" title="Default" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--text-muted);" data-hex="" title="Muted" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent);" data-hex="" title="Accent" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-color);" data-hex="" title="Red" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-bar);" data-hex="" title="Green" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--xp-color);" data-hex="" title="Amber" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--spell-color);" data-hex="" title="Purple" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent-border);" data-hex="" title="Teal" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:#ffffff;" data-hex="#ffffff" title="White" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:#111111;" data-hex="#111111" title="Black" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div></div></span>
+                <span class="fwt-swatch-wrap"><button type="button" class="fwt-swatch-btn" title="Highlight colour" onmousedown="event.preventDefault();fwtToggleSwatch('cinp-desc-fi-157-feat-3-hl-panel')">H ▾</button><div class="fwt-swatch-panel" id="cinp-desc-fi-157-feat-3-hl-panel"><div class="fwt-chip" style="background:transparent;" data-hex="transparent" title="None" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--xp-dim);" data-hex="" title="Yellow" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent-dim);" data-hex="" title="Blue" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-dim);" data-hex="" title="Green" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-dim-bad);" data-hex="" title="Red" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--spell-dim);" data-hex="" title="Purple" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--surface);" data-hex="" title="Surface" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div></div></span>
+                <span class="fwt-sep"></span>
+                <button type="button" class="fwt-btn" title="Insert table" style="width:auto;padding:0 5px;font-size:10px;" onmousedown="event.preventDefault();insertFeatTable('fi-157-feat-3')">⊞ Table</button>
+                <button type="button" class="fwt-btn" title="Insert collapsible section" style="width:auto;padding:0 5px;font-size:10px;" onmousedown="event.preventDefault();insertFeatSection('fi-157-feat-3')">▶ Section</button>
+                <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
+                <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
+              </div>
+              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-3" contenteditable="true" data-placeholder="Description…"><p>You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Repeatable</summary><div class="det-body"><p>You can take this feat more than once.</p></div></details></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-3',157,'feat_171_Skilled','feat',3)">✓ Save</button>
+              <button class="feat-edit-btn" onclick="document.getElementById('fef-157-feat-3').classList.remove('open')">Cancel</button>
             </div>
           </div>
         </div>
@@ -7270,10 +7349,10 @@ A magical scimitar…"></textarea>
         <div class="feat-row" onclick="openCharFeatSidebar(157,'fi-b-157-feat-1')">
           <span class="feat-toggle">▶</span>
           <span class="feat-lv">—</span>
-          <span class="feat-name-row" id="cnm-fi-b-157-feat-1">Sentinel <span onclick="event.stopPropagation();setFeatDone(157," feat_204_sentinel",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
+          <span class="feat-name-row" id="cnm-fi-b-157-feat-1">Foresight (Elarun) <span onclick="event.stopPropagation();setFeatDone(157," feat_398_foresight="" (elarun)",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
           
           <span class="feat-overridden" id="cov-fi-b-157-feat-1" style="display:none">edited</span>
-          <span class="feat-source">Sentinel</span>
+          <span class="feat-source">Foresight (Elarun)</span>
         </div>
         
         <div class="feat-expanded">
@@ -7281,7 +7360,7 @@ A magical scimitar…"></textarea>
             <button class="feat-edit-btn" onclick="document.getElementById('fef-b-157-feat-1').classList.toggle('open')">✎ Edit</button>
             
             
-            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_204_Sentinel',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
+            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_398_Foresight (Elarun)',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
               <option value="">Sync→</option>
               <option value="action">Action</option>
               <option value="bonus">Bonus</option>
@@ -7290,22 +7369,22 @@ A magical scimitar…"></textarea>
               <option value="feature">Additional</option>
             </select>
             
-            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_204_Sentinel&quot;,&quot;Sentinel&quot;,&quot;Prerequisite: Level 4+, Strength or Dexterity 13+\n\nAbility Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.\nGuardian. Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.\nHalt. When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.&quot;,&quot;Sentinel&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
+            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_398_Foresight (Elarun)&quot;,&quot;Foresight (Elarun)&quot;,&quot;Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.\nEach foretelling roll can be used only once. When you finish a Long Rest, you lose any unused foretelling rolls.&quot;,&quot;Foresight (Elarun)&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
           </div>
-          <div class="feat-desc" id="desc-fi-b-157-feat-1"><p class="fd-intro">Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary>Ability Score Increase</summary><div class="det-body"><p class="fd-p">Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary>Guardian</summary><div class="det-body"><p class="fd-p">Immediately after a creature within <strong><em>5 feet</em></strong> of you takes the <strong><em>Disengage</em></strong> action or hits a target other than you with an attack, you can make an <strong><em>Opportunity Attack</em></strong> against that creature.</p></div></details><details open=""><summary>Halt</summary><div class="det-body"><p class="fd-p">When you hit a creature with an <strong><em>Opportunity Attack</em></strong>, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
+          <div class="feat-desc" id="desc-fi-b-157-feat-1"><p class="fd-intro">Whenever you finish a <strong><em>Long Rest</em></strong>, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.</p><details open=""><summary>Each foretelling roll can be used only once</summary><div class="det-body"><p class="fd-p">When you finish a <strong><em>Long Rest</em></strong>, you lose any unused foretelling rolls.</p></div></details></div>
           
         <details class="feat-choice" style="margin-top:10px;">
           <summary style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;">
             <span style="font-size:8px;opacity:0.7;">▶</span> This character chose
           </summary>
           <div style="margin-top:6px;">
-          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_204_Sentinel_choice',this.value)">
+          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_398_Foresight (Elarun)_choice',this.value)">
           </div>
         </details>
           
           
           <div class="feat-edit-form" id="fef-b-157-feat-1">
-            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-1" value="Sentinel" placeholder="Feature name">
+            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-1" value="Foresight (Elarun)" placeholder="Feature name">
             <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
               <select class="feat-edit-level-inp" id="cinp-lv-fi-157-feat-1"><option value="0" selected="">Lv 0</option><option value="1">Lv 1</option><option value="2">Lv 2</option><option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option><option value="6">Lv 6</option><option value="7">Lv 7</option><option value="8">Lv 8</option><option value="9">Lv 9</option><option value="10">Lv 10</option><option value="11">Lv 11</option><option value="12">Lv 12</option><option value="13">Lv 13</option><option value="14">Lv 14</option><option value="15">Lv 15</option><option value="16">Lv 16</option><option value="17">Lv 17</option><option value="18">Lv 18</option><option value="19">Lv 19</option><option value="20">Lv 20</option></select>
               <span style="font-size:11px;color:var(--text-muted);">Level</span>
@@ -7337,10 +7416,10 @@ A magical scimitar…"></textarea>
                 <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
                 <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
               </div>
-              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-1" contenteditable="true" data-placeholder="Description…"><p>Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Ability Score Increase</summary><div class="det-body"><p>Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Guardian</summary><div class="det-body"><p>Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Halt</summary><div class="det-body"><p>When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
+              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-1" contenteditable="true" data-placeholder="Description…"><p>Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Each foretelling roll can be used only once</summary><div class="det-body"><p>When you finish a Long Rest, you lose any unused foretelling rolls.</p></div></details></div>
             </div>
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-1',157,'feat_204_Sentinel','feat',1)">✓ Save</button>
+              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-1',157,'feat_398_Foresight (Elarun)','feat',1)">✓ Save</button>
               <button class="feat-edit-btn" onclick="document.getElementById('fef-b-157-feat-1').classList.remove('open')">Cancel</button>
             </div>
           </div>
@@ -7349,10 +7428,10 @@ A magical scimitar…"></textarea>
         <div class="feat-row" onclick="openCharFeatSidebar(157,'fi-b-157-feat-2')">
           <span class="feat-toggle">▶</span>
           <span class="feat-lv">—</span>
-          <span class="feat-name-row" id="cnm-fi-b-157-feat-2">Skilled <span onclick="event.stopPropagation();setFeatDone(157," feat_171_skilled",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
+          <span class="feat-name-row" id="cnm-fi-b-157-feat-2">Sentinel <span onclick="event.stopPropagation();setFeatDone(157," feat_204_sentinel",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
           
           <span class="feat-overridden" id="cov-fi-b-157-feat-2" style="display:none">edited</span>
-          <span class="feat-source">Skilled</span>
+          <span class="feat-source">Sentinel</span>
         </div>
         
         <div class="feat-expanded">
@@ -7360,7 +7439,7 @@ A magical scimitar…"></textarea>
             <button class="feat-edit-btn" onclick="document.getElementById('fef-b-157-feat-2').classList.toggle('open')">✎ Edit</button>
             
             
-            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_171_Skilled',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
+            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_204_Sentinel',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
               <option value="">Sync→</option>
               <option value="action">Action</option>
               <option value="bonus">Bonus</option>
@@ -7369,22 +7448,22 @@ A magical scimitar…"></textarea>
               <option value="feature">Additional</option>
             </select>
             
-            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_171_Skilled&quot;,&quot;Skilled&quot;,&quot;You gain proficiency in any combination of three skills or tools of your choice.\nRepeatable. You can take this feat more than once.&quot;,&quot;Skilled&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
+            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_204_Sentinel&quot;,&quot;Sentinel&quot;,&quot;Prerequisite: Level 4+, Strength or Dexterity 13+\n\nAbility Score Increase. Increase your Strength or Dexterity score by 1, to a maximum of 20.\nGuardian. Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.\nHalt. When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.&quot;,&quot;Sentinel&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
           </div>
-          <div class="feat-desc" id="desc-fi-b-157-feat-2"><p class="fd-intro">You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary>Repeatable</summary><div class="det-body"><p class="fd-p">You can take this feat more than once.</p></div></details></div>
+          <div class="feat-desc" id="desc-fi-b-157-feat-2"><p class="fd-intro">Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary>Ability Score Increase</summary><div class="det-body"><p class="fd-p">Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary>Guardian</summary><div class="det-body"><p class="fd-p">Immediately after a creature within <strong><em>5 feet</em></strong> of you takes the <strong><em>Disengage</em></strong> action or hits a target other than you with an attack, you can make an <strong><em>Opportunity Attack</em></strong> against that creature.</p></div></details><details open=""><summary>Halt</summary><div class="det-body"><p class="fd-p">When you hit a creature with an <strong><em>Opportunity Attack</em></strong>, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
           
         <details class="feat-choice" style="margin-top:10px;">
           <summary style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;">
             <span style="font-size:8px;opacity:0.7;">▶</span> This character chose
           </summary>
           <div style="margin-top:6px;">
-          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_171_Skilled_choice',this.value)">
+          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_204_Sentinel_choice',this.value)">
           </div>
         </details>
           
           
           <div class="feat-edit-form" id="fef-b-157-feat-2">
-            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-2" value="Skilled" placeholder="Feature name">
+            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-2" value="Sentinel" placeholder="Feature name">
             <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
               <select class="feat-edit-level-inp" id="cinp-lv-fi-157-feat-2"><option value="0" selected="">Lv 0</option><option value="1">Lv 1</option><option value="2">Lv 2</option><option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option><option value="6">Lv 6</option><option value="7">Lv 7</option><option value="8">Lv 8</option><option value="9">Lv 9</option><option value="10">Lv 10</option><option value="11">Lv 11</option><option value="12">Lv 12</option><option value="13">Lv 13</option><option value="14">Lv 14</option><option value="15">Lv 15</option><option value="16">Lv 16</option><option value="17">Lv 17</option><option value="18">Lv 18</option><option value="19">Lv 19</option><option value="20">Lv 20</option></select>
               <span style="font-size:11px;color:var(--text-muted);">Level</span>
@@ -7416,11 +7495,90 @@ A magical scimitar…"></textarea>
                 <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
                 <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
               </div>
-              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-2" contenteditable="true" data-placeholder="Description…"><p>You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Repeatable</summary><div class="det-body"><p>You can take this feat more than once.</p></div></details></div>
+              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-2" contenteditable="true" data-placeholder="Description…"><p>Prerequisite: Level 4+, Strength or Dexterity 13+</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Ability Score Increase</summary><div class="det-body"><p>Increase your Strength or Dexterity score by 1, to a maximum of 20.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Guardian</summary><div class="det-body"><p>Immediately after a creature within 5 feet of you takes the Disengage action or hits a target other than you with an attack, you can make an Opportunity Attack against that creature.</p></div></details><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Halt</summary><div class="det-body"><p>When you hit a creature with an Opportunity Attack, the creature's Speed becomes 0 for the rest of the current turn.</p></div></details></div>
             </div>
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-2',157,'feat_171_Skilled','feat',2)">✓ Save</button>
+              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-2',157,'feat_204_Sentinel','feat',2)">✓ Save</button>
               <button class="feat-edit-btn" onclick="document.getElementById('fef-b-157-feat-2').classList.remove('open')">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div><div class="feat-item" id="fi-b-157-feat-3">
+        <div class="feat-row" onclick="openCharFeatSidebar(157,'fi-b-157-feat-3')">
+          <span class="feat-toggle">▶</span>
+          <span class="feat-lv">—</span>
+          <span class="feat-name-row" id="cnm-fi-b-157-feat-3">Skilled <span onclick="event.stopPropagation();setFeatDone(157," feat_171_skilled",true)"="" title="Mark as done" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;line-height:1;cursor:pointer;">○</span></span>
+          
+          <span class="feat-overridden" id="cov-fi-b-157-feat-3" style="display:none">edited</span>
+          <span class="feat-source">Skilled</span>
+        </div>
+        
+        <div class="feat-expanded">
+          <div class="feat-action-row" style="margin-top:0;margin-bottom:8px;">
+            <button class="feat-edit-btn" onclick="document.getElementById('fef-b-157-feat-3').classList.toggle('open')">✎ Edit</button>
+            
+            
+            <select title="Assign action type (syncs to Actions tab)" onchange="setFeatAtype(157,'feat_171_Skilled',this.value,this)" style="font-size:9px;font-family:'dm sans',monospace;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:3px;padding:1px 3px;cursor:pointer;">
+              <option value="">Sync→</option>
+              <option value="action">Action</option>
+              <option value="bonus">Bonus</option>
+              <option value="reaction">Reaction</option>
+              <option value="other">Other</option>
+              <option value="feature">Additional</option>
+            </select>
+            
+            <button onclick="event.stopPropagation();openFeatStatsPanel(157,&quot;feat_171_Skilled&quot;,&quot;Skilled&quot;,&quot;You gain proficiency in any combination of three skills or tools of your choice.\nRepeatable. You can take this feat more than once.&quot;,&quot;Skilled&quot;)" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-family:'dm sans',monospace;" title="Add modifiers for this feature">+ Modifiers</button>
+          </div>
+          <div class="feat-desc" id="desc-fi-b-157-feat-3"><p class="fd-intro">You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary>Repeatable</summary><div class="det-body"><p class="fd-p">You can take this feat more than once.</p></div></details></div>
+          
+        <details class="feat-choice" style="margin-top:10px;">
+          <summary style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'dm sans',monospace;cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px;">
+            <span style="font-size:8px;opacity:0.7;">▶</span> This character chose
+          </summary>
+          <div style="margin-top:6px;">
+          <input class="feat-choice-input" value="" placeholder="Note what was chosen…" oninput="saveChoice(157,'feat_171_Skilled_choice',this.value)">
+          </div>
+        </details>
+          
+          
+          <div class="feat-edit-form" id="fef-b-157-feat-3">
+            <input class="feat-edit-name-inp" id="cinp-nm-fi-157-feat-3" value="Skilled" placeholder="Feature name">
+            <div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+              <select class="feat-edit-level-inp" id="cinp-lv-fi-157-feat-3"><option value="0" selected="">Lv 0</option><option value="1">Lv 1</option><option value="2">Lv 2</option><option value="3">Lv 3</option><option value="4">Lv 4</option><option value="5">Lv 5</option><option value="6">Lv 6</option><option value="7">Lv 7</option><option value="8">Lv 8</option><option value="9">Lv 9</option><option value="10">Lv 10</option><option value="11">Lv 11</option><option value="12">Lv 12</option><option value="13">Lv 13</option><option value="14">Lv 14</option><option value="15">Lv 15</option><option value="16">Lv 16</option><option value="17">Lv 17</option><option value="18">Lv 18</option><option value="19">Lv 19</option><option value="20">Lv 20</option></select>
+              <span style="font-size:11px;color:var(--text-muted);">Level</span>
+            </div>
+            <div class="feat-wysiwyg-wrap" onclick="(function(e){const ed=document.getElementById('cinp-desc-fi-157-feat-3');if(e.target===e.currentTarget&amp;&amp;ed){ed.focus();const r=document.createRange(),s=window.getSelection();r.selectNodeContents(ed);r.collapse(false);s.removeAllRanges();s.addRange(r);}})(event)">
+              <div class="feat-wysiwyg-toolbar" id="fwt-fi-157-feat-3">
+                <select class="fwt-select" title="Block format" onchange="document.execCommand('formatBlock',false,this.value);this.value='';document.getElementById('cinp-desc-fi-157-feat-3').focus()">
+                  <option value="">Format</option>
+                  <option value="p">Paragraph</option>
+                  <option value="h2">Heading 2</option>
+                  <option value="h3">Heading 3</option>
+                  <option value="blockquote">Quote</option>
+                </select>
+                <span class="fwt-sep"></span>
+                <button type="button" class="fwt-btn" title="Bold" onmousedown="event.preventDefault();document.execCommand('bold')"><b>B</b></button>
+                <button type="button" class="fwt-btn" title="Italic" onmousedown="event.preventDefault();document.execCommand('italic')"><i>I</i></button>
+                <button type="button" class="fwt-btn" title="Underline" onmousedown="event.preventDefault();document.execCommand('underline')"><u>U</u></button>
+                <span class="fwt-sep"></span>
+                <button type="button" class="fwt-btn" title="Bullet list" onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')">☰</button>
+                <button type="button" class="fwt-btn" title="Numbered list" onmousedown="event.preventDefault();document.execCommand('insertOrderedList')">№</button>
+                <button type="button" class="fwt-btn" title="Indent" onmousedown="event.preventDefault();document.execCommand('indent');document.getElementById('cinp-desc-fi-157-feat-3').focus()">⇥</button>
+                <button type="button" class="fwt-btn" title="Outdent" onmousedown="event.preventDefault();document.execCommand('outdent');document.getElementById('cinp-desc-fi-157-feat-3').focus()">⇤</button>
+                <span class="fwt-sep"></span>
+                <span class="fwt-swatch-wrap"><button type="button" class="fwt-swatch-btn" title="Text colour" onmousedown="event.preventDefault();fwtToggleSwatch('cinp-desc-fi-157-feat-3-fore-panel')">A ▾</button><div class="fwt-swatch-panel" id="cinp-desc-fi-157-feat-3-fore-panel"><div class="fwt-chip" style="background:var(--text);" data-hex="" title="Default" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--text-muted);" data-hex="" title="Muted" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent);" data-hex="" title="Accent" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-color);" data-hex="" title="Red" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-bar);" data-hex="" title="Green" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--xp-color);" data-hex="" title="Amber" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--spell-color);" data-hex="" title="Purple" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent-border);" data-hex="" title="Teal" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:#ffffff;" data-hex="#ffffff" title="White" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:#111111;" data-hex="#111111" title="Black" onmousedown="event.preventDefault();fwtApplyFore(this,'cinp-desc-${itemId}')"></div></div></span>
+                <span class="fwt-swatch-wrap"><button type="button" class="fwt-swatch-btn" title="Highlight colour" onmousedown="event.preventDefault();fwtToggleSwatch('cinp-desc-fi-157-feat-3-hl-panel')">H ▾</button><div class="fwt-swatch-panel" id="cinp-desc-fi-157-feat-3-hl-panel"><div class="fwt-chip" style="background:transparent;" data-hex="transparent" title="None" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--xp-dim);" data-hex="" title="Yellow" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--accent-dim);" data-hex="" title="Blue" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-dim);" data-hex="" title="Green" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--hp-dim-bad);" data-hex="" title="Red" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--spell-dim);" data-hex="" title="Purple" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div><div class="fwt-chip" style="background:var(--surface);" data-hex="" title="Surface" onmousedown="event.preventDefault();fwtApplyHL(this,'cinp-desc-${itemId}')"></div></div></span>
+                <span class="fwt-sep"></span>
+                <button type="button" class="fwt-btn" title="Insert table" style="width:auto;padding:0 5px;font-size:10px;" onmousedown="event.preventDefault();insertFeatTable('fi-157-feat-3')">⊞ Table</button>
+                <button type="button" class="fwt-btn" title="Insert collapsible section" style="width:auto;padding:0 5px;font-size:10px;" onmousedown="event.preventDefault();insertFeatSection('fi-157-feat-3')">▶ Section</button>
+                <button type="button" class="fwt-btn" title="Insert horizontal rule" onmousedown="event.preventDefault();document.execCommand('insertHorizontalRule')">—</button>
+                <button type="button" class="fwt-btn" title="Remove formatting" onmousedown="event.preventDefault();document.execCommand('removeFormat')" style="font-size:10px;">✕</button>
+              </div>
+              <div class="feat-edit-body" id="cinp-desc-fi-157-feat-3" contenteditable="true" data-placeholder="Description…"><p>You gain proficiency in any combination of three skills or tools of your choice.</p><details open=""><summary><button class="_det-cut-btn" contenteditable="false" title="Cut this block to clipboard" style="float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;">✂ cut</button>Repeatable</summary><div class="det-body"><p>You can take this feat more than once.</p></div></details></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="btn btn-sm btn-success" onclick="saveCharFeatDom('fi-157-feat-3',157,'feat_171_Skilled','feat',3)">✓ Save</button>
+              <button class="feat-edit-btn" onclick="document.getElementById('fef-b-157-feat-3').classList.remove('open')">Cancel</button>
             </div>
           </div>
         </div>
@@ -16619,7 +16777,7 @@ A magical scimitar…"></textarea>
 <!-- DM SPELLS PANEL -->
 
 <!-- LIBRARY PAGE -->
-<div class="page active" id="page-library">
+<div class="page" id="page-library">
   <div class="lib-page active" id="lib-page">
     <div class="lib-subnav">
       <button class="lib-tab" onclick="showLibSection('classes')">Classes</button>
@@ -20973,9 +21131,246 @@ In addition, while your Innate Sorcery feature is active, you can use up to two 
             <input type="text" placeholder="Filter…" oninput="buildLibLists()" style="flex:1;padding:5px 8px;border-radius:5px;font-size:12px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);outline:none;font-family:'dm sans',monospace;box-sizing:border-box;">
             <button class="btn btn-sm" onclick="_applyKBToAllLibraryFeats()" title="Apply D&amp;D 2024 knowledge base to all matching feats in the library" style="font-size:10px;white-space:nowrap;">⚡ Apply KB</button>
           </div>
-          <div class="sidebar-scroll" id="libFeatList"><div class="list-item" onclick="selectLibFeat(398)">
+          <div class="sidebar-scroll" id="libFeatList"><div class="list-item" onclick="selectLibFeat(174)">
+          <div class="list-item-name">Ability Score Improvement</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(175)">
+          <div class="list-item-name">Actor</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(164)">
+          <div class="list-item-name">Alert</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(217)">
+          <div class="list-item-name">Archery</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(176)">
+          <div class="list-item-name">Athlete</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(258)">
+          <div class="list-item-name">Blades of Chaos: Path of Passage</div>
+          <div class="list-item-meta">2 feats</div>
+        </div><div class="list-item" onclick="selectLibFeat(255)">
+          <div class="list-item-name">Blades of Chaos: Path of Shadow</div>
+          <div class="list-item-meta">2 feats</div>
+        </div><div class="list-item" onclick="selectLibFeat(257)">
+          <div class="list-item-name">Blessing of the Elandran Cleric</div>
+          <div class="list-item-meta">1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(218)">
+          <div class="list-item-name">Blind Fighting</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(227)">
+          <div class="list-item-name">Boon of Combat Prowess</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(228)">
+          <div class="list-item-name">Boon of Dimensional Travel</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(229)">
+          <div class="list-item-name">Boon of Energy Resistance</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(230)">
+          <div class="list-item-name">Boon of Fate</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(231)">
+          <div class="list-item-name">Boon of Fortitude</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(232)">
+          <div class="list-item-name">Boon of Irresistible Offense</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(233)">
+          <div class="list-item-name">Boon of Recovery</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(234)">
+          <div class="list-item-name">Boon of Skill</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(235)">
+          <div class="list-item-name">Boon of Speed</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(236)">
+          <div class="list-item-name">Boon of Spell Recall</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(237)">
+          <div class="list-item-name">Boon of the Night Spirit</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(238)">
+          <div class="list-item-name">Boon of Truesight</div>
+          <div class="list-item-meta">Epic Boon · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(177)">
+          <div class="list-item-name">Charger</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(178)">
+          <div class="list-item-name">Chef</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(165)">
+          <div class="list-item-name">Crafter</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(179)">
+          <div class="list-item-name">Crossbow Expert</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(180)">
+          <div class="list-item-name">Crusher</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(219)">
+          <div class="list-item-name">Defense</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(181)">
+          <div class="list-item-name">Defensive Duelist</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(182)">
+          <div class="list-item-name">Dual Wielder</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(220)">
+          <div class="list-item-name">Dueling</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(183)">
+          <div class="list-item-name">Durable</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(184)">
+          <div class="list-item-name">Elemental Adept</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(185)">
+          <div class="list-item-name">Fey Touched</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(398)">
           <div class="list-item-name">Foresight (Elarun)</div>
           <div class="list-item-meta">1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(186)">
+          <div class="list-item-name">Grappler</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(221)">
+          <div class="list-item-name">Great Weapon Fighting</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(187)">
+          <div class="list-item-name">Great Weapon Master</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(166)">
+          <div class="list-item-name">Healer</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(188)">
+          <div class="list-item-name">Heavily Armored</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(189)">
+          <div class="list-item-name">Heavy Armor Master</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(190)">
+          <div class="list-item-name">Inspiring Leader</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(222)">
+          <div class="list-item-name">Interception</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(191)">
+          <div class="list-item-name">Keen Mind</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(192)">
+          <div class="list-item-name">Lightly Armored</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(167)">
+          <div class="list-item-name">Lucky</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(193)">
+          <div class="list-item-name">Mage Slayer</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(168)">
+          <div class="list-item-name">Magic Initiate</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(194)">
+          <div class="list-item-name">Martial Weapon Training</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(195)">
+          <div class="list-item-name">Medium Armor Master</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(196)">
+          <div class="list-item-name">Moderately Armored</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(197)">
+          <div class="list-item-name">Mounted Combatant</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(169)">
+          <div class="list-item-name">Musician</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(198)">
+          <div class="list-item-name">Observant</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(199)">
+          <div class="list-item-name">Piercer</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(200)">
+          <div class="list-item-name">Poisoner</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(201)">
+          <div class="list-item-name">Polearm Master</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(223)">
+          <div class="list-item-name">Protection</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(202)">
+          <div class="list-item-name">Resilient</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(203)">
+          <div class="list-item-name">Ritual Caster</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(170)">
+          <div class="list-item-name">Savage Attacker</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(204)">
+          <div class="list-item-name">Sentinel</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(205)">
+          <div class="list-item-name">Shadow Touched</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(206)">
+          <div class="list-item-name">Sharpshooter</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(207)">
+          <div class="list-item-name">Shield Master</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(208)">
+          <div class="list-item-name">Skill Expert</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(171)">
+          <div class="list-item-name">Skilled</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(209)">
+          <div class="list-item-name">Skulker</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(210)">
+          <div class="list-item-name">Slasher</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(211)">
+          <div class="list-item-name">Speedy</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(212)">
+          <div class="list-item-name">Spell Sniper</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(172)">
+          <div class="list-item-name">Tavern Brawler</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(213)">
+          <div class="list-item-name">Telekinetic</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(214)">
+          <div class="list-item-name">Telepathic</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(399)">
+          <div class="list-item-name">Test123</div>
+          <div class="list-item-meta">1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(224)">
+          <div class="list-item-name">Thrown Weapon Fighting</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(173)">
+          <div class="list-item-name">Tough</div>
+          <div class="list-item-meta">Origin · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(225)">
+          <div class="list-item-name">Two-Weapon Fighting</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(226)">
+          <div class="list-item-name">Unarmed Fighting</div>
+          <div class="list-item-meta">Fighting Style · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(215)">
+          <div class="list-item-name">War Caster</div>
+          <div class="list-item-meta">General · 1 feat</div>
+        </div><div class="list-item" onclick="selectLibFeat(216)">
+          <div class="list-item-name">Weapon Master</div>
+          <div class="list-item-meta">General · 1 feat</div>
         </div></div>
         </div>
         <div class="lib-detail"><div class="lib-detail-inner" id="libFeatDetail">
@@ -59112,6 +59507,16 @@ function syncWithDM(opts) {
   if (hasLib) {
     syncLibraryFromUrl(libUrl, function(err) {
       if (err) errors.push('Library pull: ' + (err.message || 'failed'));
+      // Re-apply grants and re-render the active character so new feats/grants are visible immediately
+      if (!err && typeof activeCharId !== 'undefined' && activeCharId) {
+        var _lc = db.characters.find(function(x){return x.id===activeCharId;});
+        if (_lc) {
+          var _lam = (_lc.actions||[]).map(function(a,i){return{a:a,i:i};}).filter(function(x){return x.a._modeActive&&x.a._modeLabel;});
+          if (typeof _applyModeAdvEffects==='function') _applyModeAdvEffects(_lc,_lam);
+          if (typeof renderMid==='function') renderMid(_lc);
+          if (typeof renderDetail==='function') renderDetail(_lc);
+        }
+      }
       finish();
     }, {filter: true, skipAutoSync: true});
   }
@@ -68158,4 +68563,4 @@ Adv Sorc AR, Sorc Spell DC +1.</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;">
       <button class="btn btn-sm" onclick="toggleActionMode(241,2)" style="font-size:11px;padding:4px 10px;color:var(--amber);border-color:rgba(240,185,107,0.4);">⚡ Activate</button>
     </div>
-  </div><div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border-light);"><button class="btn btn-sm" onclick="closeActDetail(241);toggleActEdit(241,2)" style="font-size:11px;padding:4px 10px;">✎ Full Edit</button><button class="btn btn-sm btn-danger" onclick="closeActDetail(241);deleteAction(241,2)" style="font-size:11px;padding:4px 10px;">✕ Delete</button></div></div></div><div id="_sync-indicator" style="position: fixed; bottom: 14px; right: 16px; z-index: 99990; display: flex; align-items: center; gap: 6px; font-family: &quot;DM Sans&quot;, sans-serif; font-size: 11px; opacity: 1; transition: opacity 0.3s; pointer-events: none; color: var(--text-muted);" title="Stats push: dm.json does not match e3d09a2cefe99ec3edd8bbd6fd0e259ed88e4512"><span style="display:inline-block;animation:_spin 1s linear infinite;font-size:13px;line-height:1;">⟳</span></div></body></html>
+  </div><div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border-light);"><button class="btn btn-sm" onclick="closeActDetail(241);toggleActEdit(241,2)" style="font-size:11px;padding:4px 10px;">✎ Full Edit</button><button class="btn btn-sm btn-danger" onclick="closeActDetail(241);deleteAction(241,2)" style="font-size:11px;padding:4px 10px;">✕ Delete</button></div></div></div><div id="_sync-indicator" style="position: fixed; bottom: 14px; right: 16px; z-index: 99990; display: flex; align-items: center; gap: 6px; font-family: &quot;DM Sans&quot;, sans-serif; font-size: 11px; opacity: 1; transition: opacity 0.3s; pointer-events: none; color: var(--text-muted);"><span style="display:inline-block;animation:_spin 1s linear infinite;font-size:13px;line-height:1;">⟳</span></div></body></html>

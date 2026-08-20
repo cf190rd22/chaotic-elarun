@@ -66082,7 +66082,7 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": false,
+        "_subSpellsCollapsed": true,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
@@ -66094,7 +66094,7 @@
             "Chromatic Orb"
           ]
         },
-        "_grantChoicesCollapsed": false,
+        "_grantChoicesCollapsed": true,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -79119,5 +79119,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787248585503
+  "_updated": 1787248614968
 }

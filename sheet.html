@@ -1,4 +1,4 @@
-<html lang="en" style="--stats-scale: 1; --bg: #0f1117; --surface: #161b27; --surface-hover: #1c2236; --surface-exp: #181e2e; --border: #252d3f; --border-light: #1e2538; --text-primary: #e8eaf0; --text-secondary: #9aa3b8; --accent: #5b8ef0; --accent-border: rgba(91,142,240,0.35); --accent-dim: rgba(91,142,240,0.08); --amber: #f0b96b; --amber-border: rgba(240,185,107,0.3); --amber-dim: rgba(240,185,107,0.08); --orange: #f07b3a; --orange-border: rgba(240,123,58,0.3); --orange-dim: rgba(240,123,58,0.08); --teal: #6bcbcb; --teal-border: rgba(107,203,203,0.3); --teal-dim: rgba(107,203,203,0.08); --green: #6bcb8b; --green-border: rgba(107,203,139,0.3); --green-dim: rgba(107,203,139,0.08); --red: #f07070; --red-border: rgba(240,112,112,0.3); --red-dim: rgba(240,112,112,0.08); --purple: #b48af7; --purple-border: rgba(180,138,247,0.3); --purple-dim: rgba(180,138,247,0.08); --fw-display: 700; --fw-title: 700; --fw-label: 700; --fw-name: 600; --fw-ui: 600; color-scheme: dark; --text-muted: #8b96b3; --hdr-scale: 1; --free: #ff2d78; --free-border: rgba(255,45,120,0.55); --free-dim: rgba(255,45,120,0.12); --row-alt: #12141c; --tabbar-h: 49px;"><head>
+<html lang="en" style="--stats-scale: 1; --bg: #0f1117; --surface: #161b27; --surface-hover: #1c2236; --surface-exp: #181e2e; --border: #252d3f; --border-light: #1e2538; --text-primary: #e8eaf0; --text-secondary: #9aa3b8; --accent: #5b8ef0; --accent-border: rgba(91,142,240,0.35); --accent-dim: rgba(91,142,240,0.08); --amber: #f0b96b; --amber-border: rgba(240,185,107,0.3); --amber-dim: rgba(240,185,107,0.08); --orange: #f07b3a; --orange-border: rgba(240,123,58,0.3); --orange-dim: rgba(240,123,58,0.08); --teal: #6bcbcb; --teal-border: rgba(107,203,203,0.3); --teal-dim: rgba(107,203,203,0.08); --green: #6bcb8b; --green-border: rgba(107,203,139,0.3); --green-dim: rgba(107,203,139,0.08); --red: #f07070; --red-border: rgba(240,112,112,0.3); --red-dim: rgba(240,112,112,0.08); --purple: #b48af7; --purple-border: rgba(180,138,247,0.3); --purple-dim: rgba(180,138,247,0.08); --fw-display: 700; --fw-title: 700; --fw-label: 700; --fw-name: 600; --fw-ui: 600; color-scheme: dark; --text-muted: #8b96b3; --hdr-scale: 1; --free: #ff2d78; --free-border: rgba(255,45,120,0.55); --free-dim: rgba(255,45,120,0.12); --row-alt: #12141c; --tabbar-h: 0px;"><head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -2206,9 +2206,9 @@ A magical scimitar…"></textarea>
 <!-- TOP NAV -->
 <div class="top-nav">
   <div class="nav-brand">DM <span>Reference</span></div>
-  <button class="nav-tab active" onclick="showPage('characters')">Characters</button>
+  <button class="nav-tab" onclick="showPage('characters')">Characters</button>
   <button class="nav-tab" onclick="showPage('dm')">DM</button>
-  <button class="nav-tab" onclick="showPage('library')">Library</button>
+  <button class="nav-tab active" onclick="showPage('library')">Library</button>
   <select id="mob-page-select" onchange="switchPageMob(this.value)" style="display:none;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);cursor:pointer;font-family:'dm sans',monospace;">
     <option value="characters">Characters</option>
     <option value="dm">DM</option>
@@ -2265,7 +2265,7 @@ A magical scimitar…"></textarea>
 </div>
 
 <!-- CHARACTERS PAGE -->
-<div class="page active" id="page-characters">
+<div class="page" id="page-characters">
   <!-- Sidebar: character list -->
   <div class="sidebar">
     <div class="sidebar-hdr" onclick="if(_isMobile)toggleSidebar()">
@@ -15496,7 +15496,7 @@ A magical scimitar…"></textarea>
 <!-- DM SPELLS PANEL -->
 
 <!-- LIBRARY PAGE -->
-<div class="page" id="page-library">
+<div class="page active" id="page-library">
   <div class="lib-page active" id="lib-page">
     <div class="lib-subnav">
       <button class="lib-tab" onclick="showLibSection('classes')">Classes</button>

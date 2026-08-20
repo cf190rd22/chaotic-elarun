@@ -65874,7 +65874,7 @@
             "maxFormula": "PROF"
           }
         ],
-        "saveDcEffective": null,
+        "saveDcEffective": 15,
         "_qsHdOpen": true,
         "_qsAdjOpen": true,
         "_hpLevels": [
@@ -65902,7 +65902,8 @@
         "_grantChoicesCollapsed": true,
         "_hideUnassigned": true,
         "_charGrants": {},
-        "_appliedSuggestions": []
+        "_appliedSuggestions": [],
+        "spellcastingAbility": "WIS"
       }
     ],
     "unassignedSpells": [],
@@ -72776,5 +72777,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787246022588
+  "_updated": 1787246039727
 }

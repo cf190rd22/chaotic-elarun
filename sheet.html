@@ -2206,9 +2206,9 @@ A magical scimitar…"></textarea>
 <!-- TOP NAV -->
 <div class="top-nav">
   <div class="nav-brand">DM <span>Reference</span></div>
-  <button class="nav-tab active" onclick="showPage('characters')">Characters</button>
+  <button class="nav-tab" onclick="showPage('characters')">Characters</button>
   <button class="nav-tab" onclick="showPage('dm')">DM</button>
-  <button class="nav-tab" onclick="showPage('library')">Library</button>
+  <button class="nav-tab active" onclick="showPage('library')">Library</button>
   <select id="mob-page-select" onchange="switchPageMob(this.value)" style="display:none;font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);cursor:pointer;font-family:'dm sans',monospace;">
     <option value="characters">Characters</option>
     <option value="dm">DM</option>
@@ -2265,7 +2265,7 @@ A magical scimitar…"></textarea>
 </div>
 
 <!-- CHARACTERS PAGE -->
-<div class="page active" id="page-characters">
+<div class="page" id="page-characters">
   <!-- Sidebar: character list -->
   <div class="sidebar">
     <div class="sidebar-hdr" onclick="if(_isMobile)toggleSidebar()">
@@ -16619,7 +16619,7 @@ A magical scimitar…"></textarea>
 <!-- DM SPELLS PANEL -->
 
 <!-- LIBRARY PAGE -->
-<div class="page" id="page-library">
+<div class="page active" id="page-library">
   <div class="lib-page active" id="lib-page">
     <div class="lib-subnav">
       <button class="lib-tab" onclick="showLibSection('classes')">Classes</button>
@@ -20973,243 +20973,9 @@ In addition, while your Innate Sorcery feature is active, you can use up to two 
             <input type="text" placeholder="Filter…" oninput="buildLibLists()" style="flex:1;padding:5px 8px;border-radius:5px;font-size:12px;border:1px solid var(--border);background:var(--bg);color:var(--text-primary);outline:none;font-family:'dm sans',monospace;box-sizing:border-box;">
             <button class="btn btn-sm" onclick="_applyKBToAllLibraryFeats()" title="Apply D&amp;D 2024 knowledge base to all matching feats in the library" style="font-size:10px;white-space:nowrap;">⚡ Apply KB</button>
           </div>
-          <div class="sidebar-scroll" id="libFeatList"><div class="list-item" onclick="selectLibFeat(174)">
-          <div class="list-item-name">Ability Score Improvement</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(175)">
-          <div class="list-item-name">Actor</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(164)">
-          <div class="list-item-name">Alert</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(217)">
-          <div class="list-item-name">Archery</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(176)">
-          <div class="list-item-name">Athlete</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(258)">
-          <div class="list-item-name">Blades of Chaos: Path of Passage</div>
-          <div class="list-item-meta">2 feats</div>
-        </div><div class="list-item" onclick="selectLibFeat(255)">
-          <div class="list-item-name">Blades of Chaos: Path of Shadow</div>
-          <div class="list-item-meta">2 feats</div>
-        </div><div class="list-item" onclick="selectLibFeat(257)">
-          <div class="list-item-name">Blessing of the Elandran Cleric</div>
-          <div class="list-item-meta">1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(218)">
-          <div class="list-item-name">Blind Fighting</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(227)">
-          <div class="list-item-name">Boon of Combat Prowess</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(228)">
-          <div class="list-item-name">Boon of Dimensional Travel</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(229)">
-          <div class="list-item-name">Boon of Energy Resistance</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(230)">
-          <div class="list-item-name">Boon of Fate</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(231)">
-          <div class="list-item-name">Boon of Fortitude</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(232)">
-          <div class="list-item-name">Boon of Irresistible Offense</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(233)">
-          <div class="list-item-name">Boon of Recovery</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(234)">
-          <div class="list-item-name">Boon of Skill</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(235)">
-          <div class="list-item-name">Boon of Speed</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(236)">
-          <div class="list-item-name">Boon of Spell Recall</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(237)">
-          <div class="list-item-name">Boon of the Night Spirit</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(238)">
-          <div class="list-item-name">Boon of Truesight</div>
-          <div class="list-item-meta">Epic Boon · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(177)">
-          <div class="list-item-name">Charger</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(178)">
-          <div class="list-item-name">Chef</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(165)">
-          <div class="list-item-name">Crafter</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(179)">
-          <div class="list-item-name">Crossbow Expert</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(180)">
-          <div class="list-item-name">Crusher</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(219)">
-          <div class="list-item-name">Defense</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(181)">
-          <div class="list-item-name">Defensive Duelist</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(182)">
-          <div class="list-item-name">Dual Wielder</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(220)">
-          <div class="list-item-name">Dueling</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(183)">
-          <div class="list-item-name">Durable</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(184)">
-          <div class="list-item-name">Elemental Adept</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(185)">
-          <div class="list-item-name">Fey Touched</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(398)">
+          <div class="sidebar-scroll" id="libFeatList"><div class="list-item" onclick="selectLibFeat(398)">
           <div class="list-item-name">Foresight (Elarun)</div>
           <div class="list-item-meta">1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(186)">
-          <div class="list-item-name">Grappler</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(221)">
-          <div class="list-item-name">Great Weapon Fighting</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(187)">
-          <div class="list-item-name">Great Weapon Master</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(166)">
-          <div class="list-item-name">Healer</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(188)">
-          <div class="list-item-name">Heavily Armored</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(189)">
-          <div class="list-item-name">Heavy Armor Master</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(190)">
-          <div class="list-item-name">Inspiring Leader</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(222)">
-          <div class="list-item-name">Interception</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(191)">
-          <div class="list-item-name">Keen Mind</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(192)">
-          <div class="list-item-name">Lightly Armored</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(167)">
-          <div class="list-item-name">Lucky</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(193)">
-          <div class="list-item-name">Mage Slayer</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(168)">
-          <div class="list-item-name">Magic Initiate</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(194)">
-          <div class="list-item-name">Martial Weapon Training</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(195)">
-          <div class="list-item-name">Medium Armor Master</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(196)">
-          <div class="list-item-name">Moderately Armored</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(197)">
-          <div class="list-item-name">Mounted Combatant</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(169)">
-          <div class="list-item-name">Musician</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(198)">
-          <div class="list-item-name">Observant</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(199)">
-          <div class="list-item-name">Piercer</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(200)">
-          <div class="list-item-name">Poisoner</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(201)">
-          <div class="list-item-name">Polearm Master</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(223)">
-          <div class="list-item-name">Protection</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(202)">
-          <div class="list-item-name">Resilient</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(203)">
-          <div class="list-item-name">Ritual Caster</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(170)">
-          <div class="list-item-name">Savage Attacker</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(204)">
-          <div class="list-item-name">Sentinel</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(205)">
-          <div class="list-item-name">Shadow Touched</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(206)">
-          <div class="list-item-name">Sharpshooter</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(207)">
-          <div class="list-item-name">Shield Master</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(208)">
-          <div class="list-item-name">Skill Expert</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(171)">
-          <div class="list-item-name">Skilled</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(209)">
-          <div class="list-item-name">Skulker</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(210)">
-          <div class="list-item-name">Slasher</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(211)">
-          <div class="list-item-name">Speedy</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(212)">
-          <div class="list-item-name">Spell Sniper</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(172)">
-          <div class="list-item-name">Tavern Brawler</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(213)">
-          <div class="list-item-name">Telekinetic</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(214)">
-          <div class="list-item-name">Telepathic</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(224)">
-          <div class="list-item-name">Thrown Weapon Fighting</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(173)">
-          <div class="list-item-name">Tough</div>
-          <div class="list-item-meta">Origin · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(225)">
-          <div class="list-item-name">Two-Weapon Fighting</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(226)">
-          <div class="list-item-name">Unarmed Fighting</div>
-          <div class="list-item-meta">Fighting Style · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(215)">
-          <div class="list-item-name">War Caster</div>
-          <div class="list-item-meta">General · 1 feat</div>
-        </div><div class="list-item" onclick="selectLibFeat(216)">
-          <div class="list-item-name">Weapon Master</div>
-          <div class="list-item-meta">General · 1 feat</div>
         </div></div>
         </div>
         <div class="lib-detail"><div class="lib-detail-inner" id="libFeatDetail">

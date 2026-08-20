@@ -44807,7 +44807,8 @@
             "actionLink": "Aura of Chaos"
           }
         ],
-        "saveDcEffective": 14
+        "saveDcEffective": 14,
+        "conditions": []
       },
       {
         "id": 259,
@@ -46405,7 +46406,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -46531,7 +46532,7 @@
             "concentration": true,
             "area": "",
             "source": "Sorcerer",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -46770,7 +46771,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -46849,7 +46850,7 @@
             "ritual": false,
             "_spellAdjDuration": "",
             "_noScale": false,
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -47073,7 +47074,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -47347,7 +47348,7 @@
             "area": "",
             "hit": "",
             "effect": "1d6 damage",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -47818,7 +47819,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -47977,7 +47978,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -48251,7 +48252,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -49251,7 +49252,7 @@
             "ritual": false,
             "desc": "A creature you touch has the Invisible condition until the spell ends. The spell ends early immediately after the target makes an attack roll, deals damage, or casts a spell.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 2.",
             "tags": [],
-            "_assigned": true,
+            "_assigned": false,
             "_freecast": false,
             "_singleUse": true,
             "_freecasted": false,
@@ -49498,7 +49499,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -50310,7 +50311,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 61,
             "_freecasted": false,
@@ -53978,7 +53979,8 @@
             "actionLink": "Speak with Animals"
           }
         ],
-        "saveDcEffective": 14
+        "saveDcEffective": 14,
+        "conditions": []
       },
       {
         "id": 261,
@@ -56249,7 +56251,7 @@
             "ritual": false,
             "desc": "You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.",
             "tags": [],
-            "_assigned": false,
+            "_assigned": true,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -56675,7 +56677,7 @@
             "ritual": false,
             "desc": "You hurl an orb of energy at a target within range. Choose Acid, Cold, Fire, Lightning, Poison, or Thunder for the type of orb you create, and then make a ranged spell attack against the target. On a hit, the target takes 3d8 damage of the chosen type.\nIf you roll the same number on two or more of the d8s, the orb leaps to a different target of your choice within 30 feet of the target. Make an attack roll against the new target, and make a new damage roll. The orb can’t leap again unless you cast the spell with a level 2+ spell slot.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 1. The orb can leap a maximum number of times equal to the level of the slot expended, and a creature can be targeted only once by each casting of this spell.",
             "tags": [],
-            "_assigned": false,
+            "_assigned": true,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -57069,7 +57071,7 @@
             "ritual": true,
             "desc": "For the duration, you can comprehend and verbally communicate with Beasts, and you can use any of the Influence action’s skill options with them.\nMost Beasts have little to say about topics that don’t pertain to survival or companionship, but at minimum, a Beast can give you information about nearby locations and monsters, including whatever it has perceived within the past day.",
             "tags": [],
-            "_assigned": false,
+            "_assigned": true,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -58313,7 +58315,7 @@
             "ritual": true,
             "desc": "You imbue plants in an immobile 30-foot Emanation with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.\nYou can also turn Difficult Terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into Difficult Terrain that lasts for the duration.\nThe spell doesn’t enable plants to uproot themselves and move about, but they can move their branches, tendrils, and stalks for you.\nIf a Plant creature is in the area, you can communicate with it as if you shared a common language.",
             "tags": [],
-            "_assigned": true,
+            "_assigned": false,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -60873,7 +60875,8 @@
             "actionLink": "Stonecunning"
           }
         ],
-        "saveDcEffective": 15
+        "saveDcEffective": 15,
+        "conditions": []
       }
     ],
     "unassignedSpells": [],
@@ -66845,5 +66848,5 @@
     ]
   },
   "nextId": 399,
-  "_updated": 1787252107754
+  "_updated": 1787253220244
 }

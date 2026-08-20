@@ -12688,19 +12688,38 @@
         {
           "level": 0,
           "name": "Dwarven Resilience",
-          "description": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
+          "description": "<details open=\"\"><summary>You have Resistance to Poison damage</summary><div class=\"det-body\"><p>You also have Advantage on saving throws you make to avoid or end the Poisoned condition.</p></div></details>",
           "actions": [
             {
               "name": "Dwarven Resilience: Poison",
               "atype": "Additional Feature",
               "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition."
             }
-          ]
+          ],
+          "_grants": [
+            {
+              "type": "resistance",
+              "target": "poison",
+              "reset": "permanent"
+            }
+          ],
+          "knownOptions": [],
+          "knownCount": null
         },
         {
           "level": 0,
           "name": "Dwarven Toughness",
-          "description": "Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level."
+          "description": "<p>Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level.</p>",
+          "_grants": [
+            {
+              "type": "flatBonus",
+              "target": "maxHp",
+              "reset": "permanent",
+              "value": "+LVL"
+            }
+          ],
+          "knownOptions": [],
+          "knownCount": null
         },
         {
           "level": 0,
@@ -14163,11 +14182,11 @@
     },
     {
       "id": 398,
-      "name": "Foresight (HB)",
+      "name": "Foresight (Elarun)",
       "features": [
         {
           "level": 0,
-          "name": "Foresight (HB)",
+          "name": "Foresight (Elarun)",
           "description": "Whenever you finish a Long Rest, roll one d20 and record the number rolled. You can replace any D20 Test made by you or a creature that you can see with one of these foretelling rolls. You must choose to do so before the roll, and you can replace a roll in this way only once per turn.\nEach foretelling roll can be used only once. When you finish a Long Rest, you lose any unused foretelling rolls."
         }
       ]

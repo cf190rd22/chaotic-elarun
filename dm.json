@@ -50904,28 +50904,29 @@
           {
             "level": 0,
             "name": "Dwarven Resilience",
-            "description": "<details open=\"\"><summary>You have Resistance to Poison damage</summary><div class=\"det-body\"><p>You also have Advantage on saving throws you make to avoid or end the Poisoned condition.</p></div></details>",
+            "description": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition.",
             "actions": [
               {
                 "name": "Dwarven Resilience: Poison",
                 "atype": "Additional Feature",
                 "desc": "You have Resistance to Poison damage. You also have Advantage on saving throws you make to avoid or end the Poisoned condition."
               }
-            ],
-            "_grants": [
-              {
-                "type": "resistance",
-                "target": "poison",
-                "reset": "permanent"
-              }
-            ],
-            "knownOptions": [],
-            "knownCount": null
+            ]
           },
           {
             "level": 0,
             "name": "Dwarven Toughness",
-            "description": "Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level."
+            "description": "<p>Your Hit Point maximum increases by 1, and it increases by 1 again whenever you gain a level.</p>",
+            "_grants": [
+              {
+                "type": "flatBonus",
+                "target": "maxHp",
+                "reset": "permanent",
+                "value": "+LVL"
+              }
+            ],
+            "knownOptions": [],
+            "knownCount": null
           },
           {
             "level": 0,
@@ -65600,9 +65601,7 @@
           }
         ],
         "_grantImmunities": [],
-        "_grantResistances": [
-          "poison"
-        ],
+        "_grantResistances": [],
         "_grantVulnerabilities": [],
         "_grantSourcesAbilScore": {},
         "_grantLanguages": [],
@@ -65642,7 +65641,7 @@
         "_grantFlatBonusDamageFinesse": 0,
         "_grantFlatBonusDamageThrown": 0,
         "_grantFlatBonusDC": 0,
-        "_grantFlatBonusMaxHp": 0,
+        "_grantFlatBonusMaxHp": 8,
         "_grantSourcesSpeed": [],
         "_grantSourcesAC": [
           {
@@ -65754,7 +65753,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 18,
-        "hpMax": 51,
+        "hpMax": 59,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -72777,5 +72776,5 @@
     "conditionDescs": {}
   },
   "nextId": 412,
-  "_updated": 1787238290226
+  "_updated": 1787238313737
 }

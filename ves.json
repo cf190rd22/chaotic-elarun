@@ -8145,27 +8145,33 @@
         "abilities": {
           "Strength": {
             "score": 10,
-            "mod": 0
+            "mod": 0,
+            "_grantScoreBoost": 0
           },
           "Dexterity": {
             "score": 14,
-            "mod": 2
+            "mod": 2,
+            "_grantScoreBoost": 0
           },
           "Constitution": {
             "score": 12,
-            "mod": 1
+            "mod": 1,
+            "_grantScoreBoost": 0
           },
           "Intelligence": {
             "score": 12,
-            "mod": 1
+            "mod": 1,
+            "_grantScoreBoost": 0
           },
           "Wisdom": {
             "score": 18,
-            "mod": 4
+            "mod": 4,
+            "_grantScoreBoost": 0
           },
           "Charisma": {
             "score": 12,
-            "mod": 1
+            "mod": 1,
+            "_grantScoreBoost": 0
           }
         },
         "saves": {
@@ -15074,7 +15080,10 @@
         },
         "_qsHdOpen": false,
         "_spFiltersCollapsed": false,
-        "_spTimeFilter": "all"
+        "_spTimeFilter": "all",
+        "_grantSourcesAbilScore": {},
+        "_grantSenses": {},
+        "_grantWeaponDamage": []
       }
     ],
     "_exportedAt": 1785536910088,
@@ -15131,5 +15140,5 @@
     ]
   },
   "nextId": 398,
-  "_updated": 1786804051647
+  "_updated": 1787249830371
 }

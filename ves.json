@@ -43942,7 +43942,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 34,
+        "hpCurrent": 45,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -44237,5 +44237,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787411624797
+  "_updated": 1787429579940
 }

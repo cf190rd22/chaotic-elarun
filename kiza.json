@@ -39563,7 +39563,7 @@
         "hpAdjust": 0,
         "speedAdjust": 0,
         "hpCurrent": 84,
-        "hpTemp": 10,
+        "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
         "statblocks": [
@@ -40404,5 +40404,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787404982249
+  "_updated": 1787411150891
 }

@@ -39982,7 +39982,7 @@
             "itemType": "Wondrous item",
             "subtype": "Wondrous Item",
             "rarity": "uncommon",
-            "attune": "attuned",
+            "attune": "yes",
             "weight": "--",
             "source": "Dungeon Master’s Guide, pg. 240",
             "desc": "In Backpack\nWhile you wear these boots, your Speed becomes 30 feet unless your Speed is higher, and your Speed isn’t reduced by you carrying weight in excess of your carrying capacity or wearing Heavy Armor.\nOnce on each of your turns, you can jump up to 30 feet by spending only 10 feet of movement.",
@@ -40404,5 +40404,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787402932796
+  "_updated": 1787402748264
 }

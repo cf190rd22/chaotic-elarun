@@ -48009,8 +48009,7 @@
             "_classSync": true
           }
         ],
-        "saveDcEffective": 14,
-        "_dmHidden": true
+        "saveDcEffective": 14
       },
       {
         "id": 241,
@@ -53496,8 +53495,7 @@
             "actionLink": "Sorcerous Restoration"
           }
         ],
-        "saveDcEffective": 15,
-        "_dmHidden": true
+        "saveDcEffective": 15
       }
     ],
     "unassignedSpells": [],
@@ -59466,5 +59464,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1787411282886
+  "_updated": 1787497596265
 }

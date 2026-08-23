@@ -56971,7 +56971,7 @@
           "Wisdom": {
             "score": 18,
             "mod": 4,
-            "_grantScoreBoost": 0
+            "_grantScoreBoost": 1
           },
           "Charisma": {
             "score": 12,
@@ -63942,7 +63942,14 @@
         "_qsHdOpen": false,
         "_spFiltersCollapsed": false,
         "_spTimeFilter": "all",
-        "_grantSourcesAbilScore": {},
+        "_grantSourcesAbilScore": {
+          "Wisdom": [
+            {
+              "src": "Fey Touched",
+              "val": 1
+            }
+          ]
+        },
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_hpLevels": [
@@ -63955,7 +63962,15 @@
           5,
           5
         ],
-        "_charGrants": {},
+        "_charGrants": {
+          "feat_185_Fey Touched": [
+            {
+              "type": "abilityScore",
+              "target": "Wisdom",
+              "value": 1
+            }
+          ]
+        },
         "_appliedSuggestions": [],
         "originId": "sage",
         "originName": "Sage",
@@ -69942,5 +69957,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787512420704
+  "_updated": 1787512441885
 }

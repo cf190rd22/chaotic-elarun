@@ -43534,7 +43534,7 @@
             "name": "Speak with Animals",
             "level": 1,
             "school": "Divination",
-            "time": "A",
+            "time": "Action",
             "range": "Self",
             "components": "V, S",
             "duration": "10 min",
@@ -43542,7 +43542,10 @@
             "area": "",
             "hit": "",
             "source": "Ranger",
-            "_assigned": true
+            "_assigned": true,
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": true
           },
           {
             "name": "Tasha's Caustic Brew",
@@ -58446,10 +58449,9 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "You know Druidic, the secret language of Druids. While learning this ancient tongue, you also unlocked the magic of communicating with animals; you always have the Speak with Animals spell prepared.\n\nYou can use Druidic to leave hidden messages. You and others who know Druidic automatically spot such a message. Others spot the message’s presence with a successful DC 15 Intelligence (Investigation) check but can’t decipher it without magic.",
+            "desc": "<details open=\"\"><summary>You know Druidic, the secret language of Druids</summary><div class=\"det-body\"><p>While learning this ancient tongue, you also unlocked the magic of communicating with animals; you always have the Speak with Animals spell prepared.</p></div></details><details open=\"\"><summary>You can use Druidic to leave hidden messages</summary><div class=\"det-body\"><p>You and others who know Druidic automatically spot such a message. Others spot the message’s presence with a successful DC 15 Intelligence (Investigation) check but can’t decipher it without magic.</p></div></details>",
             "fav": false,
-            "used": false,
-            "_classSync": true
+            "used": false
           },
           {
             "name": "Wild Companion",
@@ -58473,7 +58475,7 @@
             "name": "Wild Shape",
             "_libName": "Wild Shape",
             "kind": "feat",
-            "atype": "other",
+            "atype": "bonus",
             "source": "Druid",
             "_syncSourceId": 66,
             "_syncMinLevel": 2,
@@ -58483,17 +58485,23 @@
             "range": "",
             "save": "",
             "notes": "",
-            "desc": "The power of nature allows you to assume the form of an animal. As a Bonus Action, you shape-shift into a Beast form that you have learned for this feature (see “Known Forms” below). You stay in that form for a number of hours equal to half your Druid level or until you use Wild Shape again, have the Incapacitated condition, or die. You can also leave the form early as a Bonus Action.\n\nNumber of Uses. You can use Wild Shape twice. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.\n\nYou gain additional uses when you reach certain Druid levels, as shown in the Wild Shape column of the Druid Features table.\n\nKnown Forms. You know four Beast forms for this feature, chosen from among Beast stat blocks that have a maximum Challenge Rating of 1/4 and that lack a Fly Speed. Whenever you finish a Long Rest, you can replace one of your known forms with another eligible form.\n\nWhen you reach certain Druid levels, your number of known forms and the maximum Challenge Rating for those forms increases, as shown in the Beast Shapes table. In addition, starting at level 8, you can adopt a form that has a Fly Speed.\n\nWhen choosing known forms, you may look in the Monster Manual or elsewhere for eligible Beasts if the Dungeon Master permits you to do so.\n\nBeast Shapes\n  Druid Level | Known Forms | Max CR | Fly Speed\n  2 | 4 | 1/4 | No\n  4 | 6 | 1/2 | No\n  8 | 8 | 1 | Yes\nRules While Shape-Shifted. While in a form, you retain your personality, memories, and ability to speak, and the following rules apply:\n\nTemporary Hit Points. When you assume a Wild Shape form, you gain a number of Temporary Hit Points equal to your Druid level.\n\nGame Statistics. Your game statistics are replaced by the Beast’s stat block, but you retain your creature type; Hit Points; Hit Point Dice; Intelligence, Wisdom, and Charisma scores; class features; languages; and feats. You also retain your skill and saving throw proficiencies and use your Proficiency Bonus for them, in addition to gaining the proficiencies of the creature. If a skill or saving throw modifier in the Beast’s stat block is higher than yours, use the one in the stat block.\n\nNo Spellcasting. You can’t cast spells, but shape-shifting doesn’t break your Concentration or otherwise interfere with a spell you’ve already cast.\n\nObjects. Your ability to handle objects is determined by the form’s limbs rather than your own. In addition, you choose whether your equipment falls in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the DM decides whether it’s practical for the new form to wear a piece of equipment based on the creature’s size and shape. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with the form. Equipment that merges with the form has no effect while you’re in that form.",
+            "desc": "<p>The power of nature allows you to assume the form of an animal. As a Bonus Action, you shape-shift into a Beast form that you have learned for this feature (see “Known Forms” below). You stay in that form for a number of hours equal to half your Druid level or until you use Wild Shape again, have the Incapacitated condition, or die. You can also leave the form early as a Bonus Action.</p><details open=\"\"><summary>Number of Uses</summary><div class=\"det-body\"><p>You can use Wild Shape twice. You regain one expended use when you finish a Short Rest, and you regain all expended uses when you finish a Long Rest.</p><p>You gain additional uses when you reach certain Druid levels, as shown in the Wild Shape column of the Druid Features table.</p></div></details><details open=\"\"><summary>Known Forms</summary><div class=\"det-body\"><p>You know four Beast forms for this feature, chosen from among Beast stat blocks that have a maximum Challenge Rating of 1/4 and that lack a Fly Speed. Whenever you finish a Long Rest, you can replace one of your known forms with another eligible form.</p><p>When you reach certain Druid levels, your number of known forms and the maximum Challenge Rating for those forms increases, as shown in the Beast Shapes table. In addition, starting at level 8, you can adopt a form that has a Fly Speed.</p><p>When choosing known forms, you may look in the Monster Manual or elsewhere for eligible Beasts if the Dungeon Master permits you to do so.</p><p>Beast Shapes</p></div></details><table class=\"fd-table\"><tbody><tr><th>Druid Level</th><th>Known Forms</th><th>Max CR</th><th>Fly Speed</th></tr><tr><td>2</td><td>4</td><td>1/4</td><td>No</td></tr><tr><td>4</td><td>6</td><td>1/2</td><td>No</td></tr><tr><td>8</td><td>8</td><td>1</td><td>Yes</td></tr></tbody></table><details open=\"\"><summary>Rules While Shape-Shifted</summary><div class=\"det-body\"><p>While in a form, you retain your personality, memories, and ability to speak, and the following rules apply:</p></div></details><details open=\"\"><summary>Temporary Hit Points</summary><div class=\"det-body\"><p>When you assume a Wild Shape form, you gain a number of Temporary Hit Points equal to your Druid level.</p></div></details><details open=\"\"><summary>Game Statistics</summary><div class=\"det-body\"><p>Your game statistics are replaced by the Beast’s stat block, but you retain your creature type; Hit Points; Hit Point Dice; Intelligence, Wisdom, and Charisma scores; class features; languages; and feats. You also retain your skill and saving throw proficiencies and use your Proficiency Bonus for them, in addition to gaining the proficiencies of the creature. If a skill or saving throw modifier in the Beast’s stat block is higher than yours, use the one in the stat block.</p></div></details><details open=\"\"><summary>No Spellcasting</summary><div class=\"det-body\"><p>You can’t cast spells, but shape-shifting doesn’t break your Concentration or otherwise interfere with a spell you’ve already cast.</p></div></details><details open=\"\"><summary>Objects</summary><div class=\"det-body\"><p>Your ability to handle objects is determined by the form’s limbs rather than your own. In addition, you choose whether your equipment falls in your space, merges into your new form, or is worn by it. Worn equipment functions as normal, but the DM decides whether it’s practical for the new form to wear a piece of equipment based on the creature’s size and shape. Your equipment doesn’t change size or shape to match the new form, and any equipment that the new form can’t wear must either fall to the ground or merge with the form. Equipment that merges with the form has no effect while you’re in that form.</p></div></details>",
             "fav": false,
             "used": false,
             "_flag": true,
-            "_classSync": true
+            "_modeLabel": "Wild Shape",
+            "_modeNotes": "",
+            "_modeDcBonus": 0,
+            "_modeAcBonus": 0,
+            "_modeAttackBonus": 0,
+            "_modeDmgBonus": 0,
+            "_modeResistance": ""
           },
           {
             "name": "Wild Resurgence: Regain Spell Slot",
             "_libName": "Wild Resurgence: Regain Spell Slot",
             "kind": "feat",
-            "atype": "other",
+            "atype": "feature",
             "source": "Druid",
             "hit": "",
             "damage": "",
@@ -58513,7 +58521,7 @@
             "name": "Wild Resurgence: Regain Wild Shape",
             "_libName": "Wild Resurgence: Regain Wild Shape",
             "kind": "feat",
-            "atype": "other",
+            "atype": "feature",
             "source": "Druid",
             "hit": "",
             "damage": "",
@@ -58676,29 +58684,8 @@
             "desc": "You can summon a nature spirit that assumes an animal form to aid you. As a Magic action, you can expend a spell slot or a use of Wild Shape to cast the Find Familiar spell without Material components.\n\nWhen you cast the spell in this way, the familiar is Fey and disappears when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 2,
             "_syncSourceId": 66
-          },
-          {
-            "name": "Lvl 1: Primal Order: Magician",
-            "_libName": "Lvl 1: Primal Order: Magician",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 1,
-            "_syncSourceId": 66,
-            "group": "Magician"
           },
           {
             "name": "Tree Stride",
@@ -58755,6 +58742,26 @@
             "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
             "fav": false,
             "used": false
+          },
+          {
+            "name": "Lvl 1: Primal Order: Magician",
+            "_libName": "Lvl 1: Primal Order: Magician",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 66,
+            "group": "Magician"
           }
         ],
         "statblocks": [
@@ -70008,5 +70015,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787505449218
+  "_updated": 1787505503865
 }

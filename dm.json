@@ -63911,7 +63911,13 @@
         "_charGrants": {},
         "_appliedSuggestions": [],
         "originId": "sage",
-        "originName": "Sage"
+        "originName": "Sage",
+        "_featTakenLevel": {
+          "168": 1,
+          "174": 4,
+          "257": 4,
+          "398": 8
+        }
       }
     ],
     "unassignedSpells": [],
@@ -69887,5 +69893,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787511269919
+  "_updated": 1787511284029
 }

@@ -59088,6 +59088,68 @@
             "speedType": "",
             "subtypes": "",
             "tempHp": 0
+          },
+          {
+            "name": "Giant Eagle",
+            "hpMax": 0,
+            "hpCur": 0,
+            "text": "",
+            "isFamiliar": true,
+            "hideHp": true,
+            "_sbData": {
+              "name": "Giant Eagle",
+              "subtitle": "Large Beast, Neutral Good",
+              "ac": "13",
+              "hp": "",
+              "speeds": {
+                "walk": "10",
+                "fly": "80",
+                "swim": "",
+                "climb": "",
+                "burrow": ""
+              },
+              "str": "16",
+              "dex": "17",
+              "con": "13",
+              "int": "8",
+              "wis": "14",
+              "cha": "10",
+              "skills": "Perception +4",
+              "dmgRes": "",
+              "dmgImm": "",
+              "condImm": "",
+              "senses": "Passive Perception 14",
+              "languages": "Giant Eagle , understands Common and Auran but can't speak them",
+              "cr": "1",
+              "pb": "+2",
+              "traits": [
+                {
+                  "name": "Keen Sight",
+                  "desc": "The eagle has advantage on Wisdom (Perception) checks that rely on sight."
+                }
+              ],
+              "actions": [
+                {
+                  "name": "Multiattack",
+                  "desc": "The eagle makes two attacks: one with its beak and one with its talons."
+                },
+                {
+                  "name": "Beak",
+                  "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
+                },
+                {
+                  "name": "Talons",
+                  "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage."
+                }
+              ],
+              "bonus": [],
+              "reactions": []
+            },
+            "ac": "13",
+            "size": "Large",
+            "speed": "10 ft., fly 80 ft.",
+            "speedType": "",
+            "subtypes": ""
           }
         ],
         "spells": [
@@ -69928,6 +69990,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787514334294,
-  "_unchanged": true
+  "_updated": 1787514369729
 }

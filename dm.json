@@ -46946,7 +46946,8 @@
           257,
           258,
           168,
-          398
+          398,
+          185
         ],
         "customFeats": [],
         "currency": {},
@@ -47342,7 +47343,13 @@
         "exhaustion": 0,
         "deathSaves": {},
         "inspiration": false,
-        "overrides": {},
+        "overrides": {
+          "feat_185_Fey Touched": {
+            "name": "Fey Touched",
+            "level": 8,
+            "description": "<p>Prerequisite: Level 4+</p><details open=\"\"><summary><button class=\"_det-cut-btn\" contenteditable=\"false\" title=\"Cut this block to clipboard\" style=\"float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;\">✂ cut</button>Ability Score Increase</summary><div class=\"det-body\"><p>Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum of 20.</p></div></details><details open=\"\"><summary><button class=\"_det-cut-btn\" contenteditable=\"false\" title=\"Cut this block to clipboard\" style=\"float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;\">✂ cut</button>Fey Magic</summary><div class=\"det-body\"><p>Choose one level 1 spell from the Divination or Enchantment school of magic. You always have that spell and the Misty Step spell prepared. You can cast each of these spells without expending a spell slot. Once you cast either spell in this way, you can't cast that spell in this way again until you finish a Long Rest. You can also cast these spells using spell slots you have of the appropriate level. The spells' spellcasting ability is the ability increased by this feat.</p></div></details>"
+          }
+        },
         "choices": {
           "class_66_Elemental Fury_choice": "Potent Spellcasting"
         },
@@ -59516,5 +59523,5 @@
     ]
   },
   "nextId": 243,
-  "_updated": 1787497666577
+  "_updated": 1787497724990
 }

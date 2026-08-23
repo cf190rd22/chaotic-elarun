@@ -63717,7 +63717,7 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": false,
+        "_subSpellsCollapsed": true,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
@@ -69942,5 +69942,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787512410889
+  "_updated": 1787512420704
 }

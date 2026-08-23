@@ -63732,7 +63732,7 @@
             "Bless"
           ]
         },
-        "_grantChoicesCollapsed": false,
+        "_grantChoicesCollapsed": true,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -69942,5 +69942,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787512404980
+  "_updated": 1787512410889
 }

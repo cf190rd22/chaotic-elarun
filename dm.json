@@ -63528,14 +63528,15 @@
             "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
             "area": "",
             "hit": "",
-            "effect": "Teleport",
+            "effect": "",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_featSync": true,
             "_syncSourceId": 185,
             "_syncSourceName": "Fey Touched",
-            "_freecast": true
+            "_freecast": true,
+            "_singleUse": false
           },
           {
             "name": "Bless",
@@ -69937,5 +69938,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787500937485
+  "_updated": 1787505435048
 }

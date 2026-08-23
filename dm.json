@@ -42657,7 +42657,9 @@
             "hit": "",
             "source": "Wizard",
             "_assigned": true,
-            "_freecasted": false
+            "_freecasted": false,
+            "_raceSync": true,
+            "_syncSourceName": "Gnomish Lineage"
           },
           {
             "name": "Mold Earth",
@@ -43545,7 +43547,9 @@
             "_assigned": true,
             "_effectManual": false,
             "concentration": false,
-            "ritual": true
+            "ritual": true,
+            "_raceSync": true,
+            "_syncSourceName": "Gnomish Lineage"
           },
           {
             "name": "Tasha's Caustic Brew",
@@ -48111,7 +48115,10 @@
           "proficiencies": true,
           "jump": true
         },
-        "_collapsedActSubgroups": {}
+        "_collapsedActSubgroups": {},
+        "_raceSpellGroups": {
+          "race_32_Gnomish Lineage": "Forest"
+        }
       },
       {
         "id": 241,
@@ -70030,5 +70037,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787506415271
+  "_updated": 1787506427361
 }

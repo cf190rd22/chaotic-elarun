@@ -53598,7 +53598,21 @@
           }
         ],
         "saveDcEffective": 15,
-        "conditions": []
+        "conditions": [],
+        "_secCollapsed": {
+          "core": true,
+          "saves": true,
+          "skills": true,
+          "passives": true,
+          "senses": true,
+          "defenses": true,
+          "feats": true,
+          "languages": true,
+          "proficiencies": true,
+          "jump": true
+        },
+        "_topOpen": false,
+        "_collapsedActSubgroups": {}
       },
       {
         "id": 157,
@@ -56724,7 +56738,8 @@
           "languages": true,
           "proficiencies": true,
           "core": true,
-          "jump": true
+          "jump": true,
+          "spellSlots": false
         },
         "_collapsedActSubgroups": {},
         "_actFiltersCollapsed": true,
@@ -70015,5 +70030,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787505545062
+  "_updated": 1787505555244
 }

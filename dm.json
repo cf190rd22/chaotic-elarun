@@ -37780,7 +37780,9 @@
             "fav": false,
             "used": false,
             "_classSync": true,
-            "_syncMinLevel": 1
+            "_syncMinLevel": 1,
+            "_libName": "Druidic",
+            "_syncSourceId": 66
           },
           {
             "name": "Natural Recovery: Recover Spell Slots",
@@ -38377,7 +38379,9 @@
             "fav": false,
             "used": false,
             "_classSync": true,
-            "_syncMinLevel": 2
+            "_syncMinLevel": 2,
+            "_libName": "Lvl 2: Wild Companion",
+            "_syncSourceId": 66
           },
           {
             "name": "Wild Shape",
@@ -38396,24 +38400,9 @@
             "_syncMinLevel": 2,
             "tags": [
               "wild shape"
-            ]
-          },
-          {
-            "name": "Lvl 1: Primal Order: Magician",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 1,
-            "group": "Magician"
+            ],
+            "_libName": "Wild Shape",
+            "_syncSourceId": 66
           },
           {
             "name": "Lvl 7: Potent Spellcasting",
@@ -38431,7 +38420,9 @@
             "_classSync": true,
             "_syncMinLevel": 7,
             "group": "Potent Spellcasting",
-            "effect": "Add WIS mod to Druid Cantrip"
+            "effect": "Add WIS mod to Druid Cantrip",
+            "_libName": "Lvl 7: Potent Spellcasting",
+            "_syncSourceId": 66
           },
           {
             "name": "Dwarven Resilience: Poison",
@@ -38467,7 +38458,9 @@
             "tags": [
               "self boost"
             ],
-            "effect": "Recover Spell Slots"
+            "effect": "Recover Spell Slots",
+            "_libName": "Wild Resurgence: Regain Spell Slot",
+            "_syncSourceId": 66
           },
           {
             "name": "Wild Resurgence: Regain Wild Shape",
@@ -38488,7 +38481,9 @@
               "wild shape",
               "self boost"
             ],
-            "effect": "Recover Wild Shape"
+            "effect": "Recover Wild Shape",
+            "_libName": "Wild Resurgence: Regain Wild Shape",
+            "_syncSourceId": 66
           },
           {
             "name": "Tremorsense",
@@ -38506,6 +38501,26 @@
             "used": false,
             "_raceSync": true,
             "_syncMinLevel": 1
+          },
+          {
+            "name": "Lvl 1: Primal Order: Magician",
+            "_libName": "Lvl 1: Primal Order: Magician",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 66,
+            "group": "Magician"
           }
         ],
         "trackers": [
@@ -38537,7 +38552,8 @@
             "_custom": true,
             "_classSync": true,
             "maxFormula": "LVL>=17?4:LVL>=6?3:LVL>=2?2:0",
-            "_catId": 1780574512857
+            "_catId": 1780574512857,
+            "_syncSourceId": 66
           },
           {
             "key": "custom_owl_1780435425887",
@@ -38591,7 +38607,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "_catId": 1780574479773
+            "_catId": 1780574479773,
+            "_syncSourceId": 66
           }
         ],
         "_topOpen": false,
@@ -39139,7 +39156,8 @@
             "_custom": true,
             "_classSync": true,
             "maxFormula": "LVL>=17?4:LVL>=6?3:LVL>=2?2:0",
-            "_catId": 1780574512857
+            "_catId": 1780574512857,
+            "_syncSourceId": 66
           },
           {
             "key": "custom_owl_1780435425887",
@@ -39193,7 +39211,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "_catId": 1780574479773
+            "_catId": 1780574479773,
+            "_syncSourceId": 66
           }
         ],
         "saveDcEffective": 15
@@ -59464,5 +59483,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1787508911032
+  "_updated": 1787508920594
 }

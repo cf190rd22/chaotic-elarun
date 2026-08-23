@@ -63693,7 +63693,7 @@
             "Chromatic Orb"
           ]
         },
-        "_grantChoicesCollapsed": true,
+        "_grantChoicesCollapsed": false,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -69896,5 +69896,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787500768311
+  "_updated": 1787500774243
 }

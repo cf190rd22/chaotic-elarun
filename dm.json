@@ -57729,7 +57729,7 @@
         },
         "_subActGroups": {
           "66_Primal Order": "Magician",
-          "66_Elemental Fury": "Potent Spellcasting"
+          "66_Elemental Fury": ""
         },
         "_subTrkGroups": {},
         "_subFeatGroups": {},
@@ -58670,26 +58670,6 @@
             "desc": "<p>You can use this Bonus Action a number of times equal to your Proficiency Bonus, and you regain all expended uses when you finish a Long Rest.</p>",
             "fav": false,
             "used": false
-          },
-          {
-            "name": "Lvl 7: Potent Spellcasting",
-            "_libName": "Lvl 7: Potent Spellcasting",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "From Elemental Fury. Add your Wisdom modifier to the damage you deal with any Druid cantrip.",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 7,
-            "_syncSourceId": 66,
-            "group": "Potent Spellcasting"
           },
           {
             "name": "Lvl 2: Wild Companion",
@@ -70037,5 +70017,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787506444965
+  "_updated": 1787506466940
 }

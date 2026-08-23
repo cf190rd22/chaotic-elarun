@@ -58476,26 +58476,6 @@
             "used": false
           },
           {
-            "name": "Lvl 1: Primal Order: Magician",
-            "_libName": "Lvl 1: Primal Order: Magician",
-            "kind": "feat",
-            "atype": "feature",
-            "source": "Druid",
-            "hit": "",
-            "damage": "",
-            "damageType": "",
-            "range": "",
-            "save": "",
-            "notes": "",
-            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
-            "fav": false,
-            "used": false,
-            "_classSync": true,
-            "_syncMinLevel": 1,
-            "_syncSourceId": 66,
-            "group": "Magician"
-          },
-          {
             "name": "Wild Companion",
             "_libName": "Wild Companion",
             "kind": "feat",
@@ -58713,6 +58693,26 @@
             "_syncMinLevel": 7,
             "_syncSourceId": 66,
             "group": "Potent Spellcasting"
+          },
+          {
+            "name": "Lvl 1: Primal Order: Magician",
+            "_libName": "Lvl 1: Primal Order: Magician",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Druid",
+            "hit": "",
+            "damage": "",
+            "damageType": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You know one extra cantrip from the Druid spell list. In addition, your mystical connection to nature gives you a bonus to your Intelligence (Arcana or Nature) checks. The bonus equals your Wisdom modifier (minimum bonus of +1).",
+            "fav": false,
+            "used": false,
+            "_classSync": true,
+            "_syncMinLevel": 1,
+            "_syncSourceId": 66,
+            "group": "Magician"
           }
         ],
         "statblocks": [
@@ -69906,5 +69906,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787507042816
+  "_updated": 1787507068322
 }

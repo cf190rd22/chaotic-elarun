@@ -42351,7 +42351,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -42592,7 +42592,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -42656,7 +42656,7 @@
             "desc": "You create a sound or an image of an object within range that lasts for the duration. See the descriptions below for the effects of each. The illusion ends if you cast this spell again.\nIf a creature takes a Study action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.\nSound. If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.\nImage. If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot Cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, since things can pass through it.",
             "hit": "",
             "source": "Wizard",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false,
             "_raceSync": true,
             "_syncSourceName": "Gnomish Lineage"
@@ -42751,7 +42751,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -42939,7 +42939,7 @@
             "area": "",
             "hit": "",
             "effect": "1d6 damage",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -43186,7 +43186,7 @@
               "heal"
             ],
             "source": "Sojourner",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -43343,7 +43343,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -43406,7 +43406,7 @@
             "desc": "You create a shard of ice and fling it at one creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Piercing damage. Hit or miss, the shard then explodes. The target and each creature within 5 feet of it must succeed on a Dexterity saving throw or take 2d6 Cold damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Cold damage increases by 1d6 for each spell slot level above 1.",
             "area": "",
             "source": "Sorcerer",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -43451,7 +43451,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -43482,7 +43482,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -44276,7 +44276,7 @@
             "area": "",
             "hit": "STR",
             "effect": "2d6 bludgeoning, STR Save",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -45080,7 +45080,7 @@
             "area": "",
             "hit": "DEX",
             "effect": "2d6 fire, DEX Save",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -45228,7 +45228,7 @@
             "area": "",
             "hit": "CON",
             "effect": "3d10 thunder, CON Save",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -47671,6 +47671,230 @@
             "_modeAdvAll": true,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": []
+          },
+          {
+            "name": "Chaos: Illusory Echo",
+            "kind": "feat",
+            "atype": "reaction",
+            "source": "Blades of Chaos: Path of Shadow",
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Once per Long Rest, as a Reaction when hit by an Attack, an illusory echo absorbs the blow, reducing the damage by 1d10 + PB. ",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Chaos: Cloak of Chaos",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Blades of Chaos: Path of Shadow",
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "Once per Long Rest, you can cast invisibility on yourself for 1 minute. This does not require a spell slot. ",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Absorb Elements",
+            "kind": "spell",
+            "atype": "reaction",
+            "source": "Abjuration",
+            "hit": "",
+            "damage": "1d6 damage",
+            "range": "Self",
+            "save": "",
+            "notes": "1 round",
+            "desc": "The spell captures some of the incoming energy, lessening its effect on you and storing it for your next melee attack. You have resistance to the triggering damage type until the start of your next turn. Also, the first time you hit with a melee attack on your next turn, the target takes an extra 1d6 damage of the triggering type, and the spell ends.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Cure Wounds",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Abjuration",
+            "hit": "",
+            "damage": "",
+            "range": "Touch",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "A creature you touch regains a number of Hit Points equal to 2d8 plus your spellcasting ability modifier.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The healing increases by 2d8 for each spell slot level above 1.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Disguise Self",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Illusion",
+            "hit": "",
+            "damage": "",
+            "range": "Self",
+            "save": "",
+            "notes": "1 h",
+            "desc": "You make yourself—including your clothing, armor, weapons, and other belongings on your person—look different until the spell ends. You can seem 1 foot shorter or taller and can appear heavier or lighter. You must adopt a form that has the same basic arrangement of limbs as you have. Otherwise, the extent of the illusion is up to you.\nThe changes wrought by this spell fail to hold up to physical inspection. For example, if you use this spell to add a hat to your outfit, objects pass through the hat, and anyone who touches it would feel nothing.\nTo discern that you are disguised, a creature must take the Study action to inspect your appearance and succeed on an Intelligence (Investigation) check against your spell save DC.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Feather Fall",
+            "kind": "spell",
+            "atype": "reaction",
+            "source": "Transmutation",
+            "hit": "",
+            "damage": "",
+            "range": "60 feet",
+            "save": "",
+            "notes": "1 min",
+            "desc": "Choose up to five falling creatures within range. A falling creature’s rate of descent slows to 60 feet per round until the spell ends. If a creature lands before the spell ends, the creature takes no damage from the fall, and the spell ends for that creature.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Ice Knife",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Conjuration",
+            "hit": "Attack / DEX",
+            "damage": "1d10 Piercing ↑",
+            "range": "60 feet",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "You create a shard of ice and fling it at one creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Piercing damage. Hit or miss, the shard then explodes. The target and each creature within 5 feet of it must succeed on a Dexterity saving throw or take 2d6 Cold damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Cold damage increases by 1d6 for each spell slot level above 1.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Jump",
+            "kind": "spell",
+            "atype": "bonus",
+            "source": "Transmutation",
+            "hit": "",
+            "damage": "",
+            "range": "Touch",
+            "save": "",
+            "notes": "1 min",
+            "desc": "You touch a willing creature. Once on each of its turns until the spell ends, that creature can jump up to 30 feet by spending 10 feet of movement.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Magic Missile",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Evocation",
+            "hit": "",
+            "damage": "1d4 + 1 Force ↑",
+            "range": "120 feet",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "You create three glowing darts of magical force. Each dart strikes a creature of your choice that you can see within range. A dart deals 1d4 + 1 Force damage to its target. The darts all strike simultaneously, and you can direct them to hit one creature or several.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The spell creates one more dart for each spell slot level above 1.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Shield",
+            "kind": "spell",
+            "atype": "reaction",
+            "source": "Abjuration",
+            "hit": "",
+            "damage": "",
+            "range": "Self",
+            "save": "",
+            "notes": "1 round",
+            "desc": "An imperceptible barrier of magical force protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from Magic Missile.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Invisibility",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Illusion",
+            "hit": "",
+            "damage": "Invisible ↑",
+            "range": "Touch",
+            "save": "",
+            "notes": "Concentration, up to 1 h",
+            "desc": "A creature you touch has the Invisible condition until the spell ends. The spell ends early immediately after the target makes an attack roll, deals damage, or casts a spell.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 2.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Maximilian's Earthen Grasp",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Transmutation",
+            "hit": "STR",
+            "damage": "2d6 bludgeoning, STR Save",
+            "range": "30 feet",
+            "save": "",
+            "notes": "Concentration, up to 1 minute",
+            "desc": "You choose a 5-foot-square unoccupied space on the ground that you can see within range. A Medium hand made from compacted soil rises there and reaches for one creature you can see within 5 feet of it. The target must make a Strength saving throw. On a failed save, the target takes 2d6 bludgeoning damage and is restrained for the spell's duration.\nAs an action, you can cause the hand to crush the restrained target, which must make a Strength saving throw. The target takes 2d6 bludgeoning damage on a failed save, or half as much damage on a successful one.\nTo break out, the restrained target can use its action to make a Strength check against your spell save DC. On a success, the target escapes and is no longer restrained by the hand.\nAs an action, you can cause the hand to reach for a different creature or to move to a different unoccupied space within range. The hand releases a restrained target if you do either.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Misty Step",
+            "kind": "spell",
+            "atype": "bonus",
+            "source": "Conjuration",
+            "hit": "",
+            "damage": "",
+            "range": "Self",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Dispel Magic",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Abjuration",
+            "hit": "",
+            "damage": "",
+            "range": "120 feet",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "Choose one creature, object, or magical effect within range. Any ongoing spell of level 3 or lower on the target ends. For each ongoing spell of level 4 or higher on the target, make an ability check using your spellcasting ability (DC 10 plus that spell’s level). On a successful check, the spell ends.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You automatically end a spell on the target if the spell’s level is equal to or less than the level of the spell slot you use.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Melf's Minute Meteors",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Evocation",
+            "hit": "DEX",
+            "damage": "2d6 fire, DEX Save",
+            "range": "Self",
+            "save": "",
+            "notes": "Concentration, up to 10 minutes",
+            "desc": "You create six tiny meteors in your space. They float in the air and orbit you for the spell's duration. When you cast the spell — and as a bonus action on each of your turns thereafter — you can expend one or two of the meteors, sending them streaking toward a point or points you choose within 120 feet of you. Once a meteor reaches its destination or impacts against a solid surface, the meteor explodes. Each creature within 5 feet of the point where the meteor explodes must make a Dexterity saving throw. A creature takes 2d6 fire damage on a failed save, or half as much damage on a successful one.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Thunder Step",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Conjuration",
+            "hit": "CON",
+            "damage": "3d10 thunder, CON Save",
+            "range": "90 feet",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "You teleport yourself to an unoccupied space you can see within range. Immediately after you disappear, a thunderous boom sounds, and each creature within 10 feet of the space you left must make a Constitution saving throw, taking 3d10 thunder damage on a failed save, or half as much damage on a successful one. The thunder can be heard from up to 300 feet away.\nYou can bring along objects as long as their weight doesn't exceed what you can carry. You can also teleport one willing creature of your size or smaller who is carrying gear up to its carrying capacity. The creature must be within 5 feet of you when you cast this spell, and there must be an unoccupied space within 5 feet of your destination space for the creature to appear in; otherwise, the creature is left behind.",
+            "fav": false,
+            "used": false
           }
         ],
         "trackers": [
@@ -47712,7 +47936,7 @@
             "key": "cls_sorcerer_innate_sorcery",
             "label": "Innate Sorcery",
             "max": 2,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -47722,7 +47946,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 7,
-            "cur": 7,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -47733,7 +47957,7 @@
             "key": "cls_sorcerer_sorcerous_restoration",
             "label": "Sorcerous Restoration",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48073,7 +48297,7 @@
             "key": "cls_sorcerer_innate_sorcery",
             "label": "Innate Sorcery",
             "max": 2,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48083,7 +48307,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 7,
-            "cur": 7,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48094,7 +48318,7 @@
             "key": "cls_sorcerer_sorcerous_restoration",
             "label": "Sorcerous Restoration",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48119,7 +48343,9 @@
         "_collapsedActSubgroups": {},
         "_raceSpellGroups": {
           "race_32_Gnomish Lineage": "Forest"
-        }
+        },
+        "hpCurrent": 38,
+        "hpTemp": 0
       },
       {
         "id": 241,
@@ -56044,7 +56270,7 @@
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 40,
-            "cur": 25,
+            "cur": 35,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -56086,7 +56312,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 0,
+            "cur": 18,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -56136,7 +56362,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 84,
+        "hpCurrent": 74,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -56821,7 +57047,7 @@
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 40,
-            "cur": 25,
+            "cur": 35,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -56863,7 +57089,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 0,
+            "cur": 18,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -63604,14 +63830,15 @@
             "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
             "area": "",
             "hit": "",
-            "effect": "Teleport",
+            "effect": "",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_featSync": true,
             "_syncSourceId": 185,
             "_syncSourceName": "Fey Touched",
-            "_freecast": true
+            "_freecast": true,
+            "_singleUse": false
           },
           {
             "name": "Bless",
@@ -70016,5 +70243,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787514506398
+  "_updated": 1787562274184
 }

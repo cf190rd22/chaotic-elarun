@@ -42351,7 +42351,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42592,7 +42592,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42656,7 +42656,7 @@
             "desc": "You create a sound or an image of an object within range that lasts for the duration. See the descriptions below for the effects of each. The illusion ends if you cast this spell again.\nIf a creature takes a Study action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.\nSound. If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.\nImage. If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot Cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, since things can pass through it.",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false,
             "_raceSync": true,
             "_syncSourceName": "Gnomish Lineage"
@@ -42751,7 +42751,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42939,7 +42939,7 @@
             "area": "",
             "hit": "",
             "effect": "1d6 damage",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43186,7 +43186,7 @@
               "heal"
             ],
             "source": "Sojourner",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43343,7 +43343,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43406,7 +43406,7 @@
             "desc": "You create a shard of ice and fling it at one creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Piercing damage. Hit or miss, the shard then explodes. The target and each creature within 5 feet of it must succeed on a Dexterity saving throw or take 2d6 Cold damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Cold damage increases by 1d6 for each spell slot level above 1.",
             "area": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43451,7 +43451,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43482,7 +43482,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -44276,7 +44276,7 @@
             "area": "",
             "hit": "STR",
             "effect": "2d6 bludgeoning, STR Save",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -45080,7 +45080,7 @@
             "area": "",
             "hit": "DEX",
             "effect": "2d6 fire, DEX Save",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -45228,7 +45228,7 @@
             "area": "",
             "hit": "CON",
             "effect": "3d10 thunder, CON Save",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -47936,7 +47936,7 @@
             "key": "cls_sorcerer_innate_sorcery",
             "label": "Innate Sorcery",
             "max": 2,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -47946,7 +47946,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 7,
-            "cur": 0,
+            "cur": 7,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -47957,7 +47957,7 @@
             "key": "cls_sorcerer_sorcerous_restoration",
             "label": "Sorcerous Restoration",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48297,7 +48297,7 @@
             "key": "cls_sorcerer_innate_sorcery",
             "label": "Innate Sorcery",
             "max": 2,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48307,7 +48307,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 7,
-            "cur": 0,
+            "cur": 7,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48318,7 +48318,7 @@
             "key": "cls_sorcerer_sorcerous_restoration",
             "label": "Sorcerous Restoration",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -54288,7 +54288,7 @@
             "concentration": true,
             "area": "",
             "hit": "",
-            "_assigned": false,
+            "_assigned": true,
             "tags": [
               "buff"
             ],
@@ -56239,6 +56239,20 @@
               "advSkills": [],
               "advSkillsDur": ""
             }
+          },
+          {
+            "name": "Bless",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Enchantment",
+            "hit": "",
+            "damage": "",
+            "range": "30 feet",
+            "save": "",
+            "notes": "Concentration, up to 1 min",
+            "desc": "You bless up to three creatures within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target adds 1d4 to the attack roll or save.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
+            "fav": false,
+            "used": false
           }
         ],
         "trackers": [
@@ -58002,7 +58016,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -58042,7 +58056,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
             "label": "Nat.Recovery: Cast Circle Spell",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -58055,7 +58069,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -58925,6 +58939,62 @@
             "_syncMinLevel": 7,
             "_syncSourceId": 66,
             "group": "Potent Spellcasting"
+          },
+          {
+            "name": "Tree Stride",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Conjuration",
+            "hit": "",
+            "damage": "",
+            "range": "Self",
+            "save": "",
+            "notes": "Concentration, up to 1 min",
+            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Goodberry",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Conjuration",
+            "hit": "",
+            "damage": "1HP",
+            "range": "Self",
+            "save": "",
+            "notes": "24 h",
+            "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Water Walk",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Transmutation",
+            "hit": "",
+            "damage": "",
+            "range": "30 feet",
+            "save": "",
+            "notes": "1 h",
+            "desc": "This spell grants the ability to move across any liquid surface—such as water, acid, mud, snow, quicksand, or lava—as if it were harmless solid ground (creatures crossing molten lava can still take damage from the heat). Up to ten willing creatures of your choice within range gain this ability for the duration.\nAn affected target must take a Bonus Action to pass from the liquid’s surface into the liquid itself and vice versa, but if the target falls into the liquid, the target passes through the surface into the liquid below.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Ride the Lightning",
+            "kind": "spell",
+            "atype": "action",
+            "source": "Conjuration",
+            "hit": "DEX",
+            "damage": "4d6 Lightning ↑",
+            "range": "Self",
+            "save": "",
+            "notes": "Instantaneous",
+            "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
+            "fav": false,
+            "used": false
           }
         ],
         "statblocks": [
@@ -60275,7 +60345,7 @@
             "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
             "tags": [],
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -61012,7 +61082,7 @@
             "concentration": true,
             "hit": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -61361,7 +61431,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -61643,7 +61713,7 @@
             "ritual": true,
             "desc": "You imbue plants in an immobile 30-foot Emanation with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.\nYou can also turn Difficult Terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into Difficult Terrain that lasts for the duration.\nThe spell doesn’t enable plants to uproot themselves and move about, but they can move their branches, tendrils, and stalks for you.\nIf a Plant creature is in the area, you can communicate with it as if you shared a common language.",
             "tags": [],
-            "_assigned": false,
+            "_assigned": true,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -61792,7 +61862,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -62142,7 +62212,7 @@
             "concentration": true,
             "area": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -62262,7 +62332,7 @@
             "effect": "4d6 Lightning ↑",
             "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "GH",
@@ -63717,7 +63787,7 @@
             "effect": "",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": true,
+            "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "group": "Polar Land"
@@ -63737,7 +63807,7 @@
             "area": "",
             "source": "Bard",
             "_sourceBook": "PHB",
-            "_assigned": true,
+            "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "group": "Polar Land"
@@ -63776,7 +63846,7 @@
             "area": "20ft Cylinder",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": true,
+            "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 5,
             "group": "Polar Land"
@@ -63795,7 +63865,7 @@
             "desc": "Hail falls in a 20-foot-radius, 40-foot-high Cylinder centered on a point within range. Each creature in the Cylinder makes a Dexterity saving throw. A creature takes 2d10 Bludgeoning damage and 4d6 Cold damage on a failed save or half as much damage on a successful one.\nHailstones turn ground in the Cylinder into Difficult Terrain until the end of your next turn.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Bludgeoning damage increases by 1d10 for each spell slot level above 4.",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": true,
+            "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 7,
             "group": "Polar Land"
@@ -63814,7 +63884,7 @@
             "desc": "You unleash a blast of cold air. Each creature in a 60-foot Cone originating from you makes a Constitution saving throw, taking 8d8 Cold damage on a failed save or half as much damage on a successful one. A creature killed by this spell becomes a frozen statue until it thaws.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 5.",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": true,
+            "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 9,
             "group": "Polar Land"
@@ -63972,7 +64042,7 @@
         },
         "_slotUsed": {
           "152-L2": 2,
-          "152-L1": 1,
+          "152-L1": 0,
           "152-L4": 0
         },
         "_collapsedActSubgroups": {},
@@ -64064,7 +64134,7 @@
         "acEffective": 18,
         "hpMax": 59,
         "_slotUsedCompact": {
-          "1": 1,
+          "1": 0,
           "2": 2,
           "4": 0
         },
@@ -64124,7 +64194,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -64164,7 +64234,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
             "label": "Nat.Recovery: Cast Circle Spell",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -64177,7 +64247,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -70243,5 +70313,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787564722879
+  "_updated": 1788002477849
 }

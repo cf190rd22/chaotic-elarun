@@ -37999,16 +37999,6 @@
         "_raceSpellGroups": {},
         "trackers": [
           {
-            "key": "custom_owl_1780435425887",
-            "label": "Owl",
-            "cur": 1,
-            "max": 1,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "hp",
-            "_catId": 1784109512027
-          },
-          {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
             "label": "Chaos: Anchor",
             "max": 1,
@@ -38020,6 +38010,16 @@
             "_syncSourceId": 258,
             "_catId": 1784109504842,
             "actionLink": "Chaos: Anchor"
+          },
+          {
+            "key": "custom_owl_1780435425887",
+            "label": "Owl",
+            "cur": 1,
+            "max": 1,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "hp",
+            "_catId": 1784109512027
           },
           {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
@@ -38106,7 +38106,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -43934,7 +43934,7 @@
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
-          "saves": true,
+          "saves": false,
           "skills": false,
           "passives": false,
           "senses": false,
@@ -43953,7 +43953,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 52,
+        "hpCurrent": 53,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -44021,16 +44021,6 @@
         },
         "_trackersForDm": [
           {
-            "key": "custom_owl_1780435425887",
-            "label": "Owl",
-            "cur": 1,
-            "max": 1,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "hp",
-            "_catId": 1784109512027
-          },
-          {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
             "label": "Chaos: Anchor",
             "max": 1,
@@ -44042,6 +44032,16 @@
             "_syncSourceId": 258,
             "_catId": 1784109504842,
             "actionLink": "Chaos: Anchor"
+          },
+          {
+            "key": "custom_owl_1780435425887",
+            "label": "Owl",
+            "cur": 1,
+            "max": 1,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "hp",
+            "_catId": 1784109512027
           },
           {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
@@ -44128,7 +44128,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44247,5 +44247,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788013153909
+  "_updated": 1788020462775
 }

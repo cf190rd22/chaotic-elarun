@@ -37063,7 +37063,8 @@
           398,
           204,
           171,
-          257
+          257,
+          189
         ],
         "level": 8,
         "cls": "Chaos Knight",
@@ -37073,7 +37074,7 @@
           "Strength": {
             "score": 18,
             "mod": 4,
-            "_grantScoreBoost": 0
+            "_grantScoreBoost": 1
           },
           "Dexterity": {
             "score": 15,
@@ -37102,12 +37103,12 @@
           }
         },
         "saves": {
-          "Strength": 2,
-          "Dexterity": 0,
-          "Constitution": 2,
-          "Intelligence": -2,
-          "Wisdom": 1,
-          "Charisma": 4
+          "Strength": 4,
+          "Dexterity": 2,
+          "Constitution": 4,
+          "Intelligence": 0,
+          "Wisdom": 3,
+          "Charisma": 6
         },
         "saveFlags": {
           "Wisdom": {
@@ -37164,7 +37165,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": 0,
+            "bonus": 2,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37177,7 +37178,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": -2,
+            "bonus": 0,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37190,7 +37191,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 1,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37203,7 +37204,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 5,
+            "bonus": 7,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37216,7 +37217,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": 1,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37229,7 +37230,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 1,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37242,7 +37243,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": -2,
+            "bonus": 0,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37255,7 +37256,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 4,
+            "bonus": 6,
             "note": "+d4",
             "_modeAdv": false,
             "_modeDis": false,
@@ -37269,7 +37270,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 1,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37282,7 +37283,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": -2,
+            "bonus": 0,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37295,7 +37296,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": -2,
+            "bonus": 0,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37308,7 +37309,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 1,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37321,7 +37322,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 4,
+            "bonus": 6,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37334,7 +37335,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 4,
+            "bonus": 6,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37347,7 +37348,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": -2,
+            "bonus": 0,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37360,7 +37361,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": 0,
+            "bonus": 2,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37373,7 +37374,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": 0,
+            "bonus": 2,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37386,7 +37387,7 @@
             "state": "none",
             "adv": false,
             "dis": false,
-            "bonus": -2,
+            "bonus": 0,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37414,7 +37415,7 @@
         "weaponProfs": "Martial Weapons, Simple Weapons",
         "toolProfs": "Dice Set",
         "defenses": "Critical Hits",
-        "notes": "",
+        "notes": "Portent Die: 2",
         "overrides": {},
         "choices": {},
         "customFeatures": [],
@@ -38989,7 +38990,8 @@
             "notes": "Concentration, up to 10 min",
             "desc": "A shimmering field surrounds a creature of your choice within range, granting it a +2 bonus to AC for the duration.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_flag": true
           },
           {
             "name": "Shining Smite",
@@ -39456,6 +39458,15 @@
             "_catId": 1784109388919
           },
           {
+            "key": "_custom_1788010997025",
+            "label": "Portent Die:",
+            "max": 1,
+            "cur": 1,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
+          },
+          {
             "key": "custom_repulsion_shield_1784105550080",
             "label": "Repulsion Shield",
             "cur": 0,
@@ -39470,7 +39481,7 @@
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 40,
-            "cur": 25,
+            "cur": 40,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -39512,7 +39523,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 0,
+            "cur": 20,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -39523,23 +39534,10 @@
             "actionLink": "Aura of Chaos"
           },
           {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919,
-            "_origIdx": 3
-          },
-          {
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
             "label": "Chaos: Size",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -39548,11 +39546,22 @@
             "actionLink": "Chaos: Size",
             "_catId": 1784109388919,
             "_origIdx": 1
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919,
+            "_origIdx": 3
           }
         ],
-        "_slotUsed": {
-          "157-L2": 1
-        },
+        "_slotUsed": {},
         "_defTags": [
           {
             "type": "resistance",
@@ -39627,7 +39636,8 @@
             "size": "Medium",
             "speed": "50 ft.",
             "speedType": "",
-            "subtypes": ""
+            "subtypes": "",
+            "tempHp": 0
           }
         ],
         "items": [
@@ -40211,9 +40221,7 @@
         "activeModes": [],
         "acEffective": 22,
         "hpMax": 84,
-        "_slotUsedCompact": {
-          "2": 1
-        },
+        "_slotUsedCompact": {},
         "deathSaves": {
           "pass": 0,
           "fail": 0
@@ -40233,6 +40241,15 @@
             "_catId": 1784109388919
           },
           {
+            "key": "_custom_1788010997025",
+            "label": "Portent Die:",
+            "max": 1,
+            "cur": 1,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
+          },
+          {
             "key": "custom_repulsion_shield_1784105550080",
             "label": "Repulsion Shield",
             "cur": 0,
@@ -40247,7 +40264,7 @@
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 40,
-            "cur": 25,
+            "cur": 40,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -40289,7 +40306,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 0,
+            "cur": 20,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -40300,23 +40317,10 @@
             "actionLink": "Aura of Chaos"
           },
           {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919,
-            "_origIdx": 3
-          },
-          {
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
             "label": "Chaos: Size",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -40325,18 +40329,36 @@
             "actionLink": "Chaos: Size",
             "_catId": 1784109388919,
             "_origIdx": 1
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919,
+            "_origIdx": 3
           }
         ],
         "saveDcEffective": 14,
         "_dmHidden": true,
-        "_hitDiceUsed": {
-          "d10": 6
-        },
-        "exhaustionLevel": 1,
+        "_hitDiceUsed": {},
+        "exhaustionLevel": 0,
         "_qsHdOpen": true,
         "_wasDying": false,
         "heroicInspiration": true,
-        "_grantSourcesAbilScore": {},
+        "_grantSourcesAbilScore": {
+          "Strength": [
+            {
+              "src": "Heavy Armor Master",
+              "val": 1
+            }
+          ]
+        },
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_grantFlatBonusHitRanged": 0,
@@ -40356,6 +40378,19 @@
           6,
           6,
           6
+        ],
+        "_collapsedSpLevels": {
+          "1": false
+        },
+        "_appliedSuggestions": [
+          {
+            "srcKey": "feat_189",
+            "grant": {
+              "type": "abilityScore",
+              "target": "Strength",
+              "value": 1
+            }
+          }
         ]
       }
     ],
@@ -40404,5 +40439,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788003002182
+  "_updated": 1788013827307
 }

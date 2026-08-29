@@ -38053,7 +38053,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38093,7 +38093,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
             "label": "Nat.Recovery: Cast Circle Spell",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38106,7 +38106,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38803,7 +38803,8 @@
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
-            "_flag": true
+            "_flag": true,
+            "_modeActive": false
           },
           {
             "name": "Wild Resurgence: Regain Spell Slot",
@@ -40022,7 +40023,7 @@
             "desc": "One Humanoid you can see within range makes a Wisdom saving throw. It does so with Advantage if you or your allies are fighting it. On a failed save, the target has the Charmed condition until the spell ends or until you or your allies damage it. The Charmed creature is Friendly to you. When the spell ends, the target knows it was Charmed by you.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
             "area": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -40195,7 +40196,7 @@
             "desc": "Grasping plants sprout from the ground in a 20-foot square within range. For the duration, these plants turn the ground in the area into Difficult Terrain. They disappear when the spell ends.\nEach creature (other than you) in the area when you cast the spell must succeed on a Strength saving throw or have the Restrained condition until the spell ends. A Restrained creature can take an action to make a Strength (Athletics) check against your spell save DC. On a success, it frees itself from the grasping plants and is no longer Restrained by them.",
             "concentration": true,
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -40303,7 +40304,7 @@
             "desc": "You create a shard of ice and fling it at one creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Piercing damage. Hit or miss, the shard then explodes. The target and each creature within 5 feet of it must succeed on a Dexterity saving throw or take 2d6 Cold damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Cold damage increases by 1d6 for each spell slot level above 1.",
             "area": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -40403,7 +40404,7 @@
             "area": "",
             "hit": "DEX",
             "effect": "Restrained",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
@@ -42068,7 +42069,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -42131,7 +42132,7 @@
             "concentration": true,
             "area": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -43688,7 +43689,7 @@
             "_syncSourceName": "Magic Initiate",
             "_freecast": true,
             "_singleUse": false,
-            "_freecasted": true,
+            "_freecasted": false,
             "_singleUsed": false
           },
           {
@@ -43709,7 +43710,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Hold Person",
@@ -43729,7 +43732,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Ray of Frost",
@@ -43748,7 +43753,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Sleet Storm",
@@ -43768,7 +43775,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 5,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Ice Storm",
@@ -43787,7 +43796,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 7,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Cone of Cold",
@@ -43806,7 +43817,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 9,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           }
         ],
         "_grantImmunities": [],
@@ -43916,23 +43929,21 @@
           "tempHp": 0
         },
         "_slotUsed": {
-          "152-L2": 2,
-          "152-L1": 1,
-          "152-L4": 0
+          "152-L2": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
           "saves": true,
-          "skills": true,
+          "skills": false,
           "passives": false,
           "senses": false,
           "defenses": false,
           "feats": false,
-          "languages": true,
-          "proficiencies": true,
-          "core": true,
-          "jump": true,
+          "languages": false,
+          "proficiencies": false,
+          "core": false,
+          "jump": false,
           "spellSlots": false,
           "progression": false,
           "abilities": false
@@ -43942,7 +43953,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 45,
+        "hpCurrent": 52,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -44006,9 +44017,7 @@
         "acEffective": 18,
         "hpMax": 59,
         "_slotUsedCompact": {
-          "1": 1,
-          "2": 2,
-          "4": 0
+          "2": 1
         },
         "_trackersForDm": [
           {
@@ -44066,7 +44075,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44106,7 +44115,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
             "label": "Nat.Recovery: Cast Circle Spell",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44119,7 +44128,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44134,6 +44143,7 @@
         "_collapsedSpLevels": {
           "0": false,
           "1": false,
+          "3": false,
           "4": false
         },
         "_panelAcAdj": 0,
@@ -44237,5 +44247,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1787429579940
+  "_updated": 1788013153909
 }

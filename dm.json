@@ -462,10 +462,13 @@
             "duration": "24 h",
             "concentration": false,
             "ritual": false,
-            "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
+            "desc": "<p>Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.<br><br></p><p>Uneaten berries disappear when the spell ends.</p>",
             "tags": [],
             "source": "Druid",
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_effectManual": true,
+            "_spellAdjDuration": "",
+            "_noScale": false
           },
           {
             "name": "Healing Word",
@@ -24533,14 +24536,15 @@
             "range": "Self",
             "components": "V, S, M (a sprig of mistletoe)",
             "duration": "24 h",
-            "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
-            "area": "",
-            "hit": "",
+            "desc": "<p>Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.<br><br></p><p>Uneaten berries disappear when the spell ends.</p>",
             "effect": "1HP",
             "source": "Ranger",
             "concentration": false,
             "ritual": false,
-            "_sourceBook": "PHB"
+            "_sourceBook": "PHB",
+            "_effectManual": true,
+            "_spellAdjDuration": "",
+            "_noScale": false
           },
           {
             "name": "Hail of Thorns",
@@ -60516,19 +60520,23 @@
             "time": "Action",
             "range": "Self",
             "effect": "1HP",
+            "_effectManual": true,
+            "_noScale": false,
             "components": "V, S, M (a sprig of mistletoe)",
             "duration": "24 h",
             "concentration": false,
             "ritual": false,
-            "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
+            "desc": "<p>Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.<br><br></p><p>Uneaten berries disappear when the spell ends.</p>",
             "tags": [],
-            "source": "Druid",
             "_assigned": true,
-            "_classListImport": true,
-            "_syncSourceId": 66,
-            "_sourceBook": "PHB",
+            "_freecast": false,
+            "_singleUse": false,
             "_freecasted": false,
-            "_singleUsed": false
+            "_classSync": false,
+            "_subclassSync": false,
+            "_raceSync": false,
+            "_spellAdjActive": false,
+            "_spellAdjDuration": ""
           },
           {
             "name": "Healing Word",
@@ -70519,5 +70527,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467964820
+  "_updated": 1788467994992
 }

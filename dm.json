@@ -60005,7 +60005,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "1d10 dmg, melee spell attack (5ft)"
           },
           {
             "name": "Produce Flame",
@@ -70516,6 +70517,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467745077,
-  "_unchanged": true
+  "_updated": 1788467795482
 }

@@ -40798,8 +40798,7 @@
                 "count": 1,
                 "spellLevel": 1,
                 "classList": "Cleric,Wizard,Druid",
-                "_freecast": true,
-                "_singleUse": true
+                "_freecast": true
               }
             ]
           }
@@ -42392,7 +42391,7 @@
             "name": "Fire Bolt",
             "level": 0,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "120 feet",
             "components": "V, S",
             "duration": "Instantaneous",
@@ -42402,7 +42401,10 @@
             "area": "",
             "source": "Sorcerer",
             "_assigned": true,
-            "_freecasted": false
+            "_freecasted": false,
+            "_effectManual": true,
+            "concentration": false,
+            "ritual": false
           },
           {
             "name": "Focus",
@@ -43111,7 +43113,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "90 feet",
             "components": "V, S, M (a diamond worth 50+ GP)",
             "duration": "Instantaneous",
@@ -43121,7 +43123,10 @@
             "source": "Sorcerer",
             "_assigned": false,
             "_freecasted": false,
-            "effect": ""
+            "effect": "",
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": false
           },
           {
             "name": "Color Spray",
@@ -43360,7 +43365,8 @@
             "hit": "",
             "source": "Sojourner",
             "_assigned": false,
-            "_freecasted": false
+            "_freecasted": false,
+            "effect": ""
           },
           {
             "name": "Ghost Light",
@@ -43794,7 +43800,8 @@
             "hit": "",
             "source": "Wizard",
             "_assigned": false,
-            "_freecasted": false
+            "_freecasted": false,
+            "effect": ""
           },
           {
             "name": "Calm Emotions",
@@ -45669,7 +45676,8 @@
             "area": "",
             "source": "Sojourner",
             "_assigned": false,
-            "_freecasted": false
+            "_freecasted": false,
+            "effect": ""
           },
           {
             "name": "Puppet Master",
@@ -46344,7 +46352,8 @@
             "area": "",
             "source": "Sorcerer",
             "_assigned": false,
-            "_freecasted": false
+            "_freecasted": false,
+            "effect": ""
           },
           {
             "name": "Arcane Gate",
@@ -46847,9 +46856,13 @@
             "desc": "You and up to eight willing creatures who link hands in a circle are transported to a different plane of existence. You can specify a target destination in general terms, such as the City of Brass on the Elemental Plane of Fire or the palace of Dispater on the second level of the Nine Hells, and you appear in or near that destination, as determined by the DM.\nAlternatively, if you know the sigil sequence of a teleportation circle on another plane of existence, this spell can take you to that circle. If the teleportation circle is too small to hold all the creatures you transported, they appear in the closest unoccupied spaces next to the circle.",
             "area": "",
             "hit": "",
-            "source": "Sorcerer",
+            "source": "Druid",
             "_assigned": false,
-            "_freecasted": false
+            "_freecasted": false,
+            "effect": "",
+            "_sourceBook": "PHB",
+            "_freecast": true,
+            "_singleUse": false
           },
           {
             "name": "Power Word Maim",
@@ -46927,9 +46940,12 @@
             "desc": "This spell instantly transports you and up to eight willing creatures that you can see within range, or a single object that you can see within range, to a destination you select. If you target an object, it must be Large or smaller, and it can’t be held or carried by an unwilling creature.\nThe destination you choose must be known to you, and it must be on the same plane of existence as you. Your familiarity with the destination determines whether you arrive there successfully. The DM rolls 1d100 and consults the Teleportation Outcome table and the explanations after it.\nTeleportation Outcome\nFamiliarity\tMishap\tSimilar Area\tOff Target\tOn Target\nPermanent circle\t—\t—\t—\t01–00\nLinked object\t—\t—\t—\t01–00\nVery familiar\t01–05\t06–13\t14–24\t25–00\nSeen casually\t01–33\t34–43\t44–53\t54–00\nViewed once or described\t01–43\t44–53\t54–73\t74–00\nFalse destination\t01–50\t51–00\t—\t—\nFamiliarity. Here are the meanings of the terms in the table’s Familiarity column:\n* “Permanent circle” means a permanent teleportation circle whose sigil sequence you know.\n* “Linked object” means you possess an object taken from the desired destination within the last six months, such as a book from a wizard’s library.\n* “Very familiar” is a place you have visited often, a place you have carefully studied, or a place you can see when you cast the spell.\n* “Seen casually” is a place you have seen more than once but with which you aren’t very familiar.\n* “Viewed once or described” is a place you have seen once, possibly using magic, or a place you know through someone else’s description, perhaps from a map.\n* “False destination” is a place that doesn’t exist. Perhaps you tried to scry an enemy’s sanctum but instead viewed an illusion, or you are attempting to teleport to a location that no longer exists.\nMishap. The spell’s unpredictable magic results in a difficult journey. Each teleporting creature (or the target object) takes 3d10 Force damage, and the DM rerolls on the table to see where you wind up (multiple mishaps can occur, dealing damage each time).\nSimilar Area. You and your group (or the target object) appear in a different area that’s visually or thematically similar to the target area. You appear in the closest similar place. If you are heading for your home laboratory, for example, you might appear in another person’s laboratory in the same city.\nOff Target. You and your group (or the target object) appear 2d12 miles away from the destination in a random direction. Roll 1d8 for the direction: 1, east; 2, southeast; 3, south; 4, southwest; 5, west; 6, northwest; 7, north; or 8, northeast.\nOn Target. You and your group (or the target object) appear where you intended.",
             "area": "",
             "hit": "",
-            "source": "Sorcerer",
+            "source": "Bard",
             "_assigned": false,
-            "_freecasted": false
+            "_freecasted": false,
+            "_sourceBook": "PHB",
+            "_freecast": true,
+            "_singleUse": false
           },
           {
             "name": "Whirlwind",
@@ -47256,7 +47272,9 @@
             "fav": false,
             "used": false,
             "_subclassSync": true,
-            "_syncMinLevel": 3
+            "_syncMinLevel": 3,
+            "_libName": "Tides of Chaos",
+            "_syncSourceId": 63
           },
           {
             "name": "Bend Luck",
@@ -47273,7 +47291,9 @@
             "fav": false,
             "used": false,
             "_subclassSync": true,
-            "_syncMinLevel": 6
+            "_syncMinLevel": 6,
+            "_libName": "Bend Luck",
+            "_syncSourceId": 63
           },
           {
             "name": "Font of Magic",
@@ -47498,7 +47518,6 @@
             "desc": "When you finish a Short Rest, you can regain expended Sorcery Points, but no more than a number equal to half your Sorcerer level (round down). Once you use this feature, you can’t do so again until you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 5
           },
           {
@@ -47659,7 +47678,6 @@
             "desc": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 1,
             "_modeLabel": "Innate Sorcery",
             "_modeNotes": "Adv Sorc AR, Sorc Spell DC +1.",
@@ -47669,8 +47687,9 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": true,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": []
+            "_libName": "Innate Sorcery",
+            "_syncSourceId": 61,
+            "_libHasMode": true
           },
           {
             "name": "Chaos: Illusory Echo",
@@ -47895,6 +47914,96 @@
             "desc": "You teleport yourself to an unoccupied space you can see within range. Immediately after you disappear, a thunderous boom sounds, and each creature within 10 feet of the space you left must make a Constitution saving throw, taking 3d10 thunder damage on a failed save, or half as much damage on a successful one. The thunder can be heard from up to 300 feet away.\nYou can bring along objects as long as their weight doesn't exceed what you can carry. You can also teleport one willing creature of your size or smaller who is carrying gear up to its carrying capacity. The creature must be within 5 feet of you when you cast this spell, and there must be an unoccupied space within 5 feet of your destination space for the creature to appear in; otherwise, the creature is left behind.",
             "fav": false,
             "used": false
+          },
+          {
+            "name": "Innate Sorcery",
+            "_libName": "Innate Sorcery",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Font of Magic",
+            "_libName": "Font of Magic",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 2,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You can tap into the wellspring of magic within yourself. This wellspring is represented by Sorcery Points, which allow you to create a variety of magical effects.\n\nYou have 2 Sorcery Points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer Features table. You can’t have more Sorcery Points than the number shown in the table for your level. You regain all expended Sorcery Points when you finish a Long Rest.\n\nYou can use your Sorcery Points to fuel the options below, along with other features, such as Metamagic, that use those points.\n\nConverting Spell Slots to Sorcery Points. You can expend a spell slot to gain a number of Sorcery Points equal to the slot’s level (no action required).\n\nCreating Spell Slots. As a Bonus Action, you can transform unexpended Sorcery Points into one spell slot. The Creating Spell Slots table shows the cost of creating a spell slot of a given level, and it lists the minimum Sorcerer level you must be to create a slot. You can create a spell slot no higher than level 5.\n\nAny spell slot you create with this feature vanishes when you finish a Long Rest.\n\nCreating Spell Slots\n  Spell Slot Level | Sorcery Point Cost | Min. Sorcerer Level\n  1 | 2 | 2\n  2 | 3 | 3\n  3 | 5 | 5\n  4 | 6 | 7\n  5 | 7 | 9",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Metamagic",
+            "_libName": "Metamagic",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 2,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<p>Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.</p><p>You can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.</p><p>Whenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.<br></p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Metamagic Options</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">The following options are available to your Metamagic feature. The options are presented in alphabetical order.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Careful Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell’s full force. To do so, spend 1 Sorcery Point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell, and it takes no damage if it would normally take half damage on a successful save.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Distant Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell that has a range of at least 5 feet, you can spend 1 Sorcery Point to double the spell’s range. Or when you cast a spell that has a range of Touch, you can spend 1 Sorcery Point to make the spell’s range 30 feet.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Empowered Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you roll damage for a spell, you can spend 1 Sorcery Point to reroll a number of the damage dice up to your Charisma modifier (minimum of one), and you must use the new rolls.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">You can use Empowered Spell even if you’ve already used a different Metamagic option during the casting of the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Extended Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>When you cast a spell that has a duration of 1 minute or longer, you can spend 1 Sorcery Point to double its duration to a maximum duration of 24 hours.</p><p>If the affected spell requires Concentration, you have Advantage on any saving throw you make to maintain that Concentration.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Heightened Spell (2SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 2 Sorcery Points</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell that forces a creature to make a saving throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Quickened Spell (2SP)</summary><div class=\"det-body\"><p>Cost: 2 Sorcery Points</p><p>When you cast a spell that has a casting time of an action, you can spend 2 Sorcery Points to change the casting time to a Bonus Action for this casting. You can’t modify a spell in this way if you’ve already cast a level 1+ spell on the current turn, nor can you cast a level 1+ spell on this turn after modifying a spell in this way.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Seeking Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>If you make an attack roll for a spell and miss, you can spend 1 Sorcery Point to reroll the d20, and you must use the new roll.</p><p>You can use Seeking Spell even if you’ve already used a different Metamagic option during the casting of the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Subtle Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>When you cast a spell, you can spend 1 Sorcery Point to cast it without any Verbal, Somatic, or Material components, except Material components that are consumed by the spell or that have a cost specified in the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Transmuted Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>When you cast a spell that deals a type of damage from the following list, you can spend 1 Sorcery Point to change that damage type to one of the other listed types: Acid, Cold, Fire, Lightning, Poison, Thunder.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Twinned Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.</p></div></details>",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Sorcerous Restoration",
+            "_libName": "Sorcerous Restoration",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 5,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "When you finish a Short Rest, you can regain expended Sorcery Points, but no more than a number equal to half your Sorcerer level (round down). Once you use this feature, you can’t do so again until you finish a Long Rest.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Harmonic Spirits",
+            "_libName": "Harmonic Spirits",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sojourner",
+            "_syncSourceId": 158,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<p>You gain one spirit of your choice. A list of the available spirits can be found at the end of the class description. When you gain certain Sojourner levels, you gain additional spirits of your choice, as shown in the Spirits column of the Sojourner table.</p><p>Detailed under each spirit is a cantrip you learn, associated with that spirit. These cantrips are Sojourner cantrips for you, and don't count against the total number of cantrips you know.</p><hr><h3>Expanded Spells</h3><p>Each spirit has its own expanded list of spells you can choose from when you learn a Sojourner spell.<br><br></p><h3>Spiritual Drift</h3><p>Your spirits drift with you, meaning they share your space and move with you at all times. As a bonus action on your turn, you can have one of your spirits move to drift with a willing creature you can see within 120 feet of you. You can have any of your spirits return to drift with you on your turn (no action required). A spirit will also return to you if another creature they're drifting with is ever further than 120 feet away from you.</p><p>Each spirit has a benefit it provides to any creature it drifts with, detailed as part of each spirit’s description.<br><br></p><h3>Harmonic Form</h3><p>Your spirits are illusions; they count as neither creatures nor objects, but are visible to you and all other creatures. You decide on their forms, although they can be no larger than the space of a creature they're drifting with, and they don't obscure that creature's vision. They can't interact with any objects or creatures or move beyond the space of a creature they're drifting with, and a spirit drifting with an invisible or otherwise hidden creature will also be obscured from view.</p><div><br></div><div><hr></div><div><br></div><h2>Harmonic Spirits</h2><div><br></div><div><details><summary>The Companion</summary></details></div><div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Empyrean</summary></details></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Fallen</summary></details></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Hellion</summary></details></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Tectonic</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Torrent</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Verdant</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Wildfire</summary></details></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Wrym</summary></details></div></div></div></div></div></div></div></div><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><div style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0);\"><details style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); border-color: rgb(30, 37, 56); border-style: solid; border-width: 1px; border-image: none 100% / 1 / 0 stretch;\"><summary style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); background: none 0% 0% / auto repeat scroll padding-box border-box rgb(22, 27, 39); color: rgb(232, 234, 240); border-bottom: 1px solid rgb(30, 37, 56);\">The Zephyr</summary></details></div></div></div></div></div></div>",
+            "fav": false,
+            "used": false
           }
         ],
         "trackers": [
@@ -47907,18 +48016,8 @@
             "reset": "long",
             "_custom": true,
             "_subclassSync": true,
-            "actionLink": "Tides of Chaos"
-          },
-          {
-            "key": "sub_wild_magic_sorcery_tamed_surge",
-            "label": "Tamed Surge",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "actionLink": "Tamed Surge"
+            "actionLink": "Tides of Chaos",
+            "_syncSourceId": 63
           },
           {
             "key": "race_gnome_speak_with_animals_(free)",
@@ -47940,18 +48039,20 @@
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
-            "_classSync": true
+            "_classSync": true,
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
-            "max": 7,
+            "max": 6,
             "cur": 7,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "maxFormula": "LVL>=2?LVL:0"
+            "maxFormula": "LVL>=2?LVL:0",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcerous_restoration",
@@ -47961,7 +48062,20 @@
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
-            "_classSync": true
+            "_classSync": true,
+            "_syncSourceId": 61
+          },
+          {
+            "key": "cls_sojourner_spirits",
+            "label": "Spirits",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 158,
+            "maxFormula": "(LVL-6)>=17?5:(LVL-6)>=13?4:(LVL-6)>=9?3:(LVL-6)>=5?2:1"
           }
         ],
         "_topOpen": false,
@@ -48268,18 +48382,8 @@
             "reset": "long",
             "_custom": true,
             "_subclassSync": true,
-            "actionLink": "Tides of Chaos"
-          },
-          {
-            "key": "sub_wild_magic_sorcery_tamed_surge",
-            "label": "Tamed Surge",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "actionLink": "Tamed Surge"
+            "actionLink": "Tides of Chaos",
+            "_syncSourceId": 63
           },
           {
             "key": "race_gnome_speak_with_animals_(free)",
@@ -48301,18 +48405,20 @@
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
-            "_classSync": true
+            "_classSync": true,
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
-            "max": 7,
+            "max": 6,
             "cur": 7,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "maxFormula": "LVL>=2?LVL:0"
+            "maxFormula": "LVL>=2?LVL:0",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcerous_restoration",
@@ -48322,7 +48428,20 @@
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
-            "_classSync": true
+            "_classSync": true,
+            "_syncSourceId": 61
+          },
+          {
+            "key": "cls_sojourner_spirits",
+            "label": "Spirits",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_classSync": true,
+            "_syncSourceId": 158,
+            "maxFormula": "(LVL-6)>=17?5:(LVL-6)>=13?4:(LVL-6)>=9?3:(LVL-6)>=5?2:1"
           }
         ],
         "saveDcEffective": 14,
@@ -48893,7 +49012,7 @@
             "name": "Fire Bolt",
             "level": 0,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "120 feet",
             "components": "V, S",
             "duration": "Instantaneous",
@@ -48905,7 +49024,10 @@
             "_assigned": true,
             "tags": [
               "damage"
-            ]
+            ],
+            "_effectManual": true,
+            "concentration": false,
+            "ritual": false
           },
           {
             "name": "Friends",
@@ -49433,7 +49555,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "90 feet",
             "components": "V, S, M (a diamond worth 50+ GP)",
             "duration": "Instantaneous",
@@ -49444,7 +49566,14 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "effect": ""
+            "effect": "3d8 damage",
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": false,
+            "_spellAdjDuration": "",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Color Spray",
@@ -49479,7 +49608,10 @@
             "_syncMinLevel": 3,
             "tags": [
               "control"
-            ]
+            ],
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Comprehend Languages",
@@ -49945,7 +50077,10 @@
             "tags": [
               "self buff",
               "speed"
-            ]
+            ],
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Arcane Vigor",
@@ -50149,7 +50284,10 @@
             "effect": "",
             "tags": [
               "buff"
-            ]
+            ],
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Dragon’s Breath",
@@ -51006,7 +51144,10 @@
             "_syncMinLevel": 5,
             "tags": [
               "control"
-            ]
+            ],
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Fireball",
@@ -51059,7 +51200,10 @@
             "effect": "",
             "tags": [
               "movement"
-            ]
+            ],
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Gaseous Form",
@@ -51428,7 +51572,10 @@
             "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 7,
-            "effect": ""
+            "effect": "",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Banishment",
@@ -51491,7 +51638,10 @@
             "source": "Druid",
             "_assigned": false,
             "_subclassSync": true,
-            "_syncMinLevel": 7
+            "_syncMinLevel": 7,
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Confusion",
@@ -51998,7 +52148,10 @@
             "_assigned": false,
             "_subclassSync": true,
             "_syncMinLevel": 9,
-            "effect": ""
+            "effect": "",
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Magic Mirror",
@@ -52079,7 +52232,10 @@
             "_subclassSync": true,
             "_syncMinLevel": 18,
             "_freecast": true,
-            "_singleUse": false
+            "_singleUse": false,
+            "_sourceBook": "PHB",
+            "_syncSourceName": "Draconic Sorcery",
+            "_syncSourceId": 239
           },
           {
             "name": "Synaptic Static",
@@ -53041,9 +53197,10 @@
             "_modeDmgBonus": 0,
             "_modeResistance": "",
             "_modeAdvAll": true,
-            "_modeAdvSaves": [],
-            "_modeAdvAbilChecks": [],
-            "_modeActive": false
+            "_modeActive": false,
+            "_libName": "Innate Sorcery",
+            "_syncSourceId": 61,
+            "_libHasMode": true
           },
           {
             "name": "Sorcerous Restoration",
@@ -53059,7 +53216,6 @@
             "desc": "When you finish a Short Rest, you can regain expended Sorcery Points, but no more than a number equal to half your Sorcerer level (round down). Once you use this feature, you can’t do so again until you finish a Long Rest.",
             "fav": false,
             "used": false,
-            "_classSync": true,
             "_syncMinLevel": 5,
             "effect": "Regain SP"
           },
@@ -53506,6 +53662,79 @@
             "fav": true,
             "used": false,
             "_flag": true
+          },
+          {
+            "name": "Innate Sorcery",
+            "_libName": "Innate Sorcery",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_classSync": true,
+            "_syncSourceId": 61,
+            "_syncMinLevel": 1,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "An event in your past left an indelible mark on you, infusing you with simmering magic. As a Bonus Action, you can unleash that magic for 1 minute, during which you gain the following benefits:\n\nThe spell save DC of your Sorcerer spells increases by 1.\nYou have Advantage on the attack rolls of Sorcerer spells you cast.\nYou can use this feature twice, and you regain all expended uses of it when you finish a Long Rest.",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Font of Magic",
+            "_libName": "Font of Magic",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 2,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "You can tap into the wellspring of magic within yourself. This wellspring is represented by Sorcery Points, which allow you to create a variety of magical effects.\n\nYou have 2 Sorcery Points, and you gain more as you reach higher levels, as shown in the Sorcery Points column of the Sorcerer Features table. You can’t have more Sorcery Points than the number shown in the table for your level. You regain all expended Sorcery Points when you finish a Long Rest.\n\nYou can use your Sorcery Points to fuel the options below, along with other features, such as Metamagic, that use those points.\n\nConverting Spell Slots to Sorcery Points. You can expend a spell slot to gain a number of Sorcery Points equal to the slot’s level (no action required).\n\nCreating Spell Slots. As a Bonus Action, you can transform unexpended Sorcery Points into one spell slot. The Creating Spell Slots table shows the cost of creating a spell slot of a given level, and it lists the minimum Sorcerer level you must be to create a slot. You can create a spell slot no higher than level 5.\n\nAny spell slot you create with this feature vanishes when you finish a Long Rest.\n\nCreating Spell Slots\n  Spell Slot Level | Sorcery Point Cost | Min. Sorcerer Level\n  1 | 2 | 2\n  2 | 3 | 3\n  3 | 5 | 5\n  4 | 6 | 7\n  5 | 7 | 9",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Metamagic",
+            "_libName": "Metamagic",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 2,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "<p>Because your magic flows from within, you can alter your spells to suit your needs; you gain two Metamagic options of your choice from “Metamagic Options” later in this class’s description. You use the chosen options to temporarily modify spells you cast. To use an option, you must spend the number of Sorcery Points that it costs.</p><p>You can use only one Metamagic option on a spell when you cast it unless otherwise noted in one of those options.</p><p>Whenever you gain a Sorcerer level, you can replace one of your Metamagic options with one you don’t know. You gain two more options at Sorcerer level 10 and two more at Sorcerer level 17.<br></p><hr><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Metamagic Options</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">The following options are available to your Metamagic feature. The options are presented in alphabetical order.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Careful Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell that forces other creatures to make a saving throw, you can protect some of those creatures from the spell’s full force. To do so, spend 1 Sorcery Point and choose a number of those creatures up to your Charisma modifier (minimum of one creature). A chosen creature automatically succeeds on its saving throw against the spell, and it takes no damage if it would normally take half damage on a successful save.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Distant Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell that has a range of at least 5 feet, you can spend 1 Sorcery Point to double the spell’s range. Or when you cast a spell that has a range of Touch, you can spend 1 Sorcery Point to make the spell’s range 30 feet.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Empowered Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you roll damage for a spell, you can spend 1 Sorcery Point to reroll a number of the damage dice up to your Charisma modifier (minimum of one), and you must use the new rolls.</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">You can use Empowered Spell even if you’ve already used a different Metamagic option during the casting of the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Extended Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>When you cast a spell that has a duration of 1 minute or longer, you can spend 1 Sorcery Point to double its duration to a maximum duration of 24 hours.</p><p>If the affected spell requires Concentration, you have Advantage on any saving throw you make to maintain that Concentration.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Heightened Spell (2SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 2 Sorcery Points</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell that forces a creature to make a saving throw, you can spend 2 Sorcery Points to give one target of the spell Disadvantage on saves against the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Quickened Spell (2SP)</summary><div class=\"det-body\"><p>Cost: 2 Sorcery Points</p><p>When you cast a spell that has a casting time of an action, you can spend 2 Sorcery Points to change the casting time to a Bonus Action for this casting. You can’t modify a spell in this way if you’ve already cast a level 1+ spell on the current turn, nor can you cast a level 1+ spell on this turn after modifying a spell in this way.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Seeking Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>If you make an attack roll for a spell and miss, you can spend 1 Sorcery Point to reroll the d20, and you must use the new roll.</p><p>You can use Seeking Spell even if you’ve already used a different Metamagic option during the casting of the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Subtle Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>When you cast a spell, you can spend 1 Sorcery Point to cast it without any Verbal, Somatic, or Material components, except Material components that are consumed by the spell or that have a cost specified in the spell.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Transmuted Spell (1SP)</summary><div class=\"det-body\"><p>Cost: 1 Sorcery Point</p><p>When you cast a spell that deals a type of damage from the following list, you can spend 1 Sorcery Point to change that damage type to one of the other listed types: Acid, Cold, Fire, Lightning, Poison, Thunder.</p></div></details><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\"></p><p></p><p></p><details><summary>Twinned Spell (1SP)</summary><div class=\"det-body\"><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">Cost: 1 Sorcery Point</p><p style=\"scrollbar-color: rgb(37, 45, 63) rgba(0, 0, 0, 0); color: rgb(154, 163, 184);\">When you cast a spell, such as Charm Person, that can be cast with a higher-level spell slot to target an additional creature, you can spend 1 Sorcery Point to increase the spell’s effective level by 1.</p></div></details>",
+            "fav": false,
+            "used": false
+          },
+          {
+            "name": "Sorcerous Restoration",
+            "_libName": "Sorcerous Restoration",
+            "kind": "feat",
+            "atype": "feature",
+            "source": "Sorcerer",
+            "_syncSourceId": 61,
+            "_syncMinLevel": 5,
+            "_featureAsAction": true,
+            "hit": "",
+            "damage": "",
+            "range": "",
+            "save": "",
+            "notes": "",
+            "desc": "When you finish a Short Rest, you can regain expended Sorcery Points, but no more than a number equal to half your Sorcerer level (round down). Once you use this feature, you can’t do so again until you finish a Long Rest.",
+            "fav": false,
+            "used": false
           }
         ],
         "trackers": [
@@ -53540,7 +53769,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "maxFormula": "LVL>=2?LVL:0"
+            "maxFormula": "LVL>=2?LVL:0",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_innate_sorcery",
@@ -53551,7 +53781,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Innate Sorcery"
+            "actionLink": "Innate Sorcery",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcerous_restoration",
@@ -53562,7 +53793,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Sorcerous Restoration"
+            "actionLink": "Sorcerous Restoration",
+            "_syncSourceId": 61
           }
         ],
         "_slotUsed": {},
@@ -53806,7 +54038,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "maxFormula": "LVL>=2?LVL:0"
+            "maxFormula": "LVL>=2?LVL:0",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_innate_sorcery",
@@ -53817,7 +54050,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Innate Sorcery"
+            "actionLink": "Innate Sorcery",
+            "_syncSourceId": 61
           },
           {
             "key": "cls_sorcerer_sorcerous_restoration",
@@ -53828,7 +54062,8 @@
             "reset": "long",
             "_custom": true,
             "_classSync": true,
-            "actionLink": "Sorcerous Restoration"
+            "actionLink": "Sorcerous Restoration",
+            "_syncSourceId": 61
           }
         ],
         "saveDcEffective": 15,
@@ -57211,7 +57446,7 @@
           "Wisdom": {
             "score": 18,
             "mod": 4,
-            "_grantScoreBoost": 0
+            "_grantScoreBoost": 1
           },
           "Charisma": {
             "score": 12,
@@ -57548,7 +57783,8 @@
           257,
           258,
           168,
-          398
+          398,
+          185
         ],
         "customFeats": [],
         "currency": {},
@@ -59996,7 +60232,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "90 feet",
             "hit": "Attack",
             "_effectManual": false,
@@ -63557,7 +63793,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "90 feet",
             "hit": "Attack",
             "_effectManual": false,
@@ -63634,7 +63870,7 @@
             "name": "Chromatic Orb",
             "level": 1,
             "school": "Evocation",
-            "time": "A",
+            "time": "Action",
             "range": "90 feet",
             "components": "V, S, M (a diamond worth 50+ GP)",
             "duration": "Instantaneous",
@@ -63652,7 +63888,10 @@
             "_freecast": true,
             "_singleUse": false,
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_effectManual": false,
+            "concentration": false,
+            "ritual": false
           },
           {
             "name": "Fog Cloud",
@@ -63667,14 +63906,16 @@
             "concentration": true,
             "hit": "",
             "effect": "",
-            "source": "Sorcerer",
+            "source": "Druid",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "group": "Polar Land",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Hold Person",
@@ -63689,14 +63930,16 @@
             "desc": "Choose a Humanoid that you can see within range. The target must succeed on a Wisdom saving throw or have the Paralyzed condition for the duration. At the end of each of its turns, the target repeats the save, ending the spell on itself on a success.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional Humanoid for each spell slot level above 2.",
             "concentration": true,
             "area": "",
-            "source": "Bard",
+            "source": "Druid",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
             "group": "Polar Land",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Ray of Frost",
@@ -63717,7 +63960,9 @@
             "_syncMinLevel": 3,
             "group": "Polar Land",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Sleet Storm",
@@ -63732,14 +63977,16 @@
             "desc": "Until the spell ends, sleet falls in a 40-foot-tall, 20-foot-radius Cylinder centered on a point you choose within range. The area is Heavily Obscured, and exposed flames in the area are doused.\nGround in the Cylinder is Difficult Terrain. When a creature enters the Cylinder for the first time on a turn or starts its turn there, it must succeed on a Dexterity saving throw or have the Prone condition and lose Concentration.",
             "concentration": true,
             "area": "20ft Cylinder",
-            "source": "Sorcerer",
+            "source": "Druid",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 5,
             "group": "Polar Land",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Ice Storm",
@@ -63753,14 +64000,16 @@
             "hit": "DEX",
             "effect": "4d6 Cold ↑",
             "desc": "Hail falls in a 20-foot-radius, 40-foot-high Cylinder centered on a point within range. Each creature in the Cylinder makes a Dexterity saving throw. A creature takes 2d10 Bludgeoning damage and 4d6 Cold damage on a failed save or half as much damage on a successful one.\nHailstones turn ground in the Cylinder into Difficult Terrain until the end of your next turn.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Bludgeoning damage increases by 1d10 for each spell slot level above 4.",
-            "source": "Sorcerer",
+            "source": "Druid",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 7,
             "group": "Polar Land",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
           },
           {
             "name": "Cone of Cold",
@@ -63774,14 +64023,37 @@
             "hit": "CON",
             "effect": "8d8 Cold ↑",
             "desc": "You unleash a blast of cold air. Each creature in a 60-foot Cone originating from you makes a Constitution saving throw, taking 8d8 Cold damage on a failed save or half as much damage on a successful one. A creature killed by this spell becomes a frozen statue until it thaws.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 5.",
-            "source": "Sorcerer",
+            "source": "Druid",
             "_sourceBook": "PHB",
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 9,
             "group": "Polar Land",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_syncSourceName": "Circle of the Land",
+            "_syncSourceId": 139
+          },
+          {
+            "name": "Misty Step",
+            "level": 2,
+            "school": "Conjuration",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
+            "area": "",
+            "hit": "",
+            "effect": "",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_syncSourceId": 185,
+            "_syncSourceName": "Fey Touched",
+            "_freecast": true,
+            "_singleUse": false
           }
         ],
         "_grantImmunities": [],
@@ -64145,7 +64417,14 @@
         "_qsHdOpen": false,
         "_spFiltersCollapsed": false,
         "_spTimeFilter": "all",
-        "_grantSourcesAbilScore": {},
+        "_grantSourcesAbilScore": {
+          "Wisdom": [
+            {
+              "src": "Fey Touched",
+              "val": 1
+            }
+          ]
+        },
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_hpLevels": [
@@ -64158,10 +64437,22 @@
           5,
           5
         ],
-        "_charGrants": {},
+        "_charGrants": {
+          "feat_185_Fey Touched": [
+            {
+              "type": "abilityScore",
+              "target": "Wisdom",
+              "value": 1
+            }
+          ]
+        },
         "_appliedSuggestions": [],
         "originId": "sage",
-        "originName": "Sage"
+        "originName": "Sage",
+        "_featTakenLevel": {
+          "174": 4,
+          "185": 8
+        }
       }
     ],
     "unassignedSpells": [],
@@ -70137,5 +70428,6 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788461805960
+  "_updated": 1788462024622,
+  "_unchanged": true
 }

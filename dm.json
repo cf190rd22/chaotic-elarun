@@ -64091,7 +64091,8 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139
+            "_syncSourceId": 139,
+            "notes": "20ft-radius, 40ft-high Cylinder; DEX save, fail = 2d10 bludgeoning + 4d6 cold dmg (success = half). Ground becomes Difficult Terrain until end of your next turn"
           },
           {
             "name": "Cone of Cold",
@@ -70540,5 +70541,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468359933
+  "_updated": 1788468384332
 }

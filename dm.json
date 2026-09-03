@@ -60143,7 +60143,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "2d6 piercing dmg + pull Large/smaller up to 10ft closer, melee spell attack"
           },
           {
             "name": "Thunderclap",
@@ -70518,5 +70519,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467842074
+  "_updated": 1788467876191
 }

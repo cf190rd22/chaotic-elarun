@@ -61916,7 +61916,8 @@
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
             "_sourceBook": "PHB",
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "30ft Emanation (immobile); plants gain sentience, communicate, follow simple commands; question them about past-day events in area; convert plant-caused Difficult Terrain ↔ ordinary terrain (duration); Plant creatures in area can be spoken to as common language. (No movement of plants themselves)"
           },
           {
             "name": "Speak with Plants",
@@ -70537,5 +70538,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468285144
+  "_updated": 1788468303398
 }

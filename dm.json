@@ -60556,7 +60556,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "Heal 2d4 + spellcasting mod (+2d4 per slot level above 1)"
           },
           {
             "name": "Ice Knife",
@@ -70528,5 +70529,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468008526
+  "_updated": 1788468029720
 }

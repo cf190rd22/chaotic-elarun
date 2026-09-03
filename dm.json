@@ -60678,7 +60678,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "Creates invisible trap (5ft radius circle; INT (Investigation) vs spell save DC to spot). Triggers on S/M/L creature entering: DEX save or hoisted, Restrained, hanging 3ft up. Restrained target: DEX save each turn end, or anyone action INT (Arcana) vs spell save DC, to escape. Ends when no one restrained."
           },
           {
             "name": "Speak with Animals",
@@ -70530,5 +70531,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468077690
+  "_updated": 1788468118833
 }

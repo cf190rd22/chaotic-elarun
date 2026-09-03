@@ -59760,7 +59760,7 @@
             "_sourceBook": "PHB",
             "_freecasted": false,
             "_singleUsed": false,
-            "notes": "1d4 to ability checks"
+            "notes": "1d4 to ability checks -  1 skill"
           },
           {
             "name": "Gust",
@@ -70513,5 +70513,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467481751
+  "_updated": 1788467516859
 }

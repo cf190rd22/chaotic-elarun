@@ -64015,7 +64015,8 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139
+            "_syncSourceId": 139,
+            "notes": "Humanoid target: WIS save or Paralyzed for duration; repeats save at end of each turn to end early"
           },
           {
             "name": "Ray of Frost",
@@ -70535,5 +70536,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468216481
+  "_updated": 1788468241028
 }

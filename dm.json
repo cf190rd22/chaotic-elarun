@@ -61237,7 +61237,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "5ft-radius, 40ft-high Cylinder; Dim Light; Magic action to move it 60ft/turn. Creatures in it: CON save, fail = 2d10 radiant dmg + reverts/locks shape-shift while inside (success = half dmg only). Save triggers on entry/area moves into space/ends turn there (max once/turn)."
           },
           {
             "name": "Overgrow",
@@ -70534,5 +70535,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468190217
+  "_updated": 1788468216481
 }

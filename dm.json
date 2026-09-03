@@ -60532,6 +60532,7 @@
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
+            "notes": "10 berries; Bonus Action to eat = heal 1 HP + 1 day's food each; uneaten berries vanish when spell ends",
             "_classSync": false,
             "_subclassSync": false,
             "_raceSync": false,
@@ -70527,5 +70528,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467994992
+  "_updated": 1788468008526
 }

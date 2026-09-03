@@ -60577,7 +60577,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "1d10 piercing dmg (ranged spell attack, hit only) + 2d6 cold dmg to target & all within 5ft (hit or miss, DEX save). +1d6 higher spell slot."
           },
           {
             "name": "Jump",
@@ -70529,5 +70530,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468045088
+  "_updated": 1788468077690
 }

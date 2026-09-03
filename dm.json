@@ -60747,7 +60747,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "15ft Cube from you; CON save, fail = 2d8 thunder dmg + pushed 10ft (success = half dmg only). Unsecured objects also pushed 10ft; audible 300ft. (+1d8 per slot level above 1)"
           },
           {
             "name": "Tremor",
@@ -70531,5 +70532,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468118833
+  "_updated": 1788468147122
 }

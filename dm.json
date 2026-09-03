@@ -60456,7 +60456,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": ""
           },
           {
             "name": "Faerie Fire",
@@ -70515,5 +70516,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467669924
+  "_updated": 1788467680349
 }

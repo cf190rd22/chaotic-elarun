@@ -62061,7 +62061,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "Up to 10 willing creatures: walk on liquid surfaces as solid ground (still takes environmental dmg e.g. lava heat); Bonus Action to sink through/exit surface voluntarily; falling passes through automatically"
           },
           {
             "name": "Wind Wall",
@@ -70538,5 +70539,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468303398
+  "_updated": 1788468338156
 }

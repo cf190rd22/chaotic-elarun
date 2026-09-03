@@ -63989,7 +63989,8 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139
+            "_syncSourceId": 139,
+            "notes": "20ft-radius Sphere, Heavily Obscured until end or dispersed by strong wind (e.g. Gust of Wind)"
           },
           {
             "name": "Hold Person",
@@ -70532,5 +70533,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468165117
+  "_updated": 1788468180679
 }

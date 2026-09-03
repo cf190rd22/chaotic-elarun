@@ -64067,7 +64067,8 @@
             "_freecasted": false,
             "_singleUsed": false,
             "_syncSourceName": "Circle of the Land",
-            "_syncSourceId": 139
+            "_syncSourceId": 139,
+            "notes": "40ft-tall, 20ft-radius Cylinder; Heavily Obscured, douses flames, ground = Difficult Terrain. Enter/start turn there: DEX save or Prone + lose Concentration"
           },
           {
             "name": "Ice Storm",
@@ -70539,5 +70540,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468338156
+  "_updated": 1788468359933
 }

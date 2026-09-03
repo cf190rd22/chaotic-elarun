@@ -59759,7 +59759,8 @@
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "notes": "1d4 to ability checks"
           },
           {
             "name": "Gust",
@@ -70512,5 +70513,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467456232
+  "_updated": 1788467481751
 }

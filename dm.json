@@ -64129,7 +64129,8 @@
             "_syncSourceId": 185,
             "_syncSourceName": "Fey Touched",
             "_freecast": true,
-            "_singleUse": false
+            "_singleUse": false,
+            "notes": "30ft teleport"
           },
           {
             "name": "Bless",
@@ -70533,5 +70534,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788468180679
+  "_updated": 1788468190217
 }

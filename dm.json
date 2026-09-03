@@ -63952,7 +63952,7 @@
             "_effectManual": false,
             "concentration": false,
             "ritual": false,
-            "notes": "3d8 Ranged Damage (choose type)\n2 d8s roll same number (first time only)? It jumps. Roll new Attack Roll against target within 30ft of them."
+            "notes": "3d8 dmg (choose type), ranged spell attack; matching d8s = leaps to new target within 30ft (re-roll attack+dmg; leaps again only if cast at lvl 2+)"
           },
           {
             "name": "Fog Cloud",
@@ -70519,5 +70519,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467883488
+  "_updated": 1788467913390
 }

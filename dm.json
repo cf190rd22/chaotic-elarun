@@ -64024,7 +64024,7 @@
             "_singleUsed": false,
             "_syncSourceName": "Circle of the Land",
             "_syncSourceId": 139,
-            "notes": "d8 cold dmg + Speed -10ft (until your next turn), ranged spell attack"
+            "notes": "2d8 cold dmg + Speed -10ft (until your next turn), ranged spell attack"
           },
           {
             "name": "Sleet Storm",
@@ -70519,5 +70519,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788467876191
+  "_updated": 1788467883488
 }

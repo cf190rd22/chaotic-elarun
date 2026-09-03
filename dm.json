@@ -57211,7 +57211,7 @@
           "Wisdom": {
             "score": 18,
             "mod": 4,
-            "_grantScoreBoost": 1
+            "_grantScoreBoost": 0
           },
           "Charisma": {
             "score": 12,
@@ -57548,8 +57548,7 @@
           257,
           258,
           168,
-          398,
-          185
+          398
         ],
         "customFeats": [],
         "currency": {},
@@ -57962,16 +57961,6 @@
         "_raceSpellGroups": {},
         "trackers": [
           {
-            "key": "custom_owl_1780435425887",
-            "label": "Owl",
-            "cur": 1,
-            "max": 1,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "hp",
-            "_catId": 1784109512027
-          },
-          {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
             "label": "Chaos: Anchor",
             "max": 1,
@@ -57983,6 +57972,16 @@
             "_syncSourceId": 258,
             "_catId": 1784109504842,
             "actionLink": "Chaos: Anchor"
+          },
+          {
+            "key": "custom_owl_1780435425887",
+            "label": "Owl",
+            "cur": 1,
+            "max": 1,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "hp",
+            "_catId": 1784109512027
           },
           {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
@@ -58069,7 +58068,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -58766,7 +58765,8 @@
             "_modeAdvAll": false,
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
-            "_flag": true
+            "_flag": true,
+            "_modeActive": false
           },
           {
             "name": "Wild Resurgence: Regain Spell Slot",
@@ -58939,62 +58939,6 @@
             "_syncMinLevel": 7,
             "_syncSourceId": 66,
             "group": "Potent Spellcasting"
-          },
-          {
-            "name": "Tree Stride",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Conjuration",
-            "hit": "",
-            "damage": "",
-            "range": "Self",
-            "save": "",
-            "notes": "Concentration, up to 1 min",
-            "desc": "You gain the ability to enter a tree and move from inside it to inside another tree of the same kind within 500 feet. Both trees must be living and at least the same size as you. You must use 5 feet of movement to enter a tree. You instantly know the location of all other trees of the same kind within 500 feet and, as part of the move used to enter the tree, can either pass into one of those trees or step out of the tree you’re in. You appear in a spot of your choice within 5 feet of the destination tree, using another 5 feet of movement. If you have no movement left, you appear within 5 feet of the tree you entered.\nYou can use this transportation ability only once on each of your turns. You must end each turn outside a tree.",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Goodberry",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Conjuration",
-            "hit": "",
-            "damage": "1HP",
-            "range": "Self",
-            "save": "",
-            "notes": "24 h",
-            "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Water Walk",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Transmutation",
-            "hit": "",
-            "damage": "",
-            "range": "30 feet",
-            "save": "",
-            "notes": "1 h",
-            "desc": "This spell grants the ability to move across any liquid surface—such as water, acid, mud, snow, quicksand, or lava—as if it were harmless solid ground (creatures crossing molten lava can still take damage from the heat). Up to ten willing creatures of your choice within range gain this ability for the duration.\nAn affected target must take a Bonus Action to pass from the liquid’s surface into the liquid itself and vice versa, but if the target falls into the liquid, the target passes through the surface into the liquid below.",
-            "fav": false,
-            "used": false
-          },
-          {
-            "name": "Ride the Lightning",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Conjuration",
-            "hit": "DEX",
-            "damage": "4d6 Lightning ↑",
-            "range": "Self",
-            "save": "",
-            "notes": "Instantaneous",
-            "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
-            "fav": false,
-            "used": false
           }
         ],
         "statblocks": [
@@ -59384,68 +59328,6 @@
             "speedType": "",
             "subtypes": "",
             "tempHp": 0
-          },
-          {
-            "name": "Giant Eagle",
-            "hpMax": 0,
-            "hpCur": 0,
-            "text": "<div style=\"max-width:760px;background:linear-gradient(180deg,#f8f1e4 0%,#fdfbf7 100%);border:2px solid #7a200d;border-radius:12px;padding:14px 16px;color:#2b2b2b;font-family:Georgia,serif;box-shadow:0 4px 10px rgba(0,0,0,0.12);font-size:13px;line-height:1.35;\"><div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;\"><div><div style=\"color:#7a200d;font-size:1.55rem;line-height:1;font-weight:bold;font-family:Georgia,serif;\">Giant Eagle</div><div style=\"margin-top:3px;font-style:italic;color:#666;font-size:0.8rem;\">Large Beast, Neutral Good</div></div><div style=\"display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;\"><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.22);border-radius:8px;padding:5px 9px;min-width:58px;text-align:center;\"><div style=\"font-size:0.58rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a200d;font-weight:bold;font-family:Georgia,serif;\">AC</div><div style=\"font-size:0.9rem;font-weight:bold;color:#2b2b2b;\">13</div></div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.22);border-radius:8px;padding:5px 9px;min-width:58px;text-align:center;\"><div style=\"font-size:0.58rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a200d;font-weight:bold;font-family:Georgia,serif;\">SPEED</div><div style=\"font-size:0.9rem;font-weight:bold;color:#2b2b2b;\">10 ft., fly 80 ft.</div></div></div></div><div style=\"border-top:2px solid #c9a46a;margin:9px 0;\"></div><div style=\"display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:12px;\"><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">STR</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">16 (+3)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">DEX</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">17 (+3)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">CON</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">13 (+1)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">INT</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">8 (-1)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">WIS</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">14 (+2)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">CHA</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">10 (+0)</div></div></div><div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;\"><div><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Skills</strong> Perception +4</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Senses</strong> Passive Perception 14</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Languages</strong> Giant Eagle , understands Common and Auran but can't speak them</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Challenge</strong> 1 • <strong style=\"color:#2b2b2b;\">PB</strong> +2</p><div style=\"margin-top:10px;\"><div style=\"font-size:0.92rem;font-weight:bold;color:#7a200d;text-transform:uppercase;border-bottom:1px solid #c9a46a;padding-bottom:2px;margin-bottom:5px;font-family:Georgia,serif;\">Traits</div><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Keen Sight.</strong> The eagle has advantage on Wisdom (Perception) checks that rely on sight.</p></div></div><div><div style=\"margin-top:10px;\"><div style=\"font-size:0.92rem;font-weight:bold;color:#7a200d;text-transform:uppercase;border-bottom:1px solid #c9a46a;padding-bottom:2px;margin-bottom:5px;font-family:Georgia,serif;\">Actions</div><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Multiattack.</strong> The eagle makes two attacks: one with its beak and one with its talons.</p><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Beak.</strong> Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage.</p><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Talons.</strong> Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage.</p></div></div></div></div>",
-            "isFamiliar": true,
-            "hideHp": true,
-            "_sbData": {
-              "name": "Giant Eagle",
-              "subtitle": "Large Beast, Neutral Good",
-              "ac": "13",
-              "hp": "",
-              "speeds": {
-                "walk": "10",
-                "fly": "80",
-                "swim": "",
-                "climb": "",
-                "burrow": ""
-              },
-              "str": "16",
-              "dex": "17",
-              "con": "13",
-              "int": "8",
-              "wis": "14",
-              "cha": "10",
-              "skills": "Perception +4",
-              "dmgRes": "",
-              "dmgImm": "",
-              "condImm": "",
-              "senses": "Passive Perception 14",
-              "languages": "Giant Eagle , understands Common and Auran but can't speak them",
-              "cr": "1",
-              "pb": "+2",
-              "traits": [
-                {
-                  "name": "Keen Sight",
-                  "desc": "The eagle has advantage on Wisdom (Perception) checks that rely on sight."
-                }
-              ],
-              "actions": [
-                {
-                  "name": "Multiattack",
-                  "desc": "The eagle makes two attacks: one with its beak and one with its talons."
-                },
-                {
-                  "name": "Beak",
-                  "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
-                },
-                {
-                  "name": "Talons",
-                  "desc": "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage."
-                }
-              ],
-              "bonus": [],
-              "reactions": []
-            },
-            "ac": "13",
-            "size": "Large",
-            "speed": "10 ft., fly 80 ft.",
-            "speedType": "",
-            "subtypes": ""
           }
         ],
         "spells": [
@@ -60103,7 +59985,7 @@
             "desc": "One Humanoid you can see within range makes a Wisdom saving throw. It does so with Advantage if you or your allies are fighting it. On a failed save, the target has the Charmed condition until the spell ends or until you or your allies damage it. The Charmed creature is Friendly to you. When the spell ends, the target knows it was Charmed by you.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
             "area": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -60276,7 +60158,7 @@
             "desc": "Grasping plants sprout from the ground in a 20-foot square within range. For the duration, these plants turn the ground in the area into Difficult Terrain. They disappear when the spell ends.\nEach creature (other than you) in the area when you cast the spell must succeed on a Strength saving throw or have the Restrained condition until the spell ends. A Restrained creature can take an action to make a Strength (Athletics) check against your spell save DC. On a success, it frees itself from the grasping plants and is no longer Restrained by them.",
             "concentration": true,
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -60345,7 +60227,7 @@
             "desc": "Ten berries appear in your hand and are infused with magic for the duration. A creature can take a Bonus Action to eat one berry. Eating a berry restores 1 Hit Point, and the berry provides enough nourishment to sustain a creature for one day.\nUneaten berries disappear when the spell ends.",
             "tags": [],
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -60384,7 +60266,7 @@
             "desc": "You create a shard of ice and fling it at one creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Piercing damage. Hit or miss, the shard then explodes. The target and each creature within 5 feet of it must succeed on a Dexterity saving throw or take 2d6 Cold damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Cold damage increases by 1d6 for each spell slot level above 1.",
             "area": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -60484,7 +60366,7 @@
             "area": "",
             "hit": "DEX",
             "effect": "Restrained",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "XGTE",
@@ -61082,7 +60964,7 @@
             "concentration": true,
             "hit": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -61431,7 +61313,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -61713,7 +61595,7 @@
             "ritual": true,
             "desc": "You imbue plants in an immobile 30-foot Emanation with limited sentience and animation, giving them the ability to communicate with you and follow your simple commands. You can question plants about events in the spell’s area within the past day, gaining information about creatures that have passed, weather, and other circumstances.\nYou can also turn Difficult Terrain caused by plant growth (such as thickets and undergrowth) into ordinary terrain that lasts for the duration. Or you can turn ordinary terrain where plants are present into Difficult Terrain that lasts for the duration.\nThe spell doesn’t enable plants to uproot themselves and move about, but they can move their branches, tendrils, and stalks for you.\nIf a Plant creature is in the area, you can communicate with it as if you shared a common language.",
             "tags": [],
-            "_assigned": true,
+            "_assigned": false,
             "_freecast": false,
             "_singleUse": false,
             "_freecasted": false,
@@ -61862,7 +61744,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -62149,7 +62031,7 @@
             "area": "",
             "hit": "",
             "source": "Druid",
-            "_assigned": false,
+            "_assigned": true,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "PHB",
@@ -62332,7 +62214,7 @@
             "effect": "4d6 Lightning ↑",
             "desc": "You transform yourself into a bolt of lightning, creating a 5-foot-wide Line between your current space and an unoccupied space within 60 feet of you. Each creature in the Line makes a Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. You then reappear in the chosen space.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 4. In addition, the maximum length of the line increases 10 feet for each spell slot level above 4.",
             "source": "Druid",
-            "_assigned": true,
+            "_assigned": false,
             "_classListImport": true,
             "_syncSourceId": 66,
             "_sourceBook": "GH",
@@ -63769,7 +63651,7 @@
             "_syncSourceName": "Magic Initiate",
             "_freecast": true,
             "_singleUse": false,
-            "_freecasted": true,
+            "_freecasted": false,
             "_singleUsed": false
           },
           {
@@ -63787,10 +63669,12 @@
             "effect": "",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Hold Person",
@@ -63807,10 +63691,12 @@
             "area": "",
             "source": "Bard",
             "_sourceBook": "PHB",
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Ray of Frost",
@@ -63829,7 +63715,9 @@
             "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 3,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Sleet Storm",
@@ -63846,10 +63734,12 @@
             "area": "20ft Cylinder",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 5,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Ice Storm",
@@ -63865,10 +63755,12 @@
             "desc": "Hail falls in a 20-foot-radius, 40-foot-high Cylinder centered on a point within range. Each creature in the Cylinder makes a Dexterity saving throw. A creature takes 2d10 Bludgeoning damage and 4d6 Cold damage on a failed save or half as much damage on a successful one.\nHailstones turn ground in the Cylinder into Difficult Terrain until the end of your next turn.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Bludgeoning damage increases by 1d10 for each spell slot level above 4.",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 7,
-            "group": "Polar Land"
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Cone of Cold",
@@ -63884,54 +63776,12 @@
             "desc": "You unleash a blast of cold air. Each creature in a 60-foot Cone originating from you makes a Constitution saving throw, taking 8d8 Cold damage on a failed save or half as much damage on a successful one. A creature killed by this spell becomes a frozen statue until it thaws.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 5.",
             "source": "Sorcerer",
             "_sourceBook": "PHB",
-            "_assigned": false,
+            "_assigned": true,
             "_subclassSync": true,
             "_syncMinLevel": 9,
-            "group": "Polar Land"
-          },
-          {
-            "name": "Misty Step",
-            "level": 2,
-            "school": "Conjuration",
-            "time": "BA",
-            "range": "Self",
-            "components": "V",
-            "duration": "Instantaneous",
-            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Sorcerer",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_syncSourceId": 185,
-            "_syncSourceName": "Fey Touched",
-            "_freecast": true,
-            "_singleUse": false
-          },
-          {
-            "name": "Bless",
-            "level": 1,
-            "school": "Enchantment",
-            "time": "A",
-            "range": "30 feet",
-            "components": "V, S, M (a Holy Symbol worth 5+ GP)",
-            "duration": "Concentration, up to 1 min",
-            "desc": "You bless up to three creatures within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target adds 1d4 to the attack roll or save.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
-            "concentration": true,
-            "area": "",
-            "hit": "",
-            "effect": "",
-            "source": "Chaos Knight",
-            "_sourceBook": "PHB",
-            "_assigned": true,
-            "_featSync": true,
-            "_grantChoiceKey": "grant_185_Fey_Touched_0",
-            "_syncSourceId": 185,
-            "_syncSourceName": "Fey Touched",
-            "_freecast": true,
-            "_singleUse": false
+            "group": "Polar Land",
+            "_freecasted": false,
+            "_singleUsed": false
           }
         ],
         "_grantImmunities": [],
@@ -64041,23 +63891,21 @@
           "tempHp": 0
         },
         "_slotUsed": {
-          "152-L2": 2,
-          "152-L1": 0,
-          "152-L4": 0
+          "152-L2": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
-          "saves": true,
-          "skills": true,
+          "saves": false,
+          "skills": false,
           "passives": false,
           "senses": false,
           "defenses": false,
           "feats": false,
-          "languages": true,
-          "proficiencies": true,
-          "core": true,
-          "jump": true,
+          "languages": false,
+          "proficiencies": false,
+          "core": false,
+          "jump": false,
           "spellSlots": false,
           "progression": false,
           "abilities": false
@@ -64067,7 +63915,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 45,
+        "hpCurrent": 53,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -64076,7 +63924,7 @@
           "race_3_Stonecunning": "feature"
         },
         "_hideAdjHighlight": true,
-        "_subSpellsCollapsed": true,
+        "_subSpellsCollapsed": false,
         "_hideUnassigned": true,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
@@ -64086,12 +63934,9 @@
           ],
           "grant_168_Magic_Initiate_1": [
             "Chromatic Orb"
-          ],
-          "grant_185_Fey_Touched_0": [
-            "Bless"
           ]
         },
-        "_grantChoicesCollapsed": true,
+        "_grantChoicesCollapsed": false,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -64134,21 +63979,9 @@
         "acEffective": 18,
         "hpMax": 59,
         "_slotUsedCompact": {
-          "1": 0,
-          "2": 2,
-          "4": 0
+          "2": 1
         },
         "_trackersForDm": [
-          {
-            "key": "custom_owl_1780435425887",
-            "label": "Owl",
-            "cur": 1,
-            "max": 1,
-            "reset": "long",
-            "_custom": true,
-            "_trackerType": "hp",
-            "_catId": 1784109512027
-          },
           {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
             "label": "Chaos: Anchor",
@@ -64161,6 +63994,16 @@
             "_syncSourceId": 258,
             "_catId": 1784109504842,
             "actionLink": "Chaos: Anchor"
+          },
+          {
+            "key": "custom_owl_1780435425887",
+            "label": "Owl",
+            "cur": 1,
+            "max": 1,
+            "reset": "long",
+            "_custom": true,
+            "_trackerType": "hp",
+            "_catId": 1784109512027
           },
           {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_movement",
@@ -64247,7 +64090,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -64262,6 +64105,7 @@
         "_collapsedSpLevels": {
           "0": false,
           "1": false,
+          "3": false,
           "4": false
         },
         "_panelAcAdj": 0,
@@ -64299,16 +64143,9 @@
           "ifeat_168_1": "Wizard"
         },
         "_qsHdOpen": false,
-        "_spFiltersCollapsed": true,
+        "_spFiltersCollapsed": false,
         "_spTimeFilter": "all",
-        "_grantSourcesAbilScore": {
-          "Wisdom": [
-            {
-              "src": "Fey Touched",
-              "val": 1
-            }
-          ]
-        },
+        "_grantSourcesAbilScore": {},
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_hpLevels": [
@@ -64321,23 +64158,10 @@
           5,
           5
         ],
-        "_charGrants": {
-          "feat_185_Fey Touched": [
-            {
-              "type": "abilityScore",
-              "target": "Wisdom",
-              "value": 1
-            }
-          ]
-        },
+        "_charGrants": {},
         "_appliedSuggestions": [],
         "originId": "sage",
-        "originName": "Sage",
-        "_featTakenLevel": {
-          "168": 1,
-          "174": 4,
-          "185": 8
-        }
+        "originName": "Sage"
       }
     ],
     "unassignedSpells": [],
@@ -70313,5 +70137,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788461734571
+  "_updated": 1788461771375
 }

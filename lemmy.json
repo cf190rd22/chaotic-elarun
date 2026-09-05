@@ -37109,8 +37109,8 @@
             "_grantScoreBoost": 0
           },
           "Dexterity": {
-            "score": 15,
-            "mod": 2,
+            "score": 16,
+            "mod": 3,
             "_grantScoreBoost": 0
           },
           "Constitution": {
@@ -37129,18 +37129,18 @@
             "_grantScoreBoost": 0
           },
           "Charisma": {
-            "score": 18,
-            "mod": 4,
+            "score": 17,
+            "mod": 3,
             "_grantScoreBoost": 0
           }
         },
         "saves": {
           "Strength": -1,
-          "Dexterity": 5,
+          "Dexterity": 6,
           "Constitution": 1,
           "Intelligence": 0,
           "Wisdom": 1,
-          "Charisma": 7
+          "Charisma": 6
         },
         "saveFlags": {
           "Strength": {
@@ -37194,7 +37194,7 @@
         },
         "skills": {
           "Acrobatics": {
-            "bonus": 5,
+            "bonus": 6,
             "state": "prof",
             "adv": false,
             "dis": false,
@@ -37246,7 +37246,7 @@
             "_grantSources": []
           },
           "Deception": {
-            "bonus": 5,
+            "bonus": 4,
             "state": "half",
             "adv": false,
             "dis": false,
@@ -37285,7 +37285,7 @@
             "_grantSources": []
           },
           "Intimidation": {
-            "bonus": 5,
+            "bonus": 4,
             "state": "half",
             "adv": false,
             "dis": false,
@@ -37350,7 +37350,7 @@
             "_grantSources": []
           },
           "Performance": {
-            "bonus": 10,
+            "bonus": 9,
             "state": "exp",
             "adv": false,
             "dis": false,
@@ -37364,7 +37364,7 @@
             "note": "+3 Fiddle"
           },
           "Persuasion": {
-            "bonus": 10,
+            "bonus": 9,
             "state": "exp",
             "adv": false,
             "dis": false,
@@ -37390,7 +37390,7 @@
             "_grantSources": []
           },
           "Sleight of Hand": {
-            "bonus": 5,
+            "bonus": 6,
             "state": "prof",
             "adv": false,
             "dis": false,
@@ -37403,7 +37403,7 @@
             "_grantSources": []
           },
           "Stealth": {
-            "bonus": 3,
+            "bonus": 4,
             "state": "half",
             "adv": false,
             "dis": false,
@@ -37434,10 +37434,10 @@
           "Investigation": 11,
           "Insight": 14
         },
-        "ac": "12",
+        "ac": "13",
         "hp": "51",
         "speed": "30ft",
-        "initiative": "+2",
+        "initiative": "+3",
         "profBonus": "+3",
         "senses": [
           "Darkvision 120 ft."
@@ -42884,7 +42884,7 @@
           "4": 2
         },
         "activeModes": [],
-        "acEffective": 17,
+        "acEffective": 18,
         "hpMax": 51,
         "_slotUsedCompact": {
           "1": 3,
@@ -42990,7 +42990,7 @@
             "actionLink": "Relentless Endurance"
           }
         ],
-        "saveDcEffective": 15,
+        "saveDcEffective": 14,
         "_dmHidden": true,
         "_advDisadv": null,
         "statsLocked": false,
@@ -43017,12 +43017,12 @@
         "originId": "entertainer",
         "originName": "Entertainer",
         "_originAsi": {
-          "Charisma": 2,
-          "Dexterity": 1
+          "Dexterity": 2,
+          "Charisma": 1
         },
         "_originAsiApplied": {
-          "Charisma": 2,
-          "Dexterity": 1
+          "Dexterity": 2,
+          "Charisma": 1
         }
       }
     ],
@@ -43071,5 +43071,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788601533060
+  "_updated": 1788601585555
 }

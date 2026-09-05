@@ -42159,7 +42159,8 @@
             "used": false,
             "_classSync": true,
             "_syncMinLevel": 7,
-            "_syncSourceId": 65
+            "_syncSourceId": 65,
+            "effect": ""
           },
           {
             "name": "Flourish - Defensive",
@@ -43041,5 +43042,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788617663650
+  "_updated": 1788617898398
 }

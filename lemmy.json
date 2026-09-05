@@ -39952,7 +39952,7 @@
           "Dexterity": {
             "score": 14,
             "mod": 2,
-            "_grantScoreBoost": 1
+            "_grantScoreBoost": 0
           },
           "Constitution": {
             "score": 13,
@@ -44464,7 +44464,7 @@
             "atype": "action",
             "source": "Scimitar",
             "hit": "",
-            "damage": "1d6",
+            "damage": "1d6 Slashing",
             "range": "",
             "magicBonus": 1,
             "weaponType": "finesse",
@@ -44475,17 +44475,13 @@
             "desc": "Version: 1\nYou gain a +1 bonus to attack and damage rolls made with this magic weapon, and any creature it hits takes an extra 1d4 psychic damage. When the damage you deal with this weapon would reduce a creature to 0 hit points, you can choose to magically cause it to fall asleep, instead of dealing the damage. The sleeping creature is unconscious for 10 minutes or until it takes damage or someone uses an action to shake or slap it awake. When you cause a creature to fall asleep in this way, you can also force it to make a DC 15 Wisdom saving throw. On a failed save, you immediately learn its surface thoughts and can decide what dreams it has while asleep. Once a creature falls asleep in this way, it is immune to this effect for the next 24 hours.",
             "fav": true,
             "used": false,
-            "proficient": true,
+            "proficient": false,
             "_grants": [],
             "_onRestTriggers": [],
             "_playerSetMode": false,
-            "damage2": "1d4",
+            "damage2": "1d4 Psychic",
             "damageType": "Slashing",
-            "_flag": false,
-            "damage2Type": "Psychic",
-            "_actionAdjDuration": "",
-            "_linkedTracker": "",
-            "_linkedTrackerLabel": ""
+            "_flag": false
           },
           {
             "name": "Frostfell Cloak",
@@ -45146,13 +45142,30 @@
             "fav": false,
             "used": false,
             "_raceSync": true
+          },
+          {
+            "name": "Potion of Healing",
+            "_fromItem": true,
+            "fav": false,
+            "used": false,
+            "save": "",
+            "kind": "item",
+            "atype": "bonus",
+            "damage": "",
+            "range": "5 ft",
+            "hit": "",
+            "source": "Potion",
+            "effect": "",
+            "notes": "",
+            "desc": "In Party Equipment\nCharges\nThis potion is a magic item. As a Bonus Action, you can drink it or administer it to another creature within 5 feet of yourself. The creature that drinks the magical red fluid in this vial regains 2d4 + 2 Hit Points.",
+            "proficient": false
           }
         ],
         "trackers": [
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 0,
+            "cur": 1,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -45162,7 +45175,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 1,
+            "cur": 3,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -45186,7 +45199,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -45227,7 +45240,7 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -45304,7 +45317,9 @@
         "spellcastingAbility": "CHA",
         "_slotUsed": {
           "401-L2": 1,
-          "401-L1": 3
+          "401-L1": 3,
+          "399-L2": 3,
+          "399-L4": 1
         },
         "acAdjust": 0,
         "_panelAcAdj": 0,
@@ -45313,7 +45328,7 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 39,
+        "hpCurrent": 33,
         "hpTemp": 0,
         "_concentratingOn": null,
         "conditions": [],
@@ -45714,7 +45729,8 @@
         "hpMax": 51,
         "_slotUsedCompact": {
           "1": 3,
-          "2": 1
+          "2": 4,
+          "4": 1
         },
         "_featAtypes": {
           "feat_257_Blessing of the Elandran Cleric": "action"
@@ -45731,7 +45747,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 0,
+            "cur": 1,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -45741,7 +45757,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 1,
+            "cur": 3,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -45765,7 +45781,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -45806,7 +45822,7 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -45828,14 +45844,7 @@
         },
         "_wasDying": false,
         "_playerNotes": {},
-        "_grantSourcesAbilScore": {
-          "Dexterity": [
-            {
-              "src": "Weapon Master",
-              "val": 1
-            }
-          ]
-        },
+        "_grantSourcesAbilScore": {},
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_grantFlatBonusHitRanged": 0,
@@ -45845,75 +45854,11 @@
         "_grantFlatBonusDamageRanged": 0,
         "_grantFlatBonusDamageMelee": 0,
         "_grantFlatBonusDamageFinesse": 0,
-        "_grantFlatBonusDamageThrown": 0,
-        "_featTakenLevel": {
-          "216": 8
-        },
-        "_charGrants": {
-          "feat_216_Weapon Master": [
-            {
-              "type": "abilityScore",
-              "target": "Dexterity",
-              "value": 1
-            }
-          ]
-        },
-        "_hpLevels": [
-          8,
-          5,
-          5,
-          5,
-          5,
-          5,
-          5,
-          5
-        ]
+        "_grantFlatBonusDamageThrown": 0
       }
     ],
-    "_exportedAt": 1788599676103,
-    "_playerTokenEnc": [
-      103,
-      104,
-      112,
-      95,
-      82,
-      118,
-      107,
-      98,
-      67,
-      121,
-      56,
-      88,
-      49,
-      56,
-      89,
-      50,
-      56,
-      87,
-      77,
-      102,
-      80,
-      104,
-      85,
-      66,
-      67,
-      49,
-      115,
-      100,
-      82,
-      98,
-      113,
-      122,
-      65,
-      78,
-      50,
-      68,
-      103,
-      116,
-      72,
-      89
-    ]
+    "_exportedAt": 1788599676103
   },
   "nextId": 402,
-  "_updated": 1788600172173
+  "_updated": 1788601403806
 }

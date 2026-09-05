@@ -42469,7 +42469,7 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 1,
+        "hpCurrent": 37,
         "hpTemp": 0,
         "_concentratingOn": null,
         "conditions": [],
@@ -42856,7 +42856,7 @@
             "damage": "Cold"
           }
         ],
-        "heroicInspiration": false,
+        "heroicInspiration": true,
         "passivePerception": 17,
         "passiveInsight": 14,
         "_slotTotal": {
@@ -42975,12 +42975,12 @@
         "_dmHidden": true,
         "_advDisadv": null,
         "statsLocked": false,
-        "_qsHdOpen": false,
+        "_qsHdOpen": true,
         "gold": 5947,
         "sp": 0,
         "pp": 50,
         "_hitDiceUsed": {
-          "d8": 8
+          "d8": 4
         },
         "_wasDying": false,
         "_playerNotes": {},
@@ -43042,5 +43042,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788620167444
+  "_updated": 1788622854584
 }

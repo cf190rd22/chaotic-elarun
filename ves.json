@@ -38112,19 +38112,6 @@
             "actionLink": "Natural Recovery: Recover Spell Slots"
           },
           {
-            "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
-            "label": "Nat.Recovery: Cast Circle Spell",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139,
-            "_catId": 1784109512027,
-            "actionLink": "Natural Recovery: Cast Circle Spell"
-          },
-          {
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
@@ -38137,6 +38124,20 @@
             "_catId": 1784109515101,
             "actionLink": "Stonecunning",
             "_origIdx": 8
+          },
+          {
+            "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
+            "label": "Nat.Recovery: Cast Circle Spell",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 139,
+            "_catId": 1784109512027,
+            "actionLink": "Natural Recovery: Cast Circle Spell",
+            "_origIdx": 7
           }
         ],
         "actions": [
@@ -44030,7 +44031,8 @@
         },
         "_slotUsed": {
           "152-L2": 3,
-          "152-L1": 0
+          "152-L1": 1,
+          "152-L4": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
@@ -44121,8 +44123,9 @@
         "acEffective": 18,
         "hpMax": 59,
         "_slotUsedCompact": {
-          "1": 0,
-          "2": 3
+          "1": 1,
+          "2": 3,
+          "4": 1
         },
         "_trackersForDm": [
           {
@@ -44217,19 +44220,6 @@
             "actionLink": "Natural Recovery: Recover Spell Slots"
           },
           {
-            "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
-            "label": "Nat.Recovery: Cast Circle Spell",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_subclassSync": true,
-            "_syncSourceId": 139,
-            "_catId": 1784109512027,
-            "actionLink": "Natural Recovery: Cast Circle Spell"
-          },
-          {
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
@@ -44242,13 +44232,27 @@
             "_catId": 1784109515101,
             "actionLink": "Stonecunning",
             "_origIdx": 8
+          },
+          {
+            "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
+            "label": "Nat.Recovery: Cast Circle Spell",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_subclassSync": true,
+            "_syncSourceId": 139,
+            "_catId": 1784109512027,
+            "actionLink": "Natural Recovery: Cast Circle Spell",
+            "_origIdx": 7
           }
         ],
         "saveDcEffective": 15,
         "_dmHidden": true,
         "_collapsedSpLevels": {
           "0": false,
-          "1": false,
+          "1": true,
           "3": false,
           "4": false
         },
@@ -44372,5 +44376,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788615091443
+  "_updated": 1788621150657
 }

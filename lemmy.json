@@ -37109,8 +37109,8 @@
             "_grantScoreBoost": 0
           },
           "Dexterity": {
-            "score": 16,
-            "mod": 3,
+            "score": 14,
+            "mod": 2,
             "_grantScoreBoost": 1
           },
           "Constitution": {
@@ -37129,14 +37129,14 @@
             "_grantScoreBoost": 0
           },
           "Charisma": {
-            "score": 17,
+            "score": 16,
             "mod": 3,
             "_grantScoreBoost": 0
           }
         },
         "saves": {
           "Strength": -1,
-          "Dexterity": 6,
+          "Dexterity": 5,
           "Constitution": 1,
           "Intelligence": 0,
           "Wisdom": 1,
@@ -37194,7 +37194,7 @@
         },
         "skills": {
           "Acrobatics": {
-            "bonus": 6,
+            "bonus": 5,
             "state": "prof",
             "adv": false,
             "dis": false,
@@ -37390,7 +37390,7 @@
             "_grantSources": []
           },
           "Sleight of Hand": {
-            "bonus": 6,
+            "bonus": 5,
             "state": "prof",
             "adv": false,
             "dis": false,
@@ -37403,7 +37403,7 @@
             "_grantSources": []
           },
           "Stealth": {
-            "bonus": 4,
+            "bonus": 3,
             "state": "half",
             "adv": false,
             "dis": false,
@@ -37434,10 +37434,10 @@
           "Investigation": 11,
           "Insight": 14
         },
-        "ac": "13",
+        "ac": "12",
         "hp": "51",
         "speed": "30ft",
-        "initiative": "+3",
+        "initiative": "+2",
         "profBonus": "+3",
         "senses": [
           "Darkvision 120 ft."
@@ -41624,7 +41624,7 @@
             "atype": "action",
             "source": "Scimitar",
             "hit": "",
-            "damage": "1d6 Slashing",
+            "damage": "1d6",
             "range": "",
             "magicBonus": 1,
             "weaponType": "finesse",
@@ -41635,13 +41635,18 @@
             "desc": "Version: 1\nYou gain a +1 bonus to attack and damage rolls made with this magic weapon, and any creature it hits takes an extra 1d4 psychic damage. When the damage you deal with this weapon would reduce a creature to 0 hit points, you can choose to magically cause it to fall asleep, instead of dealing the damage. The sleeping creature is unconscious for 10 minutes or until it takes damage or someone uses an action to shake or slap it awake. When you cause a creature to fall asleep in this way, you can also force it to make a DC 15 Wisdom saving throw. On a failed save, you immediately learn its surface thoughts and can decide what dreams it has while asleep. Once a creature falls asleep in this way, it is immune to this effect for the next 24 hours.",
             "fav": true,
             "used": false,
-            "proficient": false,
+            "proficient": true,
             "_grants": [],
             "_onRestTriggers": [],
             "_playerSetMode": false,
-            "damage2": "1d4 Psychic",
+            "damage2": "1d4",
             "damageType": "Slashing",
-            "_flag": false
+            "_flag": false,
+            "damage2Type": "Psychic",
+            "_masteryType": "Nick",
+            "_actionAdjDuration": "",
+            "_linkedTracker": "",
+            "_linkedTrackerLabel": ""
           },
           {
             "name": "Frostfell Cloak",
@@ -42885,7 +42890,7 @@
           "4": 2
         },
         "activeModes": [],
-        "acEffective": 18,
+        "acEffective": 17,
         "hpMax": 51,
         "_slotUsedCompact": {
           "1": 3,
@@ -43033,14 +43038,7 @@
         },
         "originId": "entertainer",
         "originName": "Entertainer",
-        "_originAsi": {
-          "Dexterity": 2,
-          "Charisma": 1
-        },
-        "_originAsiApplied": {
-          "Dexterity": 2,
-          "Charisma": 1
-        }
+        "_originAsi": {}
       }
     ],
     "_exportedAt": 1788599676103,
@@ -43088,5 +43086,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788603389041
+  "_updated": 1788603540729
 }

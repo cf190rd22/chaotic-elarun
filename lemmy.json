@@ -42325,7 +42325,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 1,
+            "cur": 0,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -42335,7 +42335,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 3,
+            "cur": 1,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -42359,7 +42359,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -42400,7 +42400,7 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -42488,7 +42488,7 @@
         "_panelSpeedAdj": 0,
         "saveDcAdjust": 0,
         "_panelSaveDcAdj": 0,
-        "hpCurrent": 33,
+        "hpCurrent": 39,
         "hpTemp": 0,
         "_concentratingOn": null,
         "conditions": [],
@@ -42907,7 +42907,7 @@
           {
             "key": "item_charges_frostfell_cloak",
             "label": "Frostfell Cloak Charges",
-            "cur": 1,
+            "cur": 0,
             "max": 5,
             "reset": "dawn",
             "_custom": true,
@@ -42917,7 +42917,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 3,
+            "cur": 1,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -42941,7 +42941,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -42982,7 +42982,7 @@
             "key": "race_orc_relentless_endurance",
             "label": "Relentless Endurance",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -43088,5 +43088,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788602279164
+  "_updated": 1788603389041
 }

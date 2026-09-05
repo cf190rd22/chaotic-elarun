@@ -70489,7 +70489,7 @@
         ],
         "saveDcEffective": 14,
         "_dmHidden": true,
-        "_advDisadv": "disadv",
+        "_advDisadv": null,
         "statsLocked": false,
         "_qsHdOpen": true,
         "gold": 5947,
@@ -76486,5 +76486,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788598875005
+  "_updated": 1788598881632
 }

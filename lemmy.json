@@ -37445,7 +37445,7 @@
         "languages": "Common, Giant, Orc",
         "armorProfs": "Light Armor, Medium Armor",
         "weaponProfs": "Scimitar, Simple Weapons",
-        "toolProfs": "Clarinet, Dulcimer, Fiddle, Harp, Lute, Tantan, Yarting",
+        "toolProfs": "Clarinet, Dulcimer, Fiddle, Harp, Lute, Tantan, Yarting, Musical Instrument (choose one)",
         "defenses": "Cold*",
         "notes": "",
         "overrides": {},
@@ -43013,7 +43013,9 @@
         "_grantFlatBonusDamageRanged": 0,
         "_grantFlatBonusDamageMelee": 0,
         "_grantFlatBonusDamageFinesse": 0,
-        "_grantFlatBonusDamageThrown": 0
+        "_grantFlatBonusDamageThrown": 0,
+        "originId": "entertainer",
+        "originName": "Entertainer"
       }
     ],
     "_exportedAt": 1788599676103,
@@ -43061,5 +43063,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788601437611
+  "_updated": 1788601506314
 }

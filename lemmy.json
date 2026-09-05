@@ -39952,7 +39952,7 @@
           "Dexterity": {
             "score": 14,
             "mod": 2,
-            "_grantScoreBoost": 0
+            "_grantScoreBoost": 1
           },
           "Constitution": {
             "score": 13,
@@ -44464,7 +44464,7 @@
             "atype": "action",
             "source": "Scimitar",
             "hit": "",
-            "damage": "1d6 Slashing",
+            "damage": "1d6",
             "range": "",
             "magicBonus": 1,
             "weaponType": "finesse",
@@ -44475,13 +44475,17 @@
             "desc": "Version: 1\nYou gain a +1 bonus to attack and damage rolls made with this magic weapon, and any creature it hits takes an extra 1d4 psychic damage. When the damage you deal with this weapon would reduce a creature to 0 hit points, you can choose to magically cause it to fall asleep, instead of dealing the damage. The sleeping creature is unconscious for 10 minutes or until it takes damage or someone uses an action to shake or slap it awake. When you cause a creature to fall asleep in this way, you can also force it to make a DC 15 Wisdom saving throw. On a failed save, you immediately learn its surface thoughts and can decide what dreams it has while asleep. Once a creature falls asleep in this way, it is immune to this effect for the next 24 hours.",
             "fav": true,
             "used": false,
-            "proficient": false,
+            "proficient": true,
             "_grants": [],
             "_onRestTriggers": [],
             "_playerSetMode": false,
-            "damage2": "1d4 Psychic",
+            "damage2": "1d4",
             "damageType": "Slashing",
-            "_flag": false
+            "_flag": false,
+            "damage2Type": "Psychic",
+            "_actionAdjDuration": "",
+            "_linkedTracker": "",
+            "_linkedTrackerLabel": ""
           },
           {
             "name": "Frostfell Cloak",
@@ -45824,7 +45828,14 @@
         },
         "_wasDying": false,
         "_playerNotes": {},
-        "_grantSourcesAbilScore": {},
+        "_grantSourcesAbilScore": {
+          "Dexterity": [
+            {
+              "src": "Weapon Master",
+              "val": 1
+            }
+          ]
+        },
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_grantFlatBonusHitRanged": 0,
@@ -45834,11 +45845,75 @@
         "_grantFlatBonusDamageRanged": 0,
         "_grantFlatBonusDamageMelee": 0,
         "_grantFlatBonusDamageFinesse": 0,
-        "_grantFlatBonusDamageThrown": 0
+        "_grantFlatBonusDamageThrown": 0,
+        "_featTakenLevel": {
+          "216": 8
+        },
+        "_charGrants": {
+          "feat_216_Weapon Master": [
+            {
+              "type": "abilityScore",
+              "target": "Dexterity",
+              "value": 1
+            }
+          ]
+        },
+        "_hpLevels": [
+          8,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ]
       }
     ],
-    "_exportedAt": 1788599676103
+    "_exportedAt": 1788599676103,
+    "_playerTokenEnc": [
+      103,
+      104,
+      112,
+      95,
+      82,
+      118,
+      107,
+      98,
+      67,
+      121,
+      56,
+      88,
+      49,
+      56,
+      89,
+      50,
+      56,
+      87,
+      77,
+      102,
+      80,
+      104,
+      85,
+      66,
+      67,
+      49,
+      115,
+      100,
+      82,
+      98,
+      113,
+      122,
+      65,
+      78,
+      50,
+      68,
+      103,
+      116,
+      72,
+      89
+    ]
   },
   "nextId": 402,
-  "_updated": 1788599764758
+  "_updated": 1788600172173
 }

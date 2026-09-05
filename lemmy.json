@@ -42440,11 +42440,11 @@
           "tempHp": 0
         },
         "_secCollapsed": {
-          "core": true,
+          "core": false,
           "saves": false,
           "skills": false,
           "passives": false,
-          "senses": true,
+          "senses": false,
           "defenses": true,
           "feats": true,
           "languages": false,
@@ -43041,5 +43041,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788612857032
+  "_updated": 1788613059263
 }

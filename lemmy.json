@@ -41552,7 +41552,7 @@
             "_syncSourceId": 400,
             "_syncSourceName": "Blades of Chaos: Path of Storm",
             "_singleUse": false,
-            "_freecasted": false,
+            "_freecasted": true,
             "_singleUsed": false,
             "_freecast": true
           },
@@ -43042,5 +43042,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788618220635
+  "_updated": 1788618483606
 }

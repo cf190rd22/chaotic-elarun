@@ -37109,7 +37109,7 @@
             "_grantScoreBoost": 0
           },
           "Dexterity": {
-            "score": 14,
+            "score": 15,
             "mod": 2,
             "_grantScoreBoost": 0
           },
@@ -37129,8 +37129,8 @@
             "_grantScoreBoost": 0
           },
           "Charisma": {
-            "score": 16,
-            "mod": 3,
+            "score": 18,
+            "mod": 4,
             "_grantScoreBoost": 0
           }
         },
@@ -37140,7 +37140,7 @@
           "Constitution": 1,
           "Intelligence": 0,
           "Wisdom": 1,
-          "Charisma": 6
+          "Charisma": 7
         },
         "saveFlags": {
           "Strength": {
@@ -37246,7 +37246,7 @@
             "_grantSources": []
           },
           "Deception": {
-            "bonus": 4,
+            "bonus": 5,
             "state": "half",
             "adv": false,
             "dis": false,
@@ -37285,7 +37285,7 @@
             "_grantSources": []
           },
           "Intimidation": {
-            "bonus": 4,
+            "bonus": 5,
             "state": "half",
             "adv": false,
             "dis": false,
@@ -37350,7 +37350,7 @@
             "_grantSources": []
           },
           "Performance": {
-            "bonus": 9,
+            "bonus": 10,
             "state": "exp",
             "adv": false,
             "dis": false,
@@ -37364,7 +37364,7 @@
             "note": "+3 Fiddle"
           },
           "Persuasion": {
-            "bonus": 9,
+            "bonus": 10,
             "state": "exp",
             "adv": false,
             "dis": false,
@@ -42990,7 +42990,7 @@
             "actionLink": "Relentless Endurance"
           }
         ],
-        "saveDcEffective": 14,
+        "saveDcEffective": 15,
         "_dmHidden": true,
         "_advDisadv": null,
         "statsLocked": false,
@@ -43015,7 +43015,15 @@
         "_grantFlatBonusDamageFinesse": 0,
         "_grantFlatBonusDamageThrown": 0,
         "originId": "entertainer",
-        "originName": "Entertainer"
+        "originName": "Entertainer",
+        "_originAsi": {
+          "Charisma": 2,
+          "Dexterity": 1
+        },
+        "_originAsiApplied": {
+          "Charisma": 2,
+          "Dexterity": 1
+        }
       }
     ],
     "_exportedAt": 1788599676103,
@@ -43063,5 +43071,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788601506314
+  "_updated": 1788601533060
 }

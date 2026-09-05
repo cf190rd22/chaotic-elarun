@@ -38103,7 +38103,7 @@
             "tags": [],
             "_assigned": true,
             "_freecast": false,
-            "_singleUse": true,
+            "_singleUse": false,
             "_freecasted": false,
             "_classSync": false,
             "_subclassSync": false,
@@ -38111,7 +38111,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true,
+            "_singleUsed": false,
             "_dmAllow": true,
             "_dmAllowNote": "Mac-Fuirmidh Cittern",
             "_dmAllowSource": "Class"
@@ -43041,5 +43041,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788611309188
+  "_updated": 1788611489927
 }

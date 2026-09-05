@@ -69969,7 +69969,8 @@
           "proficiencies": false,
           "jump": true,
           "progression": false,
-          "abilities": false
+          "abilities": false,
+          "spellSlots": true
         },
         "_topOpen": false,
         "_autoCalcSkills": true,
@@ -76486,5 +76487,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788598881632
+  "_updated": 1788598893281
 }

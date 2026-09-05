@@ -54135,7 +54135,8 @@
           398,
           204,
           171,
-          257
+          257,
+          189
         ],
         "level": 8,
         "cls": "Chaos Knight",
@@ -54145,7 +54146,7 @@
           "Strength": {
             "score": 18,
             "mod": 4,
-            "_grantScoreBoost": 0
+            "_grantScoreBoost": 1
           },
           "Dexterity": {
             "score": 15,
@@ -54486,7 +54487,7 @@
         "weaponProfs": "Martial Weapons, Simple Weapons",
         "toolProfs": "Dice Set",
         "defenses": "Critical Hits",
-        "notes": "",
+        "notes": "Portent Die: 2",
         "overrides": {},
         "choices": {},
         "customFeatures": [],
@@ -54560,7 +54561,7 @@
             "concentration": true,
             "area": "",
             "hit": "",
-            "_assigned": true,
+            "_assigned": false,
             "tags": [
               "buff"
             ],
@@ -56061,7 +56062,8 @@
             "notes": "Concentration, up to 10 min",
             "desc": "A shimmering field surrounds a creature of your choice within range, granting it a +2 bonus to AC for the duration.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_flag": true
           },
           {
             "name": "Shining Smite",
@@ -56511,20 +56513,6 @@
               "advSkills": [],
               "advSkillsDur": ""
             }
-          },
-          {
-            "name": "Bless",
-            "kind": "spell",
-            "atype": "action",
-            "source": "Enchantment",
-            "hit": "",
-            "damage": "",
-            "range": "30 feet",
-            "save": "",
-            "notes": "Concentration, up to 1 min",
-            "desc": "You bless up to three creatures within range. Whenever a target makes an attack roll or a saving throw before the spell ends, the target adds 1d4 to the attack roll or save.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. You can target one additional creature for each spell slot level above 1.",
-            "fav": false,
-            "used": false
           }
         ],
         "trackers": [
@@ -56540,6 +56528,15 @@
             "_syncSourceId": 398,
             "actionLink": "Chaos: Deflection",
             "_catId": 1784109388919
+          },
+          {
+            "key": "_custom_1788010997025",
+            "label": "Portent Die:",
+            "max": 1,
+            "cur": 1,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
           },
           {
             "key": "custom_repulsion_shield_1784105550080",
@@ -56598,7 +56595,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 18,
+            "cur": 20,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -56607,19 +56604,6 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919,
-            "_origIdx": 3
           },
           {
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
@@ -56634,11 +56618,22 @@
             "actionLink": "Chaos: Size",
             "_catId": 1784109388919,
             "_origIdx": 1
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919,
+            "_origIdx": 3
           }
         ],
-        "_slotUsed": {
-          "157-L2": 1
-        },
+        "_slotUsed": {},
         "_defTags": [
           {
             "type": "resistance",
@@ -56648,7 +56643,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 74,
+        "hpCurrent": 84,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -56713,7 +56708,8 @@
             "size": "Medium",
             "speed": "50 ft.",
             "speedType": "",
-            "subtypes": ""
+            "subtypes": "",
+            "tempHp": 0
           }
         ],
         "items": [
@@ -57239,7 +57235,7 @@
           "skills": false,
           "passives": true,
           "senses": true,
-          "defenses": false,
+          "defenses": true,
           "feats": true,
           "languages": true,
           "proficiencies": true,
@@ -57297,9 +57293,7 @@
         "activeModes": [],
         "acEffective": 22,
         "hpMax": 84,
-        "_slotUsedCompact": {
-          "2": 1
-        },
+        "_slotUsedCompact": {},
         "deathSaves": {
           "pass": 0,
           "fail": 0
@@ -57317,6 +57311,15 @@
             "_syncSourceId": 398,
             "actionLink": "Chaos: Deflection",
             "_catId": 1784109388919
+          },
+          {
+            "key": "_custom_1788010997025",
+            "label": "Portent Die:",
+            "max": 1,
+            "cur": 1,
+            "reset": "",
+            "_custom": true,
+            "_trackerType": "hp"
           },
           {
             "key": "custom_repulsion_shield_1784105550080",
@@ -57375,7 +57378,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 18,
+            "cur": 20,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -57384,19 +57387,6 @@
             "maxFormula": "LVL*2+CON",
             "_catId": 1784109399736,
             "actionLink": "Aura of Chaos"
-          },
-          {
-            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
-            "label": "Blessing of the E. Cleric",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
-            "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 257,
-            "_catId": 1784109388919,
-            "_origIdx": 3
           },
           {
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
@@ -57411,18 +57401,38 @@
             "actionLink": "Chaos: Size",
             "_catId": 1784109388919,
             "_origIdx": 1
+          },
+          {
+            "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
+            "label": "Blessing of the E. Cleric",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 257,
+            "_catId": 1784109388919,
+            "_origIdx": 3
           }
         ],
         "saveDcEffective": 14,
         "_dmHidden": true,
         "_hitDiceUsed": {
-          "d10": 6
+          "d10": 1
         },
         "exhaustionLevel": 0,
         "_qsHdOpen": true,
         "_wasDying": false,
         "heroicInspiration": true,
-        "_grantSourcesAbilScore": {},
+        "_grantSourcesAbilScore": {
+          "Strength": [
+            {
+              "src": "Heavy Armor Master",
+              "val": 1
+            }
+          ]
+        },
         "_grantSenses": {},
         "_grantWeaponDamage": [],
         "_grantFlatBonusHitRanged": 0,
@@ -57442,6 +57452,19 @@
           6,
           6,
           6
+        ],
+        "_collapsedSpLevels": {
+          "1": false
+        },
+        "_appliedSuggestions": [
+          {
+            "srcKey": "feat_189",
+            "grant": {
+              "type": "abilityScore",
+              "target": "Strength",
+              "value": 1
+            }
+          }
         ]
       },
       {
@@ -76487,5 +76510,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788598893281
+  "_updated": 1788598917565
 }

@@ -54511,7 +54511,8 @@
             ],
             "_freecasted": false,
             "_singleUsed": false,
-            "_sourceBook": "GH"
+            "_sourceBook": "GH",
+            "notes": "-10ft, radiant"
           },
           {
             "name": "Sacred Flame",
@@ -76510,5 +76511,5 @@
     ]
   },
   "nextId": 402,
-  "_updated": 1788598917565
+  "_updated": 1788598977217
 }

@@ -197,11 +197,13 @@ select,option{background:var(--surface-2);color:var(--text);}
 .dmg-breakdown{color:var(--text-mute);font-size:10px;}
 .hit-yes{color:var(--green);font-weight:700;}
 .hit-no{color:var(--red);font-weight:700;}
-.ac-check-input{width:50px;background:var(--surface-3);border:1px dashed var(--border);border-radius:5px;padding:2px 5px;font-size:10.5px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;margin-left:5px;vertical-align:middle;}
-.ac-check-input::placeholder{color:var(--text-mute);}
-.ac-check-input:hover{border-color:var(--text-mute);}
-.ac-check-input:focus{border-style:solid;border-color:var(--accent-bd);}
-.ac-check-input::-webkit-inner-spin-button,.ac-check-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.apply-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
+.apply-lbl,.apply-or{color:var(--text-mute);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;}
+.apply-target-select{background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 6px;font-size:11px;color:var(--text-2);outline:none;max-width:160px;}
+.apply-target-select:focus{border-color:var(--accent-bd);}
+.apply-ac-input{width:48px;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;}
+.apply-ac-input:focus{border-color:var(--accent-bd);}
+.apply-ac-input::-webkit-inner-spin-button,.apply-ac-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
 .pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
@@ -373,7 +375,6 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 </div>
 
 <div id="modalRoot"></div>
-<datalist id="acSuggestions"></datalist>
 
 <script>
 'use strict';
@@ -874,16 +875,36 @@ function findTargetByAC(ac){
   return targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===ac) || null;
 }
 
-// Path is "i" for a top-level instance or "i.j" for a multiattack sub-attack -
-// lets the "check vs AC" control on a rendered roll find its way back to the
-// exact instance object to mutate, without re-rolling anything.
-function resolveAttackInst(entryId, path){
+// Walks every attack-kind instance in a rolled result (top-level attacks and
+// every multiattack sub-attack) so a whole already-rolled result can be
+// pointed at a target or a one-off AC after the fact, without re-rolling.
+function forEachAttackInst(logEntry, fn){
+  logEntry.instances.forEach(inst=>{
+    if(inst.kind==='attack') fn(inst);
+    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') fn(s); });
+  });
+}
+function firstAttackInst(logEntry){
+  let found = null;
+  forEachAttackInst(logEntry, inst=>{ if(!found) found = inst; });
+  return found;
+}
+function applyResultToAC(entryId, ac, name){
   const logEntry = resultsById.get(entryId);
-  if(!logEntry) return null;
-  const parts = path.split('.').map(Number);
-  const inst = logEntry.instances[parts[0]];
-  if(!inst) return null;
-  return parts.length>1 ? (inst.subs && inst.subs[parts[1]]) : inst;
+  if(!logEntry) return;
+  forEachAttackInst(logEntry, inst=>{
+    const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
+    inst.vsTarget = { name: name||'', ac, hit };
+  });
+  renderBoard();
+  renderLog();
+}
+function clearResultTarget(entryId){
+  const logEntry = resultsById.get(entryId);
+  if(!logEntry) return;
+  forEachAttackInst(logEntry, inst=>{ delete inst.vsTarget; });
+  renderBoard();
+  renderLog();
 }
 
 function rollAttackInstance(entry){
@@ -1158,18 +1179,6 @@ function renderTargets(){
   }
   const active = activeTarget();
   tag.textContent = active ? `Targeting ${active.name || 'unnamed'} (AC ${(active.ac||0)+(active.acAdj||0)})` : '';
-  renderAcSuggestions();
-}
-
-// Feeds every "check vs AC" input's autocomplete list with saved targets, so
-// picking one fills in their effective AC without having to know/type it.
-function renderAcSuggestions(){
-  const dl = document.getElementById('acSuggestions');
-  if(!dl) return;
-  dl.innerHTML = targets.items
-    .filter(t=>t.name)
-    .map(t=>`<option value="${(t.ac||0)+(t.acAdj||0)}">${esc(t.name)}</option>`)
-    .join('');
 }
 
 function setTargetsOptimistic(data){
@@ -1197,13 +1206,7 @@ function dmgHalfStr(dmgArr){
   return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half`;
 }
 
-function acCheckHtml(entryId, path, inst){
-  if(!entryId) return ''; // nothing to address back to (shouldn't normally happen)
-  const val = inst.vsTarget ? inst.vsTarget.ac : '';
-  return `<input type="number" class="ac-check-input" list="acSuggestions" placeholder="AC?" value="${val}" data-eid="${entryId}" data-path="${path}" title="Check this roll against an AC or a saved target">`;
-}
-
-function attackCore(inst, entryId, path){
+function attackCore(inst){
   const crit = inst.isCrit ? ' <span class="crit">CRIT!</span>' : '';
   const fumble = inst.isFumble ? ' <span class="fumble">FUMBLE</span>' : '';
   let line = `d20 ${d20Str(inst)} ${fmtMod(inst.toHit)} = <b>${inst.total}</b>${crit}${fumble}`;
@@ -1212,7 +1215,6 @@ function attackCore(inst, entryId, path){
     line += ` <span class="${inst.vsTarget.hit?'hit-yes':'hit-no'}">${who}: ${inst.vsTarget.hit?'HIT':'MISS'}</span>`;
   }
   if(inst.dmg && inst.dmg.length) line += ` — dmg ${dmgStr(inst.dmg)}`;
-  line += acCheckHtml(entryId, path, inst);
   if(inst.extraSave) line += `<div class="sub-line">also: DC ${inst.extraSave.dc} ${inst.extraSave.ability} save</div>`;
   return line;
 }
@@ -1239,14 +1241,14 @@ function multiSummarize(inst){
   return { hasTarget, hitCount, missCount, critCount, total: inst.subs.length, dmgByType };
 }
 
-function multiDetailHtml(inst, entryId, instIdx){
-  return inst.subs.map((s,j)=>{
-    const body = s.kind==='attack' ? attackCore(s, entryId, `${instIdx}.${j}`) : saveCore(s);
+function multiDetailHtml(inst){
+  return inst.subs.map(s=>{
+    const body = s.kind==='attack' ? attackCore(s) : saveCore(s);
     return `<div class="sub-line">${esc(s.name)}: ${body}</div>`;
   }).join('');
 }
 
-function renderMultiInstHtml(inst, colored, entryId, instIdx){
+function renderMultiInstHtml(inst, colored){
   const sum = multiSummarize(inst);
   const pills = sum.hasTarget
     ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
@@ -1261,7 +1263,7 @@ function renderMultiInstHtml(inst, colored, entryId, instIdx){
       ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
       <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
-    <div class="multi-detail">${multiDetailHtml(inst, entryId, instIdx)}</div>
+    <div class="multi-detail">${multiDetailHtml(inst)}</div>
   </details>`;
 }
 
@@ -1269,10 +1271,10 @@ function renderInstancesHtml(entry){
   // when several instances (creatures) roll at once, badge each one a different
   // colour and give it a bit more breathing room so they read as separate creatures
   const multi = entry.instances.length > 1;
-  return entry.instances.map((inst,idx)=>{
-    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi, entry.id, idx);
+  return entry.instances.map(inst=>{
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi);
     let core;
-    if(inst.kind==='attack') core = attackCore(inst, entry.id, String(idx));
+    if(inst.kind==='attack') core = attackCore(inst);
     else if(inst.kind==='save') core = saveCore(inst);
     else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
     else core = esc(inst.text||'');
@@ -1308,6 +1310,26 @@ function aggregateEntry(entry){
   return { hasTarget, hitCount, missCount, critCount, atomicAttacks, dmgByType };
 }
 
+// Lets a whole already-rolled result be pointed at a saved target (or a
+// one-off AC) after the fact - realizing mid-roll who it was actually aimed
+// at shouldn't mean re-rolling. Only shown when the result has an attack
+// roll to check in the first place (saves/throws have no AC to compare to).
+function applyToRowHtml(entry){
+  const rep = firstAttackInst(entry);
+  if(!rep) return '';
+  const cur = rep.vsTarget;
+  const matched = cur ? targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===cur.ac && (!cur.name || t.name===cur.name)) : null;
+  return `<div class="apply-row">
+    <span class="apply-lbl">Apply to</span>
+    <select class="apply-target-select" data-eid="${entry.id}">
+      <option value="">None</option>
+      ${targets.items.map(t=>`<option value="${t.id}" ${matched && matched.id===t.id ? 'selected':''}>${esc(t.name||'Unnamed')} (AC ${(t.ac||0)+(t.acAdj||0)})</option>`).join('')}
+    </select>
+    <span class="apply-or">or AC</span>
+    <input type="number" class="apply-ac-input" placeholder="AC" value="${cur && !matched ? cur.ac : ''}" data-eid="${entry.id}">
+  </div>`;
+}
+
 function aggregateHtml(entry){
   const agg = aggregateEntry(entry);
   const dmgEntries = Object.entries(agg.dmgByType);
@@ -1327,6 +1349,7 @@ function renderLogCard(entry){
       <span class="lname">${esc(entry.entryName)}</span>
       <span class="lwho">${esc(entry.creatureName)}</span>
     </div>
+    ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
@@ -1341,6 +1364,7 @@ function renderCardResult(key, entry){
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
+    ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
@@ -1582,9 +1606,6 @@ function onGlobalInput(e){
       const tagEl = document.getElementById('targetsActiveTag');
       if(tagEl) tagEl.textContent = `Targeting ${tgt.name || 'unnamed'} (AC ${(tgt.ac||0)+(tgt.acAdj||0)})`;
     }
-    // keep the "check vs AC" datalist current without a full table re-render,
-    // which would risk stealing focus mid-edit (see the onTargets echo guard below)
-    renderAcSuggestions();
     return;
   }
   if(!editingCreature) return;
@@ -1603,21 +1624,20 @@ function onGlobalInput(e){
 function onGlobalChange(e){
   const t = e.target;
   if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); return; }
-  if(t.classList.contains('ac-check-input')){
-    const inst = resolveAttackInst(t.dataset.eid, t.dataset.path);
-    if(!inst) return;
+  if(t.classList.contains('apply-target-select')){
+    if(t.value===''){ clearResultTarget(t.dataset.eid); return; }
+    const tgt = targets.items.find(x=>x.id===t.value);
+    if(!tgt) return;
+    applyResultToAC(t.dataset.eid, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
+    return;
+  }
+  if(t.classList.contains('apply-ac-input')){
     const raw = t.value.trim();
-    if(raw===''){
-      delete inst.vsTarget;
-    } else {
-      const ac = parseInt(raw,10);
-      if(!Number.isFinite(ac)) return;
-      const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
-      const match = findTargetByAC(ac);
-      inst.vsTarget = { name: match?match.name:'', ac, hit };
-    }
-    renderBoard();
-    renderLog();
+    if(raw===''){ clearResultTarget(t.dataset.eid); return; }
+    const ac = parseInt(raw,10);
+    if(!Number.isFinite(ac)) return;
+    const match = findTargetByAC(ac);
+    applyResultToAC(t.dataset.eid, ac, match?match.name:'');
     return;
   }
   if(!editingCreature) return;

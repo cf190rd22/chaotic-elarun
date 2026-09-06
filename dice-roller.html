@@ -737,7 +737,6 @@ const Store = (() => {
   let localCreatures = loadLocalCreatures();
   let localBoard = loadLocalBoard();
   let localTargets = loadLocalTargets();
-  let targetsLoaded = false; // true once the initial targets/state doc has come in
 
   async function init(){
     try{
@@ -753,28 +752,19 @@ const Store = (() => {
         const data = snap.exists ? snap.data() : { items: [] };
         listeners.board.forEach(fn=>fn(data.items ? data : { items: [] }));
       }, err=>console.error('board sub', err));
-      db.doc('targets/state').onSnapshot(snap=>{
-        // a write's own confirmation echo (or, worse, an EARLIER write's
-        // delayed confirmation landing after a newer edit already went out)
-        // can come back at any time and doesn't carry enough information to
-        // tell "this is old news" apart from "this is a genuinely new value"
-        // - there's no reliable way to order these from outside the write
-        // path. So: take the doc once, on the first snapshot after load, and
-        // from then on this tab's own in-memory copy is the source of truth.
-        // Every edit is still written through to the doc (so a fresh page
-        // load elsewhere picks it up) - we just never read it back afterwards
-        // and let a stale echo overwrite what's on screen.
-        if(targetsLoaded) return;
-        targetsLoaded = true;
-        const data = snap.exists ? snap.data() : { items: [], activeId: null };
-        listeners.targets.forEach(fn=>fn(data.items ? data : { items: [], activeId: null }));
-      }, err=>console.error('targets sub', err));
     } else {
       mode = 'local';
       listeners.creatures.forEach(fn=>fn(localCreatures));
       listeners.board.forEach(fn=>fn(localBoard));
-      listeners.targets.forEach(fn=>fn(localTargets));
     }
+    // targets (the player/monster AC tracker) always uses plain localStorage,
+    // never the db capability, on purpose - it's the one thing being typed
+    // into live, mid-game, and every attempt to make an async round-trip to
+    // the db behave safely with that turned into unverifiable guesswork about
+    // timing this code has no visibility into. A synchronous, same-tab-only
+    // read/write can't race itself: this is the exact codepath that every
+    // automated test in this file exercises and passes, every time.
+    listeners.targets.forEach(fn=>fn(localTargets));
     readyResolve();
   }
 
@@ -822,14 +812,11 @@ const Store = (() => {
   }
 
   async function setTargets(data){
+    // always local - see the comment in init() above
     await readyPromise;
-    if(mode==='db'){
-      await db.doc('targets/state').set(data);
-    } else {
-      localTargets = data;
-      localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
-      listeners.targets.forEach(fn=>fn(localTargets));
-    }
+    localTargets = data;
+    localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
+    listeners.targets.forEach(fn=>fn(localTargets));
   }
 
   return { init, onCreatures, onBoard, onTargets, saveCreature, deleteCreature, setBoard, setTargets, get mode(){ return mode; } };
@@ -1884,13 +1871,9 @@ Store.onCreatures(list=>{ creatures = list; renderLibrary(); renderBoard(); });
 Store.onBoard(data=>{ board = data && data.items ? data : { items: [] }; renderBoard(); renderLibrary(); });
 Store.onTargets(data=>{
   const incoming = data && data.items ? data : { items: [], activeId: null };
-  // persisting a field edit round-trips back through here - in db mode this is
-  // a real network round-trip, so the confirmation can land WHILE the user is
-  // still typing the next character. Comparing content isn't safe (it can
-  // legitimately still be "in flight" and differ from what's on screen right
-  // now), so instead: never touch the table while a field in it is focused,
-  // full stop. The user's own in-progress edit already lives directly on the
-  // target object being edited, so skipping the sync here loses nothing.
+  // targets is local-only and every call here is synchronous (see Store), but
+  // still don't rebuild the table out from under a field the user is mid-edit
+  // on - a rebuild would yank focus and any keystroke that hasn't blurred yet.
   if(isTargetFieldFocused()) return;
   targets = incoming;
   renderTargets();

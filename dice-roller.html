@@ -197,6 +197,11 @@ select,option{background:var(--surface-2);color:var(--text);}
 .dmg-breakdown{color:var(--text-mute);font-size:10px;}
 .hit-yes{color:var(--green);font-weight:700;}
 .hit-no{color:var(--red);font-weight:700;}
+.ac-check-input{width:50px;background:var(--surface-3);border:1px dashed var(--border);border-radius:5px;padding:2px 5px;font-size:10.5px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;margin-left:5px;vertical-align:middle;}
+.ac-check-input::placeholder{color:var(--text-mute);}
+.ac-check-input:hover{border-color:var(--text-mute);}
+.ac-check-input:focus{border-style:solid;border-color:var(--accent-bd);}
+.ac-check-input::-webkit-inner-spin-button,.ac-check-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
 .pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
@@ -368,6 +373,7 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 </div>
 
 <div id="modalRoot"></div>
+<datalist id="acSuggestions"></datalist>
 
 <script>
 'use strict';
@@ -829,6 +835,7 @@ let collapsedGroups = new Set();
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
+const resultsById = new Map(); // logEntry.id -> logEntry - lets the "check vs AC" control find and mutate an already-rolled instance
 let logUnread = 0;
 
 const SETTINGS_KEY = 'er_settings_v1';
@@ -841,7 +848,8 @@ function pushLog(entry){
   entry.id = uid('l');
   entry.time = Date.now();
   log.unshift(entry);
-  if(log.length > 200) log.length = 200;
+  resultsById.set(entry.id, entry);
+  while(log.length > 200){ const removed = log.pop(); resultsById.delete(removed.id); }
   renderLog();
   const drawerBtn = document.querySelector('[data-act="toggle-logpanel"]');
   const isDrawerMode = drawerBtn && getComputedStyle(drawerBtn).display !== 'none';
@@ -860,6 +868,22 @@ function renderLogBadge(){
 
 function activeTarget(){
   return targets.items.find(t=>t.id===targets.activeId) || null;
+}
+
+function findTargetByAC(ac){
+  return targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===ac) || null;
+}
+
+// Path is "i" for a top-level instance or "i.j" for a multiattack sub-attack -
+// lets the "check vs AC" control on a rendered roll find its way back to the
+// exact instance object to mutate, without re-rolling anything.
+function resolveAttackInst(entryId, path){
+  const logEntry = resultsById.get(entryId);
+  if(!logEntry) return null;
+  const parts = path.split('.').map(Number);
+  const inst = logEntry.instances[parts[0]];
+  if(!inst) return null;
+  return parts.length>1 ? (inst.subs && inst.subs[parts[1]]) : inst;
 }
 
 function rollAttackInstance(entry){
@@ -1134,6 +1158,18 @@ function renderTargets(){
   }
   const active = activeTarget();
   tag.textContent = active ? `Targeting ${active.name || 'unnamed'} (AC ${(active.ac||0)+(active.acAdj||0)})` : '';
+  renderAcSuggestions();
+}
+
+// Feeds every "check vs AC" input's autocomplete list with saved targets, so
+// picking one fills in their effective AC without having to know/type it.
+function renderAcSuggestions(){
+  const dl = document.getElementById('acSuggestions');
+  if(!dl) return;
+  dl.innerHTML = targets.items
+    .filter(t=>t.name)
+    .map(t=>`<option value="${(t.ac||0)+(t.acAdj||0)}">${esc(t.name)}</option>`)
+    .join('');
 }
 
 function setTargetsOptimistic(data){
@@ -1161,12 +1197,22 @@ function dmgHalfStr(dmgArr){
   return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half`;
 }
 
-function attackCore(inst){
+function acCheckHtml(entryId, path, inst){
+  if(!entryId) return ''; // nothing to address back to (shouldn't normally happen)
+  const val = inst.vsTarget ? inst.vsTarget.ac : '';
+  return `<input type="number" class="ac-check-input" list="acSuggestions" placeholder="AC?" value="${val}" data-eid="${entryId}" data-path="${path}" title="Check this roll against an AC or a saved target">`;
+}
+
+function attackCore(inst, entryId, path){
   const crit = inst.isCrit ? ' <span class="crit">CRIT!</span>' : '';
   const fumble = inst.isFumble ? ' <span class="fumble">FUMBLE</span>' : '';
   let line = `d20 ${d20Str(inst)} ${fmtMod(inst.toHit)} = <b>${inst.total}</b>${crit}${fumble}`;
-  if(inst.vsTarget) line += ` <span class="${inst.vsTarget.hit?'hit-yes':'hit-no'}">vs ${esc(inst.vsTarget.name)} (AC ${inst.vsTarget.ac}): ${inst.vsTarget.hit?'HIT':'MISS'}</span>`;
+  if(inst.vsTarget){
+    const who = inst.vsTarget.name ? `vs ${esc(inst.vsTarget.name)} (AC ${inst.vsTarget.ac})` : `vs AC ${inst.vsTarget.ac}`;
+    line += ` <span class="${inst.vsTarget.hit?'hit-yes':'hit-no'}">${who}: ${inst.vsTarget.hit?'HIT':'MISS'}</span>`;
+  }
   if(inst.dmg && inst.dmg.length) line += ` — dmg ${dmgStr(inst.dmg)}`;
+  line += acCheckHtml(entryId, path, inst);
   if(inst.extraSave) line += `<div class="sub-line">also: DC ${inst.extraSave.dc} ${inst.extraSave.ability} save</div>`;
   return line;
 }
@@ -1193,14 +1239,14 @@ function multiSummarize(inst){
   return { hasTarget, hitCount, missCount, critCount, total: inst.subs.length, dmgByType };
 }
 
-function multiDetailHtml(inst){
-  return inst.subs.map(s=>{
-    const body = s.kind==='attack' ? attackCore(s) : saveCore(s);
+function multiDetailHtml(inst, entryId, instIdx){
+  return inst.subs.map((s,j)=>{
+    const body = s.kind==='attack' ? attackCore(s, entryId, `${instIdx}.${j}`) : saveCore(s);
     return `<div class="sub-line">${esc(s.name)}: ${body}</div>`;
   }).join('');
 }
 
-function renderMultiInstHtml(inst, colored){
+function renderMultiInstHtml(inst, colored, entryId, instIdx){
   const sum = multiSummarize(inst);
   const pills = sum.hasTarget
     ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
@@ -1215,7 +1261,7 @@ function renderMultiInstHtml(inst, colored){
       ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
       <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
-    <div class="multi-detail">${multiDetailHtml(inst)}</div>
+    <div class="multi-detail">${multiDetailHtml(inst, entryId, instIdx)}</div>
   </details>`;
 }
 
@@ -1223,10 +1269,10 @@ function renderInstancesHtml(entry){
   // when several instances (creatures) roll at once, badge each one a different
   // colour and give it a bit more breathing room so they read as separate creatures
   const multi = entry.instances.length > 1;
-  return entry.instances.map(inst=>{
-    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi);
+  return entry.instances.map((inst,idx)=>{
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi, entry.id, idx);
     let core;
-    if(inst.kind==='attack') core = attackCore(inst);
+    if(inst.kind==='attack') core = attackCore(inst, entry.id, String(idx));
     else if(inst.kind==='save') core = saveCore(inst);
     else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
     else core = esc(inst.text||'');
@@ -1536,6 +1582,9 @@ function onGlobalInput(e){
       const tagEl = document.getElementById('targetsActiveTag');
       if(tagEl) tagEl.textContent = `Targeting ${tgt.name || 'unnamed'} (AC ${(tgt.ac||0)+(tgt.acAdj||0)})`;
     }
+    // keep the "check vs AC" datalist current without a full table re-render,
+    // which would risk stealing focus mid-edit (see the onTargets echo guard below)
+    renderAcSuggestions();
     return;
   }
   if(!editingCreature) return;
@@ -1554,6 +1603,23 @@ function onGlobalInput(e){
 function onGlobalChange(e){
   const t = e.target;
   if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); return; }
+  if(t.classList.contains('ac-check-input')){
+    const inst = resolveAttackInst(t.dataset.eid, t.dataset.path);
+    if(!inst) return;
+    const raw = t.value.trim();
+    if(raw===''){
+      delete inst.vsTarget;
+    } else {
+      const ac = parseInt(raw,10);
+      if(!Number.isFinite(ac)) return;
+      const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
+      const match = findTargetByAC(ac);
+      inst.vsTarget = { name: match?match.name:'', ac, hit };
+    }
+    renderBoard();
+    renderLog();
+    return;
+  }
   if(!editingCreature) return;
   if(t.dataset.efield==='kind' && t.dataset.eid){
     const entry = getEntry(t.dataset.eid);
@@ -1597,6 +1663,7 @@ function onGlobalClick(e){
     case 'clear-log': {
       log = [];
       lastResults.clear();
+      resultsById.clear();
       logUnread = 0;
       renderLog();
       renderLogBadge();

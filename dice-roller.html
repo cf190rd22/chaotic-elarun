@@ -1770,8 +1770,20 @@ function onGlobalClick(e){
       break;
     }
     case 'set-active-target': {
-      const activeId = targets.activeId===el.dataset.tid ? null : el.dataset.tid;
+      const wasActive = targets.activeId===el.dataset.tid;
+      const activeId = wasActive ? null : el.dataset.tid;
       setTargetsOptimistic({ items: targets.items, activeId });
+      // clicking a target doesn't just arm it for future rolls - it also
+      // applies (or un-applies) it to whatever was most recently rolled, so
+      // "oops, that was aimed at Kira" is one click, not a hunt for a dropdown
+      if(log.length && firstAttackInst(log[0])){
+        if(activeId){
+          const tgt = targets.items.find(t=>t.id===activeId);
+          if(tgt) applyResultToAC(log[0].id, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
+        } else if(wasActive){
+          clearResultTarget(log[0].id);
+        }
+      }
       break;
     }
     case 'roll-entry': {

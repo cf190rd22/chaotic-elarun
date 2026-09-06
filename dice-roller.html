@@ -61,8 +61,17 @@ select,option{background:var(--surface-2);color:var(--text);}
 .scrim.show{display:block;}
 
 /* ---------- library ---------- */
-.library{width:262px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.library{width:262px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);transition:width .15s ease;}
+.library.collapsed{width:40px;}
 .library-hdr{padding:12px;border-bottom:1px solid var(--border-light);display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
+.library-hdr-top{display:flex;align-items:center;gap:8px;}
+.library-hdr-main{display:flex;flex-direction:column;gap:8px;}
+.library.collapsed .library-hdr{padding:12px 7px;}
+.library.collapsed .library-hdr-main,.library.collapsed .lib-list{display:none;}
+.library-collapse-btn{flex-shrink:0;background:none;border:1px solid var(--border);border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;}
+.library-collapse-btn:hover{background:var(--surface-2);color:var(--text);}
+.library-collapse-btn svg{transition:transform .15s;}
+.library.collapsed .library-collapse-btn svg{transform:rotate(180deg);}
 .search-wrap{position:relative;}
 .search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-mute);pointer-events:none;}
 #searchInput{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;font-size:12.5px;outline:none;}
@@ -112,7 +121,12 @@ select,option{background:var(--surface-2);color:var(--text);}
 
 .card{width:322px;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;align-self:flex-start;}
 .card-hdr{padding:11px 13px 12px;border-bottom:1px solid var(--border-light);}
+.card.collapsed .card-hdr{border-bottom:none;}
+.card.collapsed .card-body{display:none;}
 .card-title-row{display:flex;align-items:center;gap:6px;}
+.card-collapse-btn{flex-shrink:0;padding:2px;}
+.card-collapse-btn .chev{transition:transform .15s;}
+.card.collapsed .card-collapse-btn .chev{transform:rotate(-90deg);}
 .card-name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
@@ -143,6 +157,13 @@ select,option{background:var(--surface-2);color:var(--text);}
 .entry-main{flex:1;min-width:0;}
 .entry-name{font-size:12.5px;font-weight:600;}
 .entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:1px;}
+.entry-desc{margin:-2px 0 4px;}
+.entry-desc summary{cursor:pointer;list-style:none;font-size:9.5px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;user-select:none;}
+.entry-desc summary::-webkit-details-marker{display:none;}
+.entry-desc summary:hover{color:var(--text-2);}
+.entry-desc summary .chev{transition:transform .15s;}
+.entry-desc[open] summary .chev{transform:rotate(180deg);}
+.entry-desc-body{font-size:11px;color:var(--text-2);line-height:1.55;padding:4px 0 2px;}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
@@ -279,6 +300,14 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
   .drawer-btn{display:inline-flex;}
   .library{position:fixed;left:0;top:54px;bottom:0;width:80vw;max-width:300px;transform:translateX(-101%);transition:transform .2s ease;z-index:40;}
   .library.open{transform:translateX(0);}
+  /* the desktop minimise/expand toggle is redundant with the drawer swipe-in
+     here, and its width:40px would otherwise win on specificity and leave
+     the drawer stuck narrow if it was left collapsed before the screen
+     narrowed - the drawer's own open/closed state is all that matters here */
+  .library.collapsed{width:80vw;max-width:300px;}
+  .library.collapsed .library-hdr-main{display:flex;}
+  .library.collapsed .lib-list{display:block;}
+  .library-collapse-btn{display:none;}
   .logpanel{position:fixed;right:0;top:54px;bottom:0;width:80vw;max-width:320px;transform:translateX(101%);transition:transform .2s ease;z-index:40;}
   .logpanel.open{transform:translateX(0);}
   .card{width:100%;}
@@ -338,13 +367,20 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 
     <aside class="library" id="libraryPanel">
       <div class="library-hdr">
-        <button class="iconbtn primary" data-act="open-add-modal" style="justify-content:center;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add creature
-        </button>
-        <div class="search-wrap">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="searchInput" placeholder="Search library…" autocomplete="off">
+        <div class="library-hdr-top">
+          <button class="library-collapse-btn" data-act="toggle-library-collapse" title="Minimise library">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="15 6 9 12 15 18"/></svg>
+          </button>
+        </div>
+        <div class="library-hdr-main">
+          <button class="iconbtn primary" data-act="open-add-modal" style="justify-content:center;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add creature
+          </button>
+          <div class="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="searchInput" placeholder="Search library…" autocomplete="off">
+          </div>
         </div>
       </div>
       <div class="lib-list" id="libList"></div>
@@ -903,6 +939,7 @@ let log = [];
 let rollMode = 'normal';
 let librarySearch = '';
 let collapsedGroups = new Set();
+let collapsedCards = new Set(); // board item ids minimised to just the header row
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
@@ -1361,6 +1398,14 @@ function renderCard(item){
           const tag = entryTagText(e, c);
           const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
           const result = lastResults.get(item.boardId+'::'+e.id);
+          // the brief tag (to-hit/damage) stays visible either way - the full
+          // RAW description is worth having on hand but too wordy to show
+          // for every action all the time, so it's tucked behind its own
+          // disclosure rather than cluttering the compact roll-focused list
+          const descHtml = e.text ? `<details class="entry-desc">
+            <summary>Full text <svg class="chev" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="6 9 12 15 18 9"/></svg></summary>
+            <div class="entry-desc-body">${esc(e.text)}</div>
+          </details>` : '';
           return `<div class="entry">
             <div class="entry-main">
               <div class="entry-name">${esc(e.name)}</div>
@@ -1371,6 +1416,7 @@ function renderCard(item){
               Roll
             </button>
           </div>
+          ${descHtml}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     return `<div class="group g-${t} ${collapsed?'collapsed':''}">
@@ -1393,9 +1439,13 @@ function renderCard(item){
       <div class="group-body">${infoRows}</div>
     </div>` : '';
 
-  return `<div class="card">
+  const cardCollapsed = collapsedCards.has(item.boardId);
+  return `<div class="card ${cardCollapsed?'collapsed':''}">
     <div class="card-hdr">
       <div class="card-title-row">
+        <button class="icobtn card-collapse-btn" data-act="toggle-card-collapse" data-board="${item.boardId}" title="${cardCollapsed?'Expand':'Minimise'}">
+          <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
         <div class="card-name">${esc(c.name)}</div>
         <div class="count-stepper">
           <button data-act="count-dec" data-board="${item.boardId}">−</button>
@@ -1414,10 +1464,12 @@ function renderCard(item){
         <span class="count-lbl">× instances</span>
       </div>
     </div>
-    <div class="saves-row">${savesHtml}</div>
-    ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
-    ${groupsHtml}
-    ${infoGroupHtml}
+    <div class="card-body">
+      <div class="saves-row">${savesHtml}</div>
+      ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
+      ${groupsHtml}
+      ${infoGroupHtml}
+    </div>
   </div>`;
 }
 
@@ -1511,18 +1563,36 @@ function d20Str(inst){
   const rollsStr = inst.d20rolls.length>1 ? `[${inst.d20rolls.join(', ')}]→${inst.chosen}` : `${inst.chosen}`;
   return rollsStr;
 }
+// Shows exactly what was rolled, not just the total that came out of it - so
+// "why was that so high" is answerable at a glance instead of just having to
+// trust the number. count/sides come straight off the actual dice rolled
+// (already doubled for a standard crit, since that's really how many dice
+// went into the total), never the original entry text.
+function damageBreakdownText(d){
+  if(!d.rolls || !d.rolls.length) return '';
+  const expr = `${d.rolls.length}d${d.sides}${d.bonus?fmtMod(d.bonus):''}`;
+  if(d.maxBase!=null){
+    // Perkins crit: max on the base dice, plus one normal reroll of the same
+    // dice, with the bonus counted only once
+    return `${expr}: ${d.maxBase} max + [${d.rolls.join('+')}]`;
+  }
+  const rollsPart = d.rolls.length>1 ? d.rolls.join('+') : `${d.rolls[0]}`;
+  const bonusPart = d.bonus ? ` ${fmtMod(d.bonus)}` : '';
+  return `${expr}: ${rollsPart}${bonusPart}`;
+}
 function dmgStr(dmgArr){
   if(!dmgArr || !dmgArr.length) return '';
   return dmgArr.map(d=>{
-    const breakdown = d.maxBase!=null ? ` <span class="dmg-breakdown">(${d.maxBase} max+${d.rolls.reduce((s,r)=>s+r,0)})</span>` : '';
-    return `<span class="dmg-total">${d.total}</span>${breakdown} ${esc(d.type)}`;
+    const bd = damageBreakdownText(d);
+    return `<span class="dmg-total">${d.total}</span> ${esc(d.type)}${bd?` <span class="dmg-breakdown">(${esc(bd)})</span>`:''}`;
   }).join(' + ');
 }
 function dmgHalfStr(dmgArr){
   if(!dmgArr || !dmgArr.length) return '';
   const full = dmgArr.reduce((s,d)=>s+d.total,0);
   const half = dmgArr.reduce((s,d)=>s+d.halfTotal,0);
-  return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half`;
+  const bd = dmgArr.map(damageBreakdownText).filter(Boolean).join(', ');
+  return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half${bd?` <span class="dmg-breakdown">(${esc(bd)})</span>`:''}`;
 }
 
 function attackCore(inst){
@@ -2109,6 +2179,7 @@ function onGlobalClick(e){
 
   switch(act){
     case 'toggle-sidebar': document.getElementById('libraryPanel').classList.toggle('open'); document.getElementById('scrim').classList.toggle('show'); break;
+    case 'toggle-library-collapse': document.getElementById('libraryPanel').classList.toggle('collapsed'); break;
     case 'toggle-logpanel': {
       const panel = document.getElementById('logPanel');
       panel.classList.toggle('open');
@@ -2184,6 +2255,12 @@ function onGlobalClick(e){
       break;
     }
     case 'remove-board': setBoardOptimistic(board.items.filter(it=>it.boardId!==el.dataset.board)); break;
+    case 'toggle-card-collapse': {
+      const bid = el.dataset.board;
+      if(collapsedCards.has(bid)) collapsedCards.delete(bid); else collapsedCards.add(bid);
+      renderBoard();
+      break;
+    }
     case 'count-inc': {
       const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count+1,1,50)} : it);
       setBoardOptimistic(items);

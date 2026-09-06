@@ -986,6 +986,20 @@ function ghLoadConfig(){ try{ return JSON.parse(localStorage.getItem(GHSYNC_KEY)
 function ghSaveConfig(cfg){ try{ localStorage.setItem(GHSYNC_KEY, JSON.stringify(cfg)); }catch(e){ reportStorageFailure(e); } }
 function ghConfigured(cfg){ return !!(cfg && cfg.token && cfg.owner && cfg.repo && cfg.path); }
 
+// The character sheet (sheet.html / dm-reference-36.html) stores its own
+// GitHub sync config under this same-origin key. If this tool hasn't been
+// set up yet, offer that token/owner/repo as a starting point instead of an
+// empty form - same account, most likely the same repo. Never pull its
+// path though: that's the character data file, and defaulting to it would
+// mean pushing this tool's backup straight over it.
+function ghSheetDefaults(){
+  try{
+    const sheetCfg = JSON.parse(localStorage.getItem('_ghSyncCfg') || 'null');
+    if(!sheetCfg || !sheetCfg.token) return null;
+    return { token: sheetCfg.token, owner: sheetCfg.owner||'', repo: sheetCfg.repo||'' };
+  }catch(e){ return null; }
+}
+
 async function ghApiPush(cfg, jsonStr){
   const apiBase = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
   const headers = { 'Authorization': 'token '+cfg.token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
@@ -1832,6 +1846,11 @@ function renderModal(){
   const root = document.getElementById('modalRoot');
   if(modalMode==='options'){
     const ghCfg = ghLoadConfig();
+    let ghPulledFromSheet = false;
+    if(!ghCfg.token){
+      const sheetDefaults = ghSheetDefaults();
+      if(sheetDefaults){ Object.assign(ghCfg, sheetDefaults); ghPulledFromSheet = true; }
+    }
     root.innerHTML = `
     <div class="modal-overlay" data-act="overlay-close">
       <div class="modal" style="max-width:440px;">
@@ -1850,6 +1869,7 @@ function renderModal(){
           <input type="file" id="restoreFileInput" accept="application/json,.json" hidden>
           <div class="sec-title">GitHub sync</div>
           <div class="hint" style="margin-top:0;">Push this same backup straight to a repo instead of downloading it - the same way your character sheets sync. The token is stored in this browser only, in plain text, so use a fine-grained token scoped to just this one repo rather than a full-access classic one.</div>
+          ${ghPulledFromSheet ? `<div class="hint" style="margin-top:0;color:var(--accent);">Pulled the token, owner and repo in from your character sheet's sync settings, already saved in this browser - check them and pick your own path below, then hit Save.</div>` : ''}
           <div class="field-row">
             <div class="field"><label>Token</label><input type="password" id="ghToken" value="${esc(ghCfg.token||'')}" placeholder="github_pat_…"></div>
           </div>

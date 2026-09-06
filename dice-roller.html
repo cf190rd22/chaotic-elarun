@@ -156,14 +156,19 @@ select,option{background:var(--surface-2);color:var(--text);}
 .entry:first-child{border-top:none;}
 .entry-main{flex:1;min-width:0;}
 .entry-name{font-size:12.5px;font-weight:600;}
-.entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:1px;}
-.entry-desc{margin:-2px 0 4px;}
-.entry-desc summary{cursor:pointer;list-style:none;font-size:9.5px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;user-select:none;}
-.entry-desc summary::-webkit-details-marker{display:none;}
-.entry-desc summary:hover{color:var(--text-2);}
-.entry-desc summary .chev{transition:transform .15s;}
-.entry-desc[open] summary .chev{transform:rotate(180deg);}
-.entry-desc-body{font-size:11px;color:var(--text-2);line-height:1.55;padding:4px 0 2px;}
+.entry-tag-row{display:flex;align-items:center;gap:5px;margin-top:1px;}
+.entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;}
+.entry-desc-toggle{background:none;border:none;color:var(--text-mute);cursor:pointer;padding:2px;display:flex;flex-shrink:0;}
+.entry-desc-toggle:hover{color:var(--text-2);}
+.entry-desc-toggle svg{transition:transform .15s;}
+.entry-desc-toggle.open svg{transform:rotate(180deg);}
+.entry-desc-body{font-size:11px;color:var(--text-2);line-height:1.55;padding:2px 0 6px;}
+.roll-btn-group{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.roll-mode-btn{width:20px;height:20px;flex-shrink:0;border-radius:5px;font-size:10px;font-weight:800;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.roll-mode-btn.adv{background:var(--green-dim);border:1px solid var(--green-bd);color:var(--green);}
+.roll-mode-btn.adv:hover{background:rgba(107,203,139,.25);}
+.roll-mode-btn.dis{background:var(--red-dim);border:1px solid var(--red-bd);color:var(--red);}
+.roll-mode-btn.dis:hover{background:rgba(240,112,112,.22);}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
@@ -940,6 +945,7 @@ let rollMode = 'normal';
 let librarySearch = '';
 let collapsedGroups = new Set();
 let collapsedCards = new Set(); // board item ids minimised to just the header row
+let openDescs = new Set(); // "boardId::entryId" keys with their full text expanded
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
@@ -1219,8 +1225,8 @@ function clearInstanceTarget(entryId, instIdx){
   renderLog();
 }
 
-function rollAttackInstance(entry){
-  const { rolls, chosen } = rollD20(rollMode);
+function rollAttackInstance(entry, modeOverride){
+  const { rolls, chosen } = rollD20(modeOverride || rollMode);
   const isCrit = chosen === 20;
   const isFumble = chosen === 1;
   const total = isFumble ? chosen : chosen + (entry.toHit||0);
@@ -1243,7 +1249,7 @@ function rollSaveEffectInstance(entry){
   return { dc: entry.save.dc, ability: entry.save.ability, half: entry.save.half, dmg };
 }
 
-function rollEntry(creature, entry, times, boardId){
+function rollEntry(creature, entry, times, boardId, modeOverride){
   times = clamp(times,1,50);
   let logEntry;
   if(entry.kind==='multi'){
@@ -1255,7 +1261,7 @@ function rollEntry(creature, entry, times, boardId){
         const sub = byId[part.ref];
         if(!sub) return;
         for(let j=0;j<part.count;j++){
-          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub) });
+          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub, modeOverride) });
           else if(sub.kind==='save') subs.push({ name: sub.name, kind:'save', ...rollSaveEffectInstance(sub) });
         }
       });
@@ -1265,7 +1271,7 @@ function rollEntry(creature, entry, times, boardId){
   } else {
     const instances = [];
     for(let i=1;i<=times;i++){
-      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry) });
+      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry, modeOverride) });
       else if(entry.kind==='save') instances.push({ i, kind:'save', ...rollSaveEffectInstance(entry) });
       else instances.push({ i, kind:'note', text: entry.text });
     }
@@ -1400,23 +1406,37 @@ function renderCard(item){
           const result = lastResults.get(item.boardId+'::'+e.id);
           // the brief tag (to-hit/damage) stays visible either way - the full
           // RAW description is worth having on hand but too wordy to show
-          // for every action all the time, so it's tucked behind its own
-          // disclosure rather than cluttering the compact roll-focused list
-          const descHtml = e.text ? `<details class="entry-desc">
-            <summary>Full text <svg class="chev" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="6 9 12 15 18 9"/></svg></summary>
-            <div class="entry-desc-body">${esc(e.text)}</div>
-          </details>` : '';
+          // for every action all the time, so it's tucked behind a plain
+          // arrow next to the tag rather than a labelled row of its own
+          const descKey = item.boardId+'::'+e.id;
+          const descOpen = openDescs.has(descKey);
+          const descToggle = e.text ? `<button class="entry-desc-toggle${descOpen?' open':''}" data-act="toggle-entry-desc" data-key="${descKey}" title="${descOpen?'Hide full text':'Show full text'}">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>` : '';
+          // advantage/disadvantage only means anything for a roll that's
+          // actually checking a d20 against something - a save-DC or a plain
+          // text trait has no roll of its own here to bias
+          const canAdv = e.kind==='attack' || e.kind==='multi';
+          const modeBtns = canAdv ? `
+            <button class="roll-mode-btn adv" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" data-mode="adv" title="Roll this one with advantage">A</button>
+            <button class="roll-mode-btn dis" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" data-mode="disadv" title="Roll this one with disadvantage">D</button>` : '';
           return `<div class="entry">
             <div class="entry-main">
               <div class="entry-name">${esc(e.name)}</div>
-              ${tag?`<div class="entry-tag">${esc(tag)}</div>`:''}
+              <div class="entry-tag-row">
+                ${tag?`<span class="entry-tag">${esc(tag)}</span>`:''}
+                ${descToggle}
+              </div>
             </div>
-            <button class="roll-btn ${btnClass}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="Roll">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
-              Roll
-            </button>
+            <div class="roll-btn-group">
+              ${modeBtns}
+              <button class="roll-btn ${btnClass}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="Roll">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
+                Roll
+              </button>
+            </div>
           </div>
-          ${descHtml}
+          ${descOpen && e.text ? `<div class="entry-desc-body">${esc(e.text)}</div>` : ''}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     return `<div class="group g-${t} ${collapsed?'collapsed':''}">
@@ -2261,6 +2281,12 @@ function onGlobalClick(e){
       renderBoard();
       break;
     }
+    case 'toggle-entry-desc': {
+      const key = el.dataset.key;
+      if(openDescs.has(key)) openDescs.delete(key); else openDescs.add(key);
+      renderBoard();
+      break;
+    }
     case 'count-inc': {
       const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count+1,1,50)} : it);
       setBoardOptimistic(items);
@@ -2311,7 +2337,7 @@ function onGlobalClick(e){
       const item = board.items.find(it=>it.boardId===el.dataset.board);
       const c = item && creatures.find(cr=>cr.id===item.creatureId);
       const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
-      if(c && entry) rollEntry(c, entry, item.count, item.boardId);
+      if(c && entry) rollEntry(c, entry, item.count, item.boardId, el.dataset.mode);
       break;
     }
     case 'roll-save': {

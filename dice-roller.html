@@ -80,6 +80,30 @@ select,option{background:var(--surface-2);color:var(--text);}
 .trash-btn:hover{color:var(--red);}
 
 /* ---------- board ---------- */
+.main-col{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.targets-panel{border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
+.targets-hdr{padding:9px 16px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-mute);user-select:none;}
+.targets-hdr:hover{color:var(--text-2);}
+.targets-hdr .chev{margin-left:auto;transition:transform .15s;}
+.targets-panel.collapsed .chev{transform:rotate(-90deg);}
+.targets-panel.collapsed .targets-body{display:none;}
+.targets-active-tag{color:var(--green);font-weight:700;text-transform:none;letter-spacing:0;font-size:10.5px;font-family:'DM Sans',sans-serif;}
+.targets-body{padding:0 16px 12px;}
+.targets-table-wrap{overflow-x:auto;}
+.targets-table{width:100%;border-collapse:collapse;font-size:12px;}
+.targets-table th{text-align:left;font-size:9.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;font-weight:700;padding:4px 6px;white-space:nowrap;}
+.targets-table td{padding:3px 6px;}
+.targets-table tr.active td{background:var(--green-dim);}
+.targets-table input{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:12px;outline:none;}
+.targets-table input:focus{border-color:var(--accent-bd);}
+.targets-table td:nth-child(2){min-width:110px;}
+.targets-table td:nth-child(3),.targets-table td:nth-child(4){width:58px;}
+.targets-table td:nth-child(5){width:34px;color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
+.targets-table td:nth-child(6){min-width:130px;}
+.target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
+.target-radio:hover{border-color:var(--green-bd);}
+.target-radio.active{border-color:var(--green);background:var(--green);}
+.targets-empty{color:var(--text-mute);font-size:11.5px;padding:8px 6px;}
 .board{flex:1;overflow:auto;padding:16px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:14px;}
 .board-empty{margin:60px auto;color:var(--text-mute);text-align:center;max-width:300px;font-size:12.5px;line-height:1.7;}
 .board-empty b{color:var(--text-2);}
@@ -166,6 +190,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 .crit{color:var(--amber);font-weight:700;}
 .fumble{color:var(--red);font-weight:700;}
 .dmg-total{color:var(--orange);font-weight:700;}
+.dmg-breakdown{color:var(--text-mute);font-size:10px;}
+.hit-yes{color:var(--green);font-weight:700;}
+.hit-no{color:var(--red);font-weight:700;}
 .dmg-half{color:var(--green);}
 .sub-line{padding-left:10px;color:var(--text-2);}
 
@@ -179,6 +206,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 textarea.paste{width:100%;min-height:230px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:'DM Mono',monospace;font-size:11.5px;resize:vertical;outline:none;}
 textarea.paste:focus{border-color:var(--accent-bd);}
 .hint{font-size:11.5px;color:var(--text-mute);line-height:1.6;margin-bottom:10px;}
+.opt-row{display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--border);border-radius:9px;margin-bottom:8px;cursor:pointer;font-size:12.5px;}
+.opt-row:hover{border-color:var(--accent-bd);background:var(--surface-2);}
+.opt-row input{margin-top:3px;flex-shrink:0;}
 .field-row{display:flex;gap:8px;margin-bottom:8px;}
 .field{flex:1;display:flex;flex-direction:column;gap:3px;}
 .field label{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-mute);font-family:'DM Mono',monospace;}
@@ -233,8 +263,8 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
   .library,.logpanel,.scrim{top:94px;}
 }
 @media(max-width:420px){
-  #resetRollsBtn .btn-label{display:none;}
-  #resetRollsBtn{padding:0 9px;}
+  .topbar-tools .iconbtn .btn-label{display:none;}
+  .topbar-tools .iconbtn{padding:0 9px;}
 }
 </style>
 </head>
@@ -260,6 +290,10 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
         <span class="btn-label">Reset rolls</span>
       </button>
+      <button class="iconbtn" data-act="open-options" title="Options">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        <span class="btn-label">Options</span>
+      </button>
       <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log" style="position:relative;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
         <span id="logBadge" class="badge" hidden></span>
@@ -284,7 +318,26 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
       <div class="lib-list" id="libList"></div>
     </aside>
 
-    <main class="board" id="board"></main>
+    <div class="main-col">
+      <div class="targets-panel" id="targetsPanel">
+        <div class="targets-hdr" data-act="toggle-targets">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor" stroke="none"/></svg>
+          Targets
+          <span class="targets-active-tag" id="targetsActiveTag"></span>
+          <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="targets-body">
+          <div class="targets-table-wrap">
+            <table class="targets-table">
+              <thead><tr><th></th><th>Name</th><th>AC</th><th>AC adj.</th><th>Eff.</th><th>Notes</th><th></th></tr></thead>
+              <tbody id="targetsBody"></tbody>
+            </table>
+          </div>
+          <button class="smallbtn" data-act="add-target">+ Add target</button>
+        </div>
+      </div>
+      <main class="board" id="board"></main>
+    </div>
 
     <aside class="logpanel" id="logPanel">
       <div class="log-hdr">
@@ -338,6 +391,15 @@ function rollD20(mode){
 function rollDamage(comp, crit){
   const parsed = parseDice(comp.dice);
   if(!parsed) return { total:0, rolls:[], bonus:0, sides:0, type:comp.type||'' };
+  if(crit && settings.critMode==='perkins'){
+    // "Perkins crit": max damage on the base dice, plus one normal roll of the
+    // same dice, bonus counted once - e.g. 2d6+4 crits for 12 + 2d6 + 4.
+    const maxBase = parsed.count*parsed.sides;
+    const rolls = [];
+    let sum = 0;
+    for(let i=0;i<parsed.count;i++){ const r = rollDie(parsed.sides); rolls.push(r); sum += r; }
+    return { total: maxBase+sum+parsed.bonus, rolls, bonus:parsed.bonus, sides:parsed.sides, type:comp.type||'', maxBase };
+  }
   const count = parsed.count * (crit?2:1);
   const rolls = [];
   let sum = 0;
@@ -392,6 +454,31 @@ function extractAbilities(flat){
   }
   ABILS.forEach(k=>{ if(!abilities[k]) abilities[k] = { score:10, mod:0 }; });
   return abilities;
+}
+
+// Splits the front-matter of a statblock (everything before Actions/Traits) into
+// its labelled fields by finding every label in reading order and taking each
+// field's value as the text between it and the next label - robust to whatever
+// abbreviation or punctuation a particular statblock format uses.
+function extractFrontMatterFields(flat){
+  const out = { resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:'' };
+  const KEY_MAP = { condimm:'condImmunities', dmgimm:'immunities', dmgres:'resistances', dmgvuln:'vulnerabilities', senses:'senses', languages:'languages', skills:'skills', saves:'savingThrowsText', gear:'gear' };
+  const labelRe = /(?<condimm>Cond(?:ition)?\.?\s*Immun\w*)|(?<dmgimm>(?:Damage\s+)?Immun\w*)|(?<dmgres>(?:Damage\s+)?Resist(?:ances?)?)|(?<dmgvuln>(?:Damage\s+)?Vulnerab\w*)|(?<senses>\bSenses\b)|(?<languages>\bLanguages\b)|(?<skills>\bSkills\b)|(?<saves>Saving\s+Throws?)|(?<gear>\bGear\b)|(?<stop>\bChallenge\b|\bCR\b|Proficiency\s+Bonus|\bActions\b|\bTraits\b|Bonus\s+Actions|\bReactions\b|Legendary\s+Actions)/gi;
+  const marks = [];
+  let lm;
+  while((lm = labelRe.exec(flat))){
+    const key = Object.keys(lm.groups).find(k=>lm.groups[k]!==undefined);
+    marks.push({ key, start: lm.index, end: lm.index+lm[0].length });
+  }
+  for(let i=0;i<marks.length;i++){
+    const mk = marks[i];
+    const outKey = KEY_MAP[mk.key];
+    if(!outKey) continue; // "stop" markers only bound the previous field, they aren't stored
+    const nextStart = i+1<marks.length ? marks[i+1].start : Math.min(flat.length, mk.end+300);
+    let val = flat.slice(mk.end, nextStart).replace(/^[:\s]+/,'').replace(/[.;·•\s]+$/,'').trim();
+    if(val && !out[outKey]) out[outKey] = val;
+  }
+  return out;
 }
 
 function buildEntry(re){
@@ -506,6 +593,7 @@ function parseStatblock(raw){
   const pb = pbM ? +pbM[1] : null;
 
   const abilities = extractAbilities(flat);
+  const info = extractFrontMatterFields(flat);
 
   const saves = {};
   const savesLineM = /Saving Throws?\s*:?\s*([^\n]+)/i.exec(flat);
@@ -547,7 +635,7 @@ function parseStatblock(raw){
   const entries = rawEntries.map(buildEntry);
   linkMultiattacks(entries);
 
-  return { name, ac, hp, speed, cr, pb, abilities, saves, entries, favourite:false };
+  return { name, ac, hp, speed, cr, pb, abilities, saves, entries, favourite:false, ...info };
 }
 
 function blankCreature(){
@@ -555,7 +643,8 @@ function blankCreature(){
     name:'New Creature', ac:null, hp:null, speed:'', cr:'', pb:null,
     abilities: Object.fromEntries(ABILS.map(k=>[k,{score:10,mod:0}])),
     saves: Object.fromEntries(ABILS.map(k=>[k,0])),
-    entries: [], favourite:false
+    entries: [], favourite:false,
+    resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:''
   };
 }
 
@@ -593,9 +682,10 @@ const Store = (() => {
   let mode = null; // null until init() decides 'db' or 'local' - never guess in between
   let readyResolve;
   const readyPromise = new Promise(res=>{ readyResolve = res; });
-  const listeners = { creatures: [], board: [] };
+  const listeners = { creatures: [], board: [], targets: [] };
   const LS_CREATURES = 'er_creatures_v1';
   const LS_BOARD = 'er_board_v1';
+  const LS_TARGETS = 'er_targets_v1';
 
   function loadLocalCreatures(){
     try{
@@ -613,9 +703,17 @@ const Store = (() => {
     }catch(e){}
     return { items: [] };
   }
+  function loadLocalTargets(){
+    try{
+      const raw = localStorage.getItem(LS_TARGETS);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { items: [], activeId: null };
+  }
 
   let localCreatures = loadLocalCreatures();
   let localBoard = loadLocalBoard();
+  let localTargets = loadLocalTargets();
 
   async function init(){
     try{
@@ -631,16 +729,22 @@ const Store = (() => {
         const data = snap.exists ? snap.data() : { items: [] };
         listeners.board.forEach(fn=>fn(data.items ? data : { items: [] }));
       }, err=>console.error('board sub', err));
+      db.doc('targets/state').onSnapshot(snap=>{
+        const data = snap.exists ? snap.data() : { items: [], activeId: null };
+        listeners.targets.forEach(fn=>fn(data.items ? data : { items: [], activeId: null }));
+      }, err=>console.error('targets sub', err));
     } else {
       mode = 'local';
       listeners.creatures.forEach(fn=>fn(localCreatures));
       listeners.board.forEach(fn=>fn(localBoard));
+      listeners.targets.forEach(fn=>fn(localTargets));
     }
     readyResolve();
   }
 
   function onCreatures(fn){ listeners.creatures.push(fn); if(mode==='local') fn(localCreatures); }
   function onBoard(fn){ listeners.board.push(fn); if(mode==='local') fn(localBoard); }
+  function onTargets(fn){ listeners.targets.push(fn); if(mode==='local') fn(localTargets); }
 
   async function saveCreature(creature){
     await readyPromise;
@@ -681,20 +785,37 @@ const Store = (() => {
     }
   }
 
-  return { init, onCreatures, onBoard, saveCreature, deleteCreature, setBoard, get mode(){ return mode; } };
+  async function setTargets(data){
+    await readyPromise;
+    if(mode==='db'){
+      await db.doc('targets/state').set(data);
+    } else {
+      localTargets = data;
+      localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
+      listeners.targets.forEach(fn=>fn(localTargets));
+    }
+  }
+
+  return { init, onCreatures, onBoard, onTargets, saveCreature, deleteCreature, setBoard, setTargets, get mode(){ return mode; } };
 })();
 
 /* ============================== app state ============================== */
 let creatures = [];
 let board = { items: [] };
+let targets = { items: [], activeId: null };
 let log = [];
 let rollMode = 'normal';
 let librarySearch = '';
 let collapsedGroups = new Set();
 let editingCreature = null;
-let modalMode = null; // 'paste' | 'edit'
+let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
 let logUnread = 0;
+
+const SETTINGS_KEY = 'er_settings_v1';
+let settings = { critMode: 'double' }; // 'double' (standard 5e) | 'perkins' (max damage + reroll)
+try{ const rawSettings = localStorage.getItem(SETTINGS_KEY); if(rawSettings) Object.assign(settings, JSON.parse(rawSettings)); }catch(e){}
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }catch(e){} }
 
 /* ============================== rolling ============================== */
 function pushLog(entry){
@@ -718,13 +839,24 @@ function renderLogBadge(){
   el.textContent = logUnread>9 ? '9+' : String(logUnread);
 }
 
+function activeTarget(){
+  return targets.items.find(t=>t.id===targets.activeId) || null;
+}
+
 function rollAttackInstance(entry){
   const { rolls, chosen } = rollD20(rollMode);
   const isCrit = chosen === 20;
   const isFumble = chosen === 1;
   const total = isFumble ? chosen : chosen + (entry.toHit||0);
   const dmg = (entry.dmg||[]).map(c=>rollDamage(c, isCrit));
-  return { d20rolls: rolls, chosen, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave };
+  let vsTarget = null;
+  const tgt = activeTarget();
+  if(tgt){
+    const effAC = (tgt.ac||0) + (tgt.acAdj||0);
+    const hit = isFumble ? false : (isCrit ? true : total >= effAC);
+    vsTarget = { name: tgt.name || 'target', ac: effAC, hit };
+  }
+  return { d20rolls: rolls, chosen, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
 }
 
 function rollSaveEffectInstance(entry){
@@ -852,6 +984,16 @@ function entryTagText(entry, creature){
   return '';
 }
 
+function infoRowsHtml(c){
+  const FIELDS = [
+    ['Resistances', c.resistances], ['Vulnerabilities', c.vulnerabilities],
+    ['Immunities', c.immunities], ['Condition Immunities', c.condImmunities],
+    ['Senses', c.senses], ['Skills', c.skills], ['Saving Throws', c.savingThrowsText],
+    ['Languages', c.languages], ['Gear', c.gear]
+  ];
+  return FIELDS.filter(([,v])=>v).map(([label,v])=>`<div class="trait-row"><b>${esc(label)}.</b> ${esc(v)}</div>`).join('');
+}
+
 function renderCard(item){
   const c = creatures.find(cr=>cr.id===item.creatureId);
   if(!c) return '';
@@ -901,6 +1043,17 @@ function renderCard(item){
     </div>`;
   }).join('');
 
+  const infoRows = infoRowsHtml(c);
+  const infoGid = item.boardId+'-info';
+  const infoCollapsed = collapsedGroups.has(infoGid);
+  const infoGroupHtml = infoRows ? `<div class="group g-trait ${infoCollapsed?'collapsed':''}">
+      <div class="group-hdr" data-act="toggle-group" data-gid="${infoGid}">
+        <span class="swatch"></span>Info
+        <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="group-body">${infoRows}</div>
+    </div>` : '';
+
   return `<div class="card">
     <div class="card-hdr">
       <div class="card-title-row">
@@ -925,6 +1078,7 @@ function renderCard(item){
     <div class="saves-row">${savesHtml}</div>
     ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
     ${groupsHtml}
+    ${infoGroupHtml}
   </div>`;
 }
 
@@ -937,6 +1091,38 @@ function renderBoard(){
   el.innerHTML = board.items.map(renderCard).join('');
 }
 
+/* ============================== rendering: targets ============================== */
+function renderTargets(){
+  const body = document.getElementById('targetsBody');
+  const tag = document.getElementById('targetsActiveTag');
+  if(!body) return;
+  if(!targets.items.length){
+    body.innerHTML = `<tr><td colspan="7" class="targets-empty">Add your players (or any NPC) here to see hit/miss against them when you roll an attack.</td></tr>`;
+  } else {
+    body.innerHTML = targets.items.map(t=>{
+      const eff = (t.ac||0)+(t.acAdj||0);
+      const active = t.id===targets.activeId;
+      return `<tr class="${active?'active':''}">
+        <td><button class="target-radio ${active?'active':''}" data-act="set-active-target" data-tid="${t.id}" title="${active?'Currently targeted':'Target this'}"></button></td>
+        <td><input value="${esc(t.name||'')}" placeholder="Name" data-tid="${t.id}" data-tfield="name"></td>
+        <td><input type="number" value="${t.ac??''}" placeholder="AC" data-tid="${t.id}" data-tfield="ac"></td>
+        <td><input type="number" value="${t.acAdj??''}" placeholder="±0" data-tid="${t.id}" data-tfield="acAdj"></td>
+        <td id="tgteff-${t.id}">${eff}</td>
+        <td><input value="${esc(t.notes||'')}" placeholder="Notes" data-tid="${t.id}" data-tfield="notes"></td>
+        <td><button class="iconx" data-act="remove-target" data-tid="${t.id}" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
+      </tr>`;
+    }).join('');
+  }
+  const active = activeTarget();
+  tag.textContent = active ? `Targeting ${active.name || 'unnamed'} (AC ${(active.ac||0)+(active.acAdj||0)})` : '';
+}
+
+function setTargetsOptimistic(data){
+  targets = data;
+  renderTargets();
+  Store.setTargets(data);
+}
+
 /* ============================== rendering: log ============================== */
 function d20Str(inst){
   const rollsStr = inst.d20rolls.length>1 ? `[${inst.d20rolls.join(', ')}]→${inst.chosen}` : `${inst.chosen}`;
@@ -944,7 +1130,10 @@ function d20Str(inst){
 }
 function dmgStr(dmgArr){
   if(!dmgArr || !dmgArr.length) return '';
-  return dmgArr.map(d=>`<span class="dmg-total">${d.total}</span> ${esc(d.type)}`).join(' + ');
+  return dmgArr.map(d=>{
+    const breakdown = d.maxBase!=null ? ` <span class="dmg-breakdown">(${d.maxBase} max+${d.rolls.reduce((s,r)=>s+r,0)})</span>` : '';
+    return `<span class="dmg-total">${d.total}</span>${breakdown} ${esc(d.type)}`;
+  }).join(' + ');
 }
 function dmgHalfStr(dmgArr){
   if(!dmgArr || !dmgArr.length) return '';
@@ -957,6 +1146,7 @@ function attackCore(inst){
   const crit = inst.isCrit ? ' <span class="crit">CRIT!</span>' : '';
   const fumble = inst.isFumble ? ' <span class="fumble">FUMBLE</span>' : '';
   let line = `d20 ${d20Str(inst)} ${fmtMod(inst.toHit)} = <b>${inst.total}</b>${crit}${fumble}`;
+  if(inst.vsTarget) line += ` <span class="${inst.vsTarget.hit?'hit-yes':'hit-no'}">vs ${esc(inst.vsTarget.name)} (AC ${inst.vsTarget.ac}): ${inst.vsTarget.hit?'HIT':'MISS'}</span>`;
   if(inst.dmg && inst.dmg.length) line += ` — dmg ${dmgStr(inst.dmg)}`;
   if(inst.extraSave) line += `<div class="sub-line">also: DC ${inst.extraSave.dc} ${inst.extraSave.ability} save</div>`;
   return line;
@@ -1036,6 +1226,11 @@ function openEditModal(creature){
   modalMode = 'edit';
   renderModal();
 }
+function openOptionsModal(){
+  editingCreature = null;
+  modalMode = 'options';
+  renderModal();
+}
 function closeModal(){
   editingCreature = null;
   modalMode = null;
@@ -1105,6 +1300,24 @@ function entryEditHtml(entry, allEntries){
 
 function renderModal(){
   const root = document.getElementById('modalRoot');
+  if(modalMode==='options'){
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal" style="max-width:440px;">
+        <div class="modal-hdr"><h2>Options</h2><button class="icobtn" data-act="close-modal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="sec-title" style="margin-top:0;">Critical hit damage</div>
+          <label class="opt-row"><input type="radio" name="critMode" value="double" ${settings.critMode==='double'?'checked':''}> <div><b>Double the dice</b><div class="hint" style="margin:2px 0 0;">Standard 5e rule — roll double the number of damage dice.</div></div></label>
+          <label class="opt-row"><input type="radio" name="critMode" value="perkins" ${settings.critMode==='perkins'?'checked':''}> <div><b>Max damage + reroll ("Perkins crit")</b><div class="hint" style="margin:2px 0 0;">Take the dice's maximum value, then roll the same dice again and add both together. Same average, less swingy.</div></div></label>
+          <div class="hint" style="margin-top:10px;">Only affects attack-roll crits — a save-forced effect (breath weapon, etc.) never crits.</div>
+        </div>
+        <div class="modal-ft" style="justify-content:flex-end;">
+          <button class="btn primary" data-act="close-modal">Done</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
   if(modalMode==='paste'){
     root.innerHTML = `
     <div class="modal-overlay" data-act="overlay-close">
@@ -1155,6 +1368,24 @@ function renderModal(){
               <input type="number" value="${c.saves[a]}" title="Save bonus" data-abil="${a}" data-abilfield="save">
             </div>`).join('')}
           </div>
+          <div class="sec-title">Resistances, senses &amp; more</div>
+          <div class="field-row">
+            <div class="field"><label>Resistances</label><input value="${esc(c.resistances||'')}" data-cfield="resistances"></div>
+            <div class="field"><label>Vulnerabilities</label><input value="${esc(c.vulnerabilities||'')}" data-cfield="vulnerabilities"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Immunities</label><input value="${esc(c.immunities||'')}" data-cfield="immunities"></div>
+            <div class="field"><label>Condition immunities</label><input value="${esc(c.condImmunities||'')}" data-cfield="condImmunities"></div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:2"><label>Senses</label><input value="${esc(c.senses||'')}" data-cfield="senses"></div>
+            <div class="field" style="flex:2"><label>Skills</label><input value="${esc(c.skills||'')}" data-cfield="skills"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Saving throws</label><input value="${esc(c.savingThrowsText||'')}" data-cfield="savingThrowsText"></div>
+            <div class="field"><label>Languages</label><input value="${esc(c.languages||'')}" data-cfield="languages"></div>
+            <div class="field"><label>Gear</label><input value="${esc(c.gear||'')}" data-cfield="gear"></div>
+          </div>
           ${groupsHtml}
         </div>
         <div class="modal-ft">
@@ -1197,6 +1428,22 @@ function setMultiField(eid, idx, field, value){
 function onGlobalInput(e){
   const t = e.target;
   if(t.id==='searchInput'){ librarySearch = t.value; renderLibrary(); return; }
+  if(t.dataset.tid && t.dataset.tfield){
+    const tgt = targets.items.find(x=>x.id===t.dataset.tid);
+    if(!tgt) return;
+    const f = t.dataset.tfield;
+    if(f==='ac' || f==='acAdj') tgt[f] = t.value===''? 0 : +t.value;
+    else tgt[f] = t.value;
+    if(f==='ac' || f==='acAdj'){
+      const effCell = document.getElementById('tgteff-'+tgt.id);
+      if(effCell) effCell.textContent = (tgt.ac||0)+(tgt.acAdj||0);
+    }
+    if(tgt.id===targets.activeId){
+      const tagEl = document.getElementById('targetsActiveTag');
+      if(tagEl) tagEl.textContent = `Targeting ${tgt.name || 'unnamed'} (AC ${(tgt.ac||0)+(tgt.acAdj||0)})`;
+    }
+    return;
+  }
   if(!editingCreature) return;
   if(t.dataset.cfield){ setCreatureField(t.dataset.cfield, t.value); return; }
   if(t.dataset.abil && t.dataset.abilfield){
@@ -1212,6 +1459,7 @@ function onGlobalInput(e){
 
 function onGlobalChange(e){
   const t = e.target;
+  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); return; }
   if(!editingCreature) return;
   if(t.dataset.efield==='kind' && t.dataset.eid){
     const entry = getEntry(t.dataset.eid);
@@ -1263,6 +1511,7 @@ function onGlobalClick(e){
     }
 
     case 'open-add-modal': openAddModal(); break;
+    case 'open-options': openOptionsModal(); break;
     case 'close-modal': closeModal(); break;
     case 'overlay-close': if(e.target===el) closeModal(); break;
     case 'start-blank': editingCreature = blankCreature(); modalMode='edit'; renderModal(); break;
@@ -1326,6 +1575,24 @@ function onGlobalClick(e){
       renderBoard();
       break;
     }
+    case 'toggle-targets': document.getElementById('targetsPanel').classList.toggle('collapsed'); break;
+    case 'add-target': {
+      const items = targets.items.slice();
+      items.push({ id: uid('t'), name:'', ac:null, acAdj:0, notes:'' });
+      setTargetsOptimistic({ items, activeId: targets.activeId });
+      break;
+    }
+    case 'remove-target': {
+      const items = targets.items.filter(t=>t.id!==el.dataset.tid);
+      const activeId = targets.activeId===el.dataset.tid ? null : targets.activeId;
+      setTargetsOptimistic({ items, activeId });
+      break;
+    }
+    case 'set-active-target': {
+      const activeId = targets.activeId===el.dataset.tid ? null : el.dataset.tid;
+      setTargetsOptimistic({ items: targets.items, activeId });
+      break;
+    }
     case 'roll-entry': {
       const item = board.items.find(it=>it.boardId===el.dataset.board);
       const c = item && creatures.find(cr=>cr.id===item.creatureId);
@@ -1346,6 +1613,9 @@ function onGlobalClick(e){
 document.addEventListener('click', onGlobalClick);
 document.addEventListener('input', onGlobalInput);
 document.addEventListener('change', onGlobalChange);
+document.addEventListener('focusout', e=>{
+  if(e.target.dataset.tid && e.target.dataset.tfield) Store.setTargets(targets);
+});
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');
   document.getElementById('logPanel').classList.remove('open');
@@ -1355,6 +1625,15 @@ document.getElementById('scrim').addEventListener('click', ()=>{
 /* ============================== init ============================== */
 Store.onCreatures(list=>{ creatures = list; renderLibrary(); renderBoard(); });
 Store.onBoard(data=>{ board = data && data.items ? data : { items: [] }; renderBoard(); renderLibrary(); });
+Store.onTargets(data=>{
+  const incoming = data && data.items ? data : { items: [], activeId: null };
+  // persisting a field edit round-trips back through here - if it's just an echo
+  // of what we already have (our own write, or the platform's write confirmation),
+  // skip the rebuild so it can't yank focus out from under an in-progress edit.
+  if(JSON.stringify(incoming) === JSON.stringify(targets)) return;
+  targets = incoming;
+  renderTargets();
+});
 Store.init();
 renderLog();
 </script>

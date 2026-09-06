@@ -389,7 +389,18 @@ function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'
 function fmtMod(n){ n = n||0; return (n>=0?'+':'')+n; }
 function clamp(n,lo,hi){ return Math.max(lo,Math.min(hi,n)); }
 function signedInt(s){ return parseInt(String(s).replace(/[−–—]/g,'-').replace(/\s+/g,''),10); }
-function rollDie(sides){ return 1+Math.floor(Math.random()*sides); }
+function rollDie(sides){
+  // crypto.getRandomValues is a real, hardware-seeded random source (unlike
+  // Math.random, which is only specified to be "roughly uniform" and left up
+  // to the engine) - and rejection-sampled here so every face stays exactly
+  // equally likely, with none of the classic "modulo bias" toward the low end
+  // that a plain % would introduce.
+  const buf = new Uint32Array(1);
+  const limit = 0x100000000 - (0x100000000 % sides);
+  let x;
+  do{ crypto.getRandomValues(buf); x = buf[0]; } while(x >= limit);
+  return 1 + (x % sides);
+}
 
 function parseDice(expr){
   if(!expr) return null;
@@ -1637,9 +1648,13 @@ function onGlobalInput(e){
     if(!tgt) return;
     const f = t.dataset.tfield;
     if(f==='ac' || f==='acAdj'){
+      // some mobile keyboards autocorrect a typed hyphen into an en-dash or
+      // minus sign (- => – or −) which Number() doesn't recognise as a sign
+      // at all - normalise those back to a plain ASCII "-" before parsing.
+      const raw = t.value.replace(/[‐-―−]/g, '-');
       // "-" or "+" typed alone (about to become "-3") parses as NaN - don't
       // stomp the real value with that mid-keystroke, just wait for the next digit
-      const n = t.value===''? 0 : +t.value;
+      const n = raw===''? 0 : +raw;
       if(!Number.isNaN(n)) tgt[f] = n;
     }
     else tgt[f] = t.value;

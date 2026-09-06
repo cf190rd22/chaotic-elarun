@@ -201,6 +201,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 .apply-target-select:focus{border-color:var(--accent-bd);}
 .apply-ac-input{width:48px;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;}
 .apply-ac-input:focus{border-color:var(--accent-bd);}
+.inst-apply-select{background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 4px;font-size:10px;color:var(--text-2);outline:none;max-width:130px;margin-left:6px;}
+.inst-apply-select:focus{border-color:var(--accent-bd);}
+.multi-inst summary .inst-apply-select{margin-left:auto;}
 .agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
 .pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
@@ -1103,14 +1106,18 @@ function findTargetByAC(ac){
   return targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===ac) || null;
 }
 
+// The attack-kind roll(s) inside one top-level instance - itself, if it's a
+// plain attack, or every attack sub-roll if it's a multiattack.
+function attackPartsOf(topInst){
+  if(topInst.kind==='attack') return [topInst];
+  if(topInst.kind==='multi') return topInst.subs.filter(s=>s.kind==='attack');
+  return [];
+}
 // Walks every attack-kind instance in a rolled result (top-level attacks and
 // every multiattack sub-attack) so a whole already-rolled result can be
 // pointed at a target or a one-off AC after the fact, without re-rolling.
 function forEachAttackInst(logEntry, fn){
-  logEntry.instances.forEach(inst=>{
-    if(inst.kind==='attack') fn(inst);
-    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') fn(s); });
-  });
+  logEntry.instances.forEach(inst=>attackPartsOf(inst).forEach(fn));
 }
 function firstAttackInst(logEntry){
   let found = null;
@@ -1131,6 +1138,29 @@ function clearResultTarget(entryId){
   const logEntry = resultsById.get(entryId);
   if(!logEntry) return;
   forEachAttackInst(logEntry, inst=>{ delete inst.vsTarget; });
+  renderBoard();
+  renderLog();
+}
+
+// Same idea, but scoped to ONE creature instance within a multi-instance
+// result - e.g. of 3 goblins that rolled together, sending only goblin #2's
+// attack at a different target than the other two.
+function applyInstanceToAC(entryId, instIdx, ac, name){
+  const logEntry = resultsById.get(entryId);
+  const topInst = logEntry && logEntry.instances[instIdx];
+  if(!topInst) return;
+  attackPartsOf(topInst).forEach(inst=>{
+    const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
+    inst.vsTarget = { name: name||'', ac, hit };
+  });
+  renderBoard();
+  renderLog();
+}
+function clearInstanceTarget(entryId, instIdx){
+  const logEntry = resultsById.get(entryId);
+  const topInst = logEntry && logEntry.instances[instIdx];
+  if(!topInst) return;
+  attackPartsOf(topInst).forEach(inst=>{ delete inst.vsTarget; });
   renderBoard();
   renderLog();
 }
@@ -1520,7 +1550,23 @@ function multiDetailHtml(inst){
   }).join('');
 }
 
-function renderMultiInstHtml(inst, colored){
+// Per-instance "apply to" control - lets one attacker out of several (e.g.
+// goblin #2 of 3) be pointed at a different target than the rest, after the
+// fact. Only shown when there's more than one instance to distinguish, and
+// only for instances that actually have an attack roll to check.
+function instApplyToHtml(entry, instIdx){
+  const topInst = entry.instances[instIdx];
+  const rep = attackPartsOf(topInst)[0];
+  if(!rep) return '';
+  const cur = rep.vsTarget;
+  const matched = cur ? targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===cur.ac && (!cur.name || t.name===cur.name)) : null;
+  return `<select class="inst-apply-select" data-eid="${entry.id}" data-instidx="${instIdx}" title="Send this attacker's roll at a different target">
+    <option value="">vs…</option>
+    ${targets.items.map(t=>`<option value="${t.id}" ${matched && matched.id===t.id ? 'selected':''}>${esc(t.name||'Unnamed')} (AC ${(t.ac||0)+(t.acAdj||0)})</option>`).join('')}
+  </select>`;
+}
+
+function renderMultiInstHtml(inst, colored, applyHtml){
   const sum = multiSummarize(inst);
   const pills = sum.hasTarget
     ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
@@ -1533,6 +1579,7 @@ function renderMultiInstHtml(inst, colored){
   return `<details class="log-inst multi-inst">
     <summary>
       ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
+      ${applyHtml||''}
       <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
     <div class="multi-detail">${multiDetailHtml(inst)}</div>
@@ -1543,14 +1590,15 @@ function renderInstancesHtml(entry){
   // when several instances (creatures) roll at once, badge each one a different
   // colour and give it a bit more breathing room so they read as separate creatures
   const multi = entry.instances.length > 1;
-  return entry.instances.map(inst=>{
-    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi);
+  return entry.instances.map((inst,idx)=>{
+    const applyHtml = multi ? instApplyToHtml(entry, idx) : '';
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi, applyHtml);
     let core;
     if(inst.kind==='attack') core = attackCore(inst);
     else if(inst.kind==='save') core = saveCore(inst);
     else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
     else core = esc(inst.text||'');
-    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core}</div>`;
+    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core} ${applyHtml}</div>`;
   }).join('');
 }
 
@@ -1951,6 +1999,14 @@ function onGlobalChange(e){
     if(!Number.isFinite(ac)) return;
     const match = findTargetByAC(ac);
     applyResultToAC(t.dataset.eid, ac, match?match.name:'');
+    return;
+  }
+  if(t.classList.contains('inst-apply-select')){
+    const instIdx = +t.dataset.instidx;
+    if(t.value===''){ clearInstanceTarget(t.dataset.eid, instIdx); return; }
+    const tgt = targets.items.find(x=>x.id===t.value);
+    if(!tgt) return;
+    applyInstanceToAC(t.dataset.eid, instIdx, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
     return;
   }
   if(!editingCreature) return;

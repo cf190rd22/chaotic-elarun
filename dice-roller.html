@@ -100,10 +100,11 @@ select,option{background:var(--surface-2);color:var(--text);}
 .targets-table col.c-ac{width:52px;}
 .targets-table col.c-acadj{width:92px;}
 .targets-table col.c-eff{width:42px;}
-.acadj-cell{display:flex;align-items:center;gap:6px;}
-.iconx.acadj-clear{flex-shrink:0;padding:5px;color:var(--text-mute);}
-.acadj-clear:hover{color:var(--red);}
-.acadj-clear[hidden]{display:none;}
+.acadj-cell{display:flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:2px;}
+.acadj-cell input{border:none;background:none;padding:3px 0;text-align:center;width:28px;flex:none;}
+.acadj-cell input:focus{border:none;}
+.acadj-step{width:20px;height:20px;flex-shrink:0;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
+.acadj-step:hover{background:var(--surface-3);color:var(--text);}
 .targets-table col.c-del{width:26px;}
 .targets-table td:nth-child(5){color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
 .target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
@@ -741,7 +742,10 @@ const Store = (() => {
   let localCreatures = loadLocalCreatures();
   let localBoard = loadLocalBoard();
   let localTargets = loadLocalTargets();
-  let targetsInFlight = 0; // count of our own targets writes still awaiting confirmation
+  // bumped synchronously by every local setTargets() call, before anything async
+  // happens, so it's correctly ordered no matter how a write's confirmation
+  // ends up racing later edits over the network.
+  let targetsVersion = 0;
 
   async function init(){
     try{
@@ -758,14 +762,15 @@ const Store = (() => {
         listeners.board.forEach(fn=>fn(data.items ? data : { items: [] }));
       }, err=>console.error('board sub', err));
       db.doc('targets/state').onSnapshot(snap=>{
-        // a write we're still in the middle of sending can have its confirmation
-        // land after the user has already moved on and started a *newer* local
-        // edit (typed the next field, tabbed away) - applying that now-stale
-        // snapshot would stomp the newer edit right back to what it used to be.
-        // Skip snapshots entirely while our own write is in flight; the local
-        // optimistic update already reflects the latest edit either way.
-        if(targetsInFlight>0) return;
-        const data = snap.exists ? snap.data() : { items: [], activeId: null };
+        // a write's confirmation can land after the user already started a
+        // *newer* edit (typed the next field, tabbed away) - applying that now-
+        // stale snapshot on top would silently revert the newer edit. Every
+        // write we send is tagged with the local version it was made at, so
+        // drop any snapshot older than the newest write we already know we've
+        // sent - it can only be an out-of-order echo of something we've since
+        // superseded, never new information.
+        const data = snap.exists ? snap.data() : { items: [], activeId: null, _v: 0 };
+        if((data._v||0) < targetsVersion) return;
         listeners.targets.forEach(fn=>fn(data.items ? data : { items: [], activeId: null }));
       }, err=>console.error('targets sub', err));
     } else {
@@ -821,14 +826,12 @@ const Store = (() => {
   }
 
   async function setTargets(data){
+    // stamp the version synchronously, before any await, so back-to-back calls
+    // in the same tick are still ordered correctly relative to each other
+    const v = ++targetsVersion;
     await readyPromise;
     if(mode==='db'){
-      targetsInFlight++;
-      try{
-        await db.doc('targets/state').set(data);
-      } finally {
-        targetsInFlight--;
-      }
+      await db.doc('targets/state').set({ ...data, _v: v });
     } else {
       localTargets = data;
       localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
@@ -1191,7 +1194,7 @@ function renderTargets(){
   } else {
     // if the same rows already exist in the same order, patch their values in
     // place instead of replacing the HTML - a click on a button in this table
-    // (radio, remove, clear-acadj) always starts with a mousedown that blurs
+    // (radio, remove, +/- steppers) always starts with a mousedown that blurs
     // whatever field was previously focused, which fires this render mid-click;
     // swapping in fresh DOM nodes at that instant orphans the node the browser
     // is tracking as "pressed" and the click event never fires at all. Patching
@@ -1215,8 +1218,6 @@ function renderTargets(){
         patch('ac', t.ac??'');
         patch('acAdj', t.acAdj||'');
         patch('notes', t.notes||'');
-        const clearBtn = tr.querySelector('.acadj-clear');
-        if(clearBtn) clearBtn.hidden = !t.acAdj;
         const effCell = tr.querySelector(`#tgteff-${t.id}`);
         if(effCell) effCell.textContent = (t.ac||0)+(t.acAdj||0);
       });
@@ -1229,10 +1230,9 @@ function renderTargets(){
           <td><input value="${esc(t.name||'')}" placeholder="Name" data-tid="${t.id}" data-tfield="name"></td>
           <td><input type="text" inputmode="numeric" pattern="[0-9]*" value="${t.ac??''}" placeholder="AC" data-tid="${t.id}" data-tfield="ac"></td>
           <td class="acadj-cell">
-            <input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="±0" data-tid="${t.id}" data-tfield="acAdj">
-            <button class="iconx acadj-clear" data-act="clear-acadj" data-tid="${t.id}" title="Reset adjustment to 0" tabindex="-1" ${t.acAdj?'':'hidden'}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            <button class="acadj-step" data-act="acadj-dec" data-tid="${t.id}" tabindex="-1" title="-1">&minus;</button>
+            <input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="0" data-tid="${t.id}" data-tfield="acAdj">
+            <button class="acadj-step" data-act="acadj-inc" data-tid="${t.id}" tabindex="-1" title="+1">+</button>
           </td>
           <td id="tgteff-${t.id}">${eff}</td>
           <td><input value="${esc(t.notes||'')}" placeholder="Notes" data-tid="${t.id}" data-tfield="notes"></td>
@@ -1666,10 +1666,6 @@ function onGlobalInput(e){
       const effCell = document.getElementById('tgteff-'+tgt.id);
       if(effCell) effCell.textContent = (tgt.ac||0)+(tgt.acAdj||0);
     }
-    if(f==='acAdj'){
-      const clearBtn = t.closest('.acadj-cell')?.querySelector('.acadj-clear');
-      if(clearBtn) clearBtn.hidden = !tgt.acAdj;
-    }
     if(tgt.id===targets.activeId){
       const tagEl = document.getElementById('targetsActiveTag');
       if(tagEl) tagEl.textContent = `Targeting ${tgt.name || 'unnamed'} (AC ${(tgt.ac||0)+(tgt.acAdj||0)})`;
@@ -1831,9 +1827,14 @@ function onGlobalClick(e){
       setTargetsOptimistic({ items, activeId: targets.activeId });
       break;
     }
-    case 'clear-acadj': {
+    case 'acadj-inc': {
       const tgt = targets.items.find(t=>t.id===el.dataset.tid);
-      if(tgt){ tgt.acAdj = 0; setTargetsOptimistic({ items: targets.items, activeId: targets.activeId }); }
+      if(tgt){ tgt.acAdj = (tgt.acAdj||0)+1; setTargetsOptimistic({ items: targets.items, activeId: targets.activeId }); }
+      break;
+    }
+    case 'acadj-dec': {
+      const tgt = targets.items.find(t=>t.id===el.dataset.tid);
+      if(tgt){ tgt.acAdj = (tgt.acAdj||0)-1; setTargetsOptimistic({ items: targets.items, activeId: targets.activeId }); }
       break;
     }
     case 'remove-target': {

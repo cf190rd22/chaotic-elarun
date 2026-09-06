@@ -267,6 +267,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
 .pill-miss{background:var(--red-dim);color:var(--red);border:1px solid var(--red-bd);}
 .pill-neutral{background:var(--surface-3);color:var(--text-2);border:1px solid var(--border);}
+.pill-neutral.adv{background:var(--green-dim);color:var(--green);border-color:var(--green-bd);}
+.pill-neutral.disadv{background:var(--red-dim);color:var(--red);border-color:var(--red-bd);}
 .pill-dc{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple-bd);}
 .pill-cond{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-bd);text-transform:capitalize;}
 .dmg-none{color:var(--text-mute);font-style:italic;}
@@ -479,8 +481,15 @@ function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'
 // sentence to spot the one word that actually matters at the table.
 const CONDITIONS = ['Blinded','Charmed','Deafened','Exhaustion','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious'];
 const CONDITIONS_RE = new RegExp('\\b('+CONDITIONS.join('|')+')\\b', 'gi');
-function highlightConditions(text){
-  return esc(text).replace(CONDITIONS_RE, m=>`<span class="pill-cond">${m}</span>`);
+// Same idea for "DC 14 Dexterity saving throw" phrases in raw prose - the
+// structured tag line already pills these for attacks/saves (see
+// entryTagText/attackCore/saveCore), but the full free-text description is
+// plain prose the parser never touched, so it needs its own pass.
+const SAVE_RE = /\bDC\s*\d+\s+(?:Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)(?:\s+saving\s+throw)?\b/gi;
+function highlightText(text){
+  return esc(text)
+    .replace(SAVE_RE, m=>`<span class="pill-dc">${m}</span>`)
+    .replace(CONDITIONS_RE, m=>`<span class="pill-cond">${m}</span>`);
 }
 function fmtMod(n){ n = n||0; return (n>=0?'+':'')+n; }
 function clamp(n,lo,hi){ return Math.max(lo,Math.min(hi,n)); }
@@ -1489,7 +1498,7 @@ function renderCard(item){
           // depends on what the entry actually is - a "trait" bucket can still
           // hold a real attack/save if the parser found one before any heading.
           if(t==='trait' && e.kind==='other'){
-            return `<div class="trait-row"><b>${esc(e.name)}.</b> ${highlightConditions(e.text)}</div>`;
+            return `<div class="trait-row"><b>${esc(e.name)}.</b> ${highlightText(e.text)}</div>`;
           }
           const tag = entryTagText(e, c);
           const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
@@ -1568,7 +1577,7 @@ function renderCard(item){
               ${mixBtn}
             </div>
           </div>
-          ${descOpen && e.text ? `<div class="entry-desc-body">${highlightConditions(e.text)}</div>` : ''}
+          ${descOpen && e.text ? `<div class="entry-desc-body">${highlightText(e.text)}</div>` : ''}
           ${mixPanel}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
@@ -1806,6 +1815,16 @@ function instBadge(i, colored){
   const color = colored ? INST_COLORS[(i-1) % INST_COLORS.length] : null;
   return `<span class="idx"${color?` style="color:var(--${color})"`:''}>#${i}</span>`;
 }
+// a card-level split assigns one mode per creature-copy (see rollEntry's
+// modeFor), applied uniformly to every sub-attack within that copy - so
+// the first attack roll found is representative of the whole instance
+function instanceRollMode(topInst){
+  const rep = attackPartsOf(topInst).find(a=>a.d20rolls && a.d20rolls.length===2);
+  if(!rep) return null;
+  if(rep.chosen === Math.max(...rep.d20rolls)) return 'adv';
+  if(rep.chosen === Math.min(...rep.d20rolls)) return 'disadv';
+  return null;
+}
 function multiSummarize(inst){
   const hasTarget = inst.subs.some(s=>s.vsTarget);
   let hitCount=0, missCount=0, critCount=0;
@@ -1846,9 +1865,14 @@ function instApplyToHtml(entry, instIdx){
 
 function renderMultiInstHtml(inst, colored, applyHtml){
   const sum = multiSummarize(inst);
+  // with no target set there's no hit/miss to show, so the plain "N attacks"
+  // pill is free to carry the adv/disadv colour instead - hit/miss already
+  // own green/red once a target's involved, so leave those alone rather
+  // than layering a second meaning onto the same colours
+  const mode = sum.hasTarget ? null : instanceRollMode(inst);
   const pills = sum.hasTarget
     ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
-    : `<span class="pill-neutral">${sum.total} attacks</span>`;
+    : `<span class="pill-neutral${mode?' '+mode:''}">${sum.total} attacks</span>`;
   const critTag = sum.critCount ? ` <span class="crit">${sum.critCount}× CRIT</span>` : '';
   const dmgEntries = Object.entries(sum.dmgByType);
   const dmgHtml = dmgEntries.length
@@ -2527,13 +2551,23 @@ function onGlobalClick(e){
       const bid = el.dataset.board, field = el.dataset.field;
       const s = cardMix.get(bid);
       if(!s) break;
-      s[field] = clamp(s[field] + (act==='card-mix-inc'?1:-1), 0, 50);
-      // once the split fully covers every instance, it's the thing driving
-      // rolls now - stand down the blunt all-or-nothing A/D toggle so only
-      // one override is ever in effect at a time
+      const delta = act==='card-mix-inc' ? 1 : -1;
+      const newField = clamp(s[field] + delta, 0, 50);
+      const newSum = s.normal + s.adv + s.disadv - s[field] + newField;
+      if(newSum < 1) break; // never let every instance vanish from the split
+      s[field] = newField;
+      // editing the split directly is now the source of truth - the instance
+      // count up top just follows it, so there's never a "totals X, needs to
+      // total Y" mismatch to reconcile by hand
       const item = board.items.find(it=>it.boardId===bid);
-      if(item && cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
-      renderBoard();
+      if(item){
+        item.count = newSum;
+        // once the split fully covers every instance, it's the thing driving
+        // rolls now - stand down the blunt all-or-nothing A/D toggle so only
+        // one override is ever in effect at a time
+        if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
+      }
+      setBoardOptimistic(board.items);
       break;
     }
     case 'toggle-group': {

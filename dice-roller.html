@@ -160,7 +160,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .log-card-hdr .lwho{font-size:9.5px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
 .log-inst{font-size:11.5px;font-family:'DM Mono',monospace;padding:4px 0;border-top:1px dashed var(--border-light);line-height:1.5;}
 .log-inst:first-child{border-top:none;}
-.log-inst .idx{color:var(--text-mute);}
+.log-inst.spaced{padding:7px 0;}
+.log-inst .idx{color:var(--text-mute);font-weight:700;margin-right:1px;}
 .crit{color:var(--amber);font-weight:700;}
 .fumble{color:var(--red);font-weight:700;}
 .dmg-total{color:var(--orange);font-weight:700;}
@@ -239,9 +240,9 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
       <button data-mode="normal" class="active">Normal</button>
       <button data-mode="adv">Adv</button>
     </div>
-    <button class="iconbtn" data-act="clear-log" title="Clear roll log">
+    <button class="iconbtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
-      Clear log
+      Reset rolls
     </button>
     <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log" style="position:relative;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
@@ -348,7 +349,7 @@ function extractName(flat, lines, isHtml, raw){
 
 function matchNum(text, re){ const m = re.exec(text); return m ? +m[1] : null; }
 
-const META_LINE_RE = /^(Skills|Senses|Languages|Damage\s+\w+|Condition\s+Immunities|Saving\s+Throws?|Proficiency\s+Bonus|Gear|Challenge|Armor\s+Class|Hit\s+Points|Speed)\b/i;
+const META_LINE_RE = /^(Skills|Senses|Languages|Damage\s+\w+|Resist(?:ances?)?|Vulnerab\w*|Cond(?:ition)?\.?\s*Immun\w*|Immunities|Saving\s+Throws?|Proficiency\s+Bonus|Gear|Challenge|CR|Armor\s+Class|Hit\s+Points|Speed)\b/i;
 
 function extractAbilities(flat){
   const abilities = {};
@@ -382,7 +383,16 @@ function buildEntry(re){
   const nameLower = re.name.toLowerCase().trim();
   const entry = { id, name: re.name.trim(), atype: re.section, kind:'other', dmg:[], text: body.trim() };
 
-  const toHitM = /(?:Melee|Ranged|Melee or Ranged)(?:\s+Weapon)?\s+Attack(?:\s+Roll)?:?\s*\+\s*(\d+)/i.exec(body);
+  if(nameLower === 'multiattack'){
+    entry.kind = 'multi';
+    entry.multi = [];
+    entry._multiText = body;
+    return entry;
+  }
+
+  let toHitM = /(?:Melee|Ranged|Melee or Ranged)(?:\s+Weapon)?\s+Attack(?:\s+Roll)?:?\s*\+\s*(\d+)/i.exec(body);
+  if(!toHitM) toHitM = /\+\s*(\d+)\s+(?:to\s+)?hit\b/i.exec(body);
+
   const dmgParts = [];
   const dmgRe = /(\d+)\s*\(\s*([0-9dD+\-−\s]+?)\s*\)\s*([A-Za-z]+)\s+damage/gi;
   let dm;
@@ -394,8 +404,14 @@ function buildEntry(re){
     let fm;
     while((fm = flatRe.exec(body))) dmgParts.push({ dice: fm[1], type: fm[2].toLowerCase() });
   }
-  const saveM = /DC\s*(\d+)\s*(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)\w*[\s\S]{0,25}?(?:saving throw|save)/i.exec(body);
-  const half = /half(?:\s+as\s+much)?\s+damage/i.test(body);
+  if(!dmgParts.length){
+    // shorthand statblocks sometimes drop the parens and "damage" word entirely, e.g. "1d6+4 slashing"
+    const bareRe = /\b(\d+d\d+(?:\s*[+\-−]\s*\d+)?)\s+([A-Za-z]+)\b/gi;
+    let bm;
+    while((bm = bareRe.exec(body))) dmgParts.push({ dice: bm[1].replace(/\s+/g,'').replace(/−/g,'-'), type: bm[2].toLowerCase() });
+  }
+  const saveM = /DC\s*(\d+)\s*(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)\w*?[\s\S]{0,25}?(?:saving throw|save)/i.exec(body);
+  const half = /half(?:\s+as\s+much)?(?:\s+damage)?\b/i.test(body);
 
   if(toHitM){
     entry.kind = 'attack';
@@ -406,10 +422,6 @@ function buildEntry(re){
     entry.kind = 'save';
     entry.save = { dc:+saveM[1], ability: saveM[2].slice(0,3).toUpperCase(), half };
     entry.dmg = dmgParts;
-  } else if(nameLower === 'multiattack'){
-    entry.kind = 'multi';
-    entry.multi = [];
-    entry._multiText = body;
   } else {
     entry.kind = 'other';
   }
@@ -499,14 +511,17 @@ function parseStatblock(raw){
   const rawEntries = [];
   for(const rawLine of lines){
     const wasBold = /^✦/.test(rawLine);
-    const clean = rawLine.replace(/^✦\s*/,'').trim();
+    let clean = rawLine.replace(/^✦\s*/,'').trim();
+    // strip leading bullet/arrow glyphs some homebrew statblocks prefix each entry with
+    clean = clean.replace(/^[▶▸►‣◆➤➔→•*]+\s*/, '').trim();
     if(!clean) continue;
     const sectionKey = clean.toLowerCase().replace(/[:.]+$/,'').trim();
     if(SECTIONS[sectionKey] && clean.length < 30){ currentSection = SECTIONS[sectionKey]; continue; }
     if(currentSection===null && META_LINE_RE.test(clean)) continue;
-    const m = /^([A-Z][A-Za-z0-9()'’.\-\/ ]{1,70}?)\.\s*(.*)$/.exec(clean);
-    if(m && (wasBold || currentSection) && m[1].split(' ').length <= 8){
-      rawEntries.push({ section: currentSection || 'action', name: m[1].trim(), body: (m[2]||'').trim() });
+    // entry names are terminated by either a period ("Bite.") or a colon ("Bite:")
+    const m = /^([A-Z][A-Za-z0-9()'’\-–—\/ ]{1,70}?)[.:]\s*(.*)$/.exec(clean);
+    if(m && m[1].split(' ').length <= 8){
+      rawEntries.push({ section: currentSection || 'trait', name: m[1].trim(), body: (m[2]||'').trim() });
     } else if(rawEntries.length && currentSection){
       rawEntries[rawEntries.length-1].body += ' ' + clean;
     }
@@ -838,9 +853,13 @@ function renderCard(item){
   const groupsHtml = ATYPE_ORDER.filter(t=>groups[t].length).map(t=>{
     const gid = item.boardId+'-'+t;
     const collapsed = collapsedGroups.has(gid);
-    const body = t==='trait'
-      ? groups[t].map(e=>`<div class="trait-row"><b>${esc(e.name)}.</b> ${esc(e.text)}</div>`).join('')
-      : groups[t].map(e=>{
+    const body = groups[t].map(e=>{
+          // group placement (t) is just display bucketing; whether it's rollable
+          // depends on what the entry actually is - a "trait" bucket can still
+          // hold a real attack/save if the parser found one before any heading.
+          if(t==='trait' && e.kind==='other'){
+            return `<div class="trait-row"><b>${esc(e.name)}.</b> ${esc(e.text)}</div>`;
+          }
           const tag = entryTagText(e, c);
           const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
           const result = lastResults.get(item.boardId+'::'+e.id);
@@ -928,28 +947,31 @@ function attackCore(inst){
 function saveCore(inst){
   return `DC ${inst.dc} ${inst.ability} save${inst.half?' (half on success)':''} — ${dmgHalfStr(inst.dmg.map(d=>({...d})))}`;
 }
-function renderAttackInst(inst){ return `<span class="idx">#${inst.i}</span> ${attackCore(inst)}`; }
-function renderSaveInst(inst){ return `<span class="idx">#${inst.i}</span> ${saveCore(inst)}`; }
-function renderThrowInst(inst){
-  return `<span class="idx">#${inst.i}</span> d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
+const INST_COLORS = ['accent','amber','teal','purple','orange','green'];
+function instBadge(i, colored){
+  const color = colored ? INST_COLORS[(i-1) % INST_COLORS.length] : null;
+  return `<span class="idx"${color?` style="color:var(--${color})"`:''}>#${i}</span>`;
 }
-function renderMultiInst(inst){
+function multiCore(inst, colored){
   const subs = inst.subs.map(s=>{
     const body = s.kind==='attack' ? attackCore(s) : saveCore(s);
     return `<div class="sub-line">${esc(s.name)}: ${body}</div>`;
   }).join('');
-  return `<span class="idx">#${inst.i}</span> Multiattack${subs}`;
+  return `Multiattack${subs}`;
 }
 
 function renderInstancesHtml(entry){
+  // when several instances (creatures) roll at once, badge each one a different
+  // colour and give it a bit more breathing room so they read as separate creatures
+  const multi = entry.instances.length > 1;
   return entry.instances.map(inst=>{
-    let body;
-    if(inst.kind==='attack') body = renderAttackInst(inst);
-    else if(inst.kind==='save') body = renderSaveInst(inst);
-    else if(inst.kind==='throw') body = renderThrowInst(inst);
-    else if(inst.kind==='multi') body = renderMultiInst(inst);
-    else body = `<span class="idx">#${inst.i}</span> ${esc(inst.text||'')}`;
-    return `<div class="log-inst">${body}</div>`;
+    let core;
+    if(inst.kind==='attack') core = attackCore(inst);
+    else if(inst.kind==='save') core = saveCore(inst);
+    else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
+    else if(inst.kind==='multi') core = multiCore(inst);
+    else core = esc(inst.text||'');
+    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core}</div>`;
   }).join('');
 }
 
@@ -1188,6 +1210,15 @@ function onGlobalChange(e){
   onGlobalInput(e);
 }
 
+function setBoardOptimistic(items){
+  // update the local view immediately instead of waiting on a round-trip, so
+  // rapid clicks (e.g. the +/- instance stepper) always compute from fresh state
+  board = { items };
+  renderBoard();
+  renderLibrary();
+  Store.setBoard(items);
+}
+
 function onGlobalClick(e){
   const el = e.target.closest('[data-act]');
   const seg = e.target.closest('#rollModeSeg button');
@@ -1204,7 +1235,15 @@ function onGlobalClick(e){
       if(panel.classList.contains('open')){ logUnread = 0; renderLogBadge(); }
       break;
     }
-    case 'clear-log': log = []; renderLog(); break;
+    case 'clear-log': {
+      log = [];
+      lastResults.clear();
+      logUnread = 0;
+      renderLog();
+      renderLogBadge();
+      renderBoard();
+      break;
+    }
 
     case 'open-add-modal': openAddModal(); break;
     case 'close-modal': closeModal(); break;
@@ -1250,18 +1289,18 @@ function onGlobalClick(e){
     case 'add-board': {
       const items = board.items.slice();
       items.push({ boardId: uid('b'), creatureId: el.dataset.creature, count: 1 });
-      Store.setBoard(items);
+      setBoardOptimistic(items);
       break;
     }
-    case 'remove-board': Store.setBoard(board.items.filter(it=>it.boardId!==el.dataset.board)); break;
+    case 'remove-board': setBoardOptimistic(board.items.filter(it=>it.boardId!==el.dataset.board)); break;
     case 'count-inc': {
       const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count+1,1,50)} : it);
-      Store.setBoard(items);
+      setBoardOptimistic(items);
       break;
     }
     case 'count-dec': {
       const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count-1,1,50)} : it);
-      Store.setBoard(items);
+      setBoardOptimistic(items);
       break;
     }
     case 'toggle-group': {

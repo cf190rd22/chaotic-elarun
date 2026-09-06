@@ -53,7 +53,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .iconbtn:hover{background:var(--surface-2);color:var(--text);}
 .iconbtn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .iconbtn.primary:hover{background:rgba(91,142,240,.18);}
-.badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#1a0a0a;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;}
+.badge{position:absolute;top:-2px;right:-2px;background:var(--red);width:9px;height:9px;border-radius:99px;border:2px solid var(--bg);}
 
 /* ---------- layout ---------- */
 .layout{flex:1;display:flex;min-height:0;overflow:hidden;position:relative;}
@@ -61,8 +61,17 @@ select,option{background:var(--surface-2);color:var(--text);}
 .scrim.show{display:block;}
 
 /* ---------- library ---------- */
-.library{width:262px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.library{width:262px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);transition:width .15s ease;}
+.library.collapsed{width:40px;}
 .library-hdr{padding:12px;border-bottom:1px solid var(--border-light);display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
+.library-hdr-top{display:flex;align-items:center;gap:8px;}
+.library-hdr-main{display:flex;flex-direction:column;gap:8px;}
+.library.collapsed .library-hdr{padding:12px 7px;}
+.library.collapsed .library-hdr-main,.library.collapsed .lib-list{display:none;}
+.library-collapse-btn{flex-shrink:0;background:none;border:1px solid var(--border);border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;}
+.library-collapse-btn:hover{background:var(--surface-2);color:var(--text);}
+.library-collapse-btn svg{transition:transform .15s;}
+.library.collapsed .library-collapse-btn svg{transform:rotate(180deg);}
 .search-wrap{position:relative;}
 .search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-mute);pointer-events:none;}
 #searchInput{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;font-size:12.5px;outline:none;}
@@ -112,7 +121,12 @@ select,option{background:var(--surface-2);color:var(--text);}
 
 .card{width:322px;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;align-self:flex-start;}
 .card-hdr{padding:11px 13px 12px;border-bottom:1px solid var(--border-light);}
+.card.collapsed .card-hdr{border-bottom:none;}
+.card.collapsed .card-body{display:none;}
 .card-title-row{display:flex;align-items:center;gap:6px;}
+.card-collapse-btn{flex-shrink:0;padding:2px;}
+.card-collapse-btn .chev{transition:transform .15s;}
+.card.collapsed .card-collapse-btn .chev{transform:rotate(-90deg);}
 .card-name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
@@ -143,6 +157,13 @@ select,option{background:var(--surface-2);color:var(--text);}
 .entry-main{flex:1;min-width:0;}
 .entry-name{font-size:12.5px;font-weight:600;}
 .entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:1px;}
+.entry-desc{margin:-2px 0 4px;}
+.entry-desc summary{cursor:pointer;list-style:none;font-size:9.5px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;user-select:none;}
+.entry-desc summary::-webkit-details-marker{display:none;}
+.entry-desc summary:hover{color:var(--text-2);}
+.entry-desc summary .chev{transition:transform .15s;}
+.entry-desc[open] summary .chev{transform:rotate(180deg);}
+.entry-desc-body{font-size:11px;color:var(--text-2);line-height:1.55;padding:4px 0 2px;}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
@@ -201,12 +222,18 @@ select,option{background:var(--surface-2);color:var(--text);}
 .apply-target-select:focus{border-color:var(--accent-bd);}
 .apply-ac-input{width:48px;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;}
 .apply-ac-input:focus{border-color:var(--accent-bd);}
+.inst-apply-select{background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 4px;font-size:10px;color:var(--text-2);outline:none;max-width:130px;margin-left:6px;}
+.inst-apply-select:focus{border-color:var(--accent-bd);}
+.multi-inst summary .inst-apply-select{margin-left:auto;}
 .agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
 .pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
 .pill-miss{background:var(--red-dim);color:var(--red);border:1px solid var(--red-bd);}
 .pill-neutral{background:var(--surface-3);color:var(--text-2);border:1px solid var(--border);}
 .dmg-none{color:var(--text-mute);font-style:italic;}
+.per-target{display:flex;flex-direction:column;gap:3px;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
+.per-target-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;font-family:'DM Mono',monospace;}
+.per-target-name{font-weight:700;color:var(--text);min-width:64px;}
 .multi-inst summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .multi-inst summary::-webkit-details-marker{display:none;}
 .multi-inst summary .chev{margin-left:auto;color:var(--text-mute);transition:transform .15s;flex-shrink:0;}
@@ -226,6 +253,12 @@ select,option{background:var(--surface-2);color:var(--text);}
 textarea.paste{width:100%;min-height:230px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:'DM Mono',monospace;font-size:11.5px;resize:vertical;outline:none;}
 textarea.paste:focus{border-color:var(--accent-bd);}
 .hint{font-size:11.5px;color:var(--text-mute);line-height:1.6;margin-bottom:10px;}
+.storage-warning{flex-shrink:0;background:var(--red-dim);border-bottom:1px solid var(--red-bd);color:var(--text);font-size:12px;padding:9px 14px;display:flex;align-items:center;justify-content:center;gap:12px;text-align:center;}
+.storage-warning b{color:var(--red);}
+.storage-warning button{background:none;border:none;color:var(--text-mute);cursor:pointer;font-size:13px;flex-shrink:0;}
+.storage-warning button:hover{color:var(--text);}
+.backup-row{display:flex;gap:8px;margin-top:4px;}
+.backup-row .btn{flex:1;}
 .opt-row{display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--border);border-radius:9px;margin-bottom:8px;cursor:pointer;font-size:12.5px;}
 .opt-row:hover{border-color:var(--accent-bd);background:var(--surface-2);}
 .opt-row input{margin-top:3px;flex-shrink:0;}
@@ -267,6 +300,14 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
   .drawer-btn{display:inline-flex;}
   .library{position:fixed;left:0;top:54px;bottom:0;width:80vw;max-width:300px;transform:translateX(-101%);transition:transform .2s ease;z-index:40;}
   .library.open{transform:translateX(0);}
+  /* the desktop minimise/expand toggle is redundant with the drawer swipe-in
+     here, and its width:40px would otherwise win on specificity and leave
+     the drawer stuck narrow if it was left collapsed before the screen
+     narrowed - the drawer's own open/closed state is all that matters here */
+  .library.collapsed{width:80vw;max-width:300px;}
+  .library.collapsed .library-hdr-main{display:flex;}
+  .library.collapsed .lib-list{display:block;}
+  .library-collapse-btn{display:none;}
   .logpanel{position:fixed;right:0;top:54px;bottom:0;width:80vw;max-width:320px;transform:translateX(101%);transition:transform .2s ease;z-index:40;}
   .logpanel.open{transform:translateX(0);}
   .card{width:100%;}
@@ -326,13 +367,20 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 
     <aside class="library" id="libraryPanel">
       <div class="library-hdr">
-        <button class="iconbtn primary" data-act="open-add-modal" style="justify-content:center;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add creature
-        </button>
-        <div class="search-wrap">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input id="searchInput" placeholder="Search library…" autocomplete="off">
+        <div class="library-hdr-top">
+          <button class="library-collapse-btn" data-act="toggle-library-collapse" title="Minimise library">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="15 6 9 12 15 18"/></svg>
+          </button>
+        </div>
+        <div class="library-hdr-main">
+          <button class="iconbtn primary" data-act="open-add-modal" style="justify-content:center;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add creature
+          </button>
+          <div class="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="searchInput" placeholder="Search library…" autocomplete="off">
+          </div>
         </div>
       </div>
       <div class="lib-list" id="libList"></div>
@@ -365,6 +413,7 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
     <aside class="logpanel" id="logPanel">
       <div class="log-hdr">
         <span class="log-hdr-title">Roll log</span>
+        <button class="smallbtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">Clear</button>
       </div>
       <div class="log-list" id="logList"></div>
     </aside>
@@ -721,13 +770,28 @@ const Store = (() => {
   const LS_BOARD = 'er_board_v1';
   const LS_TARGETS = 'er_targets_v1';
 
+  // localStorage.setItem throws if storage is full or blocked (private-mode
+  // Safari, a quota hit) - left unguarded, that exception becomes a silently
+  // dropped write: the screen already shows the change, nothing was actually
+  // saved, and nothing ever tells the user. Every write goes through this so
+  // a failure surfaces instead of vanishing.
+  function saveLocal(key, value){
+    try{
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    }catch(e){
+      if(typeof reportStorageFailure==='function') reportStorageFailure(e);
+      return false;
+    }
+  }
+
   function loadLocalCreatures(){
     try{
       const raw = localStorage.getItem(LS_CREATURES);
       if(raw) return JSON.parse(raw);
     }catch(e){}
     const seed = exampleCreatures();
-    try{ localStorage.setItem(LS_CREATURES, JSON.stringify(seed)); }catch(e){}
+    saveLocal(LS_CREATURES, seed);
     return seed;
   }
   function loadLocalBoard(){
@@ -788,13 +852,13 @@ const Store = (() => {
     if(mode==='db'){
       const ref = creature.id ? db.collection('creatures').doc(creature.id) : db.collection('creatures').doc();
       const { id, ...rest } = creature;
-      await ref.set(rest);
+      await ref.set(rest).catch(e=>{ reportStorageFailure(e); throw e; });
       return ref.id;
     } else {
       if(!creature.id) creature.id = uid('c');
       const idx = localCreatures.findIndex(c=>c.id===creature.id);
       if(idx>=0) localCreatures[idx] = creature; else localCreatures.push(creature);
-      localStorage.setItem(LS_CREATURES, JSON.stringify(localCreatures));
+      saveLocal(LS_CREATURES, localCreatures);
       listeners.creatures.forEach(fn=>fn(localCreatures));
       return creature.id;
     }
@@ -803,10 +867,29 @@ const Store = (() => {
   async function deleteCreature(id){
     await readyPromise;
     if(mode==='db'){
-      await db.collection('creatures').doc(id).delete();
+      await db.collection('creatures').doc(id).delete().catch(e=>{ reportStorageFailure(e); throw e; });
     } else {
       localCreatures = localCreatures.filter(c=>c.id!==id);
-      localStorage.setItem(LS_CREATURES, JSON.stringify(localCreatures));
+      saveLocal(LS_CREATURES, localCreatures);
+      listeners.creatures.forEach(fn=>fn(localCreatures));
+    }
+  }
+
+  // full-set replace, used only by Restore from backup - every other write
+  // upserts one creature at a time, but a restore needs the end state to
+  // match the backup exactly, including creatures removed since it was taken
+  async function replaceAllCreatures(list){
+    await readyPromise;
+    const withIds = list.map(c=>({ ...c, id: c.id || uid('c') }));
+    if(mode==='db'){
+      const existing = await db.collection('creatures').get();
+      const keepIds = new Set(withIds.map(c=>c.id));
+      const removals = existing.docs.filter(d=>!keepIds.has(d.id)).map(d=>db.collection('creatures').doc(d.id).delete());
+      const writes = withIds.map(c=>{ const { id, ...rest } = c; return db.collection('creatures').doc(id).set(rest); });
+      await Promise.all([...removals, ...writes]).catch(e=>{ reportStorageFailure(e); throw e; });
+    } else {
+      localCreatures = withIds;
+      saveLocal(LS_CREATURES, localCreatures);
       listeners.creatures.forEach(fn=>fn(localCreatures));
     }
   }
@@ -814,10 +897,10 @@ const Store = (() => {
   async function setBoard(items){
     await readyPromise;
     if(mode==='db'){
-      await db.doc('board/state').set({ items });
+      await db.doc('board/state').set({ items }).catch(e=>{ reportStorageFailure(e); throw e; });
     } else {
       localBoard = { items };
-      localStorage.setItem(LS_BOARD, JSON.stringify(localBoard));
+      saveLocal(LS_BOARD, localBoard);
       listeners.board.forEach(fn=>fn(localBoard));
     }
   }
@@ -826,12 +909,27 @@ const Store = (() => {
     // always local - see the comment in init() above
     await readyPromise;
     localTargets = data;
-    localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
+    saveLocal(LS_TARGETS, localTargets);
     listeners.targets.forEach(fn=>fn(localTargets));
   }
 
-  return { init, onCreatures, onBoard, onTargets, saveCreature, deleteCreature, setBoard, setTargets, get mode(){ return mode; } };
+  return { init, onCreatures, onBoard, onTargets, saveCreature, deleteCreature, replaceAllCreatures, setBoard, setTargets, get mode(){ return mode; } };
 })();
+
+// Surfaces a persistent, hard-to-miss banner the moment ANY save fails, for
+// any reason (full/blocked localStorage, a rejected db write). Without this,
+// a failed save is invisible: the screen already shows the change (every
+// write here is optimistic), so nothing would ever tell you it didn't stick.
+let storageWarningShown = false;
+function reportStorageFailure(err){
+  console.error('save failed', err);
+  if(storageWarningShown) return;
+  storageWarningShown = true;
+  const el = document.createElement('div');
+  el.className = 'storage-warning';
+  el.innerHTML = `<span>⚠ A save just failed - your browser's storage may be full or restricted, so recent changes might not stick. Open <b>Options → Backup</b> and download a copy now, just in case.</span><button data-act="dismiss-storage-warning" title="Dismiss">✕</button>`;
+  document.querySelector('.app').prepend(el);
+}
 
 /* ============================== app state ============================== */
 let creatures = [];
@@ -841,6 +939,7 @@ let log = [];
 let rollMode = 'normal';
 let librarySearch = '';
 let collapsedGroups = new Set();
+let collapsedCards = new Set(); // board item ids minimised to just the header row
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
@@ -850,7 +949,186 @@ let logUnread = 0;
 const SETTINGS_KEY = 'er_settings_v1';
 let settings = { critMode: 'double' }; // 'double' (standard 5e) | 'perkins' (max damage + reroll)
 try{ const rawSettings = localStorage.getItem(SETTINGS_KEY); if(rawSettings) Object.assign(settings, JSON.parse(rawSettings)); }catch(e){}
-function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }catch(e){} }
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }catch(e){ reportStorageFailure(e); } }
+
+/* ============================== backup / restore ============================== */
+// Everything auto-saves as you go, but only into this browser's own storage -
+// there's no server copy. This is the actual safety net: a file the user
+// holds themselves, independent of any browser storage ever being cleared,
+// switched, or lost.
+function buildBackupPayload(){
+  return { app:'encounter-roller', version:1, exportedAt:new Date().toISOString(), creatures, board, targets, settings };
+}
+
+async function exportBackup(){
+  const json = JSON.stringify(buildBackupPayload(), null, 2);
+  const filename = `encounter-roller-backup-${new Date().toISOString().slice(0,10)}.json`;
+  if(window.claude && window.claude.use){
+    try{
+      const downloads = await window.claude.use('downloads');
+      if(downloads){ await downloads.save({ filename, data: json }); return; }
+    }catch(e){
+      if(e && e.code==='declined') return; // they said no - not a failure, nothing more to do
+      // any other error (unavailable, rejected_extension, ...): fall through
+      // to the plain browser download below rather than leaving them stuck
+    }
+  }
+  const blob = new Blob([json], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+function isValidBackup(obj){
+  return !!(obj && typeof obj==='object'
+    && Array.isArray(obj.creatures)
+    && obj.board && Array.isArray(obj.board.items)
+    && obj.targets && Array.isArray(obj.targets.items)
+    && obj.settings && typeof obj.settings==='object');
+}
+
+async function applyBackupPayload(data, { confirmMsg, alertOnDone=true } = {}){
+  if(!isValidBackup(data)){ alert("That doesn't look like an Encounter Roller backup file."); return false; }
+  const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
+  const msg = confirmMsg || `Restore this backup (from ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`;
+  if(!confirm(msg)) return false;
+  await Store.replaceAllCreatures(data.creatures);
+  await Store.setBoard(data.board.items);
+  await Store.setTargets(data.targets);
+  Object.assign(settings, data.settings);
+  saveSettings();
+  renderLibrary(); renderBoard(); renderTargets();
+  if(alertOnDone) alert('Backup restored.');
+  return true;
+}
+
+async function importBackupFile(file){
+  let text;
+  try{ text = await file.text(); }catch(e){ alert('Could not read that file.'); return; }
+  let data;
+  try{ data = JSON.parse(text); }catch(e){ alert('That file is not valid backup JSON.'); return; }
+  await applyBackupPayload(data);
+}
+
+/* ============================== GitHub sync ============================== */
+// Same pattern as the character sheet's "Live Char Sync": a personal access
+// token pasted into this browser, used to push/pull a JSON file straight to
+// a repo via the GitHub API. There's no server here to hold the token more
+// safely than that - it sits in this browser's localStorage in plain text,
+// same as it does for the character sheet, so use a fine-grained token
+// scoped to just this one repo rather than a full-access classic one.
+const GHSYNC_KEY = 'er_ghsync_v1';
+function ghLoadConfig(){ try{ return JSON.parse(localStorage.getItem(GHSYNC_KEY) || '{}'); }catch(e){ return {}; } }
+function ghSaveConfig(cfg){ try{ localStorage.setItem(GHSYNC_KEY, JSON.stringify(cfg)); }catch(e){ reportStorageFailure(e); } }
+function ghConfigured(cfg){ return !!(cfg && cfg.token && cfg.owner && cfg.repo && cfg.path); }
+
+// The character sheet (sheet.html / dm-reference-36.html) stores its own
+// GitHub sync config under this same-origin key. If this tool hasn't been
+// set up yet, offer that token/owner/repo as a starting point instead of an
+// empty form - same account, most likely the same repo. Never pull its
+// path though: that's the character data file, and defaulting to it would
+// mean pushing this tool's backup straight over it.
+function ghSheetDefaults(){
+  try{
+    const sheetCfg = JSON.parse(localStorage.getItem('_ghSyncCfg') || 'null');
+    if(!sheetCfg || !sheetCfg.token) return null;
+    return { token: sheetCfg.token, owner: sheetCfg.owner||'', repo: sheetCfg.repo||'' };
+  }catch(e){ return null; }
+}
+
+async function ghApiPush(cfg, jsonStr){
+  const apiBase = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+  const headers = { 'Authorization': 'token '+cfg.token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
+  async function fetchSha(){
+    try{ const r = await fetch(apiBase, { headers, cache:'no-store' }); if(r.ok){ const j = await r.json(); return j.sha||null; } }catch(e){}
+    return null;
+  }
+  const content = btoa(unescape(encodeURIComponent(jsonStr)));
+  let sha = await fetchSha();
+  let lastErr = null;
+  for(let attempt=0; attempt<4; attempt++){
+    const body = { message:'Encounter Roller backup sync', content };
+    if(sha) body.sha = sha;
+    const res = await fetch(apiBase, { method:'PUT', headers, body:JSON.stringify(body) });
+    if(res.ok) return;
+    const err = await res.json().catch(()=>({}));
+    lastErr = err.message || `HTTP ${res.status}`;
+    const isConflict = res.status===409 || res.status===422 || /does not match|sha/i.test(lastErr);
+    if(!isConflict) break;
+    sha = await fetchSha();
+  }
+  throw new Error(lastErr || 'Push failed');
+}
+
+async function ghApiPull(cfg){
+  const apiBase = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+  const headers = { 'Authorization': 'token '+cfg.token, 'Accept': 'application/vnd.github.v3+json' };
+  const res = await fetch(apiBase, { headers, cache:'no-store' });
+  if(res.status===404) throw new Error('No file found at that path in the repo yet - push once first.');
+  if(!res.ok){ const err = await res.json().catch(()=>({})); throw new Error(err.message || `HTTP ${res.status}`); }
+  const j = await res.json();
+  const text = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+  return JSON.parse(text);
+}
+
+function ghSetStatus(msg, isError){
+  const el = document.getElementById('ghSyncStatus');
+  if(!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--red)' : 'var(--text-mute)';
+}
+
+// reads the GitHub sync fields straight out of the open Options modal - only
+// ever called while that modal is open, so the fields are guaranteed present
+function ghSaveFromForm(){
+  const cfg = ghLoadConfig();
+  cfg.token = document.getElementById('ghToken').value.trim();
+  cfg.owner = document.getElementById('ghOwner').value.trim();
+  cfg.repo = document.getElementById('ghRepo').value.trim();
+  cfg.path = document.getElementById('ghPath').value.trim() || 'encounter-roller-backup.json';
+  cfg.autoPush = document.getElementById('ghAutoPush').checked;
+  ghSaveConfig(cfg);
+}
+
+async function ghPushNow(silent){
+  const cfg = ghLoadConfig();
+  if(!ghConfigured(cfg)){ if(!silent) alert('Set up token / owner / repo / path first.'); return; }
+  if(!silent) ghSetStatus('Pushing…');
+  try{
+    await ghApiPush(cfg, JSON.stringify(buildBackupPayload(), null, 2));
+    cfg.lastPush = Date.now();
+    ghSaveConfig(cfg);
+    ghSetStatus('✓ Pushed at '+new Date(cfg.lastPush).toLocaleTimeString());
+  }catch(e){
+    ghSetStatus('✗ '+e.message, true);
+    if(!silent) alert('Push failed: '+e.message);
+  }
+}
+
+async function ghPullNow(){
+  const cfg = ghLoadConfig();
+  if(!ghConfigured(cfg)){ alert('Set up token / owner / repo / path first.'); return; }
+  ghSetStatus('Pulling…');
+  let data;
+  try{ data = await ghApiPull(cfg); }
+  catch(e){ ghSetStatus('✗ '+e.message, true); alert('Pull failed: '+e.message); return; }
+  const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
+  const applied = await applyBackupPayload(data, {
+    confirmMsg: `Pull the backup from GitHub (saved ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`,
+    alertOnDone: false
+  });
+  ghSetStatus(applied ? '✓ Pulled at '+new Date().toLocaleTimeString() : 'Pull cancelled');
+}
+
+let ghAutoPushTimer = null;
+function ghMaybeAutoPush(){
+  const cfg = ghLoadConfig();
+  if(!cfg.autoPush || !ghConfigured(cfg)) return;
+  clearTimeout(ghAutoPushTimer);
+  ghAutoPushTimer = setTimeout(()=>ghPushNow(true), 5000);
+}
 
 /* ============================== rolling ============================== */
 function pushLog(entry){
@@ -872,7 +1150,6 @@ function renderLogBadge(){
   const el = document.getElementById('logBadge');
   if(!el) return;
   el.hidden = logUnread<=0;
-  el.textContent = logUnread>9 ? '9+' : String(logUnread);
 }
 
 function activeTarget(){
@@ -883,14 +1160,18 @@ function findTargetByAC(ac){
   return targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===ac) || null;
 }
 
+// The attack-kind roll(s) inside one top-level instance - itself, if it's a
+// plain attack, or every attack sub-roll if it's a multiattack.
+function attackPartsOf(topInst){
+  if(topInst.kind==='attack') return [topInst];
+  if(topInst.kind==='multi') return topInst.subs.filter(s=>s.kind==='attack');
+  return [];
+}
 // Walks every attack-kind instance in a rolled result (top-level attacks and
 // every multiattack sub-attack) so a whole already-rolled result can be
 // pointed at a target or a one-off AC after the fact, without re-rolling.
 function forEachAttackInst(logEntry, fn){
-  logEntry.instances.forEach(inst=>{
-    if(inst.kind==='attack') fn(inst);
-    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') fn(s); });
-  });
+  logEntry.instances.forEach(inst=>attackPartsOf(inst).forEach(fn));
 }
 function firstAttackInst(logEntry){
   let found = null;
@@ -911,6 +1192,29 @@ function clearResultTarget(entryId){
   const logEntry = resultsById.get(entryId);
   if(!logEntry) return;
   forEachAttackInst(logEntry, inst=>{ delete inst.vsTarget; });
+  renderBoard();
+  renderLog();
+}
+
+// Same idea, but scoped to ONE creature instance within a multi-instance
+// result - e.g. of 3 goblins that rolled together, sending only goblin #2's
+// attack at a different target than the other two.
+function applyInstanceToAC(entryId, instIdx, ac, name){
+  const logEntry = resultsById.get(entryId);
+  const topInst = logEntry && logEntry.instances[instIdx];
+  if(!topInst) return;
+  attackPartsOf(topInst).forEach(inst=>{
+    const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
+    inst.vsTarget = { name: name||'', ac, hit };
+  });
+  renderBoard();
+  renderLog();
+}
+function clearInstanceTarget(entryId, instIdx){
+  const logEntry = resultsById.get(entryId);
+  const topInst = logEntry && logEntry.instances[instIdx];
+  if(!topInst) return;
+  attackPartsOf(topInst).forEach(inst=>{ delete inst.vsTarget; });
   renderBoard();
   renderLog();
 }
@@ -1094,6 +1398,14 @@ function renderCard(item){
           const tag = entryTagText(e, c);
           const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
           const result = lastResults.get(item.boardId+'::'+e.id);
+          // the brief tag (to-hit/damage) stays visible either way - the full
+          // RAW description is worth having on hand but too wordy to show
+          // for every action all the time, so it's tucked behind its own
+          // disclosure rather than cluttering the compact roll-focused list
+          const descHtml = e.text ? `<details class="entry-desc">
+            <summary>Full text <svg class="chev" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="6 9 12 15 18 9"/></svg></summary>
+            <div class="entry-desc-body">${esc(e.text)}</div>
+          </details>` : '';
           return `<div class="entry">
             <div class="entry-main">
               <div class="entry-name">${esc(e.name)}</div>
@@ -1104,6 +1416,7 @@ function renderCard(item){
               Roll
             </button>
           </div>
+          ${descHtml}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     return `<div class="group g-${t} ${collapsed?'collapsed':''}">
@@ -1126,9 +1439,13 @@ function renderCard(item){
       <div class="group-body">${infoRows}</div>
     </div>` : '';
 
-  return `<div class="card">
+  const cardCollapsed = collapsedCards.has(item.boardId);
+  return `<div class="card ${cardCollapsed?'collapsed':''}">
     <div class="card-hdr">
       <div class="card-title-row">
+        <button class="icobtn card-collapse-btn" data-act="toggle-card-collapse" data-board="${item.boardId}" title="${cardCollapsed?'Expand':'Minimise'}">
+          <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
         <div class="card-name">${esc(c.name)}</div>
         <div class="count-stepper">
           <button data-act="count-dec" data-board="${item.boardId}">−</button>
@@ -1147,10 +1464,12 @@ function renderCard(item){
         <span class="count-lbl">× instances</span>
       </div>
     </div>
-    <div class="saves-row">${savesHtml}</div>
-    ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
-    ${groupsHtml}
-    ${infoGroupHtml}
+    <div class="card-body">
+      <div class="saves-row">${savesHtml}</div>
+      ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
+      ${groupsHtml}
+      ${infoGroupHtml}
+    </div>
   </div>`;
 }
 
@@ -1236,6 +1555,7 @@ function setTargetsOptimistic(data){
   targets = data;
   renderTargets();
   Store.setTargets(data);
+  ghMaybeAutoPush();
 }
 
 /* ============================== rendering: log ============================== */
@@ -1243,18 +1563,36 @@ function d20Str(inst){
   const rollsStr = inst.d20rolls.length>1 ? `[${inst.d20rolls.join(', ')}]→${inst.chosen}` : `${inst.chosen}`;
   return rollsStr;
 }
+// Shows exactly what was rolled, not just the total that came out of it - so
+// "why was that so high" is answerable at a glance instead of just having to
+// trust the number. count/sides come straight off the actual dice rolled
+// (already doubled for a standard crit, since that's really how many dice
+// went into the total), never the original entry text.
+function damageBreakdownText(d){
+  if(!d.rolls || !d.rolls.length) return '';
+  const expr = `${d.rolls.length}d${d.sides}${d.bonus?fmtMod(d.bonus):''}`;
+  if(d.maxBase!=null){
+    // Perkins crit: max on the base dice, plus one normal reroll of the same
+    // dice, with the bonus counted only once
+    return `${expr}: ${d.maxBase} max + [${d.rolls.join('+')}]`;
+  }
+  const rollsPart = d.rolls.length>1 ? d.rolls.join('+') : `${d.rolls[0]}`;
+  const bonusPart = d.bonus ? ` ${fmtMod(d.bonus)}` : '';
+  return `${expr}: ${rollsPart}${bonusPart}`;
+}
 function dmgStr(dmgArr){
   if(!dmgArr || !dmgArr.length) return '';
   return dmgArr.map(d=>{
-    const breakdown = d.maxBase!=null ? ` <span class="dmg-breakdown">(${d.maxBase} max+${d.rolls.reduce((s,r)=>s+r,0)})</span>` : '';
-    return `<span class="dmg-total">${d.total}</span>${breakdown} ${esc(d.type)}`;
+    const bd = damageBreakdownText(d);
+    return `<span class="dmg-total">${d.total}</span> ${esc(d.type)}${bd?` <span class="dmg-breakdown">(${esc(bd)})</span>`:''}`;
   }).join(' + ');
 }
 function dmgHalfStr(dmgArr){
   if(!dmgArr || !dmgArr.length) return '';
   const full = dmgArr.reduce((s,d)=>s+d.total,0);
   const half = dmgArr.reduce((s,d)=>s+d.halfTotal,0);
-  return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half`;
+  const bd = dmgArr.map(damageBreakdownText).filter(Boolean).join(', ');
+  return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half${bd?` <span class="dmg-breakdown">(${esc(bd)})</span>`:''}`;
 }
 
 function attackCore(inst){
@@ -1299,7 +1637,23 @@ function multiDetailHtml(inst){
   }).join('');
 }
 
-function renderMultiInstHtml(inst, colored){
+// Per-instance "apply to" control - lets one attacker out of several (e.g.
+// goblin #2 of 3) be pointed at a different target than the rest, after the
+// fact. Only shown when there's more than one instance to distinguish, and
+// only for instances that actually have an attack roll to check.
+function instApplyToHtml(entry, instIdx){
+  const topInst = entry.instances[instIdx];
+  const rep = attackPartsOf(topInst)[0];
+  if(!rep) return '';
+  const cur = rep.vsTarget;
+  const matched = cur ? targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===cur.ac && (!cur.name || t.name===cur.name)) : null;
+  return `<select class="inst-apply-select" data-eid="${entry.id}" data-instidx="${instIdx}" title="Send this attacker's roll at a different target">
+    <option value="">vs…</option>
+    ${targets.items.map(t=>`<option value="${t.id}" ${matched && matched.id===t.id ? 'selected':''}>${esc(t.name||'Unnamed')} (AC ${(t.ac||0)+(t.acAdj||0)})</option>`).join('')}
+  </select>`;
+}
+
+function renderMultiInstHtml(inst, colored, applyHtml){
   const sum = multiSummarize(inst);
   const pills = sum.hasTarget
     ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
@@ -1312,6 +1666,7 @@ function renderMultiInstHtml(inst, colored){
   return `<details class="log-inst multi-inst">
     <summary>
       ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
+      ${applyHtml||''}
       <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
     <div class="multi-detail">${multiDetailHtml(inst)}</div>
@@ -1322,14 +1677,15 @@ function renderInstancesHtml(entry){
   // when several instances (creatures) roll at once, badge each one a different
   // colour and give it a bit more breathing room so they read as separate creatures
   const multi = entry.instances.length > 1;
-  return entry.instances.map(inst=>{
-    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi);
+  return entry.instances.map((inst,idx)=>{
+    const applyHtml = multi ? instApplyToHtml(entry, idx) : '';
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi, applyHtml);
     let core;
     if(inst.kind==='attack') core = attackCore(inst);
     else if(inst.kind==='save') core = saveCore(inst);
     else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
     else core = esc(inst.text||'');
-    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core}</div>`;
+    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core} ${applyHtml}</div>`;
   }).join('');
 }
 
@@ -1359,6 +1715,47 @@ function aggregateEntry(entry){
     else if(inst.kind==='save') addDmg(inst.dmg);
   });
   return { hasTarget, hitCount, missCount, critCount, atomicAttacks, dmgByType };
+}
+
+// Same rollup as aggregateEntry, but split out per target - so "2 goblins
+// went for Kira, 1 for Bram" shows what each of them actually took instead
+// of one combined total that doesn't say who took what.
+function aggregateByTarget(entry){
+  const byTarget = new Map(); // display name -> {hit,miss,crit,dmgByType}
+  function bucket(key){
+    if(!byTarget.has(key)) byTarget.set(key, { hit:0, miss:0, crit:0, dmgByType:{} });
+    return byTarget.get(key);
+  }
+  function addDmg(b, dmgArr){ (dmgArr||[]).forEach(d=>{ b.dmgByType[d.type] = (b.dmgByType[d.type]||0)+d.total; }); }
+  function tally(a){
+    if(!a.vsTarget) return;
+    const b = bucket(a.vsTarget.name || `AC ${a.vsTarget.ac}`);
+    if(a.isCrit) b.crit++;
+    if(a.vsTarget.hit){ b.hit++; addDmg(b, a.dmg); } else { b.miss++; }
+  }
+  entry.instances.forEach(inst=>{
+    if(inst.kind==='attack') tally(inst);
+    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') tally(s); });
+  });
+  return byTarget;
+}
+
+// Only worth showing once a roll is actually split across more than one
+// target - with everyone going after the same target the one-line overall
+// summary above already says it all.
+function perTargetHtml(entry){
+  const byTarget = aggregateByTarget(entry);
+  if(byTarget.size < 2) return '';
+  const rows = Array.from(byTarget.entries()).map(([name, b])=>{
+    const pills = `${b.hit?`<span class="pill-hit">${b.hit} HIT</span>`:''}${b.miss?`<span class="pill-miss">${b.miss} MISS</span>`:''}`;
+    const critTag = b.crit ? ` <span class="crit">${b.crit}× CRIT</span>` : '';
+    const dmgEntries = Object.entries(b.dmgByType);
+    const dmgHtml = dmgEntries.length
+      ? dmgEntries.map(([type,total])=>`<b class="dmg-total">${total}</b> ${esc(type)}`).join(' + ')
+      : '<span class="dmg-none">no damage</span>';
+    return `<div class="per-target-row"><span class="per-target-name">${esc(name)}</span>${pills}${critTag} ${dmgHtml}</div>`;
+  }).join('');
+  return `<div class="per-target">${rows}</div>`;
 }
 
 // Lets a whole already-rolled result be pointed at a saved target (or a
@@ -1402,6 +1799,7 @@ function renderLogCard(entry){
     </div>
     ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
+    ${perTargetHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
 }
@@ -1417,6 +1815,7 @@ function renderCardResult(key, entry){
     </div>
     ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
+    ${perTargetHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
 }
@@ -1516,6 +1915,12 @@ function entryEditHtml(entry, allEntries){
 function renderModal(){
   const root = document.getElementById('modalRoot');
   if(modalMode==='options'){
+    const ghCfg = ghLoadConfig();
+    let ghPulledFromSheet = false;
+    if(!ghCfg.token){
+      const sheetDefaults = ghSheetDefaults();
+      if(sheetDefaults){ Object.assign(ghCfg, sheetDefaults); ghPulledFromSheet = true; }
+    }
     root.innerHTML = `
     <div class="modal-overlay" data-act="overlay-close">
       <div class="modal" style="max-width:440px;">
@@ -1525,6 +1930,33 @@ function renderModal(){
           <label class="opt-row"><input type="radio" name="critMode" value="double" ${settings.critMode==='double'?'checked':''}> <div><b>Double the dice</b><div class="hint" style="margin:2px 0 0;">Standard 5e rule — roll double the number of damage dice.</div></div></label>
           <label class="opt-row"><input type="radio" name="critMode" value="perkins" ${settings.critMode==='perkins'?'checked':''}> <div><b>Max damage + reroll ("Perkins crit")</b><div class="hint" style="margin:2px 0 0;">Take the dice's maximum value, then roll the same dice again and add both together. Same average, less swingy.</div></div></label>
           <div class="hint" style="margin-top:10px;">Only affects attack-roll crits — a save-forced effect (breath weapon, etc.) never crits.</div>
+          <div class="sec-title">Backup</div>
+          <div class="hint" style="margin-top:0;">Everything here is saved automatically as you go, but only in this browser. Download a backup before switching devices, clearing browser data, or just for peace of mind - and keep one somewhere safe in case this browser's storage is ever lost.</div>
+          <div class="backup-row">
+            <button class="btn" data-act="export-backup">⭳ Download backup</button>
+            <button class="btn" data-act="import-backup">⭱ Restore from backup</button>
+          </div>
+          <input type="file" id="restoreFileInput" accept="application/json,.json" hidden>
+          <div class="sec-title">GitHub sync</div>
+          <div class="hint" style="margin-top:0;">Push this same backup straight to a repo instead of downloading it - the same way your character sheets sync. The token is stored in this browser only, in plain text, so use a fine-grained token scoped to just this one repo rather than a full-access classic one.</div>
+          ${ghPulledFromSheet ? `<div class="hint" style="margin-top:0;color:var(--accent);">Pulled the token, owner and repo in from your character sheet's sync settings, already saved in this browser - check them and pick your own path below, then hit Save.</div>` : ''}
+          <div class="field-row">
+            <div class="field"><label>Token</label><input type="password" id="ghToken" value="${esc(ghCfg.token||'')}" placeholder="github_pat_…"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Owner</label><input id="ghOwner" value="${esc(ghCfg.owner||'')}" placeholder="github-username"></div>
+            <div class="field"><label>Repo</label><input id="ghRepo" value="${esc(ghCfg.repo||'')}" placeholder="my-repo"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Path in repo</label><input id="ghPath" value="${esc(ghCfg.path||'encounter-roller-backup.json')}" placeholder="encounter-roller-backup.json"></div>
+          </div>
+          <label class="opt-row"><input type="checkbox" id="ghAutoPush" ${ghCfg.autoPush?'checked':''}> <div><b>Auto-push on every change</b><div class="hint" style="margin:2px 0 0;">Pushes a few seconds after you stop making changes, so a burst of rolls or edits only pushes once.</div></div></label>
+          <div class="backup-row">
+            <button class="btn" data-act="gh-save">Save settings</button>
+            <button class="btn" data-act="gh-push">⭱ Push now</button>
+            <button class="btn" data-act="gh-pull">⭳ Pull latest</button>
+          </div>
+          <div id="ghSyncStatus" class="hint" style="margin:6px 0 0;">${ghCfg.lastPush ? 'Last pushed '+new Date(ghCfg.lastPush).toLocaleString() : ''}</div>
         </div>
         <div class="modal-ft" style="justify-content:flex-end;">
           <button class="btn primary" data-act="close-modal">Done</button>
@@ -1683,7 +2115,12 @@ function onGlobalInput(e){
 
 function onGlobalChange(e){
   const t = e.target;
-  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); return; }
+  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); ghMaybeAutoPush(); return; }
+  if(t.id==='restoreFileInput'){
+    if(t.files && t.files[0]) importBackupFile(t.files[0]);
+    t.value = '';
+    return;
+  }
   if(t.classList.contains('apply-target-select')){
     if(t.value===''){ clearResultTarget(t.dataset.eid); return; }
     const tgt = targets.items.find(x=>x.id===t.value);
@@ -1698,6 +2135,14 @@ function onGlobalChange(e){
     if(!Number.isFinite(ac)) return;
     const match = findTargetByAC(ac);
     applyResultToAC(t.dataset.eid, ac, match?match.name:'');
+    return;
+  }
+  if(t.classList.contains('inst-apply-select')){
+    const instIdx = +t.dataset.instidx;
+    if(t.value===''){ clearInstanceTarget(t.dataset.eid, instIdx); return; }
+    const tgt = targets.items.find(x=>x.id===t.value);
+    if(!tgt) return;
+    applyInstanceToAC(t.dataset.eid, instIdx, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
     return;
   }
   if(!editingCreature) return;
@@ -1722,6 +2167,7 @@ function setBoardOptimistic(items){
   renderBoard();
   renderLibrary();
   Store.setBoard(items);
+  ghMaybeAutoPush();
 }
 
 function onGlobalClick(e){
@@ -1733,6 +2179,7 @@ function onGlobalClick(e){
 
   switch(act){
     case 'toggle-sidebar': document.getElementById('libraryPanel').classList.toggle('open'); document.getElementById('scrim').classList.toggle('show'); break;
+    case 'toggle-library-collapse': document.getElementById('libraryPanel').classList.toggle('collapsed'); break;
     case 'toggle-logpanel': {
       const panel = document.getElementById('logPanel');
       panel.classList.toggle('open');
@@ -1754,6 +2201,12 @@ function onGlobalClick(e){
     case 'open-add-modal': openAddModal(); break;
     case 'open-options': openOptionsModal(); break;
     case 'close-modal': closeModal(); break;
+    case 'export-backup': exportBackup(); break;
+    case 'import-backup': document.getElementById('restoreFileInput').click(); break;
+    case 'dismiss-storage-warning': el.parentElement.remove(); storageWarningShown = false; break;
+    case 'gh-save': ghSaveFromForm(); ghSetStatus('Settings saved.'); break;
+    case 'gh-push': ghSaveFromForm(); ghPushNow(false); break;
+    case 'gh-pull': ghSaveFromForm(); ghPullNow(); break;
     case 'overlay-close': if(e.target===el) closeModal(); break;
     case 'start-blank': editingCreature = blankCreature(); modalMode='edit'; renderModal(); break;
     case 'parse-statblock': {
@@ -1765,6 +2218,7 @@ function onGlobalClick(e){
     case 'save-creature': {
       if(!editingCreature.name || !editingCreature.name.trim()) editingCreature.name = 'Unnamed Creature';
       Store.saveCreature(editingCreature);
+      ghMaybeAutoPush();
       closeModal();
       break;
     }
@@ -1781,7 +2235,7 @@ function onGlobalClick(e){
 
     case 'toggle-fav': {
       const c = creatures.find(x=>x.id===el.dataset.creature);
-      if(c){ c.favourite = !c.favourite; Store.saveCreature(c); }
+      if(c){ c.favourite = !c.favourite; Store.saveCreature(c); ghMaybeAutoPush(); }
       break;
     }
     case 'edit-creature': { const c = creatures.find(x=>x.id===el.dataset.creature); if(c) openEditModal(c); break; }
@@ -1790,6 +2244,7 @@ function onGlobalClick(e){
       if(c && confirm(`Delete "${c.name}" from your library? This can't be undone.`)){
         Store.deleteCreature(c.id);
         Store.setBoard(board.items.filter(it=>it.creatureId!==c.id));
+        ghMaybeAutoPush();
       }
       break;
     }
@@ -1800,6 +2255,12 @@ function onGlobalClick(e){
       break;
     }
     case 'remove-board': setBoardOptimistic(board.items.filter(it=>it.boardId!==el.dataset.board)); break;
+    case 'toggle-card-collapse': {
+      const bid = el.dataset.board;
+      if(collapsedCards.has(bid)) collapsedCards.delete(bid); else collapsedCards.add(bid);
+      renderBoard();
+      break;
+    }
     case 'count-inc': {
       const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count+1,1,50)} : it);
       setBoardOptimistic(items);

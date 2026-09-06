@@ -53,7 +53,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .iconbtn:hover{background:var(--surface-2);color:var(--text);}
 .iconbtn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .iconbtn.primary:hover{background:rgba(91,142,240,.18);}
-.badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#1a0a0a;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;}
+.badge{position:absolute;top:-2px;right:-2px;background:var(--red);width:9px;height:9px;border-radius:99px;border:2px solid var(--bg);}
 
 /* ---------- layout ---------- */
 .layout{flex:1;display:flex;min-height:0;overflow:hidden;position:relative;}
@@ -377,6 +377,7 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
     <aside class="logpanel" id="logPanel">
       <div class="log-hdr">
         <span class="log-hdr-title">Roll log</span>
+        <button class="smallbtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">Clear</button>
       </div>
       <div class="log-list" id="logList"></div>
     </aside>
@@ -1112,7 +1113,6 @@ function renderLogBadge(){
   const el = document.getElementById('logBadge');
   if(!el) return;
   el.hidden = logUnread<=0;
-  el.textContent = logUnread>9 ? '9+' : String(logUnread);
 }
 
 function activeTarget(){

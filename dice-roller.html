@@ -115,7 +115,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .target-radio:hover{border-color:var(--green-bd);}
 .target-radio.active{border-color:var(--green);background:var(--green);}
 .targets-empty{color:var(--text-mute);font-size:11.5px;padding:8px 6px;}
-.board{flex:1;overflow:auto;padding:16px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:14px;}
+.board{flex:1;overflow:auto;padding:0 16px 16px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:14px;}
+.board-top-spacer{flex-basis:100%;height:2px;}
 .board-empty{margin:60px auto;color:var(--text-mute);text-align:center;max-width:300px;font-size:12.5px;line-height:1.7;}
 .board-empty b{color:var(--text-2);}
 
@@ -127,6 +128,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-mode-btn:hover{color:var(--text);}
 .card-mode-btn.adv.active{background:var(--green-dim);border-color:var(--green-bd);color:var(--green);}
 .card-mode-btn.dis.active{background:var(--red-dim);border-color:var(--red-bd);color:var(--red);}
+.card-mode-btn.mix.open{border-color:var(--accent-bd);color:var(--accent);}
+.card-mode-btn.mix.active{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .card.collapsed .card-hdr{border-bottom:none;}
 .card.collapsed .card-body{display:none;}
 .card-title-row{display:flex;align-items:center;gap:6px;}
@@ -140,6 +143,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 .count-stepper button{width:19px;height:19px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
 .count-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;min-width:14px;text-align:center;}
+.count-input{width:20px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;background:transparent;border:none;color:var(--text);border-radius:4px;padding:1px 0;}
+.count-input:hover{background:var(--surface-3);}
+.count-input:focus{outline:none;background:var(--surface-3);box-shadow:0 0 0 1px var(--accent-bd);}
 .count-lbl{font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-left:5px;}
 
 .saves-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:9px 13px;border-bottom:1px solid var(--border-light);}
@@ -189,6 +195,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 .mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
+.mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}
+.mix-status.ok{color:var(--green);}
+.mix-status.warn{color:var(--amber);}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
@@ -200,6 +209,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .roll-btn.multi{background:var(--orange-dim);border-color:var(--orange-bd);color:var(--orange);}
 .roll-btn.adv{box-shadow:0 0 0 2px var(--green) inset;}
 .roll-btn.disadv{box-shadow:0 0 0 2px var(--red) inset;}
+.roll-btn.mixed{box-shadow:0 0 0 2px var(--accent) inset;}
 .g-action .swatch{background:var(--accent);}
 .g-bonus .swatch{background:var(--amber);}
 .g-reaction .swatch{background:var(--red);}
@@ -992,6 +1002,32 @@ function getMixState(key, defaultTotal){
 // before ever opening the panel. Only the toggle-mix click itself, which
 // knows the true current count, is allowed to create the initial state.
 function peekMixState(key){ return mixState.get(key) || null; }
+let cardMix = new Map(); // boardId -> {open, normal, adv, disadv}, a persistent split across the card's instances that every Roll click below respects once it's engaged
+function getCardMix(boardId, defaultTotal){
+  let s = cardMix.get(boardId);
+  if(!s){ s = { open:false, normal:defaultTotal, adv:0, disadv:0 }; cardMix.set(boardId, s); }
+  return s;
+}
+function peekCardMix(boardId){ return cardMix.get(boardId) || null; }
+// keeps an existing split in step with the instance count so it doesn't
+// silently fall out of sync (and stop applying) whenever +/- or a typed
+// count changes the total - growth goes to Normal, shrinkage comes off
+// Disadv first, then Adv, then Normal, so a deliberate adv/disadv split
+// survives a small count change instead of being clobbered
+function syncCardMixTotal(boardId, newTotal){
+  const s = cardMix.get(boardId);
+  if(!s) return;
+  let diff = newTotal - (s.normal+s.adv+s.disadv);
+  if(diff > 0){ s.normal += diff; return; }
+  for(const f of ['disadv','adv','normal']){
+    if(diff>=0) break;
+    const take = Math.min(-diff, s[f]);
+    s[f] -= take; diff += take;
+  }
+}
+function cardMixEngaged(mix, total){
+  return !!mix && (mix.adv>0 || mix.disadv>0) && (mix.normal+mix.adv+mix.disadv)===total;
+}
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
@@ -1501,6 +1537,21 @@ function renderCard(item){
               <button class="btn primary" data-act="roll-mix" data-board="${item.boardId}" data-entry="${e.id}" ${total?'':'disabled'}>Roll ${total} mixed</button>
             </div>`;
           })() : '';
+          // a card-level flat/adv/disadv split (set once for the whole
+          // creature, see renderCard) takes over from the blunt all-or-
+          // nothing A/D toggle whenever it's actually engaged - see
+          // cardMixEngaged for what "engaged" means
+          const cmixForEntry = canAdv ? peekCardMix(item.boardId) : null;
+          const mixEngaged = cardMixEngaged(cmixForEntry, item.count);
+          const cardModeVal = cardMode.get(item.boardId);
+          let rollBtnCls = btnClass, rollBtnTitle = 'Roll';
+          if(mixEngaged){
+            rollBtnCls += ' mixed';
+            rollBtnTitle = `Roll (${cmixForEntry.normal} normal, ${cmixForEntry.adv} adv, ${cmixForEntry.disadv} disadv - set above)`;
+          } else if(canAdv && cardModeVal){
+            rollBtnCls += ' '+cardModeVal;
+            rollBtnTitle = `Roll (with ${cardModeVal==='adv'?'advantage':'disadvantage'}, set above)`;
+          }
           return `<div class="entry">
             <div class="entry-main">
               <div class="entry-name">${esc(e.name)}</div>
@@ -1510,7 +1561,7 @@ function renderCard(item){
               </div>
             </div>
             <div class="roll-btn-group">
-              <button class="roll-btn ${btnClass}${canAdv&&cardMode.get(item.boardId)?' '+cardMode.get(item.boardId):''}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="${canAdv&&cardMode.get(item.boardId)?'Roll (with '+(cardMode.get(item.boardId)==='adv'?'advantage':'disadvantage')+', set above)':'Roll'}">
+              <button class="roll-btn ${rollBtnCls}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="${rollBtnTitle}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
                 Roll
               </button>
@@ -1543,6 +1594,32 @@ function renderCard(item){
 
   const cardCollapsed = collapsedCards.has(item.boardId);
   const curCardMode = cardMode.get(item.boardId);
+  const cmix = item.count>1 ? peekCardMix(item.boardId) : null;
+  const cmixEngaged = cardMixEngaged(cmix, item.count);
+  const cardMixBtn = item.count>1 ? `<button class="card-mode-btn mix${cmix&&cmix.open?' open':''}${cmixEngaged?' active':''}" data-act="toggle-card-mix" data-board="${item.boardId}" title="Split this creature's instances across normal/advantage/disadvantage">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="17" y2="18"/></svg>
+    </button>` : '';
+  const cardMixPanel = (cmix && cmix.open) ? (()=>{
+    const row = (field,label,cls)=>`<div class="mix-row">
+      <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
+      <div class="mix-stepper">
+        <button data-act="card-mix-dec" data-board="${item.boardId}" data-field="${field}">−</button>
+        <span>${cmix[field]}</span>
+        <button data-act="card-mix-inc" data-board="${item.boardId}" data-field="${field}">+</button>
+      </div>
+    </div>`;
+    const sum = cmix.normal+cmix.adv+cmix.disadv;
+    const balanced = sum===item.count;
+    const status = !balanced ? `<span class="mix-status warn">Totals ${sum} - needs to total ${item.count} instances to apply</span>`
+      : cmixEngaged ? `<span class="mix-status ok">Applied to every Roll below</span>`
+      : `<span class="mix-status">All normal - move some to Adv/Disadv to split this creature's rolls</span>`;
+    return `<div class="mix-panel card-mix-panel">
+      ${row('normal','Normal')}
+      ${row('adv','Adv','adv')}
+      ${row('disadv','Disadv','dis')}
+      ${status}
+    </div>`;
+  })() : '';
   return `<div class="card ${cardCollapsed?'collapsed':''}">
     <div class="card-hdr">
       <div class="card-title-row">
@@ -1553,10 +1630,11 @@ function renderCard(item){
         <div class="card-mode-group">
           <button class="card-mode-btn adv${curCardMode==='adv'?' active':''}" data-act="card-mode" data-board="${item.boardId}" data-mode="adv" title="All rolls below use advantage until you turn this off">A</button>
           <button class="card-mode-btn dis${curCardMode==='disadv'?' active':''}" data-act="card-mode" data-board="${item.boardId}" data-mode="disadv" title="All rolls below use disadvantage until you turn this off">D</button>
+          ${cardMixBtn}
         </div>
         <div class="count-stepper">
           <button data-act="count-dec" data-board="${item.boardId}">−</button>
-          <span>${item.count}</span>
+          <input type="text" inputmode="numeric" pattern="[0-9]*" class="count-input" data-board="${item.boardId}" value="${item.count}" title="Click to type an exact number">
           <button data-act="count-inc" data-board="${item.boardId}">+</button>
         </div>
         <button class="icobtn" data-act="remove-board" data-board="${item.boardId}" title="Remove from board">
@@ -1572,6 +1650,7 @@ function renderCard(item){
       </div>
     </div>
     <div class="card-body">
+      ${cardMixPanel}
       <div class="saves-row">${savesHtml}</div>
       ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
       ${groupsHtml}
@@ -1586,7 +1665,12 @@ function renderBoard(){
     el.innerHTML = `<div class="board-empty">No creatures on the board yet.<br><br>Open your <b>library</b> on the left and click a creature (or the + button) to bring it into the encounter.</div>`;
     return;
   }
-  el.innerHTML = board.items.map(renderCard).join('');
+  // a real spacer row, not padding-top on .board itself - padding on a
+  // scrolling container never scrolls away, so a sticky card header would
+  // permanently show a gap above it once stuck. A flex-basis:100% spacer is
+  // ordinary flow content: it gives the same breathing room at rest, but
+  // scrolls off completely so the sticky header can actually sit flush.
+  el.innerHTML = `<div class="board-top-spacer"></div>` + board.items.map(renderCard).join('');
 }
 
 /* ============================== rendering: targets ============================== */
@@ -2182,6 +2266,18 @@ function setMultiField(eid, idx, field, value){
 function onGlobalInput(e){
   const t = e.target;
   if(t.id==='searchInput'){ librarySearch = t.value; renderLibrary(); return; }
+  if(t.classList.contains('count-input')){
+    // update the underlying count as they type, but don't renderBoard() here -
+    // that would tear down and rebuild this very input mid-keystroke and throw
+    // away focus/cursor position. The full rebuild (which also fixes up the
+    // displayed value, mix panel, etc) happens once they commit on blur/Enter.
+    const item = board.items.find(it=>it.boardId===t.dataset.board);
+    if(!item) return;
+    const raw = t.value.replace(/[^\d]/g,'');
+    if(raw==='') return;
+    item.count = clamp(parseInt(raw,10), 1, 50);
+    return;
+  }
   if(t.dataset.tid && t.dataset.tfield){
     const tgt = targets.items.find(x=>x.id===t.dataset.tid);
     if(!tgt) return;
@@ -2404,13 +2500,40 @@ function onGlobalClick(e){
       break;
     }
     case 'count-inc': {
-      const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count+1,1,50)} : it);
+      const bid = el.dataset.board;
+      const items = board.items.map(it=> it.boardId===bid ? {...it, count: clamp(it.count+1,1,50)} : it);
+      const changed = items.find(it=>it.boardId===bid);
+      if(changed) syncCardMixTotal(bid, changed.count);
       setBoardOptimistic(items);
       break;
     }
     case 'count-dec': {
-      const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count-1,1,50)} : it);
+      const bid = el.dataset.board;
+      const items = board.items.map(it=> it.boardId===bid ? {...it, count: clamp(it.count-1,1,50)} : it);
+      const changed = items.find(it=>it.boardId===bid);
+      if(changed) syncCardMixTotal(bid, changed.count);
       setBoardOptimistic(items);
+      break;
+    }
+    case 'toggle-card-mix': {
+      const bid = el.dataset.board;
+      const item = board.items.find(it=>it.boardId===bid);
+      const s = getCardMix(bid, item?item.count:1);
+      s.open = !s.open;
+      renderBoard();
+      break;
+    }
+    case 'card-mix-inc': case 'card-mix-dec': {
+      const bid = el.dataset.board, field = el.dataset.field;
+      const s = cardMix.get(bid);
+      if(!s) break;
+      s[field] = clamp(s[field] + (act==='card-mix-inc'?1:-1), 0, 50);
+      // once the split fully covers every instance, it's the thing driving
+      // rolls now - stand down the blunt all-or-nothing A/D toggle so only
+      // one override is ever in effect at a time
+      const item = board.items.find(it=>it.boardId===bid);
+      if(item && cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
+      renderBoard();
       break;
     }
     case 'toggle-group': {
@@ -2453,12 +2576,29 @@ function onGlobalClick(e){
       const item = board.items.find(it=>it.boardId===el.dataset.board);
       const c = item && creatures.find(cr=>cr.id===item.creatureId);
       const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
-      if(c && entry) rollEntry(c, entry, item.count, item.boardId, cardMode.get(item.boardId));
+      if(c && entry){
+        const mix = peekCardMix(item.boardId);
+        if(cardMixEngaged(mix, item.count)){
+          const seq = [...Array(mix.normal).fill('normal'), ...Array(mix.adv).fill('adv'), ...Array(mix.disadv).fill('disadv')];
+          rollEntry(c, entry, seq.length, item.boardId, seq);
+        } else {
+          rollEntry(c, entry, item.count, item.boardId, cardMode.get(item.boardId));
+        }
+      }
       break;
     }
     case 'card-mode': {
       const bid = el.dataset.board, mode = el.dataset.mode;
       cardMode.set(bid, cardMode.get(bid)===mode ? undefined : mode);
+      // the simple all-or-nothing toggle and the flat/adv/disadv split are
+      // mutually exclusive - using this one stands the other back down to
+      // "all normal" so only one override ever drives a Roll click
+      const mix = cardMix.get(bid);
+      if(mix){
+        const item = board.items.find(it=>it.boardId===bid);
+        const total = item ? item.count : mix.normal+mix.adv+mix.disadv;
+        mix.normal = total; mix.adv = 0; mix.disadv = 0;
+      }
       renderBoard();
       break;
     }
@@ -2483,6 +2623,18 @@ document.addEventListener('focusout', e=>{
     // catch up on anything a rebuild would have shown while we were skipping.
     setTimeout(renderTargets, 0);
   }
+  if(e.target.classList.contains('count-input')){
+    const bid = e.target.dataset.board;
+    const item = board.items.find(it=>it.boardId===bid);
+    if(item) syncCardMixTotal(bid, item.count);
+    setBoardOptimistic(board.items);
+  }
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.classList.contains('count-input')) e.target.blur();
+});
+document.addEventListener('focusin', e=>{
+  if(e.target.classList.contains('count-input')) e.target.select();
 });
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');

@@ -1156,10 +1156,22 @@ function renderBoard(){
 }
 
 /* ============================== rendering: targets ============================== */
+// True only while the user has an actual text/number field mid-edit - NOT
+// while a button (radio, remove) in the table happens to hold focus, since
+// clicking one of those IS the action that needs to render right now.
+function isTargetFieldFocused(){
+  const el = document.activeElement;
+  return !!(el && el.matches && el.matches('#targetsBody input[data-tid]'));
+}
+
 function renderTargets(){
   const body = document.getElementById('targetsBody');
   const tag = document.getElementById('targetsActiveTag');
   if(!body) return;
+  // never rebuild the table while one of its fields is focused - a rebuild
+  // triggered by an unrelated action (adding another row, a db round-trip
+  // confirming a write) would yank focus and any unsaved keystrokes with it.
+  if(isTargetFieldFocused()) return;
   if(!targets.items.length){
     body.innerHTML = `<tr><td colspan="7" class="targets-empty">Add your players (or any NPC) here to see hit/miss against them when you roll an attack.</td></tr>`;
   } else {
@@ -1807,7 +1819,13 @@ document.addEventListener('click', onGlobalClick);
 document.addEventListener('input', onGlobalInput);
 document.addEventListener('change', onGlobalChange);
 document.addEventListener('focusout', e=>{
-  if(e.target.dataset.tid && e.target.dataset.tfield) Store.setTargets(targets);
+  if(e.target.dataset.tid && e.target.dataset.tfield){
+    Store.setTargets(targets);
+    // renderTargets() itself refuses to run while a field in the table is
+    // focused (see there for why) - once focus actually settles elsewhere,
+    // catch up on anything a rebuild would have shown while we were skipping.
+    setTimeout(renderTargets, 0);
+  }
 });
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');
@@ -1820,10 +1838,14 @@ Store.onCreatures(list=>{ creatures = list; renderLibrary(); renderBoard(); });
 Store.onBoard(data=>{ board = data && data.items ? data : { items: [] }; renderBoard(); renderLibrary(); });
 Store.onTargets(data=>{
   const incoming = data && data.items ? data : { items: [], activeId: null };
-  // persisting a field edit round-trips back through here - if it's just an echo
-  // of what we already have (our own write, or the platform's write confirmation),
-  // skip the rebuild so it can't yank focus out from under an in-progress edit.
-  if(JSON.stringify(incoming) === JSON.stringify(targets)) return;
+  // persisting a field edit round-trips back through here - in db mode this is
+  // a real network round-trip, so the confirmation can land WHILE the user is
+  // still typing the next character. Comparing content isn't safe (it can
+  // legitimately still be "in flight" and differ from what's on screen right
+  // now), so instead: never touch the table while a field in it is focused,
+  // full stop. The user's own in-progress edit already lives directly on the
+  // target object being edited, so skipping the sync here loses nothing.
+  if(isTargetFieldFocused()) return;
   targets = incoming;
   renderTargets();
 });

@@ -52,6 +52,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .iconbtn:hover{background:var(--surface-2);color:var(--text);}
 .iconbtn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .iconbtn.primary:hover{background:rgba(91,142,240,.18);}
+.badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#1a0a0a;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;}
 
 /* ---------- layout ---------- */
 .layout{flex:1;display:flex;min-height:0;overflow:hidden;position:relative;}
@@ -129,6 +130,15 @@ select,option{background:var(--surface-2);color:var(--text);}
 .g-reaction .swatch{background:var(--red);}
 .g-legendary .swatch{background:var(--purple);}
 .g-trait .swatch{background:var(--teal);}
+.card-result{background:var(--surface-3);border:1px solid var(--accent-bd);border-left:3px solid var(--accent);border-radius:8px;padding:7px 9px;margin:2px 0 8px;}
+.card-result.bonus{border-color:var(--amber-bd);border-left-color:var(--amber);}
+.card-result.reaction{border-color:var(--red-bd);border-left-color:var(--red);}
+.card-result.legendary{border-color:var(--purple-bd);border-left-color:var(--purple);}
+.card-result.throw{border-color:var(--teal-bd);border-left-color:var(--teal);}
+.card-result.multi{border-color:var(--orange-bd);border-left-color:var(--orange);}
+.card-result-hdr{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-mute);font-family:'DM Mono',monospace;margin-bottom:3px;}
+.save-result{padding:0 13px;}
+.save-result .card-result{margin:0 0 9px;}
 .card-ft{padding:9px 13px;display:flex;justify-content:flex-end;}
 .ft-link{background:none;border:none;color:var(--text-mute);font-size:10.5px;cursor:pointer;display:flex;align-items:center;gap:4px;}
 .ft-link:hover{color:var(--red);}
@@ -233,8 +243,9 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
       Clear log
     </button>
-    <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log">
+    <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log" style="position:relative;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
+      <span id="logBadge" class="badge" hidden></span>
     </button>
   </div>
 
@@ -547,7 +558,9 @@ function exampleCreatures(){
 /* ============================== store (db capability, falls back to localStorage) ============================== */
 const Store = (() => {
   let db = null;
-  let mode = 'local';
+  let mode = null; // null until init() decides 'db' or 'local' - never guess in between
+  let readyResolve;
+  const readyPromise = new Promise(res=>{ readyResolve = res; });
   const listeners = { creatures: [], board: [] };
   const LS_CREATURES = 'er_creatures_v1';
   const LS_BOARD = 'er_board_v1';
@@ -591,12 +604,14 @@ const Store = (() => {
       listeners.creatures.forEach(fn=>fn(localCreatures));
       listeners.board.forEach(fn=>fn(localBoard));
     }
+    readyResolve();
   }
 
   function onCreatures(fn){ listeners.creatures.push(fn); if(mode==='local') fn(localCreatures); }
   function onBoard(fn){ listeners.board.push(fn); if(mode==='local') fn(localBoard); }
 
   async function saveCreature(creature){
+    await readyPromise;
     if(mode==='db'){
       const ref = creature.id ? db.collection('creatures').doc(creature.id) : db.collection('creatures').doc();
       const { id, ...rest } = creature;
@@ -613,6 +628,7 @@ const Store = (() => {
   }
 
   async function deleteCreature(id){
+    await readyPromise;
     if(mode==='db'){
       await db.collection('creatures').doc(id).delete();
     } else {
@@ -623,6 +639,7 @@ const Store = (() => {
   }
 
   async function setBoard(items){
+    await readyPromise;
     if(mode==='db'){
       await db.doc('board/state').set({ items });
     } else {
@@ -644,6 +661,8 @@ let librarySearch = '';
 let collapsedGroups = new Set();
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit'
+const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
+let logUnread = 0;
 
 /* ============================== rolling ============================== */
 function pushLog(entry){
@@ -652,6 +671,19 @@ function pushLog(entry){
   log.unshift(entry);
   if(log.length > 200) log.length = 200;
   renderLog();
+  const drawerBtn = document.querySelector('[data-act="toggle-logpanel"]');
+  const isDrawerMode = drawerBtn && getComputedStyle(drawerBtn).display !== 'none';
+  if(isDrawerMode && !document.getElementById('logPanel').classList.contains('open')){
+    logUnread++;
+    renderLogBadge();
+  }
+}
+
+function renderLogBadge(){
+  const el = document.getElementById('logBadge');
+  if(!el) return;
+  el.hidden = logUnread<=0;
+  el.textContent = logUnread>9 ? '9+' : String(logUnread);
 }
 
 function rollAttackInstance(entry){
@@ -671,8 +703,9 @@ function rollSaveEffectInstance(entry){
   return { dc: entry.save.dc, ability: entry.save.ability, half: entry.save.half, dmg };
 }
 
-function rollEntry(creature, entry, times){
+function rollEntry(creature, entry, times, boardId){
   times = clamp(times,1,50);
+  let logEntry;
   if(entry.kind==='multi'){
     const byId = Object.fromEntries(creature.entries.map(e=>[e.id,e]));
     const instances = [];
@@ -688,19 +721,24 @@ function rollEntry(creature, entry, times){
       });
       instances.push({ i, kind:'multi', subs });
     }
-    pushLog({ creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind:'multi', instances });
-    return;
+    logEntry = { creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind:'multi', instances };
+  } else {
+    const instances = [];
+    for(let i=1;i<=times;i++){
+      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry) });
+      else if(entry.kind==='save') instances.push({ i, kind:'save', ...rollSaveEffectInstance(entry) });
+      else instances.push({ i, kind:'note', text: entry.text });
+    }
+    logEntry = { creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind: entry.kind, instances };
   }
-  const instances = [];
-  for(let i=1;i<=times;i++){
-    if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry) });
-    else if(entry.kind==='save') instances.push({ i, kind:'save', ...rollSaveEffectInstance(entry) });
-    else instances.push({ i, kind:'note', text: entry.text });
+  pushLog(logEntry);
+  if(boardId){
+    lastResults.set(boardId+'::'+entry.id, logEntry);
+    renderBoard();
   }
-  pushLog({ creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind: entry.kind, instances });
 }
 
-function rollSaveThrow(creature, abil, times){
+function rollSaveThrow(creature, abil, times, boardId){
   times = clamp(times,1,50);
   const mod = (creature.saves && creature.saves[abil]!=null) ? creature.saves[abil] : (creature.abilities[abil]?.mod||0);
   const instances = [];
@@ -708,7 +746,12 @@ function rollSaveThrow(creature, abil, times){
     const { rolls, chosen } = rollD20(rollMode);
     instances.push({ i, kind:'throw', d20rolls: rolls, chosen, mod, total: chosen+mod });
   }
-  pushLog({ creatureName: creature.name, entryName: ABIL_FULL[abil]+' Save', atype:'throw', kind:'throw', instances });
+  const logEntry = { creatureName: creature.name, entryName: ABIL_FULL[abil]+' Save', atype:'throw', kind:'throw', instances };
+  pushLog(logEntry);
+  if(boardId){
+    lastResults.set(boardId+'::save', logEntry);
+    renderBoard();
+  }
 }
 
 /* ============================== rendering: library ============================== */
@@ -749,7 +792,7 @@ function renderLibrary(){
 }
 
 /* ============================== rendering: board ============================== */
-function entryTagText(entry){
+function entryTagText(entry, creature){
   if(entry.kind==='attack'){
     let t = fmtMod(entry.toHit)+' to hit';
     if(entry.dmg && entry.dmg.length) t += ' · ' + entry.dmg.map(d=>d.dice+(d.type?' '+d.type:'')).join(' + ');
@@ -762,7 +805,18 @@ function entryTagText(entry){
     if(entry.save.half) t += ' (half on success)';
     return t;
   }
-  if(entry.kind==='multi') return (entry.multi&&entry.multi.length)? 'Auto-linked '+entry.multi.length+' attack'+(entry.multi.length>1?'s':'') : 'Roll sub-attacks manually below';
+  if(entry.kind==='multi'){
+    if(entry.multi && entry.multi.length){
+      const byId = Object.fromEntries((creature.entries||[]).map(e=>[e.id,e]));
+      const parts = entry.multi.map(p=>{
+        const sub = byId[p.ref];
+        return sub ? `${p.count}× ${sub.name}` : null;
+      }).filter(Boolean);
+      return parts.length ? 'Rolls: '+parts.join(' + ') : 'Roll sub-attacks manually below';
+    }
+    const names = (creature.entries||[]).filter(e=>e.kind==='attack').map(e=>e.name);
+    return names.length ? 'Not auto-linked — roll manually: '+names.join(', ') : 'No attacks on this creature to link';
+  }
   return '';
 }
 
@@ -773,6 +827,7 @@ function renderCard(item){
   ATYPE_ORDER.forEach(t=>groups[t]=[]);
   (c.entries||[]).forEach(e=>{ (groups[e.atype]||groups.action).push(e); });
 
+  const saveResult = lastResults.get(item.boardId+'::save');
   const savesHtml = ABILS.map(a=>{
     const mod = (c.saves && c.saves[a]!=null) ? c.saves[a] : (c.abilities[a]?.mod||0);
     return `<button class="save-btn" data-act="roll-save" data-board="${item.boardId}" data-abil="${a}" title="Roll ${ABIL_FULL[a]} save">
@@ -786,8 +841,9 @@ function renderCard(item){
     const body = t==='trait'
       ? groups[t].map(e=>`<div class="trait-row"><b>${esc(e.name)}.</b> ${esc(e.text)}</div>`).join('')
       : groups[t].map(e=>{
-          const tag = entryTagText(e);
+          const tag = entryTagText(e, c);
           const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
+          const result = lastResults.get(item.boardId+'::'+e.id);
           return `<div class="entry">
             <div class="entry-main">
               <div class="entry-name">${esc(e.name)}</div>
@@ -797,7 +853,8 @@ function renderCard(item){
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
               Roll
             </button>
-          </div>`;
+          </div>
+          ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     return `<div class="group g-${t} ${collapsed?'collapsed':''}">
       <div class="group-hdr" data-act="toggle-group" data-gid="${gid}">
@@ -830,6 +887,7 @@ function renderCard(item){
       </div>
     </div>
     <div class="saves-row">${savesHtml}</div>
+    ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
     ${groupsHtml}
   </div>`;
 }
@@ -883,9 +941,8 @@ function renderMultiInst(inst){
   return `<span class="idx">#${inst.i}</span> Multiattack${subs}`;
 }
 
-function renderLogCard(entry){
-  const cls = entry.kind==='multi' ? 'multi' : (entry.atype==='throw'?'throw':entry.atype);
-  const insts = entry.instances.map(inst=>{
+function renderInstancesHtml(entry){
+  return entry.instances.map(inst=>{
     let body;
     if(inst.kind==='attack') body = renderAttackInst(inst);
     else if(inst.kind==='save') body = renderSaveInst(inst);
@@ -894,12 +951,29 @@ function renderLogCard(entry){
     else body = `<span class="idx">#${inst.i}</span> ${esc(inst.text||'')}`;
     return `<div class="log-inst">${body}</div>`;
   }).join('');
+}
+
+function renderLogCard(entry){
+  const cls = entry.kind==='multi' ? 'multi' : (entry.atype==='throw'?'throw':entry.atype);
   return `<div class="log-card ${cls}">
     <div class="log-card-hdr">
       <span class="lname">${esc(entry.entryName)}</span>
       <span class="lwho">${esc(entry.creatureName)}</span>
     </div>
-    ${insts}
+    ${renderInstancesHtml(entry)}
+  </div>`;
+}
+
+function renderCardResult(key, entry){
+  const cls = entry.kind==='multi' ? 'multi' : (entry.atype==='throw'?'throw':entry.atype);
+  return `<div class="card-result ${cls}">
+    <div class="card-result-hdr">
+      <span>${esc(entry.entryName)} result</span>
+      <button class="iconx" data-act="dismiss-result" data-key="${key}" title="Dismiss">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    ${renderInstancesHtml(entry)}
   </div>`;
 }
 
@@ -1123,7 +1197,13 @@ function onGlobalClick(e){
 
   switch(act){
     case 'toggle-sidebar': document.getElementById('libraryPanel').classList.toggle('open'); document.getElementById('scrim').classList.toggle('show'); break;
-    case 'toggle-logpanel': document.getElementById('logPanel').classList.toggle('open'); document.getElementById('scrim').classList.toggle('show'); break;
+    case 'toggle-logpanel': {
+      const panel = document.getElementById('logPanel');
+      panel.classList.toggle('open');
+      document.getElementById('scrim').classList.toggle('show');
+      if(panel.classList.contains('open')){ logUnread = 0; renderLogBadge(); }
+      break;
+    }
     case 'clear-log': log = []; renderLog(); break;
 
     case 'open-add-modal': openAddModal(); break;
@@ -1194,15 +1274,16 @@ function onGlobalClick(e){
       const item = board.items.find(it=>it.boardId===el.dataset.board);
       const c = item && creatures.find(cr=>cr.id===item.creatureId);
       const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
-      if(c && entry) rollEntry(c, entry, item.count);
+      if(c && entry) rollEntry(c, entry, item.count, item.boardId);
       break;
     }
     case 'roll-save': {
       const item = board.items.find(it=>it.boardId===el.dataset.board);
       const c = item && creatures.find(cr=>cr.id===item.creatureId);
-      if(c) rollSaveThrow(c, el.dataset.abil, item.count);
+      if(c) rollSaveThrow(c, el.dataset.abil, item.count, item.boardId);
       break;
     }
+    case 'dismiss-result': lastResults.delete(el.dataset.key); renderBoard(); break;
   }
 }
 

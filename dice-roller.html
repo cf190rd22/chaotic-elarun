@@ -210,6 +210,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 .pill-miss{background:var(--red-dim);color:var(--red);border:1px solid var(--red-bd);}
 .pill-neutral{background:var(--surface-3);color:var(--text-2);border:1px solid var(--border);}
 .dmg-none{color:var(--text-mute);font-style:italic;}
+.per-target{display:flex;flex-direction:column;gap:3px;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
+.per-target-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;font-family:'DM Mono',monospace;}
+.per-target-name{font-weight:700;color:var(--text);min-width:64px;}
 .multi-inst summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .multi-inst summary::-webkit-details-marker{display:none;}
 .multi-inst summary .chev{margin-left:auto;color:var(--text-mute);transition:transform .15s;flex-shrink:0;}
@@ -1630,6 +1633,47 @@ function aggregateEntry(entry){
   return { hasTarget, hitCount, missCount, critCount, atomicAttacks, dmgByType };
 }
 
+// Same rollup as aggregateEntry, but split out per target - so "2 goblins
+// went for Kira, 1 for Bram" shows what each of them actually took instead
+// of one combined total that doesn't say who took what.
+function aggregateByTarget(entry){
+  const byTarget = new Map(); // display name -> {hit,miss,crit,dmgByType}
+  function bucket(key){
+    if(!byTarget.has(key)) byTarget.set(key, { hit:0, miss:0, crit:0, dmgByType:{} });
+    return byTarget.get(key);
+  }
+  function addDmg(b, dmgArr){ (dmgArr||[]).forEach(d=>{ b.dmgByType[d.type] = (b.dmgByType[d.type]||0)+d.total; }); }
+  function tally(a){
+    if(!a.vsTarget) return;
+    const b = bucket(a.vsTarget.name || `AC ${a.vsTarget.ac}`);
+    if(a.isCrit) b.crit++;
+    if(a.vsTarget.hit){ b.hit++; addDmg(b, a.dmg); } else { b.miss++; }
+  }
+  entry.instances.forEach(inst=>{
+    if(inst.kind==='attack') tally(inst);
+    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') tally(s); });
+  });
+  return byTarget;
+}
+
+// Only worth showing once a roll is actually split across more than one
+// target - with everyone going after the same target the one-line overall
+// summary above already says it all.
+function perTargetHtml(entry){
+  const byTarget = aggregateByTarget(entry);
+  if(byTarget.size < 2) return '';
+  const rows = Array.from(byTarget.entries()).map(([name, b])=>{
+    const pills = `${b.hit?`<span class="pill-hit">${b.hit} HIT</span>`:''}${b.miss?`<span class="pill-miss">${b.miss} MISS</span>`:''}`;
+    const critTag = b.crit ? ` <span class="crit">${b.crit}× CRIT</span>` : '';
+    const dmgEntries = Object.entries(b.dmgByType);
+    const dmgHtml = dmgEntries.length
+      ? dmgEntries.map(([type,total])=>`<b class="dmg-total">${total}</b> ${esc(type)}`).join(' + ')
+      : '<span class="dmg-none">no damage</span>';
+    return `<div class="per-target-row"><span class="per-target-name">${esc(name)}</span>${pills}${critTag} ${dmgHtml}</div>`;
+  }).join('');
+  return `<div class="per-target">${rows}</div>`;
+}
+
 // Lets a whole already-rolled result be pointed at a saved target (or a
 // one-off AC) after the fact - realizing mid-roll who it was actually aimed
 // at shouldn't mean re-rolling. Only shown when the result has an attack
@@ -1671,6 +1715,7 @@ function renderLogCard(entry){
     </div>
     ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
+    ${perTargetHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
 }
@@ -1686,6 +1731,7 @@ function renderCardResult(key, entry){
     </div>
     ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
+    ${perTargetHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
 }

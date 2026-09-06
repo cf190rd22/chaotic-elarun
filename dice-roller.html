@@ -197,6 +197,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .dmg-breakdown{color:var(--text-mute);font-size:10px;}
 .hit-yes{color:var(--green);font-weight:700;}
 .hit-no{color:var(--red);font-weight:700;}
+.agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
 .pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
 .pill-miss{background:var(--red-dim);color:var(--red);border:1px solid var(--red-bd);}
@@ -1233,6 +1234,46 @@ function renderInstancesHtml(entry){
   }).join('');
 }
 
+// Rolls up every attack roll in the whole result - across however many
+// creature instances rolled, and however many sub-attacks each multiattack
+// fired - into one hit/miss count and one damage-by-type total. This is the
+// answer to "what did that whole roll actually do", regardless of whether it
+// was one attack, one multiattack, or five identical creatures at once.
+function aggregateEntry(entry){
+  let hitCount=0, missCount=0, critCount=0, atomicAttacks=0, hasTarget=false;
+  const dmgByType = {};
+  function addDmg(dmgArr){ (dmgArr||[]).forEach(d=>{ dmgByType[d.type] = (dmgByType[d.type]||0)+d.total; }); }
+  function tallyAttack(a){
+    atomicAttacks++;
+    if(a.isCrit) critCount++;
+    if(a.vsTarget){
+      hasTarget = true;
+      if(a.vsTarget.hit) hitCount++; else missCount++;
+      if(a.vsTarget.hit) addDmg(a.dmg);
+    } else {
+      addDmg(a.dmg);
+    }
+  }
+  entry.instances.forEach(inst=>{
+    if(inst.kind==='attack') tallyAttack(inst);
+    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') tallyAttack(s); else addDmg(s.dmg); });
+    else if(inst.kind==='save') addDmg(inst.dmg);
+  });
+  return { hasTarget, hitCount, missCount, critCount, atomicAttacks, dmgByType };
+}
+
+function aggregateHtml(entry){
+  const agg = aggregateEntry(entry);
+  const dmgEntries = Object.entries(agg.dmgByType);
+  if(agg.atomicAttacks===0 && !dmgEntries.length) return '';
+  const pills = agg.hasTarget
+    ? `${agg.hitCount?`<span class="pill-hit">${agg.hitCount} HIT</span>`:''}${agg.missCount?`<span class="pill-miss">${agg.missCount} MISS</span>`:''}`
+    : (agg.atomicAttacks ? `<span class="pill-neutral">${agg.atomicAttacks} attack${agg.atomicAttacks>1?'s':''}</span>` : '');
+  const critTag = agg.critCount ? ` <span class="crit">${agg.critCount}× CRIT</span>` : '';
+  const dmgHtml = dmgEntries.length ? dmgEntries.map(([type,total])=>`<b class="dmg-total">${total}</b> ${esc(type)}`).join(' + ') : '';
+  return `<div class="agg-summary">${pills}${critTag} ${dmgHtml}</div>`;
+}
+
 function renderLogCard(entry){
   const cls = entry.kind==='multi' ? 'multi' : (entry.atype==='throw'?'throw':entry.atype);
   return `<div class="log-card ${cls}">
@@ -1240,6 +1281,7 @@ function renderLogCard(entry){
       <span class="lname">${esc(entry.entryName)}</span>
       <span class="lwho">${esc(entry.creatureName)}</span>
     </div>
+    ${aggregateHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
 }
@@ -1253,6 +1295,7 @@ function renderCardResult(key, entry){
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
+    ${aggregateHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
 }

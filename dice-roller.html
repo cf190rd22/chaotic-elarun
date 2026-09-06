@@ -169,6 +169,20 @@ select,option{background:var(--surface-2);color:var(--text);}
 .roll-mode-btn.adv:hover{background:rgba(107,203,139,.25);}
 .roll-mode-btn.dis{background:var(--red-dim);border:1px solid var(--red-bd);color:var(--red);}
 .roll-mode-btn.dis:hover{background:rgba(240,112,112,.22);}
+.mix-toggle{width:20px;height:20px;flex-shrink:0;border-radius:5px;background:var(--surface-3);border:1px solid var(--border);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.mix-toggle:hover{border-color:var(--accent-bd);color:var(--text);}
+.mix-toggle.open{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
+.mix-panel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin:2px 0 6px;}
+.mix-row{display:flex;align-items:center;gap:6px;}
+.mix-lbl{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;}
+.mix-lbl.adv{color:var(--green);}
+.mix-lbl.dis{color:var(--red);}
+.mix-stepper{display:flex;align-items:center;gap:2px;background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:2px;}
+.mix-stepper button{width:18px;height:18px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:12px;line-height:1;border-radius:4px;}
+.mix-stepper button:hover{background:var(--surface);color:var(--text);}
+.mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
+.mix-panel .btn{padding:6px 12px;font-size:11px;}
+.mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
@@ -946,6 +960,19 @@ let librarySearch = '';
 let collapsedGroups = new Set();
 let collapsedCards = new Set(); // board item ids minimised to just the header row
 let openDescs = new Set(); // "boardId::entryId" keys with their full text expanded
+let mixState = new Map(); // "boardId::entryId" -> {open, normal, adv, disadv} for the per-roll mode-mix panel
+function getMixState(key, defaultTotal){
+  let s = mixState.get(key);
+  if(!s){ s = { open:false, normal:defaultTotal, adv:0, disadv:0 }; mixState.set(key, s); }
+  return s;
+}
+// Read-only lookup for rendering - never creates an entry. Creating one
+// on every render (as soon as an entry has >1 instance) would freeze its
+// default "normal" count at whatever the instance count happened to be on
+// that first render, even if the user bumps the count higher afterwards
+// before ever opening the panel. Only the toggle-mix click itself, which
+// knows the true current count, is allowed to create the initial state.
+function peekMixState(key){ return mixState.get(key) || null; }
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options'
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
@@ -1249,8 +1276,12 @@ function rollSaveEffectInstance(entry){
   return { dc: entry.save.dc, ability: entry.save.ability, half: entry.save.half, dmg };
 }
 
+// modeOverride is either one mode string applied to every instance, or an
+// array of per-instance modes (one entry per roll, e.g. building a mixed
+// batch of some normal + some advantage) - Array.isArray tells them apart.
 function rollEntry(creature, entry, times, boardId, modeOverride){
   times = clamp(times,1,50);
+  const modeFor = i => Array.isArray(modeOverride) ? modeOverride[i-1] : modeOverride;
   let logEntry;
   if(entry.kind==='multi'){
     const byId = Object.fromEntries(creature.entries.map(e=>[e.id,e]));
@@ -1261,7 +1292,7 @@ function rollEntry(creature, entry, times, boardId, modeOverride){
         const sub = byId[part.ref];
         if(!sub) return;
         for(let j=0;j<part.count;j++){
-          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub, modeOverride) });
+          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub, modeFor(i)) });
           else if(sub.kind==='save') subs.push({ name: sub.name, kind:'save', ...rollSaveEffectInstance(sub) });
         }
       });
@@ -1271,7 +1302,7 @@ function rollEntry(creature, entry, times, boardId, modeOverride){
   } else {
     const instances = [];
     for(let i=1;i<=times;i++){
-      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry, modeOverride) });
+      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry, modeFor(i)) });
       else if(entry.kind==='save') instances.push({ i, kind:'save', ...rollSaveEffectInstance(entry) });
       else instances.push({ i, kind:'note', text: entry.text });
     }
@@ -1420,6 +1451,34 @@ function renderCard(item){
           const modeBtns = canAdv ? `
             <button class="roll-mode-btn adv" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" data-mode="adv" title="Roll this one with advantage">A</button>
             <button class="roll-mode-btn dis" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" data-mode="disadv" title="Roll this one with disadvantage">D</button>` : '';
+          // with several instances rolling at once (several copies of this
+          // creature), A/D above still bluntly send every one of them the
+          // same way - this is for "goblin #1 has advantage, the other two
+          // don't", a mixed batch in one click instead of three separate
+          // ones you'd have to mentally stitch back together
+          const mixKey = item.boardId+'::'+e.id;
+          const showMix = canAdv && item.count>1;
+          const mix = showMix ? peekMixState(mixKey) : null;
+          const mixBtn = showMix ? `<button class="mix-toggle${mix&&mix.open?' open':''}" data-act="toggle-mix" data-key="${mixKey}" data-board="${item.boardId}" data-entry="${e.id}" title="Roll a mix of normal/advantage/disadvantage">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="17" y2="18"/></svg>
+          </button>` : '';
+          const mixPanel = (mix && mix.open) ? (()=>{
+            const row = (field,label,cls)=>`<div class="mix-row">
+              <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
+              <div class="mix-stepper">
+                <button data-act="mix-dec" data-key="${mixKey}" data-field="${field}">−</button>
+                <span>${mix[field]}</span>
+                <button data-act="mix-inc" data-key="${mixKey}" data-field="${field}">+</button>
+              </div>
+            </div>`;
+            const total = mix.normal+mix.adv+mix.disadv;
+            return `<div class="mix-panel">
+              ${row('normal','Normal')}
+              ${row('adv','Adv','adv')}
+              ${row('disadv','Disadv','dis')}
+              <button class="btn primary" data-act="roll-mix" data-board="${item.boardId}" data-entry="${e.id}" ${total?'':'disabled'}>Roll ${total} mixed</button>
+            </div>`;
+          })() : '';
           return `<div class="entry">
             <div class="entry-main">
               <div class="entry-name">${esc(e.name)}</div>
@@ -1434,9 +1493,11 @@ function renderCard(item){
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
                 Roll
               </button>
+              ${mixBtn}
             </div>
           </div>
           ${descOpen && e.text ? `<div class="entry-desc-body">${esc(e.text)}</div>` : ''}
+          ${mixPanel}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     return `<div class="group g-${t} ${collapsed?'collapsed':''}">
@@ -2285,6 +2346,35 @@ function onGlobalClick(e){
       const key = el.dataset.key;
       if(openDescs.has(key)) openDescs.delete(key); else openDescs.add(key);
       renderBoard();
+      break;
+    }
+    case 'toggle-mix': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const s = getMixState(el.dataset.key, item?item.count:1);
+      s.open = !s.open;
+      renderBoard();
+      break;
+    }
+    case 'mix-inc': case 'mix-dec': {
+      const s = mixState.get(el.dataset.key);
+      if(!s) break;
+      s[el.dataset.field] = clamp(s[el.dataset.field] + (act==='mix-inc'?1:-1), 0, 50);
+      renderBoard();
+      break;
+    }
+    case 'roll-mix': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const c = item && creatures.find(cr=>cr.id===item.creatureId);
+      const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
+      const s = entry && mixState.get(item.boardId+'::'+entry.id);
+      if(c && entry && s){
+        const seq = [
+          ...Array(s.normal).fill('normal'),
+          ...Array(s.adv).fill('adv'),
+          ...Array(s.disadv).fill('disadv'),
+        ];
+        if(seq.length) rollEntry(c, entry, seq.length, item.boardId, seq);
+      }
       break;
     }
     case 'count-inc': {

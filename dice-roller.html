@@ -98,13 +98,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .targets-table input:focus{border-color:var(--accent-bd);}
 .targets-table col.c-radio{width:26px;}
 .targets-table col.c-ac{width:52px;}
-.targets-table col.c-acadj{width:92px;}
+.targets-table col.c-acadj{width:64px;}
 .targets-table col.c-eff{width:42px;}
-.acadj-cell{display:flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:2px;}
-.acadj-cell input{border:none;background:none;padding:3px 0;text-align:center;width:28px;flex:none;}
-.acadj-cell input:focus{border:none;}
-.acadj-step{width:20px;height:20px;flex-shrink:0;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
-.acadj-step:hover{background:var(--surface-3);color:var(--text);}
 .targets-table col.c-del{width:26px;}
 .targets-table td:nth-child(5){color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
 .target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
@@ -742,10 +737,7 @@ const Store = (() => {
   let localCreatures = loadLocalCreatures();
   let localBoard = loadLocalBoard();
   let localTargets = loadLocalTargets();
-  // bumped synchronously by every local setTargets() call, before anything async
-  // happens, so it's correctly ordered no matter how a write's confirmation
-  // ends up racing later edits over the network.
-  let targetsVersion = 0;
+  let targetsLoaded = false; // true once the initial targets/state doc has come in
 
   async function init(){
     try{
@@ -762,15 +754,19 @@ const Store = (() => {
         listeners.board.forEach(fn=>fn(data.items ? data : { items: [] }));
       }, err=>console.error('board sub', err));
       db.doc('targets/state').onSnapshot(snap=>{
-        // a write's confirmation can land after the user already started a
-        // *newer* edit (typed the next field, tabbed away) - applying that now-
-        // stale snapshot on top would silently revert the newer edit. Every
-        // write we send is tagged with the local version it was made at, so
-        // drop any snapshot older than the newest write we already know we've
-        // sent - it can only be an out-of-order echo of something we've since
-        // superseded, never new information.
-        const data = snap.exists ? snap.data() : { items: [], activeId: null, _v: 0 };
-        if((data._v||0) < targetsVersion) return;
+        // a write's own confirmation echo (or, worse, an EARLIER write's
+        // delayed confirmation landing after a newer edit already went out)
+        // can come back at any time and doesn't carry enough information to
+        // tell "this is old news" apart from "this is a genuinely new value"
+        // - there's no reliable way to order these from outside the write
+        // path. So: take the doc once, on the first snapshot after load, and
+        // from then on this tab's own in-memory copy is the source of truth.
+        // Every edit is still written through to the doc (so a fresh page
+        // load elsewhere picks it up) - we just never read it back afterwards
+        // and let a stale echo overwrite what's on screen.
+        if(targetsLoaded) return;
+        targetsLoaded = true;
+        const data = snap.exists ? snap.data() : { items: [], activeId: null };
         listeners.targets.forEach(fn=>fn(data.items ? data : { items: [], activeId: null }));
       }, err=>console.error('targets sub', err));
     } else {
@@ -826,12 +822,9 @@ const Store = (() => {
   }
 
   async function setTargets(data){
-    // stamp the version synchronously, before any await, so back-to-back calls
-    // in the same tick are still ordered correctly relative to each other
-    const v = ++targetsVersion;
     await readyPromise;
     if(mode==='db'){
-      await db.doc('targets/state').set({ ...data, _v: v });
+      await db.doc('targets/state').set(data);
     } else {
       localTargets = data;
       localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
@@ -1229,11 +1222,7 @@ function renderTargets(){
           <td><button class="target-radio ${active?'active':''}" data-act="set-active-target" data-tid="${t.id}" title="${active?'Currently targeted':'Target this'}"></button></td>
           <td><input value="${esc(t.name||'')}" placeholder="Name" data-tid="${t.id}" data-tfield="name"></td>
           <td><input type="text" inputmode="numeric" pattern="[0-9]*" value="${t.ac??''}" placeholder="AC" data-tid="${t.id}" data-tfield="ac"></td>
-          <td class="acadj-cell">
-            <button class="acadj-step" data-act="acadj-dec" data-tid="${t.id}" tabindex="-1" title="-1">&minus;</button>
-            <input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="0" data-tid="${t.id}" data-tfield="acAdj">
-            <button class="acadj-step" data-act="acadj-inc" data-tid="${t.id}" tabindex="-1" title="+1">+</button>
-          </td>
+          <td><input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="±0" data-tid="${t.id}" data-tfield="acAdj"></td>
           <td id="tgteff-${t.id}">${eff}</td>
           <td><input value="${esc(t.notes||'')}" placeholder="Notes" data-tid="${t.id}" data-tfield="notes"></td>
           <td><button class="iconx" data-act="remove-target" data-tid="${t.id}" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
@@ -1660,7 +1649,12 @@ function onGlobalInput(e){
     const tgt = targets.items.find(x=>x.id===t.dataset.tid);
     if(!tgt) return;
     const f = t.dataset.tfield;
-    if(f==='ac' || f==='acAdj') tgt[f] = t.value===''? 0 : +t.value;
+    if(f==='ac' || f==='acAdj'){
+      // "-" or "+" typed alone (about to become "-3") parses as NaN - don't
+      // stomp the real value with that mid-keystroke, just wait for the next digit
+      const n = t.value===''? 0 : +t.value;
+      if(!Number.isNaN(n)) tgt[f] = n;
+    }
     else tgt[f] = t.value;
     if(f==='ac' || f==='acAdj'){
       const effCell = document.getElementById('tgteff-'+tgt.id);
@@ -1825,16 +1819,6 @@ function onGlobalClick(e){
       const items = targets.items.slice();
       items.push({ id: uid('t'), name:'', ac:null, acAdj:0, notes:'' });
       setTargetsOptimistic({ items, activeId: targets.activeId });
-      break;
-    }
-    case 'acadj-inc': {
-      const tgt = targets.items.find(t=>t.id===el.dataset.tid);
-      if(tgt){ tgt.acAdj = (tgt.acAdj||0)+1; setTargetsOptimistic({ items: targets.items, activeId: targets.activeId }); }
-      break;
-    }
-    case 'acadj-dec': {
-      const tgt = targets.items.find(t=>t.id===el.dataset.tid);
-      if(tgt){ tgt.acAdj = (tgt.acAdj||0)-1; setTargetsOptimistic({ items: targets.items, activeId: targets.activeId }); }
       break;
     }
     case 'remove-target': {

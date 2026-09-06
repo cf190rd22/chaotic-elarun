@@ -945,21 +945,131 @@ function isValidBackup(obj){
     && obj.settings && typeof obj.settings==='object');
 }
 
-async function importBackupFile(file){
-  let text;
-  try{ text = await file.text(); }catch(e){ alert('Could not read that file.'); return; }
-  let data;
-  try{ data = JSON.parse(text); }catch(e){ alert('That file is not valid backup JSON.'); return; }
-  if(!isValidBackup(data)){ alert("That doesn't look like an Encounter Roller backup file."); return; }
+async function applyBackupPayload(data, { confirmMsg, alertOnDone=true } = {}){
+  if(!isValidBackup(data)){ alert("That doesn't look like an Encounter Roller backup file."); return false; }
   const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
-  if(!confirm(`Restore this backup (from ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`)) return;
+  const msg = confirmMsg || `Restore this backup (from ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`;
+  if(!confirm(msg)) return false;
   await Store.replaceAllCreatures(data.creatures);
   await Store.setBoard(data.board.items);
   await Store.setTargets(data.targets);
   Object.assign(settings, data.settings);
   saveSettings();
   renderLibrary(); renderBoard(); renderTargets();
-  alert('Backup restored.');
+  if(alertOnDone) alert('Backup restored.');
+  return true;
+}
+
+async function importBackupFile(file){
+  let text;
+  try{ text = await file.text(); }catch(e){ alert('Could not read that file.'); return; }
+  let data;
+  try{ data = JSON.parse(text); }catch(e){ alert('That file is not valid backup JSON.'); return; }
+  await applyBackupPayload(data);
+}
+
+/* ============================== GitHub sync ============================== */
+// Same pattern as the character sheet's "Live Char Sync": a personal access
+// token pasted into this browser, used to push/pull a JSON file straight to
+// a repo via the GitHub API. There's no server here to hold the token more
+// safely than that - it sits in this browser's localStorage in plain text,
+// same as it does for the character sheet, so use a fine-grained token
+// scoped to just this one repo rather than a full-access classic one.
+const GHSYNC_KEY = 'er_ghsync_v1';
+function ghLoadConfig(){ try{ return JSON.parse(localStorage.getItem(GHSYNC_KEY) || '{}'); }catch(e){ return {}; } }
+function ghSaveConfig(cfg){ try{ localStorage.setItem(GHSYNC_KEY, JSON.stringify(cfg)); }catch(e){ reportStorageFailure(e); } }
+function ghConfigured(cfg){ return !!(cfg && cfg.token && cfg.owner && cfg.repo && cfg.path); }
+
+async function ghApiPush(cfg, jsonStr){
+  const apiBase = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+  const headers = { 'Authorization': 'token '+cfg.token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
+  async function fetchSha(){
+    try{ const r = await fetch(apiBase, { headers, cache:'no-store' }); if(r.ok){ const j = await r.json(); return j.sha||null; } }catch(e){}
+    return null;
+  }
+  const content = btoa(unescape(encodeURIComponent(jsonStr)));
+  let sha = await fetchSha();
+  let lastErr = null;
+  for(let attempt=0; attempt<4; attempt++){
+    const body = { message:'Encounter Roller backup sync', content };
+    if(sha) body.sha = sha;
+    const res = await fetch(apiBase, { method:'PUT', headers, body:JSON.stringify(body) });
+    if(res.ok) return;
+    const err = await res.json().catch(()=>({}));
+    lastErr = err.message || `HTTP ${res.status}`;
+    const isConflict = res.status===409 || res.status===422 || /does not match|sha/i.test(lastErr);
+    if(!isConflict) break;
+    sha = await fetchSha();
+  }
+  throw new Error(lastErr || 'Push failed');
+}
+
+async function ghApiPull(cfg){
+  const apiBase = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+  const headers = { 'Authorization': 'token '+cfg.token, 'Accept': 'application/vnd.github.v3+json' };
+  const res = await fetch(apiBase, { headers, cache:'no-store' });
+  if(res.status===404) throw new Error('No file found at that path in the repo yet - push once first.');
+  if(!res.ok){ const err = await res.json().catch(()=>({})); throw new Error(err.message || `HTTP ${res.status}`); }
+  const j = await res.json();
+  const text = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+  return JSON.parse(text);
+}
+
+function ghSetStatus(msg, isError){
+  const el = document.getElementById('ghSyncStatus');
+  if(!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--red)' : 'var(--text-mute)';
+}
+
+// reads the GitHub sync fields straight out of the open Options modal - only
+// ever called while that modal is open, so the fields are guaranteed present
+function ghSaveFromForm(){
+  const cfg = ghLoadConfig();
+  cfg.token = document.getElementById('ghToken').value.trim();
+  cfg.owner = document.getElementById('ghOwner').value.trim();
+  cfg.repo = document.getElementById('ghRepo').value.trim();
+  cfg.path = document.getElementById('ghPath').value.trim() || 'encounter-roller-backup.json';
+  cfg.autoPush = document.getElementById('ghAutoPush').checked;
+  ghSaveConfig(cfg);
+}
+
+async function ghPushNow(silent){
+  const cfg = ghLoadConfig();
+  if(!ghConfigured(cfg)){ if(!silent) alert('Set up token / owner / repo / path first.'); return; }
+  if(!silent) ghSetStatus('Pushing…');
+  try{
+    await ghApiPush(cfg, JSON.stringify(buildBackupPayload(), null, 2));
+    cfg.lastPush = Date.now();
+    ghSaveConfig(cfg);
+    ghSetStatus('✓ Pushed at '+new Date(cfg.lastPush).toLocaleTimeString());
+  }catch(e){
+    ghSetStatus('✗ '+e.message, true);
+    if(!silent) alert('Push failed: '+e.message);
+  }
+}
+
+async function ghPullNow(){
+  const cfg = ghLoadConfig();
+  if(!ghConfigured(cfg)){ alert('Set up token / owner / repo / path first.'); return; }
+  ghSetStatus('Pulling…');
+  let data;
+  try{ data = await ghApiPull(cfg); }
+  catch(e){ ghSetStatus('✗ '+e.message, true); alert('Pull failed: '+e.message); return; }
+  const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
+  const applied = await applyBackupPayload(data, {
+    confirmMsg: `Pull the backup from GitHub (saved ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`,
+    alertOnDone: false
+  });
+  ghSetStatus(applied ? '✓ Pulled at '+new Date().toLocaleTimeString() : 'Pull cancelled');
+}
+
+let ghAutoPushTimer = null;
+function ghMaybeAutoPush(){
+  const cfg = ghLoadConfig();
+  if(!cfg.autoPush || !ghConfigured(cfg)) return;
+  clearTimeout(ghAutoPushTimer);
+  ghAutoPushTimer = setTimeout(()=>ghPushNow(true), 5000);
 }
 
 /* ============================== rolling ============================== */
@@ -1346,6 +1456,7 @@ function setTargetsOptimistic(data){
   targets = data;
   renderTargets();
   Store.setTargets(data);
+  ghMaybeAutoPush();
 }
 
 /* ============================== rendering: log ============================== */
@@ -1626,6 +1737,7 @@ function entryEditHtml(entry, allEntries){
 function renderModal(){
   const root = document.getElementById('modalRoot');
   if(modalMode==='options'){
+    const ghCfg = ghLoadConfig();
     root.innerHTML = `
     <div class="modal-overlay" data-act="overlay-close">
       <div class="modal" style="max-width:440px;">
@@ -1642,6 +1754,25 @@ function renderModal(){
             <button class="btn" data-act="import-backup">⭱ Restore from backup</button>
           </div>
           <input type="file" id="restoreFileInput" accept="application/json,.json" hidden>
+          <div class="sec-title">GitHub sync</div>
+          <div class="hint" style="margin-top:0;">Push this same backup straight to a repo instead of downloading it - the same way your character sheets sync. The token is stored in this browser only, in plain text, so use a fine-grained token scoped to just this one repo rather than a full-access classic one.</div>
+          <div class="field-row">
+            <div class="field"><label>Token</label><input type="password" id="ghToken" value="${esc(ghCfg.token||'')}" placeholder="github_pat_…"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Owner</label><input id="ghOwner" value="${esc(ghCfg.owner||'')}" placeholder="github-username"></div>
+            <div class="field"><label>Repo</label><input id="ghRepo" value="${esc(ghCfg.repo||'')}" placeholder="my-repo"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Path in repo</label><input id="ghPath" value="${esc(ghCfg.path||'encounter-roller-backup.json')}" placeholder="encounter-roller-backup.json"></div>
+          </div>
+          <label class="opt-row"><input type="checkbox" id="ghAutoPush" ${ghCfg.autoPush?'checked':''}> <div><b>Auto-push on every change</b><div class="hint" style="margin:2px 0 0;">Pushes a few seconds after you stop making changes, so a burst of rolls or edits only pushes once.</div></div></label>
+          <div class="backup-row">
+            <button class="btn" data-act="gh-save">Save settings</button>
+            <button class="btn" data-act="gh-push">⭱ Push now</button>
+            <button class="btn" data-act="gh-pull">⭳ Pull latest</button>
+          </div>
+          <div id="ghSyncStatus" class="hint" style="margin:6px 0 0;">${ghCfg.lastPush ? 'Last pushed '+new Date(ghCfg.lastPush).toLocaleString() : ''}</div>
         </div>
         <div class="modal-ft" style="justify-content:flex-end;">
           <button class="btn primary" data-act="close-modal">Done</button>
@@ -1800,7 +1931,7 @@ function onGlobalInput(e){
 
 function onGlobalChange(e){
   const t = e.target;
-  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); return; }
+  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); ghMaybeAutoPush(); return; }
   if(t.id==='restoreFileInput'){
     if(t.files && t.files[0]) importBackupFile(t.files[0]);
     t.value = '';
@@ -1844,6 +1975,7 @@ function setBoardOptimistic(items){
   renderBoard();
   renderLibrary();
   Store.setBoard(items);
+  ghMaybeAutoPush();
 }
 
 function onGlobalClick(e){
@@ -1879,6 +2011,9 @@ function onGlobalClick(e){
     case 'export-backup': exportBackup(); break;
     case 'import-backup': document.getElementById('restoreFileInput').click(); break;
     case 'dismiss-storage-warning': el.parentElement.remove(); storageWarningShown = false; break;
+    case 'gh-save': ghSaveFromForm(); ghSetStatus('Settings saved.'); break;
+    case 'gh-push': ghSaveFromForm(); ghPushNow(false); break;
+    case 'gh-pull': ghSaveFromForm(); ghPullNow(); break;
     case 'overlay-close': if(e.target===el) closeModal(); break;
     case 'start-blank': editingCreature = blankCreature(); modalMode='edit'; renderModal(); break;
     case 'parse-statblock': {
@@ -1890,6 +2025,7 @@ function onGlobalClick(e){
     case 'save-creature': {
       if(!editingCreature.name || !editingCreature.name.trim()) editingCreature.name = 'Unnamed Creature';
       Store.saveCreature(editingCreature);
+      ghMaybeAutoPush();
       closeModal();
       break;
     }
@@ -1906,7 +2042,7 @@ function onGlobalClick(e){
 
     case 'toggle-fav': {
       const c = creatures.find(x=>x.id===el.dataset.creature);
-      if(c){ c.favourite = !c.favourite; Store.saveCreature(c); }
+      if(c){ c.favourite = !c.favourite; Store.saveCreature(c); ghMaybeAutoPush(); }
       break;
     }
     case 'edit-creature': { const c = creatures.find(x=>x.id===el.dataset.creature); if(c) openEditModal(c); break; }
@@ -1915,6 +2051,7 @@ function onGlobalClick(e){
       if(c && confirm(`Delete "${c.name}" from your library? This can't be undone.`)){
         Store.deleteCreature(c.id);
         Store.setBoard(board.items.filter(it=>it.creatureId!==c.id));
+        ghMaybeAutoPush();
       }
       break;
     }

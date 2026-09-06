@@ -90,16 +90,20 @@ select,option{background:var(--surface-2);color:var(--text);}
 .targets-active-tag{color:var(--green);font-weight:700;text-transform:none;letter-spacing:0;font-size:10.5px;font-family:'DM Sans',sans-serif;}
 .targets-body{padding:0 16px 12px;}
 .targets-table-wrap{overflow-x:auto;}
-.targets-table{width:100%;border-collapse:collapse;font-size:12px;}
-.targets-table th{text-align:left;font-size:9.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;font-weight:700;padding:4px 6px;white-space:nowrap;}
-.targets-table td{padding:3px 6px;}
+.targets-table{width:100%;min-width:420px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
+.targets-table th{text-align:left;font-size:9.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;font-weight:700;padding:4px 6px;white-space:nowrap;overflow:hidden;}
+.targets-table td{padding:3px 6px;overflow:hidden;}
 .targets-table tr.active td{background:var(--green-dim);}
-.targets-table input{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:12px;outline:none;}
+.targets-table input{width:100%;min-width:0;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:12px;outline:none;}
 .targets-table input:focus{border-color:var(--accent-bd);}
-.targets-table td:nth-child(2){min-width:110px;}
-.targets-table td:nth-child(3),.targets-table td:nth-child(4){width:58px;}
-.targets-table td:nth-child(5){width:34px;color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
-.targets-table td:nth-child(6){min-width:130px;}
+.targets-table input[type=number]{-moz-appearance:textfield;}
+.targets-table input[type=number]::-webkit-inner-spin-button,.targets-table input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.targets-table col.c-radio{width:26px;}
+.targets-table col.c-ac{width:52px;}
+.targets-table col.c-acadj{width:58px;}
+.targets-table col.c-eff{width:42px;}
+.targets-table col.c-del{width:26px;}
+.targets-table td:nth-child(5){color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
 .target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
 .target-radio:hover{border-color:var(--green-bd);}
 .target-radio.active{border-color:var(--green);background:var(--green);}
@@ -193,6 +197,17 @@ select,option{background:var(--surface-2);color:var(--text);}
 .dmg-breakdown{color:var(--text-mute);font-size:10px;}
 .hit-yes{color:var(--green);font-weight:700;}
 .hit-no{color:var(--red);font-weight:700;}
+.pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
+.pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
+.pill-miss{background:var(--red-dim);color:var(--red);border:1px solid var(--red-bd);}
+.pill-neutral{background:var(--surface-3);color:var(--text-2);border:1px solid var(--border);}
+.dmg-none{color:var(--text-mute);font-style:italic;}
+.multi-inst summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.multi-inst summary::-webkit-details-marker{display:none;}
+.multi-inst summary .chev{margin-left:auto;color:var(--text-mute);transition:transform .15s;flex-shrink:0;}
+.multi-inst[open] summary .chev{transform:rotate(180deg);}
+.multi-inst summary:hover .chev{color:var(--text-2);}
+.multi-detail{padding:6px 0 2px 20px;}
 .dmg-half{color:var(--green);}
 .sub-line{padding-left:10px;color:var(--text-2);}
 
@@ -329,6 +344,9 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
         <div class="targets-body">
           <div class="targets-table-wrap">
             <table class="targets-table">
+              <colgroup>
+                <col class="c-radio"><col><col class="c-ac"><col class="c-acadj"><col class="c-eff"><col><col class="c-del">
+              </colgroup>
               <thead><tr><th></th><th>Name</th><th>AC</th><th>AC adj.</th><th>Eff.</th><th>Notes</th><th></th></tr></thead>
               <tbody id="targetsBody"></tbody>
             </table>
@@ -1159,12 +1177,45 @@ function instBadge(i, colored){
   const color = colored ? INST_COLORS[(i-1) % INST_COLORS.length] : null;
   return `<span class="idx"${color?` style="color:var(--${color})"`:''}>#${i}</span>`;
 }
-function multiCore(inst, colored){
-  const subs = inst.subs.map(s=>{
+function multiSummarize(inst){
+  const hasTarget = inst.subs.some(s=>s.vsTarget);
+  let hitCount=0, missCount=0, critCount=0;
+  const dmgByType = {};
+  inst.subs.forEach(s=>{
+    if(s.isCrit) critCount++;
+    const isHit = s.vsTarget ? s.vsTarget.hit : null;
+    if(hasTarget){ if(isHit) hitCount++; else missCount++; }
+    // without a target we don't know what actually connected, so total every
+    // roll as a best-effort figure; with a target, only hits deal damage
+    if(!hasTarget || isHit) (s.dmg||[]).forEach(d=>{ dmgByType[d.type] = (dmgByType[d.type]||0)+d.total; });
+  });
+  return { hasTarget, hitCount, missCount, critCount, total: inst.subs.length, dmgByType };
+}
+
+function multiDetailHtml(inst){
+  return inst.subs.map(s=>{
     const body = s.kind==='attack' ? attackCore(s) : saveCore(s);
     return `<div class="sub-line">${esc(s.name)}: ${body}</div>`;
   }).join('');
-  return `Multiattack${subs}`;
+}
+
+function renderMultiInstHtml(inst, colored){
+  const sum = multiSummarize(inst);
+  const pills = sum.hasTarget
+    ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
+    : `<span class="pill-neutral">${sum.total} attacks</span>`;
+  const critTag = sum.critCount ? ` <span class="crit">${sum.critCount}× CRIT</span>` : '';
+  const dmgEntries = Object.entries(sum.dmgByType);
+  const dmgHtml = dmgEntries.length
+    ? dmgEntries.map(([type,total])=>`<b class="dmg-total">${total}</b> ${esc(type)}`).join(' + ')
+    : '<span class="dmg-none">no damage</span>';
+  return `<details class="log-inst multi-inst">
+    <summary>
+      ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
+      <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+    </summary>
+    <div class="multi-detail">${multiDetailHtml(inst)}</div>
+  </details>`;
 }
 
 function renderInstancesHtml(entry){
@@ -1172,11 +1223,11 @@ function renderInstancesHtml(entry){
   // colour and give it a bit more breathing room so they read as separate creatures
   const multi = entry.instances.length > 1;
   return entry.instances.map(inst=>{
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi);
     let core;
     if(inst.kind==='attack') core = attackCore(inst);
     else if(inst.kind==='save') core = saveCore(inst);
     else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
-    else if(inst.kind==='multi') core = multiCore(inst);
     else core = esc(inst.text||'');
     return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core}</div>`;
   }).join('');

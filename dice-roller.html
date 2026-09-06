@@ -98,11 +98,12 @@ select,option{background:var(--surface-2);color:var(--text);}
 .targets-table input:focus{border-color:var(--accent-bd);}
 .targets-table col.c-radio{width:26px;}
 .targets-table col.c-ac{width:52px;}
-.targets-table col.c-acadj{width:76px;}
+.targets-table col.c-acadj{width:92px;}
 .targets-table col.c-eff{width:42px;}
-.acadj-cell{display:flex;align-items:center;gap:2px;}
-.acadj-clear{flex-shrink:0;padding:2px;}
+.acadj-cell{display:flex;align-items:center;gap:6px;}
+.iconx.acadj-clear{flex-shrink:0;padding:5px;color:var(--text-mute);}
 .acadj-clear:hover{color:var(--red);}
+.acadj-clear[hidden]{display:none;}
 .targets-table col.c-del{width:26px;}
 .targets-table td:nth-child(5){color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
 .target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
@@ -1214,6 +1215,8 @@ function renderTargets(){
         patch('ac', t.ac??'');
         patch('acAdj', t.acAdj||'');
         patch('notes', t.notes||'');
+        const clearBtn = tr.querySelector('.acadj-clear');
+        if(clearBtn) clearBtn.hidden = !t.acAdj;
         const effCell = tr.querySelector(`#tgteff-${t.id}`);
         if(effCell) effCell.textContent = (t.ac||0)+(t.acAdj||0);
       });
@@ -1227,7 +1230,7 @@ function renderTargets(){
           <td><input type="text" inputmode="numeric" pattern="[0-9]*" value="${t.ac??''}" placeholder="AC" data-tid="${t.id}" data-tfield="ac"></td>
           <td class="acadj-cell">
             <input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="±0" data-tid="${t.id}" data-tfield="acAdj">
-            <button class="iconx acadj-clear" data-act="clear-acadj" data-tid="${t.id}" title="Reset adjustment to 0">
+            <button class="iconx acadj-clear" data-act="clear-acadj" data-tid="${t.id}" title="Reset adjustment to 0" tabindex="-1" ${t.acAdj?'':'hidden'}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </td>
@@ -1662,6 +1665,10 @@ function onGlobalInput(e){
     if(f==='ac' || f==='acAdj'){
       const effCell = document.getElementById('tgteff-'+tgt.id);
       if(effCell) effCell.textContent = (tgt.ac||0)+(tgt.acAdj||0);
+    }
+    if(f==='acAdj'){
+      const clearBtn = t.closest('.acadj-cell')?.querySelector('.acadj-clear');
+      if(clearBtn) clearBtn.hidden = !tgt.acAdj;
     }
     if(tgt.id===targets.activeId){
       const tagEl = document.getElementById('targetsActiveTag');

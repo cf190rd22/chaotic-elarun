@@ -1,0 +1,1900 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f1117">
+<meta name="color-scheme" content="dark">
+<title>Encounter Roller</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;--surface:#161b27;--surface-2:#1c2236;--surface-3:#181e2e;
+  --border:#252d3f;--border-light:#1e2538;
+  --text:#e8eaf0;--text-2:#9aa3b8;--text-mute:#8b96b3;
+  --accent:#5b8ef0;--accent-dim:rgba(91,142,240,.10);--accent-bd:rgba(91,142,240,.35);
+  --amber:#f0b96b;--amber-dim:rgba(240,185,107,.10);--amber-bd:rgba(240,185,107,.32);
+  --red:#f07070;--red-dim:rgba(240,112,112,.10);--red-bd:rgba(240,112,112,.32);
+  --green:#6bcb8b;--green-dim:rgba(107,203,139,.10);--green-bd:rgba(107,203,139,.32);
+  --teal:#6bcbcb;--teal-dim:rgba(107,203,203,.10);--teal-bd:rgba(107,203,203,.32);
+  --purple:#b48af7;--purple-dim:rgba(180,138,247,.10);--purple-bd:rgba(180,138,247,.32);
+  --orange:#f07b3a;--orange-dim:rgba(240,123,58,.10);--orange-bd:rgba(240,123,58,.32);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+*{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+html,body{height:100%;margin:0;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;}
+button,input,select,textarea{font-family:inherit;color:inherit;}
+select,option{background:var(--surface-2);color:var(--text);}
+.mono{font-family:'DM Mono','SFMono-Regular',Consolas,monospace;}
+
+.app{height:100%;display:flex;flex-direction:column;}
+
+/* ---------- topbar ---------- */
+.topbar{height:54px;flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--bg);}
+.brand{font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.brand svg{color:var(--accent);}
+.brand .sub{color:var(--text-mute);font-weight:500;font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding-left:8px;border-left:1px solid var(--border);}
+.drawer-btn{display:none;background:none;border:1px solid var(--border);border-radius:7px;color:var(--text-2);width:32px;height:32px;align-items:center;justify-content:center;cursor:pointer;}
+.seg{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
+.seg button{padding:6px 12px;font-size:10.5px;font-weight:700;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;background:var(--surface);color:var(--text-mute);border:none;cursor:pointer;}
+.seg button+button{border-left:1px solid var(--border);}
+.seg button:hover{color:var(--text);}
+.seg button[data-mode=normal].active{background:var(--accent-dim);color:var(--accent);}
+.seg button[data-mode=adv].active{background:var(--green-dim);color:var(--green);}
+.seg button[data-mode=disadv].active{background:var(--red-dim);color:var(--red);}
+.topbar-spacer{flex:1;}
+.topbar-tools{display:contents;}
+.iconbtn{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text-2);height:32px;padding:0 11px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;cursor:pointer;}
+.iconbtn:hover{background:var(--surface-2);color:var(--text);}
+.iconbtn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
+.iconbtn.primary:hover{background:rgba(91,142,240,.18);}
+.badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#1a0a0a;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;min-width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;}
+
+/* ---------- layout ---------- */
+.layout{flex:1;display:flex;min-height:0;overflow:hidden;position:relative;}
+.scrim{position:fixed;top:54px;left:0;right:0;bottom:0;background:rgba(5,7,12,.6);z-index:35;display:none;}
+.scrim.show{display:block;}
+
+/* ---------- library ---------- */
+.library{width:262px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.library-hdr{padding:12px;border-bottom:1px solid var(--border-light);display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
+.search-wrap{position:relative;}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-mute);pointer-events:none;}
+#searchInput{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;font-size:12.5px;outline:none;}
+#searchInput:focus{border-color:var(--accent-bd);}
+.lib-list{flex:1;overflow-y:auto;}
+.lib-empty{padding:16px 14px;color:var(--text-mute);font-size:12px;line-height:1.6;}
+.lib-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border-light);}
+.lib-item:hover{background:var(--surface-2);}
+.lib-item-body{flex:1;min-width:0;cursor:pointer;}
+.lib-item-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lib-item-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:1px;}
+.icobtn{background:none;border:none;cursor:pointer;color:var(--text-mute);padding:3px;display:flex;border-radius:5px;}
+.icobtn:hover{color:var(--text);background:var(--surface-3);}
+.star-btn.active{color:var(--amber);}
+.trash-btn:hover{color:var(--red);}
+
+/* ---------- board ---------- */
+.main-col{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.targets-panel{border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg);}
+.targets-hdr{padding:9px 16px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-mute);user-select:none;}
+.targets-hdr:hover{color:var(--text-2);}
+.targets-hdr .chev{margin-left:auto;transition:transform .15s;}
+.targets-panel.collapsed .chev{transform:rotate(-90deg);}
+.targets-panel.collapsed .targets-body{display:none;}
+.targets-active-tag{color:var(--green);font-weight:700;text-transform:none;letter-spacing:0;font-size:10.5px;font-family:'DM Sans',sans-serif;}
+.targets-body{padding:0 16px 12px;}
+.targets-table-wrap{overflow-x:auto;}
+.targets-table{width:100%;min-width:420px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
+.targets-table th{text-align:left;font-size:9.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;font-weight:700;padding:4px 6px;white-space:nowrap;overflow:hidden;}
+.targets-table td{padding:3px 6px;overflow:hidden;}
+.targets-table tr.active td{background:var(--green-dim);}
+.targets-table input{width:100%;min-width:0;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:12px;outline:none;}
+.targets-table input:focus{border-color:var(--accent-bd);}
+.targets-table col.c-radio{width:26px;}
+.targets-table col.c-ac{width:52px;}
+.targets-table col.c-acadj{width:64px;}
+.targets-table col.c-eff{width:42px;}
+.targets-table col.c-del{width:26px;}
+.targets-table td:nth-child(5){color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
+.target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
+.target-radio:hover{border-color:var(--green-bd);}
+.target-radio.active{border-color:var(--green);background:var(--green);}
+.targets-empty{color:var(--text-mute);font-size:11.5px;padding:8px 6px;}
+.board{flex:1;overflow:auto;padding:16px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:14px;}
+.board-empty{margin:60px auto;color:var(--text-mute);text-align:center;max-width:300px;font-size:12.5px;line-height:1.7;}
+.board-empty b{color:var(--text-2);}
+
+.card{width:322px;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;align-self:flex-start;}
+.card-hdr{padding:11px 13px 12px;border-bottom:1px solid var(--border-light);}
+.card-title-row{display:flex;align-items:center;gap:6px;}
+.card-name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
+.pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
+.count-stepper{display:flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:2px;margin-left:auto;}
+.count-stepper button{width:19px;height:19px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
+.count-stepper button:hover{background:var(--surface-3);color:var(--text);}
+.count-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;min-width:14px;text-align:center;}
+.count-lbl{font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-left:5px;}
+
+.saves-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:9px 13px;border-bottom:1px solid var(--border-light);}
+.save-btn{display:flex;flex-direction:column;align-items:center;gap:1px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:4px 0 3px;cursor:pointer;}
+.save-btn:hover{border-color:var(--purple-bd);}
+.save-btn:hover .val{color:var(--purple);}
+.save-btn .lbl{font-size:7.5px;font-family:'DM Mono',monospace;letter-spacing:.08em;color:var(--text-mute);}
+.save-btn .val{font-size:12px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text-2);}
+
+.group{border-bottom:1px solid var(--border-light);}
+.group:last-child{border-bottom:none;}
+.group-hdr{padding:8px 13px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text-mute);user-select:none;}
+.group-hdr:hover{color:var(--text-2);}
+.group-hdr .swatch{width:6px;height:6px;border-radius:2px;flex-shrink:0;}
+.group-hdr .chev{margin-left:auto;transition:transform .15s;color:var(--text-mute);}
+.group.collapsed .chev{transform:rotate(-90deg);}
+.group.collapsed .group-body{display:none;}
+.group-body{padding:0 13px 8px;}
+.entry{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--border-light);}
+.entry:first-child{border-top:none;}
+.entry-main{flex:1;min-width:0;}
+.entry-name{font-size:12.5px;font-weight:600;}
+.entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:1px;}
+.trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
+.trait-row:first-child{border-top:none;}
+.trait-row b{color:var(--text);}
+.roll-btn{display:flex;align-items:center;gap:5px;background:var(--accent-dim);border:1px solid var(--accent-bd);color:var(--accent);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.roll-btn:hover{filter:brightness(1.25);}
+.roll-btn.bonus{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
+.roll-btn.reaction{background:var(--red-dim);border-color:var(--red-bd);color:var(--red);}
+.roll-btn.legendary{background:var(--purple-dim);border-color:var(--purple-bd);color:var(--purple);}
+.roll-btn.multi{background:var(--orange-dim);border-color:var(--orange-bd);color:var(--orange);}
+.g-action .swatch{background:var(--accent);}
+.g-bonus .swatch{background:var(--amber);}
+.g-reaction .swatch{background:var(--red);}
+.g-legendary .swatch{background:var(--purple);}
+.g-trait .swatch{background:var(--teal);}
+.card-result{background:var(--surface-3);border:1px solid var(--accent-bd);border-left:3px solid var(--accent);border-radius:8px;padding:7px 9px;margin:2px 0 8px;}
+.card-result.bonus{border-color:var(--amber-bd);border-left-color:var(--amber);}
+.card-result.reaction{border-color:var(--red-bd);border-left-color:var(--red);}
+.card-result.legendary{border-color:var(--purple-bd);border-left-color:var(--purple);}
+.card-result.throw{border-color:var(--teal-bd);border-left-color:var(--teal);}
+.card-result.multi{border-color:var(--orange-bd);border-left-color:var(--orange);}
+.card-result-hdr{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-mute);font-family:'DM Mono',monospace;margin-bottom:3px;}
+.save-result{padding:0 13px;}
+.save-result .card-result{margin:0 0 9px;}
+.card-ft{padding:9px 13px;display:flex;justify-content:flex-end;}
+.ft-link{background:none;border:none;color:var(--text-mute);font-size:10.5px;cursor:pointer;display:flex;align-items:center;gap:4px;}
+.ft-link:hover{color:var(--red);}
+
+/* ---------- log panel ---------- */
+.logpanel{width:298px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.log-hdr{padding:12px 14px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.log-hdr-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-mute);font-family:'DM Mono',monospace;}
+.log-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column-reverse;gap:8px;}
+.log-empty{margin:auto;color:var(--text-mute);font-size:12px;text-align:center;padding:20px;line-height:1.6;}
+.log-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;}
+.log-card.bonus{border-left-color:var(--amber);}
+.log-card.reaction{border-left-color:var(--red);}
+.log-card.legendary{border-left-color:var(--purple);}
+.log-card.throw{border-left-color:var(--teal);}
+.log-card.multi{border-left-color:var(--orange);}
+.log-card-hdr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:5px;}
+.log-card-hdr .lname{font-size:11.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.log-card-hdr .lwho{font-size:9.5px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
+.log-inst{font-size:11.5px;font-family:'DM Mono',monospace;padding:4px 0;border-top:1px dashed var(--border-light);line-height:1.5;}
+.log-inst:first-child{border-top:none;}
+.log-inst.spaced{padding:7px 0;}
+.log-inst .idx{color:var(--text-mute);font-weight:700;margin-right:1px;}
+.crit{color:var(--amber);font-weight:700;}
+.fumble{color:var(--red);font-weight:700;}
+.dmg-total{color:var(--orange);font-weight:700;}
+.dmg-breakdown{color:var(--text-mute);font-size:10px;}
+.hit-yes{color:var(--green);font-weight:700;}
+.hit-no{color:var(--red);font-weight:700;}
+.apply-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
+.apply-lbl,.apply-or{color:var(--text-mute);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;}
+.apply-target-select{background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 6px;font-size:11px;color:var(--text-2);outline:none;max-width:160px;}
+.apply-target-select:focus{border-color:var(--accent-bd);}
+.apply-ac-input{width:48px;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;}
+.apply-ac-input:focus{border-color:var(--accent-bd);}
+.agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
+.pill-hit,.pill-miss,.pill-neutral{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
+.pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
+.pill-miss{background:var(--red-dim);color:var(--red);border:1px solid var(--red-bd);}
+.pill-neutral{background:var(--surface-3);color:var(--text-2);border:1px solid var(--border);}
+.dmg-none{color:var(--text-mute);font-style:italic;}
+.multi-inst summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.multi-inst summary::-webkit-details-marker{display:none;}
+.multi-inst summary .chev{margin-left:auto;color:var(--text-mute);transition:transform .15s;flex-shrink:0;}
+.multi-inst[open] summary .chev{transform:rotate(180deg);}
+.multi-inst summary:hover .chev{color:var(--text-2);}
+.multi-detail{padding:6px 0 2px 20px;}
+.dmg-half{color:var(--green);}
+.sub-line{padding-left:10px;color:var(--text-2);}
+
+/* ---------- modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(5,7,12,.72);display:flex;align-items:center;justify-content:center;z-index:60;padding:18px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-hdr{padding:15px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-hdr h2{margin:0;font-size:15px;}
+.modal-body{padding:18px 20px;overflow-y:auto;flex:1;}
+.modal-ft{padding:13px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+textarea.paste{width:100%;min-height:230px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:'DM Mono',monospace;font-size:11.5px;resize:vertical;outline:none;}
+textarea.paste:focus{border-color:var(--accent-bd);}
+.hint{font-size:11.5px;color:var(--text-mute);line-height:1.6;margin-bottom:10px;}
+.opt-row{display:flex;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--border);border-radius:9px;margin-bottom:8px;cursor:pointer;font-size:12.5px;}
+.opt-row:hover{border-color:var(--accent-bd);background:var(--surface-2);}
+.opt-row input{margin-top:3px;flex-shrink:0;}
+.field-row{display:flex;gap:8px;margin-bottom:8px;}
+.field{flex:1;display:flex;flex-direction:column;gap:3px;}
+.field label{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-mute);font-family:'DM Mono',monospace;}
+.field input,.field select{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12.5px;outline:none;}
+.field input:focus,.field select:focus{border-color:var(--accent-bd);}
+.abil-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px;}
+.abil-col{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:6px;text-align:center;}
+.abil-col .albl{font-size:9px;font-family:'DM Mono',monospace;color:var(--text-mute);letter-spacing:.06em;}
+.abil-col input{width:100%;background:var(--surface-3);border:1px solid var(--border);border-radius:4px;text-align:center;margin-top:3px;padding:3px 0;font-size:11.5px;font-family:'DM Mono',monospace;}
+.abil-col .savelbl{font-size:8px;color:var(--text-mute);margin-top:4px;}
+.sec-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-mute);font-family:'DM Mono',monospace;margin:16px 0 8px;display:flex;align-items:center;justify-content:space-between;}
+.entry-edit{background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:8px;}
+.ee-row1{display:flex;gap:6px;margin-bottom:7px;}
+.ee-row1 input.ee-name{flex:1;min-width:0;}
+.ee-row1 select{flex-shrink:0;}
+.ee-row1 input,.ee-row1 select{background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:6px 7px;font-size:12px;outline:none;}
+.ee-kindfields{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;}
+.ee-inline{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.ee-inline input,.ee-inline select{background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:5px 7px;font-size:11.5px;outline:none;}
+.ee-inline input.dice{width:90px;}
+.ee-inline input.dtype{width:110px;}
+.ee-inline input.dc{width:56px;}
+.ee-inline label.chk{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-2);}
+textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-2);resize:vertical;outline:none;}
+.smallbtn{background:var(--surface-3);border:1px solid var(--border);border-radius:6px;color:var(--text-2);font-size:10.5px;padding:4px 8px;cursor:pointer;font-weight:600;}
+.smallbtn:hover{color:var(--text);border-color:var(--accent-bd);}
+.iconx{background:none;border:none;color:var(--text-mute);cursor:pointer;padding:3px;display:flex;flex-shrink:0;}
+.iconx:hover{color:var(--red);}
+.btn{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--text-2);}
+.btn:hover{background:var(--surface-3);color:var(--text);}
+.btn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
+.btn.primary:hover{background:rgba(91,142,240,.2);}
+.parsed-name-banner{background:var(--green-dim);border:1px solid var(--green-bd);color:var(--green);border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:14px;}
+
+@media(max-width:900px){
+  .drawer-btn{display:inline-flex;}
+  .library{position:fixed;left:0;top:54px;bottom:0;width:80vw;max-width:300px;transform:translateX(-101%);transition:transform .2s ease;z-index:40;}
+  .library.open{transform:translateX(0);}
+  .logpanel{position:fixed;right:0;top:54px;bottom:0;width:80vw;max-width:320px;transform:translateX(101%);transition:transform .2s ease;z-index:40;}
+  .logpanel.open{transform:translateX(0);}
+  .card{width:100%;}
+  .brand .sub{display:none;}
+}
+@media(max-width:680px){
+  /* the roll-mode toggle, reset button and log toggle no longer fit alongside
+     the brand on one line - drop them to a full-width second row instead of
+     letting them clip off the edge of the screen with no way to reach them. */
+  .topbar{flex-wrap:wrap;height:auto;padding:10px 14px;row-gap:8px;}
+  .topbar-tools{display:flex;flex-basis:100%;align-items:center;gap:8px;}
+  .topbar-tools .seg{flex:1;}
+  .topbar-tools .seg button{flex:1;padding:6px 4px;}
+  .library,.logpanel,.scrim{top:94px;}
+}
+@media(max-width:420px){
+  .topbar-tools .iconbtn .btn-label{display:none;}
+  .topbar-tools .iconbtn{padding:0 9px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <button class="drawer-btn" data-act="toggle-sidebar" title="Creature library" aria-label="Toggle library">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="brand">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5M3 16.5l9-5.5 9 5.5"/></svg>
+      Encounter Roller
+      <span class="sub">DM combat dice</span>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-tools">
+      <div class="seg" id="rollModeSeg">
+        <button data-mode="disadv">Disadv</button>
+        <button data-mode="normal" class="active">Normal</button>
+        <button data-mode="adv">Adv</button>
+      </div>
+      <button class="iconbtn" id="resetRollsBtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+        <span class="btn-label">Reset rolls</span>
+      </button>
+      <button class="iconbtn" data-act="open-options" title="Options">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        <span class="btn-label">Options</span>
+      </button>
+      <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log" style="position:relative;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
+        <span id="logBadge" class="badge" hidden></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="scrim" id="scrim"></div>
+
+    <aside class="library" id="libraryPanel">
+      <div class="library-hdr">
+        <button class="iconbtn primary" data-act="open-add-modal" style="justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add creature
+        </button>
+        <div class="search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="searchInput" placeholder="Search library…" autocomplete="off">
+        </div>
+      </div>
+      <div class="lib-list" id="libList"></div>
+    </aside>
+
+    <div class="main-col">
+      <div class="targets-panel" id="targetsPanel">
+        <div class="targets-hdr" data-act="toggle-targets">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor" stroke="none"/></svg>
+          Targets
+          <span class="targets-active-tag" id="targetsActiveTag"></span>
+          <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="targets-body">
+          <div class="targets-table-wrap">
+            <table class="targets-table">
+              <colgroup>
+                <col class="c-radio"><col><col class="c-ac"><col class="c-acadj"><col class="c-eff"><col><col class="c-del">
+              </colgroup>
+              <thead><tr><th></th><th>Name</th><th>AC</th><th>AC adj.</th><th>Eff.</th><th>Notes</th><th></th></tr></thead>
+              <tbody id="targetsBody"></tbody>
+            </table>
+          </div>
+          <button class="smallbtn" data-act="add-target">+ Add target</button>
+        </div>
+      </div>
+      <main class="board" id="board"></main>
+    </div>
+
+    <aside class="logpanel" id="logPanel">
+      <div class="log-hdr">
+        <span class="log-hdr-title">Roll log</span>
+      </div>
+      <div class="log-list" id="logList"></div>
+    </aside>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+'use strict';
+
+/* ============================== constants ============================== */
+const ABILS = ['str','dex','con','int','wis','cha'];
+const ABIL_FULL = {str:'Strength',dex:'Dexterity',con:'Constitution',int:'Intelligence',wis:'Wisdom',cha:'Charisma'};
+const ATYPE_LABEL = {action:'Actions',bonus:'Bonus Actions',reaction:'Reactions',legendary:'Legendary Actions',trait:'Traits'};
+const ATYPE_ORDER = ['action','bonus','reaction','legendary','trait'];
+const NUM_WORD = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+
+/* ============================== utilities ============================== */
+function uid(p){ return p+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4); }
+function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtMod(n){ n = n||0; return (n>=0?'+':'')+n; }
+function clamp(n,lo,hi){ return Math.max(lo,Math.min(hi,n)); }
+function signedInt(s){ return parseInt(String(s).replace(/[−–—]/g,'-').replace(/\s+/g,''),10); }
+function rollDie(sides){
+  // crypto.getRandomValues is a real, hardware-seeded random source (unlike
+  // Math.random, which is only specified to be "roughly uniform" and left up
+  // to the engine) - and rejection-sampled here so every face stays exactly
+  // equally likely, with none of the classic "modulo bias" toward the low end
+  // that a plain % would introduce.
+  const buf = new Uint32Array(1);
+  const limit = 0x100000000 - (0x100000000 % sides);
+  let x;
+  do{ crypto.getRandomValues(buf); x = buf[0]; } while(x >= limit);
+  return 1 + (x % sides);
+}
+
+function parseDice(expr){
+  if(!expr) return null;
+  const m = /(\d+)\s*d\s*(\d+)\s*(?:([+\-−])\s*(\d+))?/i.exec(expr);
+  if(m){
+    const bonus = m[4] ? (m[3]==='-'||m[3]==='−' ? -(+m[4]) : +m[4]) : 0;
+    return { count:+m[1], sides:+m[2], bonus };
+  }
+  const flatM = /^\s*(\d+)\s*$/.exec(expr);
+  if(flatM) return { count:0, sides:0, bonus:+flatM[1] };
+  return null;
+}
+
+function rollD20(mode){
+  const r1 = rollDie(20);
+  if(mode==='normal') return { rolls:[r1], chosen:r1 };
+  const r2 = rollDie(20);
+  const chosen = mode==='adv' ? Math.max(r1,r2) : Math.min(r1,r2);
+  return { rolls:[r1,r2], chosen };
+}
+
+function rollDamage(comp, crit){
+  const parsed = parseDice(comp.dice);
+  if(!parsed) return { total:0, rolls:[], bonus:0, sides:0, type:comp.type||'' };
+  if(crit && settings.critMode==='perkins'){
+    // "Perkins crit": max damage on the base dice, plus one normal roll of the
+    // same dice, bonus counted once - e.g. 2d6+4 crits for 12 + 2d6 + 4.
+    const maxBase = parsed.count*parsed.sides;
+    const rolls = [];
+    let sum = 0;
+    for(let i=0;i<parsed.count;i++){ const r = rollDie(parsed.sides); rolls.push(r); sum += r; }
+    return { total: maxBase+sum+parsed.bonus, rolls, bonus:parsed.bonus, sides:parsed.sides, type:comp.type||'', maxBase };
+  }
+  const count = parsed.count * (crit?2:1);
+  const rolls = [];
+  let sum = 0;
+  for(let i=0;i<count;i++){ const r = rollDie(parsed.sides); rolls.push(r); sum += r; }
+  return { total: sum+parsed.bonus, rolls, bonus:parsed.bonus, sides:parsed.sides, type:comp.type||'' };
+}
+
+/* ============================== parser ============================== */
+function extractName(flat, lines, isHtml, raw){
+  if(isHtml){
+    try{
+      const div = document.createElement('div');
+      div.innerHTML = raw;
+      const h = div.querySelector('h1,h2,h3');
+      if(h && h.textContent.trim()) return h.textContent.trim().replace(/\s+/g,' ');
+    }catch(e){}
+  }
+  for(const l of lines){
+    const c = l.replace(/^✦\s*/,'').trim();
+    if(!c) continue;
+    if(/^(armor class|ac\b|hit points|hp\b|speed|str\b|dex\b|con\b|int\b|wis\b|cha\b|saving throws?|skills|senses|languages|challenge|actions|bonus actions|reactions|traits|legendary actions)/i.test(c)) break;
+    return c.replace(/[.:]+$/,'').slice(0,60);
+  }
+  return 'Unnamed Creature';
+}
+
+function matchNum(text, re){ const m = re.exec(text); return m ? +m[1] : null; }
+
+const META_LINE_RE = /^(Skills|Senses|Languages|Damage\s+\w+|Resist(?:ances?)?|Vulnerab\w*|Cond(?:ition)?\.?\s*Immun\w*|Immunities|Saving\s+Throws?|Proficiency\s+Bonus|Gear|Challenge|CR|Armor\s+Class|Hit\s+Points|Speed)\b/i;
+
+function extractAbilities(flat){
+  const abilities = {};
+  // Layout A: a header row (STR DEX CON INT WIS CHA) followed by a value row - common in table-based statblocks.
+  const headerRe = /\bSTR\b[\s\S]{0,10}?\bDEX\b[\s\S]{0,10}?\bCON\b[\s\S]{0,10}?\bINT\b[\s\S]{0,10}?\bWIS\b[\s\S]{0,10}?\bCHA\b/i;
+  const hm = headerRe.exec(flat);
+  if(hm){
+    const after = flat.slice(hm.index + hm[0].length, hm.index + hm[0].length + 400);
+    const scoreRe = /(\d{1,2})\s*\(\s*([+\-−]\s*\d+)\s*\)/g;
+    const found = [];
+    let sm;
+    while(found.length < 6 && (sm = scoreRe.exec(after))) found.push({ score:+sm[1], mod: signedInt(sm[2]) });
+    if(found.length === 6) ABILS.forEach((k,i)=> abilities[k] = found[i]);
+  }
+  // Layout B: each ability code sits close to its own "NN (+/-N)" - covers inline and per-column layouts.
+  if(Object.keys(abilities).length < 6){
+    const abilRe = /\b(STR|DEX|CON|INT|WIS|CHA)\b[\s\S]{0,20}?(\d{1,2})\s*\(\s*([+\-−]\s*\d+)\s*\)/gi;
+    let am;
+    while((am = abilRe.exec(flat))){
+      const key = am[1].toLowerCase();
+      if(!abilities[key]) abilities[key] = { score:+am[2], mod: signedInt(am[3]) };
+    }
+  }
+  ABILS.forEach(k=>{ if(!abilities[k]) abilities[k] = { score:10, mod:0 }; });
+  return abilities;
+}
+
+// Splits the front-matter of a statblock (everything before Actions/Traits) into
+// its labelled fields by finding every label in reading order and taking each
+// field's value as the text between it and the next label - robust to whatever
+// abbreviation or punctuation a particular statblock format uses.
+function extractFrontMatterFields(flat){
+  const out = { resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:'' };
+  const KEY_MAP = { condimm:'condImmunities', dmgimm:'immunities', dmgres:'resistances', dmgvuln:'vulnerabilities', senses:'senses', languages:'languages', skills:'skills', saves:'savingThrowsText', gear:'gear' };
+  const labelRe = /(?<condimm>Cond(?:ition)?\.?\s*Immun\w*)|(?<dmgimm>(?:Damage\s+)?Immun\w*)|(?<dmgres>(?:Damage\s+)?Resist(?:ances?)?)|(?<dmgvuln>(?:Damage\s+)?Vulnerab\w*)|(?<senses>\bSenses\b)|(?<languages>\bLanguages\b)|(?<skills>\bSkills\b)|(?<saves>Saving\s+Throws?)|(?<gear>\bGear\b)|(?<stop>\bChallenge\b|\bCR\b|Proficiency\s+Bonus|\bActions\b|\bTraits\b|Bonus\s+Actions|\bReactions\b|Legendary\s+Actions)/gi;
+  const marks = [];
+  let lm;
+  while((lm = labelRe.exec(flat))){
+    const key = Object.keys(lm.groups).find(k=>lm.groups[k]!==undefined);
+    marks.push({ key, start: lm.index, end: lm.index+lm[0].length });
+  }
+  for(let i=0;i<marks.length;i++){
+    const mk = marks[i];
+    const outKey = KEY_MAP[mk.key];
+    if(!outKey) continue; // "stop" markers only bound the previous field, they aren't stored
+    const nextStart = i+1<marks.length ? marks[i+1].start : Math.min(flat.length, mk.end+300);
+    let val = flat.slice(mk.end, nextStart).replace(/^[:\s]+/,'').replace(/[.;·•\s]+$/,'').trim();
+    if(val && !out[outKey]) out[outKey] = val;
+  }
+  return out;
+}
+
+function buildEntry(re){
+  const body = re.body || '';
+  const id = uid('e');
+  const nameLower = re.name.toLowerCase().trim();
+  const entry = { id, name: re.name.trim(), atype: re.section, kind:'other', dmg:[], text: body.trim() };
+
+  if(nameLower === 'multiattack'){
+    entry.kind = 'multi';
+    entry.multi = [];
+    entry._multiText = body;
+    return entry;
+  }
+
+  let toHitM = /(?:Melee|Ranged|Melee or Ranged)(?:\s+Weapon)?\s+Attack(?:\s+Roll)?:?\s*\+\s*(\d+)/i.exec(body);
+  if(!toHitM) toHitM = /\+\s*(\d+)\s+(?:to\s+)?hit\b/i.exec(body);
+
+  const dmgParts = [];
+  const dmgRe = /(\d+)\s*\(\s*([0-9dD+\-−\s]+?)\s*\)\s*([A-Za-z]+)\s+damage/gi;
+  let dm;
+  while((dm = dmgRe.exec(body))){
+    dmgParts.push({ dice: dm[2].replace(/\s+/g,'').replace(/−/g,'-'), type: dm[3].toLowerCase() });
+  }
+  if(!dmgParts.length){
+    const flatRe = /\b(\d+)\s+([A-Za-z]+)\s+damage/gi;
+    let fm;
+    while((fm = flatRe.exec(body))) dmgParts.push({ dice: fm[1], type: fm[2].toLowerCase() });
+  }
+  if(!dmgParts.length){
+    // shorthand statblocks sometimes drop the parens and "damage" word entirely, e.g. "1d6+4 slashing"
+    const bareRe = /\b(\d+d\d+(?:\s*[+\-−]\s*\d+)?)\s+([A-Za-z]+)\b/gi;
+    let bm;
+    while((bm = bareRe.exec(body))) dmgParts.push({ dice: bm[1].replace(/\s+/g,'').replace(/−/g,'-'), type: bm[2].toLowerCase() });
+  }
+  const saveM = /DC\s*(\d+)\s*(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)\w*?[\s\S]{0,25}?(?:saving throw|save)/i.exec(body);
+  const half = /half(?:\s+as\s+much)?(?:\s+damage)?\b/i.test(body);
+
+  if(toHitM){
+    entry.kind = 'attack';
+    entry.toHit = +toHitM[1];
+    entry.dmg = dmgParts;
+    if(saveM) entry.extraSave = { dc:+saveM[1], ability: saveM[2].slice(0,3).toUpperCase() };
+  } else if(saveM){
+    entry.kind = 'save';
+    entry.save = { dc:+saveM[1], ability: saveM[2].slice(0,3).toUpperCase(), half };
+    entry.dmg = dmgParts;
+  } else {
+    entry.kind = 'other';
+  }
+  return entry;
+}
+
+function linkMultiattacks(entries){
+  const attackEntries = entries.filter(e=>e.kind==='attack');
+  entries.forEach(e=>{
+    if(e.kind!=='multi' || !e._multiText) return;
+    const parts = [];
+    const re = /\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\b\s+([A-Za-z][A-Za-z '\-]{1,30}?)\s+attacks?\b/gi;
+    let m;
+    while((m = re.exec(e._multiText))){
+      const count = NUM_WORD[m[1].toLowerCase()] ?? parseInt(m[1],10);
+      const label = m[2].trim().toLowerCase();
+      const match = attackEntries.find(a=> label.includes(a.name.toLowerCase()) || a.name.toLowerCase().includes(label));
+      if(match && !parts.find(p=>p.ref===match.id)) parts.push({ ref: match.id, count });
+    }
+    e.multi = parts;
+    delete e._multiText;
+  });
+}
+
+function parseStatblock(raw){
+  const isHtml = /<[a-z][\s\S]*>/i.test(raw.trim());
+  let text;
+  if(isHtml){
+    const div = document.createElement('div');
+    div.innerHTML = raw;
+    div.querySelectorAll('b,strong').forEach(el=>{
+      const t = el.textContent.trim();
+      if(/[A-Za-z]/.test(t) && /\.\s*$/.test(t) && t.length<=60){
+        el.insertAdjacentText('beforebegin','✦');
+      }
+    });
+    div.querySelectorAll('p,div,tr,td,th,li,h1,h2,h3,h4,h5,h6,br,section').forEach(el=>{
+      el.insertAdjacentText('afterend','␞');
+    });
+    text = div.textContent || '';
+    text = text.replace(/ /g,' ');
+    // incidental whitespace/newlines from pretty-printed source markup are not
+    // meaningful line breaks - collapse them all before turning our own explicit
+    // markers back into real ones.
+    text = text.replace(/\s+/g, ' ');
+    text = text.replace(/␞/g, '\n');
+    text = text.replace(/✦\s*/g, '\n✦ ');
+  } else {
+    // plain-text paste: real newlines from the source ARE the entry boundaries, so
+    // only collapse horizontal whitespace and leave line breaks alone.
+    text = raw.replace(/ /g,' ').replace(/\r/g,'');
+    text = text.split('\n').map(l=>l.replace(/[ \t]+/g,' ').trim()).join('\n');
+  }
+  const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const flat = text.replace(/✦/g,'').replace(/\n/g,' ');
+
+  const name = extractName(flat, lines, isHtml, raw);
+  const ac = matchNum(flat, /\b(?:Armor Class|AC)\s*:?\s*(\d+)/i);
+  const hp = matchNum(flat, /\b(?:Hit Points|HP)\s*:?\s*(\d+)/i);
+  const speedM = /\bSpeed\s*:?\s*([0-9][^.;]*?ft\.?(?:,\s*[A-Za-z]+\s+\d+\s*ft\.?)*)/i.exec(flat);
+  const speed = speedM ? speedM[1].trim() : '';
+  const crM = /\b(?:Challenge Rating|Challenge|CR)\s*:?\s*([\d/]+)/i.exec(flat);
+  const cr = crM ? crM[1] : '';
+  const pbM = /\bP(?:roficiency)?\.?\s*B(?:onus)?\.?\s*\+?(\d+)/i.exec(flat);
+  const pb = pbM ? +pbM[1] : null;
+
+  const abilities = extractAbilities(flat);
+  const info = extractFrontMatterFields(flat);
+
+  const saves = {};
+  const savesLineM = /Saving Throws?\s*:?\s*([^\n]+)/i.exec(flat);
+  if(savesLineM){
+    const svRe = /(Str|Dex|Con|Int|Wis|Cha)\w*\s*([+\-−]\s*\d+)/gi;
+    let sm;
+    while((sm = svRe.exec(savesLineM[1]))) saves[sm[1].slice(0,3).toLowerCase()] = signedInt(sm[2]);
+  }
+  ABILS.forEach(k=>{ if(saves[k]==null) saves[k] = abilities[k].mod; });
+
+  const SECTIONS = {
+    'traits':'trait','trait':'trait',
+    'actions':'action','action':'action',
+    'bonus actions':'bonus','bonus action':'bonus',
+    'reactions':'reaction','reaction':'reaction',
+    'legendary actions':'legendary','legendary action':'legendary',
+    'lair actions':'legendary','mythic actions':'legendary'
+  };
+  let currentSection = null;
+  const rawEntries = [];
+  for(const rawLine of lines){
+    const wasBold = /^✦/.test(rawLine);
+    let clean = rawLine.replace(/^✦\s*/,'').trim();
+    // strip leading bullet/arrow glyphs some homebrew statblocks prefix each entry with
+    clean = clean.replace(/^[▶▸►‣◆➤➔→•*]+\s*/, '').trim();
+    if(!clean) continue;
+    const sectionKey = clean.toLowerCase().replace(/[:.]+$/,'').trim();
+    if(SECTIONS[sectionKey] && clean.length < 30){ currentSection = SECTIONS[sectionKey]; continue; }
+    if(currentSection===null && META_LINE_RE.test(clean)) continue;
+    // entry names are terminated by either a period ("Bite.") or a colon ("Bite:")
+    const m = /^([A-Z][A-Za-z0-9()'’\-–—\/ ]{1,70}?)[.:]\s*(.*)$/.exec(clean);
+    if(m && m[1].split(' ').length <= 8){
+      rawEntries.push({ section: currentSection || 'trait', name: m[1].trim(), body: (m[2]||'').trim() });
+    } else if(rawEntries.length && currentSection){
+      rawEntries[rawEntries.length-1].body += ' ' + clean;
+    }
+  }
+
+  const entries = rawEntries.map(buildEntry);
+  linkMultiattacks(entries);
+
+  return { name, ac, hp, speed, cr, pb, abilities, saves, entries, favourite:false, ...info };
+}
+
+function blankCreature(){
+  return {
+    name:'New Creature', ac:null, hp:null, speed:'', cr:'', pb:null,
+    abilities: Object.fromEntries(ABILS.map(k=>[k,{score:10,mod:0}])),
+    saves: Object.fromEntries(ABILS.map(k=>[k,0])),
+    entries: [], favourite:false,
+    resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:''
+  };
+}
+
+/* ============================== example creatures (local fallback only) ============================== */
+function exampleCreatures(){
+  return [
+    {
+      id:'sample-bramble-goblin', favourite:false, name:'Bramble Goblin', ac:14, hp:12, speed:'30 ft.', cr:'1/4', pb:2,
+      abilities:{str:{score:8,mod:-1},dex:{score:15,mod:2},con:{score:10,mod:0},int:{score:10,mod:0},wis:{score:9,mod:-1},cha:{score:8,mod:-1}},
+      saves:{str:-1,dex:2,con:0,int:0,wis:-1,cha:-1},
+      entries:[
+        {id:'ex1-scimitar', name:'Scimitar', atype:'action', kind:'attack', toHit:4, dmg:[{dice:'1d6+2',type:'slashing'}], text:'Melee Weapon Attack: +4 to hit, reach 5 ft.'},
+        {id:'ex1-shortbow', name:'Shortbow', atype:'action', kind:'attack', toHit:4, dmg:[{dice:'1d6+2',type:'piercing'}], text:'Ranged Weapon Attack: +4 to hit, range 80/320 ft.'},
+        {id:'ex1-nimble', name:'Nimble Escape', atype:'bonus', kind:'other', dmg:[], text:'The goblin can take the Disengage or Hide action.'}
+      ]
+    },
+    {
+      id:'sample-river-troll', favourite:true, name:'River Troll', ac:15, hp:84, speed:'30 ft., swim 30 ft.', cr:'5', pb:3,
+      abilities:{str:{score:18,mod:4},dex:{score:13,mod:1},con:{score:20,mod:5},int:{score:7,mod:-2},wis:{score:9,mod:-1},cha:{score:7,mod:-2}},
+      saves:{str:4,dex:1,con:5,int:-2,wis:-1,cha:-2},
+      entries:[
+        {id:'ex2-multi', name:'Multiattack', atype:'action', kind:'multi', dmg:[], text:'The troll makes three attacks: one bite and two claws.', multi:[{ref:'ex2-bite',count:1},{ref:'ex2-claw',count:2}]},
+        {id:'ex2-bite', name:'Bite', atype:'action', kind:'attack', toHit:7, dmg:[{dice:'1d6+4',type:'piercing'}], text:'Melee Attack Roll: +7, reach 5 ft.'},
+        {id:'ex2-claw', name:'Claw', atype:'action', kind:'attack', toHit:7, dmg:[{dice:'2d6+4',type:'slashing'}], text:'Melee Attack Roll: +7, reach 5 ft.'},
+        {id:'ex2-slam', name:'Tail Sweep', atype:'reaction', kind:'save', dmg:[{dice:'1d8+4',type:'bludgeoning'}], save:{dc:14,ability:'DEX',half:true}, text:'When a creature moves within 10 feet of the troll, it can force a DC 14 Dexterity save, dealing half damage on a success.'},
+        {id:'ex2-regen', name:'Regeneration', atype:'trait', kind:'other', dmg:[], text:'The troll regains 10 hit points at the start of its turn, unless it has taken fire or acid damage since its last turn.'}
+      ]
+    }
+  ];
+}
+
+/* ============================== store (db capability, falls back to localStorage) ============================== */
+const Store = (() => {
+  let db = null;
+  let mode = null; // null until init() decides 'db' or 'local' - never guess in between
+  let readyResolve;
+  const readyPromise = new Promise(res=>{ readyResolve = res; });
+  const listeners = { creatures: [], board: [], targets: [] };
+  const LS_CREATURES = 'er_creatures_v1';
+  const LS_BOARD = 'er_board_v1';
+  const LS_TARGETS = 'er_targets_v1';
+
+  function loadLocalCreatures(){
+    try{
+      const raw = localStorage.getItem(LS_CREATURES);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    const seed = exampleCreatures();
+    try{ localStorage.setItem(LS_CREATURES, JSON.stringify(seed)); }catch(e){}
+    return seed;
+  }
+  function loadLocalBoard(){
+    try{
+      const raw = localStorage.getItem(LS_BOARD);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { items: [] };
+  }
+  function loadLocalTargets(){
+    try{
+      const raw = localStorage.getItem(LS_TARGETS);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { items: [], activeId: null };
+  }
+
+  let localCreatures = loadLocalCreatures();
+  let localBoard = loadLocalBoard();
+  let localTargets = loadLocalTargets();
+
+  async function init(){
+    try{
+      if(window.claude && window.claude.use) db = await window.claude.use('db');
+    }catch(e){ db = null; }
+    if(db){
+      mode = 'db';
+      db.collection('creatures').onSnapshot(snap=>{
+        const list = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+        listeners.creatures.forEach(fn=>fn(list));
+      }, err=>console.error('creatures sub', err));
+      db.doc('board/state').onSnapshot(snap=>{
+        const data = snap.exists ? snap.data() : { items: [] };
+        listeners.board.forEach(fn=>fn(data.items ? data : { items: [] }));
+      }, err=>console.error('board sub', err));
+    } else {
+      mode = 'local';
+      listeners.creatures.forEach(fn=>fn(localCreatures));
+      listeners.board.forEach(fn=>fn(localBoard));
+    }
+    // targets (the player/monster AC tracker) always uses plain localStorage,
+    // never the db capability, on purpose - it's the one thing being typed
+    // into live, mid-game, and every attempt to make an async round-trip to
+    // the db behave safely with that turned into unverifiable guesswork about
+    // timing this code has no visibility into. A synchronous, same-tab-only
+    // read/write can't race itself: this is the exact codepath that every
+    // automated test in this file exercises and passes, every time.
+    listeners.targets.forEach(fn=>fn(localTargets));
+    readyResolve();
+  }
+
+  function onCreatures(fn){ listeners.creatures.push(fn); if(mode==='local') fn(localCreatures); }
+  function onBoard(fn){ listeners.board.push(fn); if(mode==='local') fn(localBoard); }
+  function onTargets(fn){ listeners.targets.push(fn); if(mode==='local') fn(localTargets); }
+
+  async function saveCreature(creature){
+    await readyPromise;
+    if(mode==='db'){
+      const ref = creature.id ? db.collection('creatures').doc(creature.id) : db.collection('creatures').doc();
+      const { id, ...rest } = creature;
+      await ref.set(rest);
+      return ref.id;
+    } else {
+      if(!creature.id) creature.id = uid('c');
+      const idx = localCreatures.findIndex(c=>c.id===creature.id);
+      if(idx>=0) localCreatures[idx] = creature; else localCreatures.push(creature);
+      localStorage.setItem(LS_CREATURES, JSON.stringify(localCreatures));
+      listeners.creatures.forEach(fn=>fn(localCreatures));
+      return creature.id;
+    }
+  }
+
+  async function deleteCreature(id){
+    await readyPromise;
+    if(mode==='db'){
+      await db.collection('creatures').doc(id).delete();
+    } else {
+      localCreatures = localCreatures.filter(c=>c.id!==id);
+      localStorage.setItem(LS_CREATURES, JSON.stringify(localCreatures));
+      listeners.creatures.forEach(fn=>fn(localCreatures));
+    }
+  }
+
+  async function setBoard(items){
+    await readyPromise;
+    if(mode==='db'){
+      await db.doc('board/state').set({ items });
+    } else {
+      localBoard = { items };
+      localStorage.setItem(LS_BOARD, JSON.stringify(localBoard));
+      listeners.board.forEach(fn=>fn(localBoard));
+    }
+  }
+
+  async function setTargets(data){
+    // always local - see the comment in init() above
+    await readyPromise;
+    localTargets = data;
+    localStorage.setItem(LS_TARGETS, JSON.stringify(localTargets));
+    listeners.targets.forEach(fn=>fn(localTargets));
+  }
+
+  return { init, onCreatures, onBoard, onTargets, saveCreature, deleteCreature, setBoard, setTargets, get mode(){ return mode; } };
+})();
+
+/* ============================== app state ============================== */
+let creatures = [];
+let board = { items: [] };
+let targets = { items: [], activeId: null };
+let log = [];
+let rollMode = 'normal';
+let librarySearch = '';
+let collapsedGroups = new Set();
+let editingCreature = null;
+let modalMode = null; // 'paste' | 'edit' | 'options'
+const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
+const resultsById = new Map(); // logEntry.id -> logEntry - lets the "check vs AC" control find and mutate an already-rolled instance
+let logUnread = 0;
+
+const SETTINGS_KEY = 'er_settings_v1';
+let settings = { critMode: 'double' }; // 'double' (standard 5e) | 'perkins' (max damage + reroll)
+try{ const rawSettings = localStorage.getItem(SETTINGS_KEY); if(rawSettings) Object.assign(settings, JSON.parse(rawSettings)); }catch(e){}
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }catch(e){} }
+
+/* ============================== rolling ============================== */
+function pushLog(entry){
+  entry.id = uid('l');
+  entry.time = Date.now();
+  log.unshift(entry);
+  resultsById.set(entry.id, entry);
+  while(log.length > 200){ const removed = log.pop(); resultsById.delete(removed.id); }
+  renderLog();
+  const drawerBtn = document.querySelector('[data-act="toggle-logpanel"]');
+  const isDrawerMode = drawerBtn && getComputedStyle(drawerBtn).display !== 'none';
+  if(isDrawerMode && !document.getElementById('logPanel').classList.contains('open')){
+    logUnread++;
+    renderLogBadge();
+  }
+}
+
+function renderLogBadge(){
+  const el = document.getElementById('logBadge');
+  if(!el) return;
+  el.hidden = logUnread<=0;
+  el.textContent = logUnread>9 ? '9+' : String(logUnread);
+}
+
+function activeTarget(){
+  return targets.items.find(t=>t.id===targets.activeId) || null;
+}
+
+function findTargetByAC(ac){
+  return targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===ac) || null;
+}
+
+// Walks every attack-kind instance in a rolled result (top-level attacks and
+// every multiattack sub-attack) so a whole already-rolled result can be
+// pointed at a target or a one-off AC after the fact, without re-rolling.
+function forEachAttackInst(logEntry, fn){
+  logEntry.instances.forEach(inst=>{
+    if(inst.kind==='attack') fn(inst);
+    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') fn(s); });
+  });
+}
+function firstAttackInst(logEntry){
+  let found = null;
+  forEachAttackInst(logEntry, inst=>{ if(!found) found = inst; });
+  return found;
+}
+function applyResultToAC(entryId, ac, name){
+  const logEntry = resultsById.get(entryId);
+  if(!logEntry) return;
+  forEachAttackInst(logEntry, inst=>{
+    const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
+    inst.vsTarget = { name: name||'', ac, hit };
+  });
+  renderBoard();
+  renderLog();
+}
+function clearResultTarget(entryId){
+  const logEntry = resultsById.get(entryId);
+  if(!logEntry) return;
+  forEachAttackInst(logEntry, inst=>{ delete inst.vsTarget; });
+  renderBoard();
+  renderLog();
+}
+
+function rollAttackInstance(entry){
+  const { rolls, chosen } = rollD20(rollMode);
+  const isCrit = chosen === 20;
+  const isFumble = chosen === 1;
+  const total = isFumble ? chosen : chosen + (entry.toHit||0);
+  const dmg = (entry.dmg||[]).map(c=>rollDamage(c, isCrit));
+  let vsTarget = null;
+  const tgt = activeTarget();
+  if(tgt){
+    const effAC = (tgt.ac||0) + (tgt.acAdj||0);
+    const hit = isFumble ? false : (isCrit ? true : total >= effAC);
+    vsTarget = { name: tgt.name || 'target', ac: effAC, hit };
+  }
+  return { d20rolls: rolls, chosen, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
+}
+
+function rollSaveEffectInstance(entry){
+  const dmg = (entry.dmg||[]).map(c=>{
+    const full = rollDamage(c, false);
+    return { ...full, halfTotal: Math.floor(full.total/2) };
+  });
+  return { dc: entry.save.dc, ability: entry.save.ability, half: entry.save.half, dmg };
+}
+
+function rollEntry(creature, entry, times, boardId){
+  times = clamp(times,1,50);
+  let logEntry;
+  if(entry.kind==='multi'){
+    const byId = Object.fromEntries(creature.entries.map(e=>[e.id,e]));
+    const instances = [];
+    for(let i=1;i<=times;i++){
+      const subs = [];
+      (entry.multi||[]).forEach(part=>{
+        const sub = byId[part.ref];
+        if(!sub) return;
+        for(let j=0;j<part.count;j++){
+          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub) });
+          else if(sub.kind==='save') subs.push({ name: sub.name, kind:'save', ...rollSaveEffectInstance(sub) });
+        }
+      });
+      instances.push({ i, kind:'multi', subs });
+    }
+    logEntry = { creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind:'multi', instances };
+  } else {
+    const instances = [];
+    for(let i=1;i<=times;i++){
+      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry) });
+      else if(entry.kind==='save') instances.push({ i, kind:'save', ...rollSaveEffectInstance(entry) });
+      else instances.push({ i, kind:'note', text: entry.text });
+    }
+    logEntry = { creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind: entry.kind, instances };
+  }
+  pushLog(logEntry);
+  if(boardId){
+    lastResults.set(boardId+'::'+entry.id, logEntry);
+    renderBoard();
+  }
+}
+
+function rollSaveThrow(creature, abil, times, boardId){
+  times = clamp(times,1,50);
+  const mod = (creature.saves && creature.saves[abil]!=null) ? creature.saves[abil] : (creature.abilities[abil]?.mod||0);
+  const instances = [];
+  for(let i=1;i<=times;i++){
+    const { rolls, chosen } = rollD20(rollMode);
+    instances.push({ i, kind:'throw', d20rolls: rolls, chosen, mod, total: chosen+mod });
+  }
+  const logEntry = { creatureName: creature.name, entryName: ABIL_FULL[abil]+' Save', atype:'throw', kind:'throw', instances };
+  pushLog(logEntry);
+  if(boardId){
+    lastResults.set(boardId+'::save', logEntry);
+    renderBoard();
+  }
+}
+
+/* ============================== rendering: library ============================== */
+function renderLibrary(){
+  const el = document.getElementById('libList');
+  const q = librarySearch.trim().toLowerCase();
+  const list = creatures
+    .filter(c=> !q || c.name.toLowerCase().includes(q))
+    .slice()
+    .sort((a,b)=> (b.favourite?1:0)-(a.favourite?1:0) || a.name.localeCompare(b.name));
+
+  if(!list.length){
+    el.innerHTML = `<div class="lib-empty">${creatures.length? 'No matches.' : 'No creatures saved yet. Click <b>Add creature</b> to paste a statblock.'}</div>`;
+    return;
+  }
+  el.innerHTML = list.map(c=>{
+    const onBoard = board.items.some(it=>it.creatureId===c.id);
+    return `
+    <div class="lib-item">
+      <button class="icobtn star-btn ${c.favourite?'active':''}" data-act="toggle-fav" data-creature="${c.id}" title="Favourite">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="${c.favourite?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
+      <div class="lib-item-body" data-act="add-board" data-creature="${c.id}" title="Add to board">
+        <div class="lib-item-name">${esc(c.name)}</div>
+        <div class="lib-item-meta">${c.cr? 'CR '+esc(c.cr)+' · ':''}${c.ac?'AC '+c.ac+' · ':''}${c.hp?'HP '+c.hp:''}</div>
+      </div>
+      <button class="icobtn" data-act="add-board" data-creature="${c.id}" title="Add to board">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="icobtn" data-act="edit-creature" data-creature="${c.id}" title="Edit">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
+      </button>
+      <button class="icobtn trash-btn" data-act="delete-creature" data-creature="${c.id}" title="Delete from library">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+      </button>
+    </div>`;
+  }).join('');
+}
+
+/* ============================== rendering: board ============================== */
+function entryTagText(entry, creature){
+  if(entry.kind==='attack'){
+    let t = fmtMod(entry.toHit)+' to hit';
+    if(entry.dmg && entry.dmg.length) t += ' · ' + entry.dmg.map(d=>d.dice+(d.type?' '+d.type:'')).join(' + ');
+    if(entry.extraSave) t += ` · DC ${entry.extraSave.dc} ${entry.extraSave.ability}`;
+    return t;
+  }
+  if(entry.kind==='save'){
+    let t = `DC ${entry.save.dc} ${entry.save.ability} save`;
+    if(entry.dmg && entry.dmg.length) t += ' · ' + entry.dmg.map(d=>d.dice+(d.type?' '+d.type:'')).join(' + ');
+    if(entry.save.half) t += ' (half on success)';
+    return t;
+  }
+  if(entry.kind==='multi'){
+    if(entry.multi && entry.multi.length){
+      const byId = Object.fromEntries((creature.entries||[]).map(e=>[e.id,e]));
+      const parts = entry.multi.map(p=>{
+        const sub = byId[p.ref];
+        return sub ? `${p.count}× ${sub.name}` : null;
+      }).filter(Boolean);
+      return parts.length ? 'Rolls: '+parts.join(' + ') : 'Roll sub-attacks manually below';
+    }
+    const names = (creature.entries||[]).filter(e=>e.kind==='attack').map(e=>e.name);
+    return names.length ? 'Not auto-linked — roll manually: '+names.join(', ') : 'No attacks on this creature to link';
+  }
+  return '';
+}
+
+function infoRowsHtml(c){
+  const FIELDS = [
+    ['Resistances', c.resistances], ['Vulnerabilities', c.vulnerabilities],
+    ['Immunities', c.immunities], ['Condition Immunities', c.condImmunities],
+    ['Senses', c.senses], ['Skills', c.skills], ['Saving Throws', c.savingThrowsText],
+    ['Languages', c.languages], ['Gear', c.gear]
+  ];
+  return FIELDS.filter(([,v])=>v).map(([label,v])=>`<div class="trait-row"><b>${esc(label)}.</b> ${esc(v)}</div>`).join('');
+}
+
+function renderCard(item){
+  const c = creatures.find(cr=>cr.id===item.creatureId);
+  if(!c) return '';
+  const groups = {};
+  ATYPE_ORDER.forEach(t=>groups[t]=[]);
+  (c.entries||[]).forEach(e=>{ (groups[e.atype]||groups.action).push(e); });
+
+  const saveResult = lastResults.get(item.boardId+'::save');
+  const savesHtml = ABILS.map(a=>{
+    const mod = (c.saves && c.saves[a]!=null) ? c.saves[a] : (c.abilities[a]?.mod||0);
+    return `<button class="save-btn" data-act="roll-save" data-board="${item.boardId}" data-abil="${a}" title="Roll ${ABIL_FULL[a]} save">
+      <span class="lbl">${a.toUpperCase()}</span><span class="val">${fmtMod(mod)}</span>
+    </button>`;
+  }).join('');
+
+  const groupsHtml = ATYPE_ORDER.filter(t=>groups[t].length).map(t=>{
+    const gid = item.boardId+'-'+t;
+    const collapsed = collapsedGroups.has(gid);
+    const body = groups[t].map(e=>{
+          // group placement (t) is just display bucketing; whether it's rollable
+          // depends on what the entry actually is - a "trait" bucket can still
+          // hold a real attack/save if the parser found one before any heading.
+          if(t==='trait' && e.kind==='other'){
+            return `<div class="trait-row"><b>${esc(e.name)}.</b> ${esc(e.text)}</div>`;
+          }
+          const tag = entryTagText(e, c);
+          const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
+          const result = lastResults.get(item.boardId+'::'+e.id);
+          return `<div class="entry">
+            <div class="entry-main">
+              <div class="entry-name">${esc(e.name)}</div>
+              ${tag?`<div class="entry-tag">${esc(tag)}</div>`:''}
+            </div>
+            <button class="roll-btn ${btnClass}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="Roll">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
+              Roll
+            </button>
+          </div>
+          ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
+        }).join('');
+    return `<div class="group g-${t} ${collapsed?'collapsed':''}">
+      <div class="group-hdr" data-act="toggle-group" data-gid="${gid}">
+        <span class="swatch"></span>${ATYPE_LABEL[t]}
+        <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="group-body">${body}</div>
+    </div>`;
+  }).join('');
+
+  const infoRows = infoRowsHtml(c);
+  const infoGid = item.boardId+'-info';
+  const infoCollapsed = collapsedGroups.has(infoGid);
+  const infoGroupHtml = infoRows ? `<div class="group g-trait ${infoCollapsed?'collapsed':''}">
+      <div class="group-hdr" data-act="toggle-group" data-gid="${infoGid}">
+        <span class="swatch"></span>Info
+        <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="group-body">${infoRows}</div>
+    </div>` : '';
+
+  return `<div class="card">
+    <div class="card-hdr">
+      <div class="card-title-row">
+        <div class="card-name">${esc(c.name)}</div>
+        <div class="count-stepper">
+          <button data-act="count-dec" data-board="${item.boardId}">−</button>
+          <span>${item.count}</span>
+          <button data-act="count-inc" data-board="${item.boardId}">+</button>
+        </div>
+        <button class="icobtn" data-act="remove-board" data-board="${item.boardId}" title="Remove from board">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="card-pills">
+        ${c.ac?`<span class="pill">AC ${c.ac}</span>`:''}
+        ${c.hp?`<span class="pill">HP ${c.hp}</span>`:''}
+        ${c.speed?`<span class="pill">${esc(c.speed)}</span>`:''}
+        ${c.cr?`<span class="pill">CR ${esc(c.cr)}</span>`:''}
+        <span class="count-lbl">× instances</span>
+      </div>
+    </div>
+    <div class="saves-row">${savesHtml}</div>
+    ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
+    ${groupsHtml}
+    ${infoGroupHtml}
+  </div>`;
+}
+
+function renderBoard(){
+  const el = document.getElementById('board');
+  if(!board.items.length){
+    el.innerHTML = `<div class="board-empty">No creatures on the board yet.<br><br>Open your <b>library</b> on the left and click a creature (or the + button) to bring it into the encounter.</div>`;
+    return;
+  }
+  el.innerHTML = board.items.map(renderCard).join('');
+}
+
+/* ============================== rendering: targets ============================== */
+// True only while the user has an actual text/number field mid-edit - NOT
+// while a button (radio, remove) in the table happens to hold focus, since
+// clicking one of those IS the action that needs to render right now.
+function isTargetFieldFocused(){
+  const el = document.activeElement;
+  return !!(el && el.matches && el.matches('#targetsBody input[data-tid]'));
+}
+
+function renderTargets(){
+  const body = document.getElementById('targetsBody');
+  const tag = document.getElementById('targetsActiveTag');
+  if(!body) return;
+  // never rebuild the table while one of its fields is focused - a rebuild
+  // triggered by an unrelated action (adding another row, a db round-trip
+  // confirming a write) would yank focus and any unsaved keystrokes with it.
+  if(isTargetFieldFocused()) return;
+  if(!targets.items.length){
+    body.innerHTML = `<tr><td colspan="7" class="targets-empty">Add your players (or any NPC) here to see hit/miss against them when you roll an attack.</td></tr>`;
+  } else {
+    // if the same rows already exist in the same order, patch their values in
+    // place instead of replacing the HTML - a click on a button in this table
+    // (radio, remove, +/- steppers) always starts with a mousedown that blurs
+    // whatever field was previously focused, which fires this render mid-click;
+    // swapping in fresh DOM nodes at that instant orphans the node the browser
+    // is tracking as "pressed" and the click event never fires at all. Patching
+    // in place keeps every node's identity, so the click always lands.
+    const existingRows = Array.from(body.querySelectorAll('tr[data-tid]'));
+    const sameStructure = existingRows.length===targets.items.length &&
+      existingRows.every((tr,i)=>tr.dataset.tid===targets.items[i].id);
+    if(sameStructure){
+      targets.items.forEach((t,i)=>{
+        const tr = existingRows[i];
+        const active = t.id===targets.activeId;
+        tr.classList.toggle('active', active);
+        const radio = tr.querySelector('.target-radio');
+        radio.classList.toggle('active', active);
+        radio.title = active ? 'Currently targeted' : 'Target this';
+        const patch = (field, val)=>{
+          const inp = tr.querySelector(`input[data-tfield="${field}"]`);
+          if(inp && document.activeElement!==inp) inp.value = val;
+        };
+        patch('name', t.name||'');
+        patch('ac', t.ac??'');
+        patch('acAdj', t.acAdj||'');
+        patch('notes', t.notes||'');
+        const effCell = tr.querySelector(`#tgteff-${t.id}`);
+        if(effCell) effCell.textContent = (t.ac||0)+(t.acAdj||0);
+      });
+    } else {
+      body.innerHTML = targets.items.map(t=>{
+        const eff = (t.ac||0)+(t.acAdj||0);
+        const active = t.id===targets.activeId;
+        return `<tr class="${active?'active':''}" data-tid="${t.id}">
+          <td><button class="target-radio ${active?'active':''}" data-act="set-active-target" data-tid="${t.id}" title="${active?'Currently targeted':'Target this'}"></button></td>
+          <td><input value="${esc(t.name||'')}" placeholder="Name" data-tid="${t.id}" data-tfield="name"></td>
+          <td><input type="text" inputmode="numeric" pattern="[0-9]*" value="${t.ac??''}" placeholder="AC" data-tid="${t.id}" data-tfield="ac"></td>
+          <td><input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="±0" data-tid="${t.id}" data-tfield="acAdj"></td>
+          <td id="tgteff-${t.id}">${eff}</td>
+          <td><input value="${esc(t.notes||'')}" placeholder="Notes" data-tid="${t.id}" data-tfield="notes"></td>
+          <td><button class="iconx" data-act="remove-target" data-tid="${t.id}" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+  const active = activeTarget();
+  tag.textContent = active ? `Targeting ${active.name || 'unnamed'} (AC ${(active.ac||0)+(active.acAdj||0)})` : '';
+}
+
+function setTargetsOptimistic(data){
+  targets = data;
+  renderTargets();
+  Store.setTargets(data);
+}
+
+/* ============================== rendering: log ============================== */
+function d20Str(inst){
+  const rollsStr = inst.d20rolls.length>1 ? `[${inst.d20rolls.join(', ')}]→${inst.chosen}` : `${inst.chosen}`;
+  return rollsStr;
+}
+function dmgStr(dmgArr){
+  if(!dmgArr || !dmgArr.length) return '';
+  return dmgArr.map(d=>{
+    const breakdown = d.maxBase!=null ? ` <span class="dmg-breakdown">(${d.maxBase} max+${d.rolls.reduce((s,r)=>s+r,0)})</span>` : '';
+    return `<span class="dmg-total">${d.total}</span>${breakdown} ${esc(d.type)}`;
+  }).join(' + ');
+}
+function dmgHalfStr(dmgArr){
+  if(!dmgArr || !dmgArr.length) return '';
+  const full = dmgArr.reduce((s,d)=>s+d.total,0);
+  const half = dmgArr.reduce((s,d)=>s+d.halfTotal,0);
+  return `<span class="dmg-total">${full}</span> full / <span class="dmg-half">${half}</span> half`;
+}
+
+function attackCore(inst){
+  const crit = inst.isCrit ? ' <span class="crit">CRIT!</span>' : '';
+  const fumble = inst.isFumble ? ' <span class="fumble">FUMBLE</span>' : '';
+  let line = `d20 ${d20Str(inst)} ${fmtMod(inst.toHit)} = <b>${inst.total}</b>${crit}${fumble}`;
+  if(inst.vsTarget){
+    const who = inst.vsTarget.name ? `vs ${esc(inst.vsTarget.name)} (AC ${inst.vsTarget.ac})` : `vs AC ${inst.vsTarget.ac}`;
+    line += ` <span class="${inst.vsTarget.hit?'hit-yes':'hit-no'}">${who}: ${inst.vsTarget.hit?'HIT':'MISS'}</span>`;
+  }
+  if(inst.dmg && inst.dmg.length) line += ` — dmg ${dmgStr(inst.dmg)}`;
+  if(inst.extraSave) line += `<div class="sub-line">also: DC ${inst.extraSave.dc} ${inst.extraSave.ability} save</div>`;
+  return line;
+}
+function saveCore(inst){
+  return `DC ${inst.dc} ${inst.ability} save${inst.half?' (half on success)':''} — ${dmgHalfStr(inst.dmg.map(d=>({...d})))}`;
+}
+const INST_COLORS = ['accent','amber','teal','purple','orange','green'];
+function instBadge(i, colored){
+  const color = colored ? INST_COLORS[(i-1) % INST_COLORS.length] : null;
+  return `<span class="idx"${color?` style="color:var(--${color})"`:''}>#${i}</span>`;
+}
+function multiSummarize(inst){
+  const hasTarget = inst.subs.some(s=>s.vsTarget);
+  let hitCount=0, missCount=0, critCount=0;
+  const dmgByType = {};
+  inst.subs.forEach(s=>{
+    if(s.isCrit) critCount++;
+    const isHit = s.vsTarget ? s.vsTarget.hit : null;
+    if(hasTarget){ if(isHit) hitCount++; else missCount++; }
+    // without a target we don't know what actually connected, so total every
+    // roll as a best-effort figure; with a target, only hits deal damage
+    if(!hasTarget || isHit) (s.dmg||[]).forEach(d=>{ dmgByType[d.type] = (dmgByType[d.type]||0)+d.total; });
+  });
+  return { hasTarget, hitCount, missCount, critCount, total: inst.subs.length, dmgByType };
+}
+
+function multiDetailHtml(inst){
+  return inst.subs.map(s=>{
+    const body = s.kind==='attack' ? attackCore(s) : saveCore(s);
+    return `<div class="sub-line">${esc(s.name)}: ${body}</div>`;
+  }).join('');
+}
+
+function renderMultiInstHtml(inst, colored){
+  const sum = multiSummarize(inst);
+  const pills = sum.hasTarget
+    ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
+    : `<span class="pill-neutral">${sum.total} attacks</span>`;
+  const critTag = sum.critCount ? ` <span class="crit">${sum.critCount}× CRIT</span>` : '';
+  const dmgEntries = Object.entries(sum.dmgByType);
+  const dmgHtml = dmgEntries.length
+    ? dmgEntries.map(([type,total])=>`<b class="dmg-total">${total}</b> ${esc(type)}`).join(' + ')
+    : '<span class="dmg-none">no damage</span>';
+  return `<details class="log-inst multi-inst">
+    <summary>
+      ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
+      <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+    </summary>
+    <div class="multi-detail">${multiDetailHtml(inst)}</div>
+  </details>`;
+}
+
+function renderInstancesHtml(entry){
+  // when several instances (creatures) roll at once, badge each one a different
+  // colour and give it a bit more breathing room so they read as separate creatures
+  const multi = entry.instances.length > 1;
+  return entry.instances.map(inst=>{
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi);
+    let core;
+    if(inst.kind==='attack') core = attackCore(inst);
+    else if(inst.kind==='save') core = saveCore(inst);
+    else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
+    else core = esc(inst.text||'');
+    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core}</div>`;
+  }).join('');
+}
+
+// Rolls up every attack roll in the whole result - across however many
+// creature instances rolled, and however many sub-attacks each multiattack
+// fired - into one hit/miss count and one damage-by-type total. This is the
+// answer to "what did that whole roll actually do", regardless of whether it
+// was one attack, one multiattack, or five identical creatures at once.
+function aggregateEntry(entry){
+  let hitCount=0, missCount=0, critCount=0, atomicAttacks=0, hasTarget=false;
+  const dmgByType = {};
+  function addDmg(dmgArr){ (dmgArr||[]).forEach(d=>{ dmgByType[d.type] = (dmgByType[d.type]||0)+d.total; }); }
+  function tallyAttack(a){
+    atomicAttacks++;
+    if(a.isCrit) critCount++;
+    if(a.vsTarget){
+      hasTarget = true;
+      if(a.vsTarget.hit) hitCount++; else missCount++;
+      if(a.vsTarget.hit) addDmg(a.dmg);
+    } else {
+      addDmg(a.dmg);
+    }
+  }
+  entry.instances.forEach(inst=>{
+    if(inst.kind==='attack') tallyAttack(inst);
+    else if(inst.kind==='multi') inst.subs.forEach(s=>{ if(s.kind==='attack') tallyAttack(s); else addDmg(s.dmg); });
+    else if(inst.kind==='save') addDmg(inst.dmg);
+  });
+  return { hasTarget, hitCount, missCount, critCount, atomicAttacks, dmgByType };
+}
+
+// Lets a whole already-rolled result be pointed at a saved target (or a
+// one-off AC) after the fact - realizing mid-roll who it was actually aimed
+// at shouldn't mean re-rolling. Only shown when the result has an attack
+// roll to check in the first place (saves/throws have no AC to compare to).
+function applyToRowHtml(entry){
+  const rep = firstAttackInst(entry);
+  if(!rep) return '';
+  const cur = rep.vsTarget;
+  const matched = cur ? targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===cur.ac && (!cur.name || t.name===cur.name)) : null;
+  return `<div class="apply-row">
+    <span class="apply-lbl">Apply to</span>
+    <select class="apply-target-select" data-eid="${entry.id}">
+      <option value="">None</option>
+      ${targets.items.map(t=>`<option value="${t.id}" ${matched && matched.id===t.id ? 'selected':''}>${esc(t.name||'Unnamed')} (AC ${(t.ac||0)+(t.acAdj||0)})</option>`).join('')}
+    </select>
+    <span class="apply-or">or AC</span>
+    <input type="text" inputmode="numeric" pattern="[0-9]*" class="apply-ac-input" placeholder="AC" value="${cur && !matched ? cur.ac : ''}" data-eid="${entry.id}">
+  </div>`;
+}
+
+function aggregateHtml(entry){
+  const agg = aggregateEntry(entry);
+  const dmgEntries = Object.entries(agg.dmgByType);
+  if(agg.atomicAttacks===0 && !dmgEntries.length) return '';
+  const pills = agg.hasTarget
+    ? `${agg.hitCount?`<span class="pill-hit">${agg.hitCount} HIT</span>`:''}${agg.missCount?`<span class="pill-miss">${agg.missCount} MISS</span>`:''}`
+    : (agg.atomicAttacks ? `<span class="pill-neutral">${agg.atomicAttacks} attack${agg.atomicAttacks>1?'s':''}</span>` : '');
+  const critTag = agg.critCount ? ` <span class="crit">${agg.critCount}× CRIT</span>` : '';
+  const dmgHtml = dmgEntries.length ? dmgEntries.map(([type,total])=>`<b class="dmg-total">${total}</b> ${esc(type)}`).join(' + ') : '';
+  return `<div class="agg-summary">${pills}${critTag} ${dmgHtml}</div>`;
+}
+
+function renderLogCard(entry){
+  const cls = entry.kind==='multi' ? 'multi' : (entry.atype==='throw'?'throw':entry.atype);
+  return `<div class="log-card ${cls}">
+    <div class="log-card-hdr">
+      <span class="lname">${esc(entry.entryName)}</span>
+      <span class="lwho">${esc(entry.creatureName)}</span>
+    </div>
+    ${applyToRowHtml(entry)}
+    ${aggregateHtml(entry)}
+    ${renderInstancesHtml(entry)}
+  </div>`;
+}
+
+function renderCardResult(key, entry){
+  const cls = entry.kind==='multi' ? 'multi' : (entry.atype==='throw'?'throw':entry.atype);
+  return `<div class="card-result ${cls}">
+    <div class="card-result-hdr">
+      <span>${esc(entry.entryName)} result</span>
+      <button class="iconx" data-act="dismiss-result" data-key="${key}" title="Dismiss">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    ${applyToRowHtml(entry)}
+    ${aggregateHtml(entry)}
+    ${renderInstancesHtml(entry)}
+  </div>`;
+}
+
+function renderLog(){
+  const el = document.getElementById('logList');
+  if(!log.length){
+    el.innerHTML = `<div class="log-empty">Rolls will appear here.<br>Click any Roll button on a creature's card.</div>`;
+    return;
+  }
+  el.innerHTML = log.map(renderLogCard).join('');
+}
+
+/* ============================== modal ============================== */
+function openAddModal(){
+  editingCreature = null;
+  modalMode = 'paste';
+  renderModal();
+}
+function openEditModal(creature){
+  editingCreature = structuredClone(creature);
+  modalMode = 'edit';
+  renderModal();
+}
+function openOptionsModal(){
+  editingCreature = null;
+  modalMode = 'options';
+  renderModal();
+}
+function closeModal(){
+  editingCreature = null;
+  modalMode = null;
+  document.getElementById('modalRoot').innerHTML = '';
+}
+
+function damageRowsHtml(entry){
+  return (entry.dmg||[]).map((d,idx)=>`
+    <div class="ee-inline">
+      <input class="dice" placeholder="2d6+3" value="${esc(d.dice)}" data-eid="${entry.id}" data-dmgidx="${idx}" data-dfield="dice">
+      <input class="dtype" placeholder="damage type" value="${esc(d.type||'')}" data-eid="${entry.id}" data-dmgidx="${idx}" data-dfield="type">
+      <button class="iconx" data-act="remove-dmg" data-eid="${entry.id}" data-dmgidx="${idx}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`).join('') + `<button class="smallbtn" data-act="add-dmg" data-eid="${entry.id}">+ Damage part</button>`;
+}
+
+function multiRowsHtml(entry, allEntries){
+  const attackOpts = allEntries.filter(e=>e.kind==='attack' && e.id!==entry.id);
+  return (entry.multi||[]).map((p,idx)=>`
+    <div class="ee-inline">
+      <select data-eid="${entry.id}" data-midx="${idx}" data-mfield="ref">
+        <option value="">Select attack…</option>
+        ${attackOpts.map(a=>`<option value="${a.id}" ${a.id===p.ref?'selected':''}>${esc(a.name)}</option>`).join('')}
+      </select>
+      × <input class="dc" style="width:44px" type="number" min="1" value="${p.count}" data-eid="${entry.id}" data-midx="${idx}" data-mfield="count">
+      <button class="iconx" data-act="remove-multipart" data-eid="${entry.id}" data-midx="${idx}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`).join('') + `<button class="smallbtn" data-act="add-multipart" data-eid="${entry.id}">+ Linked attack</button>`;
+}
+
+function entryEditHtml(entry, allEntries){
+  let kindFields = '';
+  if(entry.kind==='attack'){
+    kindFields = `
+      <div class="ee-inline"><label class="chk">To-hit</label><input class="dc" type="number" value="${entry.toHit??0}" data-eid="${entry.id}" data-efield="toHit"></div>
+      ${damageRowsHtml(entry)}`;
+  } else if(entry.kind==='save'){
+    entry.save = entry.save || { dc:10, ability:'DEX', half:false };
+    kindFields = `
+      <div class="ee-inline">
+        <label class="chk">DC</label><input class="dc" type="number" value="${entry.save.dc}" data-eid="${entry.id}" data-efield="save.dc">
+        <select data-eid="${entry.id}" data-efield="save.ability">
+          ${ABILS.map(a=>`<option value="${a.toUpperCase()}" ${entry.save.ability===a.toUpperCase()?'selected':''}>${ABIL_FULL[a]}</option>`).join('')}
+        </select>
+        <label class="chk"><input type="checkbox" ${entry.save.half?'checked':''} data-eid="${entry.id}" data-efield="save.half"> Half on success</label>
+      </div>
+      ${damageRowsHtml(entry)}`;
+  } else if(entry.kind==='multi'){
+    kindFields = multiRowsHtml(entry, allEntries);
+  }
+  return `<div class="entry-edit" data-eid="${entry.id}">
+    <div class="ee-row1">
+      <input class="ee-name" value="${esc(entry.name)}" data-eid="${entry.id}" data-efield="name">
+      <select data-eid="${entry.id}" data-efield="atype">
+        ${ATYPE_ORDER.map(t=>`<option value="${t}" ${entry.atype===t?'selected':''}>${ATYPE_LABEL[t]}</option>`).join('')}
+      </select>
+      <select data-eid="${entry.id}" data-efield="kind">
+        <option value="other" ${entry.kind==='other'?'selected':''}>Text only</option>
+        <option value="attack" ${entry.kind==='attack'?'selected':''}>Attack roll</option>
+        <option value="save" ${entry.kind==='save'?'selected':''}>Forces a save</option>
+        <option value="multi" ${entry.kind==='multi'?'selected':''}>Multiattack</option>
+      </select>
+      <button class="iconx" data-act="remove-entry" data-eid="${entry.id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="ee-kindfields">${kindFields}</div>
+    <textarea class="ee-text" placeholder="Description (shown as reference, not rolled)" data-eid="${entry.id}" data-efield="text">${esc(entry.text||'')}</textarea>
+  </div>`;
+}
+
+function renderModal(){
+  const root = document.getElementById('modalRoot');
+  if(modalMode==='options'){
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal" style="max-width:440px;">
+        <div class="modal-hdr"><h2>Options</h2><button class="icobtn" data-act="close-modal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="sec-title" style="margin-top:0;">Critical hit damage</div>
+          <label class="opt-row"><input type="radio" name="critMode" value="double" ${settings.critMode==='double'?'checked':''}> <div><b>Double the dice</b><div class="hint" style="margin:2px 0 0;">Standard 5e rule — roll double the number of damage dice.</div></div></label>
+          <label class="opt-row"><input type="radio" name="critMode" value="perkins" ${settings.critMode==='perkins'?'checked':''}> <div><b>Max damage + reroll ("Perkins crit")</b><div class="hint" style="margin:2px 0 0;">Take the dice's maximum value, then roll the same dice again and add both together. Same average, less swingy.</div></div></label>
+          <div class="hint" style="margin-top:10px;">Only affects attack-roll crits — a save-forced effect (breath weapon, etc.) never crits.</div>
+        </div>
+        <div class="modal-ft" style="justify-content:flex-end;">
+          <button class="btn primary" data-act="close-modal">Done</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+  if(modalMode==='paste'){
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal">
+        <div class="modal-hdr"><h2>Add a creature</h2><button class="icobtn" data-act="close-modal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="hint">Paste a statblock below — copied text or HTML from D&D Beyond, a PDF, or anywhere else. I'll pull out AC, HP, ability scores, saves, and every attack / save / multiattack I can find. You'll get a chance to check and fix everything before saving.</div>
+          <textarea class="paste" id="pasteArea" placeholder="Paste statblock text or HTML here…"></textarea>
+        </div>
+        <div class="modal-ft">
+          <button class="btn" data-act="start-blank">Skip — start blank</button>
+          <button class="btn primary" data-act="parse-statblock">Parse statblock →</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+  if(modalMode==='edit'){
+    const c = editingCreature;
+    const groupsHtml = ATYPE_ORDER.map(t=>{
+      const entries = c.entries.filter(e=>e.atype===t);
+      return `<div class="sec-title">${ATYPE_LABEL[t]} <button class="smallbtn" data-act="add-entry" data-atype="${t}">+ Add</button></div>
+        ${entries.length ? entries.map(e=>entryEditHtml(e, c.entries)).join('') : '<div class="hint" style="margin:0 0 8px;">None yet.</div>'}`;
+    }).join('');
+
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal">
+        <div class="modal-hdr"><h2>${c.id ? 'Edit creature' : 'Review parsed creature'}</h2><button class="icobtn" data-act="close-modal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          ${!c.id ? `<div class="parsed-name-banner">Parsed "${esc(c.name)}" — check the fields below, especially anything the parser might have missed, then save.</div>` : ''}
+          <div class="field-row">
+            <div class="field" style="flex:2"><label>Name</label><input value="${esc(c.name)}" data-cfield="name"></div>
+            <div class="field"><label>AC</label><input type="number" value="${c.ac??''}" data-cfield="ac"></div>
+            <div class="field"><label>HP</label><input type="number" value="${c.hp??''}" data-cfield="hp"></div>
+            <div class="field"><label>CR</label><input value="${esc(c.cr||'')}" data-cfield="cr"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Speed</label><input value="${esc(c.speed||'')}" data-cfield="speed"></div>
+            <div class="field"><label>Proficiency bonus</label><input type="number" value="${c.pb??''}" data-cfield="pb"></div>
+          </div>
+          <div class="sec-title">Ability scores &amp; saves</div>
+          <div class="abil-grid">
+            ${ABILS.map(a=>`<div class="abil-col">
+              <div class="albl">${a.toUpperCase()}</div>
+              <input type="number" value="${c.abilities[a].score}" title="Score" data-abil="${a}" data-abilfield="score">
+              <div class="savelbl">save</div>
+              <input type="number" value="${c.saves[a]}" title="Save bonus" data-abil="${a}" data-abilfield="save">
+            </div>`).join('')}
+          </div>
+          <div class="sec-title">Resistances, senses &amp; more</div>
+          <div class="field-row">
+            <div class="field"><label>Resistances</label><input value="${esc(c.resistances||'')}" data-cfield="resistances"></div>
+            <div class="field"><label>Vulnerabilities</label><input value="${esc(c.vulnerabilities||'')}" data-cfield="vulnerabilities"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Immunities</label><input value="${esc(c.immunities||'')}" data-cfield="immunities"></div>
+            <div class="field"><label>Condition immunities</label><input value="${esc(c.condImmunities||'')}" data-cfield="condImmunities"></div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:2"><label>Senses</label><input value="${esc(c.senses||'')}" data-cfield="senses"></div>
+            <div class="field" style="flex:2"><label>Skills</label><input value="${esc(c.skills||'')}" data-cfield="skills"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Saving throws</label><input value="${esc(c.savingThrowsText||'')}" data-cfield="savingThrowsText"></div>
+            <div class="field"><label>Languages</label><input value="${esc(c.languages||'')}" data-cfield="languages"></div>
+            <div class="field"><label>Gear</label><input value="${esc(c.gear||'')}" data-cfield="gear"></div>
+          </div>
+          ${groupsHtml}
+        </div>
+        <div class="modal-ft">
+          <button class="btn" data-act="close-modal">Cancel</button>
+          <button class="btn primary" data-act="save-creature">Save to library</button>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+/* ============================== event handling ============================== */
+function setCreatureField(field, value){
+  if(!editingCreature) return;
+  if(field==='ac' || field==='hp' || field==='pb') editingCreature[field] = value===''? null : +value;
+  else editingCreature[field] = value;
+}
+function getEntry(id){ return editingCreature.entries.find(e=>e.id===id); }
+function setEntryField(eid, field, value){
+  const e = getEntry(eid);
+  if(!e) return;
+  if(field==='toHit') e.toHit = +value;
+  else if(field==='save.dc'){ e.save = e.save||{}; e.save.dc = +value; }
+  else if(field==='save.ability'){ e.save = e.save||{}; e.save.ability = value; }
+  else if(field==='save.half'){ e.save = e.save||{}; e.save.half = value; }
+  else e[field] = value;
+}
+function setDmgField(eid, idx, field, value){
+  const e = getEntry(eid);
+  if(!e || !e.dmg || !e.dmg[idx]) return;
+  e.dmg[idx][field] = value;
+}
+function setMultiField(eid, idx, field, value){
+  const e = getEntry(eid);
+  if(!e || !e.multi || !e.multi[idx]) return;
+  if(field==='count') e.multi[idx].count = clamp(parseInt(value,10)||1,1,20);
+  else e.multi[idx][field] = value;
+}
+
+function onGlobalInput(e){
+  const t = e.target;
+  if(t.id==='searchInput'){ librarySearch = t.value; renderLibrary(); return; }
+  if(t.dataset.tid && t.dataset.tfield){
+    const tgt = targets.items.find(x=>x.id===t.dataset.tid);
+    if(!tgt) return;
+    const f = t.dataset.tfield;
+    if(f==='ac' || f==='acAdj'){
+      // some mobile keyboards autocorrect a typed hyphen into an en-dash or
+      // minus sign (- => – or −) which Number() doesn't recognise as a sign
+      // at all - normalise those back to a plain ASCII "-" before parsing.
+      const raw = t.value.replace(/[‐-―−]/g, '-');
+      // "-" or "+" typed alone (about to become "-3") parses as NaN - don't
+      // stomp the real value with that mid-keystroke, just wait for the next digit
+      const n = raw===''? 0 : +raw;
+      if(!Number.isNaN(n)) tgt[f] = n;
+    }
+    else tgt[f] = t.value;
+    if(f==='ac' || f==='acAdj'){
+      const effCell = document.getElementById('tgteff-'+tgt.id);
+      if(effCell) effCell.textContent = (tgt.ac||0)+(tgt.acAdj||0);
+    }
+    if(tgt.id===targets.activeId){
+      const tagEl = document.getElementById('targetsActiveTag');
+      if(tagEl) tagEl.textContent = `Targeting ${tgt.name || 'unnamed'} (AC ${(tgt.ac||0)+(tgt.acAdj||0)})`;
+    }
+    return;
+  }
+  if(!editingCreature) return;
+  if(t.dataset.cfield){ setCreatureField(t.dataset.cfield, t.value); return; }
+  if(t.dataset.abil && t.dataset.abilfield){
+    const a = t.dataset.abil, f = t.dataset.abilfield;
+    if(f==='score') editingCreature.abilities[a].score = +t.value;
+    else if(f==='save') editingCreature.saves[a] = +t.value;
+    return;
+  }
+  if(t.dataset.dfield && t.dataset.eid){ setDmgField(t.dataset.eid, +t.dataset.dmgidx, t.dataset.dfield, t.value); return; }
+  if(t.dataset.mfield && t.dataset.eid && t.tagName==='INPUT'){ setMultiField(t.dataset.eid, +t.dataset.midx, t.dataset.mfield, t.value); return; }
+  if(t.dataset.efield && t.dataset.eid){ setEntryField(t.dataset.eid, t.dataset.efield, t.value); return; }
+}
+
+function onGlobalChange(e){
+  const t = e.target;
+  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); return; }
+  if(t.classList.contains('apply-target-select')){
+    if(t.value===''){ clearResultTarget(t.dataset.eid); return; }
+    const tgt = targets.items.find(x=>x.id===t.value);
+    if(!tgt) return;
+    applyResultToAC(t.dataset.eid, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
+    return;
+  }
+  if(t.classList.contains('apply-ac-input')){
+    const raw = t.value.trim();
+    if(raw===''){ clearResultTarget(t.dataset.eid); return; }
+    const ac = parseInt(raw,10);
+    if(!Number.isFinite(ac)) return;
+    const match = findTargetByAC(ac);
+    applyResultToAC(t.dataset.eid, ac, match?match.name:'');
+    return;
+  }
+  if(!editingCreature) return;
+  if(t.dataset.efield==='kind' && t.dataset.eid){
+    const entry = getEntry(t.dataset.eid);
+    entry.kind = t.value;
+    if(entry.kind==='attack'){ entry.dmg = entry.dmg||[]; }
+    if(entry.kind==='save'){ entry.save = entry.save||{dc:10,ability:'DEX',half:false}; entry.dmg = entry.dmg||[]; }
+    if(entry.kind==='multi'){ entry.multi = entry.multi||[]; }
+    renderModal();
+    return;
+  }
+  if(t.dataset.mfield==='ref' && t.dataset.eid){ setMultiField(t.dataset.eid, +t.dataset.midx, 'ref', t.value); return; }
+  if(t.dataset.efield==='save.half' && t.dataset.eid){ setEntryField(t.dataset.eid, 'save.half', t.checked); return; }
+  onGlobalInput(e);
+}
+
+function setBoardOptimistic(items){
+  // update the local view immediately instead of waiting on a round-trip, so
+  // rapid clicks (e.g. the +/- instance stepper) always compute from fresh state
+  board = { items };
+  renderBoard();
+  renderLibrary();
+  Store.setBoard(items);
+}
+
+function onGlobalClick(e){
+  const el = e.target.closest('[data-act]');
+  const seg = e.target.closest('#rollModeSeg button');
+  if(seg){ rollMode = seg.dataset.mode; document.querySelectorAll('#rollModeSeg button').forEach(b=>b.classList.toggle('active', b===seg)); return; }
+  if(!el) return;
+  const act = el.dataset.act;
+
+  switch(act){
+    case 'toggle-sidebar': document.getElementById('libraryPanel').classList.toggle('open'); document.getElementById('scrim').classList.toggle('show'); break;
+    case 'toggle-logpanel': {
+      const panel = document.getElementById('logPanel');
+      panel.classList.toggle('open');
+      document.getElementById('scrim').classList.toggle('show');
+      if(panel.classList.contains('open')){ logUnread = 0; renderLogBadge(); }
+      break;
+    }
+    case 'clear-log': {
+      log = [];
+      lastResults.clear();
+      resultsById.clear();
+      logUnread = 0;
+      renderLog();
+      renderLogBadge();
+      renderBoard();
+      break;
+    }
+
+    case 'open-add-modal': openAddModal(); break;
+    case 'open-options': openOptionsModal(); break;
+    case 'close-modal': closeModal(); break;
+    case 'overlay-close': if(e.target===el) closeModal(); break;
+    case 'start-blank': editingCreature = blankCreature(); modalMode='edit'; renderModal(); break;
+    case 'parse-statblock': {
+      const raw = document.getElementById('pasteArea').value;
+      if(!raw.trim()){ editingCreature = blankCreature(); } else { editingCreature = parseStatblock(raw); }
+      modalMode = 'edit'; renderModal();
+      break;
+    }
+    case 'save-creature': {
+      if(!editingCreature.name || !editingCreature.name.trim()) editingCreature.name = 'Unnamed Creature';
+      Store.saveCreature(editingCreature);
+      closeModal();
+      break;
+    }
+    case 'add-entry': {
+      editingCreature.entries.push({ id: uid('e'), name:'New Entry', atype: el.dataset.atype, kind:'other', dmg:[], text:'' });
+      renderModal();
+      break;
+    }
+    case 'remove-entry': editingCreature.entries = editingCreature.entries.filter(x=>x.id!==el.dataset.eid); renderModal(); break;
+    case 'add-dmg': { const en = getEntry(el.dataset.eid); en.dmg = en.dmg||[]; en.dmg.push({dice:'1d6',type:''}); renderModal(); break; }
+    case 'remove-dmg': { const en = getEntry(el.dataset.eid); en.dmg.splice(+el.dataset.dmgidx,1); renderModal(); break; }
+    case 'add-multipart': { const en = getEntry(el.dataset.eid); en.multi = en.multi||[]; en.multi.push({ref:'',count:1}); renderModal(); break; }
+    case 'remove-multipart': { const en = getEntry(el.dataset.eid); en.multi.splice(+el.dataset.midx,1); renderModal(); break; }
+
+    case 'toggle-fav': {
+      const c = creatures.find(x=>x.id===el.dataset.creature);
+      if(c){ c.favourite = !c.favourite; Store.saveCreature(c); }
+      break;
+    }
+    case 'edit-creature': { const c = creatures.find(x=>x.id===el.dataset.creature); if(c) openEditModal(c); break; }
+    case 'delete-creature': {
+      const c = creatures.find(x=>x.id===el.dataset.creature);
+      if(c && confirm(`Delete "${c.name}" from your library? This can't be undone.`)){
+        Store.deleteCreature(c.id);
+        Store.setBoard(board.items.filter(it=>it.creatureId!==c.id));
+      }
+      break;
+    }
+    case 'add-board': {
+      const items = board.items.slice();
+      items.push({ boardId: uid('b'), creatureId: el.dataset.creature, count: 1 });
+      setBoardOptimistic(items);
+      break;
+    }
+    case 'remove-board': setBoardOptimistic(board.items.filter(it=>it.boardId!==el.dataset.board)); break;
+    case 'count-inc': {
+      const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count+1,1,50)} : it);
+      setBoardOptimistic(items);
+      break;
+    }
+    case 'count-dec': {
+      const items = board.items.map(it=> it.boardId===el.dataset.board ? {...it, count: clamp(it.count-1,1,50)} : it);
+      setBoardOptimistic(items);
+      break;
+    }
+    case 'toggle-group': {
+      const gid = el.dataset.gid;
+      if(collapsedGroups.has(gid)) collapsedGroups.delete(gid); else collapsedGroups.add(gid);
+      renderBoard();
+      break;
+    }
+    case 'toggle-targets': document.getElementById('targetsPanel').classList.toggle('collapsed'); break;
+    case 'add-target': {
+      const items = targets.items.slice();
+      items.push({ id: uid('t'), name:'', ac:null, acAdj:0, notes:'' });
+      setTargetsOptimistic({ items, activeId: targets.activeId });
+      break;
+    }
+    case 'remove-target': {
+      const items = targets.items.filter(t=>t.id!==el.dataset.tid);
+      const activeId = targets.activeId===el.dataset.tid ? null : targets.activeId;
+      setTargetsOptimistic({ items, activeId });
+      break;
+    }
+    case 'set-active-target': {
+      const wasActive = targets.activeId===el.dataset.tid;
+      const activeId = wasActive ? null : el.dataset.tid;
+      setTargetsOptimistic({ items: targets.items, activeId });
+      // clicking a target doesn't just arm it for future rolls - it also
+      // applies (or un-applies) it to whatever was most recently rolled, so
+      // "oops, that was aimed at Kira" is one click, not a hunt for a dropdown
+      if(log.length && firstAttackInst(log[0])){
+        if(activeId){
+          const tgt = targets.items.find(t=>t.id===activeId);
+          if(tgt) applyResultToAC(log[0].id, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
+        } else if(wasActive){
+          clearResultTarget(log[0].id);
+        }
+      }
+      break;
+    }
+    case 'roll-entry': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const c = item && creatures.find(cr=>cr.id===item.creatureId);
+      const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
+      if(c && entry) rollEntry(c, entry, item.count, item.boardId);
+      break;
+    }
+    case 'roll-save': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const c = item && creatures.find(cr=>cr.id===item.creatureId);
+      if(c) rollSaveThrow(c, el.dataset.abil, item.count, item.boardId);
+      break;
+    }
+    case 'dismiss-result': lastResults.delete(el.dataset.key); renderBoard(); break;
+  }
+}
+
+document.addEventListener('click', onGlobalClick);
+document.addEventListener('input', onGlobalInput);
+document.addEventListener('change', onGlobalChange);
+document.addEventListener('focusout', e=>{
+  if(e.target.dataset.tid && e.target.dataset.tfield){
+    Store.setTargets(targets);
+    // renderTargets() itself refuses to run while a field in the table is
+    // focused (see there for why) - once focus actually settles elsewhere,
+    // catch up on anything a rebuild would have shown while we were skipping.
+    setTimeout(renderTargets, 0);
+  }
+});
+document.getElementById('scrim').addEventListener('click', ()=>{
+  document.getElementById('libraryPanel').classList.remove('open');
+  document.getElementById('logPanel').classList.remove('open');
+  document.getElementById('scrim').classList.remove('show');
+});
+
+/* ============================== init ============================== */
+Store.onCreatures(list=>{ creatures = list; renderLibrary(); renderBoard(); });
+Store.onBoard(data=>{ board = data && data.items ? data : { items: [] }; renderBoard(); renderLibrary(); });
+Store.onTargets(data=>{
+  const incoming = data && data.items ? data : { items: [], activeId: null };
+  // targets is local-only and every call here is synchronous (see Store), but
+  // still don't rebuild the table out from under a field the user is mid-edit
+  // on - a rebuild would yank focus and any keystroke that hasn't blurred yet.
+  if(isTargetFieldFocused()) return;
+  targets = incoming;
+  renderTargets();
+});
+Store.init();
+renderLog();
+</script>
+</body>
+</html>

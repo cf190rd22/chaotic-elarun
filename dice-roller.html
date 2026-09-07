@@ -136,6 +136,10 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-mode-btn:hover{color:var(--text);}
 .card-mode-btn.adv.active{background:var(--green-dim);border-color:var(--green-bd);color:var(--green);}
 .card-mode-btn.dis.active{background:var(--red-dim);border-color:var(--red-bd);color:var(--red);}
+/* a labelled "MIX" pill, not another bare symbol - it used to be a "+" here,
+   identical to the actual + right next to it that adds instances, which made
+   it invisible: nothing told the two apart, so there was nothing to tap */
+.card-mode-btn.mix{width:auto;padding:0 6px;font-size:9px;letter-spacing:.02em;}
 .card-mode-btn.mix.open{border-color:var(--accent-bd);color:var(--accent);}
 .card-mode-btn.mix.active{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .card.collapsed .card-hdr{border-bottom:none;}
@@ -191,7 +195,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .roll-mode-btn.adv:hover{background:rgba(107,203,139,.25);}
 .roll-mode-btn.dis{background:var(--red-dim);border:1px solid var(--red-bd);color:var(--red);}
 .roll-mode-btn.dis:hover{background:rgba(240,112,112,.22);}
-.mix-toggle{width:20px;height:20px;flex-shrink:0;border-radius:5px;background:var(--surface-3);border:1px solid var(--border);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;line-height:1;}
+.mix-toggle{width:auto;height:20px;padding:0 6px;flex-shrink:0;border-radius:5px;background:var(--surface-3);border:1px solid var(--border);color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;letter-spacing:.02em;line-height:1;font-family:'DM Mono',monospace;}
 .mix-toggle:hover{border-color:var(--accent-bd);color:var(--text);}
 .mix-toggle.open{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .mix-panel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin:2px 0 6px;}
@@ -1677,7 +1681,7 @@ function renderCard(item){
           const mixKey = item.boardId+'::'+e.id;
           const showMix = canAdv && item.count>1;
           const mix = showMix ? peekMixState(mixKey) : null;
-          const mixBtn = showMix ? `<button class="mix-toggle${mix&&mix.open?' open':''}" data-act="toggle-mix" data-key="${mixKey}" data-board="${item.boardId}" data-entry="${e.id}" title="Roll a mix of normal/advantage/disadvantage">+</button>` : '';
+          const mixBtn = showMix ? `<button class="mix-toggle${mix&&mix.open?' open':''}" data-act="toggle-mix" data-key="${mixKey}" data-board="${item.boardId}" data-entry="${e.id}" title="Roll a mix of normal/advantage/disadvantage">MIX</button>` : '';
           const mixPanel = (mix && mix.open) ? (()=>{
             const row = (field,label,cls)=>`<div class="mix-row">
               <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
@@ -1770,7 +1774,7 @@ function renderCard(item){
   const rawCmix = peekCardMix(item.boardId);
   const cmix = (item.count>1 || (rawCmix && rawCmix.open)) ? rawCmix : null;
   const cmixEngaged = cardMixEngaged(cmix, item.count);
-  const cardMixBtn = (item.count>1 || (cmix && cmix.open)) ? `<button class="card-mode-btn mix${cmix&&cmix.open?' open':''}${cmixEngaged?' active':''}" data-act="toggle-card-mix" data-board="${item.boardId}" title="Split this creature's instances across normal/advantage/disadvantage">+</button>` : '';
+  const cardMixBtn = (item.count>1 || (cmix && cmix.open)) ? `<button class="card-mode-btn mix${cmix&&cmix.open?' open':''}${cmixEngaged?' active':''}" data-act="toggle-card-mix" data-board="${item.boardId}" title="Split this creature's instances across normal/advantage/disadvantage">MIX</button>` : '';
   const cardMixPanel = (cmix && cmix.open) ? (()=>{
     const row = (field,label,cls)=>`<div class="mix-row">
       <span class="mix-lbl${cls?' '+cls:''}">${label}</span>

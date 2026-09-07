@@ -165,11 +165,14 @@ select,option{background:var(--surface-2);color:var(--text);}
 .group.collapsed .chev{transform:rotate(-90deg);}
 .group.collapsed .group-body{display:none;}
 .group-body{padding:0 13px 8px;}
-.entry{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--border-light);}
+.ref-groups-row{display:flex;flex-wrap:wrap;}
+.ref-groups-row>.group{flex:1 1 180px;min-width:180px;}
+.ref-groups-row>.group:first-child{border-right:1px solid var(--border-light);}
+.entry{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-top:1px solid var(--border-light);}
 .entry:first-child{border-top:none;}
 .entry-main{flex:1;min-width:0;}
 .entry-name{font-size:12.5px;font-weight:600;}
-.entry-tag-row{display:flex;align-items:center;gap:5px;margin-top:1px;}
+.entry-tag-row{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:1px;}
 .entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;}
 .entry-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;opacity:.75;}
 .entry-desc-toggle{background:none;border:none;color:var(--text-mute);cursor:pointer;padding:2px;display:flex;flex-shrink:0;}
@@ -571,7 +574,7 @@ function extractName(flat, lines, isHtml, raw){
 
 function matchNum(text, re){ const m = re.exec(text); return m ? +m[1] : null; }
 
-const META_LINE_RE = /^(Skills|Senses|Languages|Damage\s+\w+|Resist(?:ances?)?|Vulnerab\w*|Cond(?:ition)?\.?\s*Immun\w*|Immunities|Saving\s+Throws?|Proficiency\s+Bonus|Gear|Challenge|CR|Armor\s+Class|Hit\s+Points|Speed)\b/i;
+const META_LINE_RE = /^(Skills|Senses|Languages|Damage\s+\w+|Resist(?:ances?)?|Vulnerab\w*|Cond(?:ition)?\.?\s*Immun\w*|Immunities|Saving\s+Throws?|Proficiency\s+Bonus|Gear|Challenge|CR|Armor\s+Class|Hit\s+Points|Speed|Source)\b/i;
 
 function extractAbilities(flat){
   const abilities = {};
@@ -597,6 +600,18 @@ function extractAbilities(flat){
   }
   ABILS.forEach(k=>{ if(!abilities[k]) abilities[k] = { score:10, mod:0 }; });
   return abilities;
+}
+
+// Front matter (Skills/Resistances/Senses/etc) always comes before the first
+// real section heading. A phrase like "...must succeed on a DC 14 saving
+// throw or lose 3 hp..." can turn up naturally deep inside an action's own
+// body text - without cutting the search off at the first heading, that
+// phrase gets mistaken for a genuine "Saving Throws:" front-matter label and
+// swallows whatever follows it, corrupting the field with action-body prose.
+const SECTION_HEADING_RE = /\b(?:Traits|Actions|Bonus\s+Actions|Reactions|Legendary\s+Actions|Lair\s+Actions|Mythic\s+Actions|Special\s+Abilit(?:y|ies))\b/i;
+function frontMatterOf(flat){
+  const m = SECTION_HEADING_RE.exec(flat);
+  return m ? flat.slice(0, m.index) : flat;
 }
 
 // Splits the front-matter of a statblock (everything before Actions/Traits) into
@@ -736,10 +751,11 @@ function parseStatblock(raw){
   const pb = pbM ? +pbM[1] : null;
 
   const abilities = extractAbilities(flat);
-  const info = extractFrontMatterFields(flat);
+  const frontMatter = frontMatterOf(flat);
+  const info = extractFrontMatterFields(frontMatter);
 
   const saves = {};
-  const savesLineM = /Saving Throws?\s*:?\s*([^\n]+)/i.exec(flat);
+  const savesLineM = /Saving Throws?\s*:?\s*([^\n]+)/i.exec(frontMatter);
   if(savesLineM){
     const svRe = /(Str|Dex|Con|Int|Wis|Cha)\w*\s*([+\-−]\s*\d+)/gi;
     let sm;
@@ -748,7 +764,7 @@ function parseStatblock(raw){
   ABILS.forEach(k=>{ if(saves[k]==null) saves[k] = abilities[k].mod; });
 
   const SECTIONS = {
-    'traits':'trait','trait':'trait',
+    'traits':'trait','trait':'trait','special abilities':'trait','special ability':'trait',
     'actions':'action','action':'action',
     'bonus actions':'bonus','bonus action':'bonus',
     'reactions':'reaction','reaction':'reaction',
@@ -999,6 +1015,12 @@ let log = [];
 let rollMode = 'normal';
 let librarySearch = '';
 let collapsedGroups = new Set();
+// Traits/Info default to collapsed everywhere (including a card that was
+// already on the board before this feature existed) rather than tracking
+// who's closed - so this tracks the opposite: gids the user explicitly
+// opened. See isRefGroupCollapsed/toggle-group.
+let expandedRefGroups = new Set();
+function isRefGroupCollapsed(gid){ return !expandedRefGroups.has(gid); }
 let collapsedCards = new Set(); // board item ids minimised to just the header row
 let openDescs = new Set(); // "boardId::entryId" keys with their full text expanded
 let mixState = new Map(); // "boardId::entryId" -> {open, normal, adv, disadv} for the per-roll mode-mix panel
@@ -1386,10 +1408,19 @@ function rollEntry(creature, entry, times, boardId, modeOverride){
 function rollSaveThrow(creature, abil, times, boardId){
   times = clamp(times,1,50);
   const mod = (creature.saves && creature.saves[abil]!=null) ? creature.saves[abil] : (creature.abilities[abil]?.mod||0);
+  // "who's casting" - the currently-targeted player doubles as the caster
+  // here. Their Spell DC (added alongside AC in the Targets panel) is what
+  // a monster's save is actually rolled against when it's the PLAYER
+  // forcing the save, not the monster's own DC forcing the player's.
+  const tgt = activeTarget();
+  const spellDC = tgt && tgt.spellDC ? { name: tgt.name||'caster', dc: tgt.spellDC } : null;
   const instances = [];
   for(let i=1;i<=times;i++){
     const { rolls, chosen } = rollD20(rollMode);
-    instances.push({ i, kind:'throw', d20rolls: rolls, chosen, mod, total: chosen+mod });
+    const total = chosen+mod;
+    const inst = { i, kind:'throw', d20rolls: rolls, chosen, mod, total };
+    if(spellDC) inst.vsSpellDC = { name: spellDC.name, dc: spellDC.dc, success: total >= spellDC.dc };
+    instances.push(inst);
   }
   const logEntry = { creatureName: creature.name, entryName: ABIL_FULL[abil]+' Save', atype:'throw', kind:'throw', instances };
   pushLog(logEntry);
@@ -1506,9 +1537,13 @@ function renderCard(item){
   (c.entries||[]).forEach(e=>{ (groups[e.atype]||groups.action).push(e); });
 
   const saveResult = lastResults.get(item.boardId+'::save');
+  const savingCaster = activeTarget();
   const savesHtml = ABILS.map(a=>{
     const mod = (c.saves && c.saves[a]!=null) ? c.saves[a] : (c.abilities[a]?.mod||0);
-    return `<button class="save-btn" data-act="roll-save" data-board="${item.boardId}" data-abil="${a}" title="Roll ${ABIL_FULL[a]} save">
+    const title = savingCaster && savingCaster.spellDC
+      ? `Roll ${ABIL_FULL[a]} save vs ${savingCaster.name||'target'}'s Spell DC ${savingCaster.spellDC}`
+      : `Roll ${ABIL_FULL[a]} save`;
+    return `<button class="save-btn" data-act="roll-save" data-board="${item.boardId}" data-abil="${a}" title="${esc(title)}">
       <span class="lbl">${a.toUpperCase()}</span><span class="val">${fmtMod(mod)}</span>
     </button>`;
   }).join('');
@@ -1516,7 +1551,7 @@ function renderCard(item){
   const groupHtmlByType = {};
   ATYPE_ORDER.filter(t=>groups[t].length).forEach(t=>{
     const gid = item.boardId+'-'+t;
-    const collapsed = collapsedGroups.has(gid);
+    const collapsed = t==='trait' ? isRefGroupCollapsed(gid) : collapsedGroups.has(gid);
     const body = groups[t].map(e=>{
           // group placement (t) is just display bucketing; whether it's rollable
           // depends on what the entry actually is - a "trait" bucket can still
@@ -1616,7 +1651,7 @@ function renderCard(item){
 
   const infoRows = infoRowsHtml(c);
   const infoGid = item.boardId+'-info';
-  const infoCollapsed = collapsedGroups.has(infoGid);
+  const infoCollapsed = isRefGroupCollapsed(infoGid);
   const infoGroupHtml = infoRows ? `<div class="group g-trait ${infoCollapsed?'collapsed':''}">
       <div class="group-hdr" data-act="toggle-group" data-gid="${infoGid}">
         <span class="swatch"></span>Info
@@ -1628,7 +1663,12 @@ function renderCard(item){
   // regeneration etc) a DM wants to check WITHOUT wading through the
   // rollable Actions/Reactions first - so they sit right under the AC/HP
   // pills, each still independently collapsible to stay compact.
-  const referenceGroupsHtml = (groupHtmlByType['trait']||'') + infoGroupHtml;
+  const traitHtml = groupHtmlByType['trait']||'';
+  // side by side when both exist (still stacks on a narrow card - see CSS),
+  // otherwise just whichever one is actually there.
+  const referenceGroupsHtml = (traitHtml && infoGroupHtml)
+    ? `<div class="ref-groups-row">${traitHtml}${infoGroupHtml}</div>`
+    : (traitHtml + infoGroupHtml);
   const actionGroupsHtml = ['action','bonus','reaction','legendary'].map(t=>groupHtmlByType[t]||'').join('');
 
   const cardCollapsed = collapsedCards.has(item.boardId);
@@ -1930,7 +1970,13 @@ function renderInstancesHtml(entry){
     let core;
     if(inst.kind==='attack') core = attackCore(inst);
     else if(inst.kind==='save') core = saveCore(inst);
-    else if(inst.kind==='throw') core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
+    else if(inst.kind==='throw'){
+      core = `d20 ${d20Str(inst)} ${fmtMod(inst.mod)} = <b>${inst.total}</b>`;
+      if(inst.vsSpellDC){
+        const who = `vs ${esc(inst.vsSpellDC.name)}'s DC ${esc(inst.vsSpellDC.dc)}`;
+        core += ` <span class="${inst.vsSpellDC.success?'hit-yes':'hit-no'}">${who}: ${inst.vsSpellDC.success?'SUCCESS':'FAIL'}</span>`;
+      }
+    }
     else core = esc(inst.text||'');
     return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core} ${applyHtml}</div>`;
   }).join('');
@@ -2025,6 +2071,20 @@ function applyToRowHtml(entry){
   </div>`;
 }
 
+// Save-throw rolls (kind:'throw') aren't attacks - no hit/miss, no damage -
+// but once they're checked against a player's spell DC (activeTarget's
+// spellDC, see rollSaveThrow) the DM wants the same at-a-glance "how many
+// actually resisted this" tally attacks already get from aggregateHtml.
+function throwAggregateHtml(entry){
+  if(entry.kind!=='throw') return '';
+  const withDC = entry.instances.filter(i=>i.vsSpellDC);
+  if(!withDC.length) return '';
+  const succ = withDC.filter(i=>i.vsSpellDC.success).length;
+  const fail = withDC.length - succ;
+  const { name, dc } = withDC[0].vsSpellDC;
+  return `<div class="agg-summary">vs ${esc(name)}'s DC ${esc(dc)}: ${succ?`<span class="pill-hit">${succ} SUCCESS</span>`:''}${fail?`<span class="pill-miss">${fail} FAIL</span>`:''}</div>`;
+}
+
 function aggregateHtml(entry){
   const agg = aggregateEntry(entry);
   const dmgEntries = Object.entries(agg.dmgByType);
@@ -2046,6 +2106,7 @@ function renderLogCard(entry){
     </div>
     ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
+    ${throwAggregateHtml(entry)}
     ${perTargetHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
@@ -2062,6 +2123,7 @@ function renderCardResult(key, entry){
     </div>
     ${applyToRowHtml(entry)}
     ${aggregateHtml(entry)}
+    ${throwAggregateHtml(entry)}
     ${perTargetHtml(entry)}
     ${renderInstancesHtml(entry)}
   </div>`;
@@ -2511,11 +2573,6 @@ function onGlobalClick(e){
       const items = board.items.slice();
       const boardId = uid('b');
       items.push({ boardId, creatureId: el.dataset.creature, count: 1 });
-      // Traits/Info now sit right under the AC/HP pills, ahead of Actions -
-      // start them collapsed so a creature with a long traits list doesn't
-      // push the actual rollable actions off the bottom of the card.
-      collapsedGroups.add(boardId+'-trait');
-      collapsedGroups.add(boardId+'-info');
       setBoardOptimistic(items);
       break;
     }
@@ -2610,7 +2667,11 @@ function onGlobalClick(e){
     }
     case 'toggle-group': {
       const gid = el.dataset.gid;
-      if(collapsedGroups.has(gid)) collapsedGroups.delete(gid); else collapsedGroups.add(gid);
+      if(gid.endsWith('-trait') || gid.endsWith('-info')){
+        if(expandedRefGroups.has(gid)) expandedRefGroups.delete(gid); else expandedRefGroups.add(gid);
+      } else {
+        if(collapsedGroups.has(gid)) collapsedGroups.delete(gid); else collapsedGroups.add(gid);
+      }
       renderBoard();
       break;
     }
@@ -2642,6 +2703,10 @@ function onGlobalClick(e){
           clearResultTarget(log[0].id);
         }
       }
+      // the save buttons' tooltips name the active target's Spell DC -
+      // setTargetsOptimistic only re-renders the targets table, so the board
+      // needs its own render to pick that up too.
+      renderBoard();
       break;
     }
     case 'roll-entry': {

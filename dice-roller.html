@@ -141,6 +141,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
+.pill-crit{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
 .count-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto;}
 .count-stepper button{width:24px;height:24px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:14px;line-height:1;border-radius:5px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
@@ -155,9 +156,10 @@ select,option{background:var(--surface-2);color:var(--text);}
    generously too (30x24, not 20x19) so it reads as an obviously separate,
    obviously tappable field next to the +/- buttons, not a sliver of text
    wedged between them.*/
-.count-input{width:30px;height:24px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;}
+.count-input{width:30px;height:24px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:0;box-sizing:border-box;-moz-appearance:textfield;appearance:textfield;}
 .count-input:hover{border-color:var(--accent-bd);}
 .count-input:focus{outline:none;border-color:var(--accent-bd);box-shadow:0 0 0 1px var(--accent-bd);}
+.count-input::-webkit-inner-spin-button,.count-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .count-lbl{font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-left:5px;}
 
 .saves-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:9px 13px;border-bottom:1px solid var(--border-light);}
@@ -211,9 +213,10 @@ select,option{background:var(--surface-2);color:var(--text);}
 .mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
 /* 16px font-size, not 11px, and a real tap-sized box - same iOS
    auto-zoom-on-focus issue as .count-input, see the comment there. */
-.mix-stepper .mix-input{width:26px;height:22px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;}
+.mix-stepper .mix-input{width:26px;height:22px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0;box-sizing:border-box;-moz-appearance:textfield;appearance:textfield;}
 .mix-stepper .mix-input:hover{border-color:var(--accent-bd);}
 .mix-stepper .mix-input:focus{outline:none;border-color:var(--accent-bd);box-shadow:0 0 0 1px var(--accent-bd);}
+.mix-stepper .mix-input::-webkit-inner-spin-button,.mix-stepper .mix-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
 .mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}
@@ -809,12 +812,12 @@ function parseStatblock(raw){
   const entries = rawEntries.map(buildEntry);
   linkMultiattacks(entries);
 
-  return { name, ac, hp, speed, cr, pb, abilities, saves, entries, favourite:false, ...info };
+  return { name, ac, hp, speed, cr, pb, critRange:20, abilities, saves, entries, favourite:false, ...info };
 }
 
 function blankCreature(){
   return {
-    name:'New Creature', ac:null, hp:null, speed:'', cr:'', pb:null,
+    name:'New Creature', ac:null, hp:null, speed:'', cr:'', pb:null, critRange:20,
     abilities: Object.fromEntries(ABILS.map(k=>[k,{score:10,mod:0}])),
     saves: Object.fromEntries(ABILS.map(k=>[k,0])),
     entries: [], favourite:false,
@@ -1404,9 +1407,9 @@ function clearInstanceTarget(entryId, instIdx){
   renderLog();
 }
 
-function rollAttackInstance(entry, modeOverride){
+function rollAttackInstance(entry, modeOverride, critMin){
   const { rolls, chosen } = rollD20(modeOverride || rollMode);
-  const isCrit = chosen === 20;
+  const isCrit = chosen >= (critMin||20);
   const isFumble = chosen === 1;
   const total = isFumble ? chosen : chosen + (entry.toHit||0);
   const dmg = (entry.dmg||[]).map(c=>rollDamage(c, isCrit));
@@ -1434,6 +1437,7 @@ function rollSaveEffectInstance(entry){
 function rollEntry(creature, entry, times, boardId, modeOverride){
   times = clamp(times,1,50);
   const modeFor = i => Array.isArray(modeOverride) ? modeOverride[i-1] : modeOverride;
+  const critMin = creature.critRange || 20;
   let logEntry;
   if(entry.kind==='multi'){
     const byId = Object.fromEntries(creature.entries.map(e=>[e.id,e]));
@@ -1444,7 +1448,7 @@ function rollEntry(creature, entry, times, boardId, modeOverride){
         const sub = byId[part.ref];
         if(!sub) return;
         for(let j=0;j<part.count;j++){
-          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub, modeFor(i)) });
+          if(sub.kind==='attack') subs.push({ name: sub.name, kind:'attack', ...rollAttackInstance(sub, modeFor(i), critMin) });
           else if(sub.kind==='save') subs.push({ name: sub.name, kind:'save', ...rollSaveEffectInstance(sub) });
         }
       });
@@ -1454,7 +1458,7 @@ function rollEntry(creature, entry, times, boardId, modeOverride){
   } else {
     const instances = [];
     for(let i=1;i<=times;i++){
-      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry, modeFor(i)) });
+      if(entry.kind==='attack') instances.push({ i, kind:'attack', ...rollAttackInstance(entry, modeFor(i), critMin) });
       else if(entry.kind==='save') instances.push({ i, kind:'save', ...rollSaveEffectInstance(entry) });
       else instances.push({ i, kind:'note', text: entry.text });
     }
@@ -1659,7 +1663,7 @@ function renderCard(item){
               <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
               <div class="mix-stepper">
                 <button data-act="mix-dec" data-key="${mixKey}" data-field="${field}">−</button>
-                <input type="text" inputmode="numeric" pattern="[0-9]*" class="mix-input" data-key="${mixKey}" data-field="${field}" value="${mix[field]}" title="Click to type an exact number">
+                <input type="number" class="mix-input" data-key="${mixKey}" data-field="${field}" value="${mix[field]}" title="Click to type an exact number">
                 <button data-act="mix-inc" data-key="${mixKey}" data-field="${field}">+</button>
               </div>
             </div>`;
@@ -1749,7 +1753,7 @@ function renderCard(item){
       <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
       <div class="mix-stepper">
         <button data-act="card-mix-dec" data-board="${item.boardId}" data-field="${field}">−</button>
-        <input type="text" inputmode="numeric" pattern="[0-9]*" class="mix-input" data-board="${item.boardId}" data-field="${field}" value="${cmix[field]}" title="Click to type an exact number">
+        <input type="number" class="mix-input" data-board="${item.boardId}" data-field="${field}" value="${cmix[field]}" title="Click to type an exact number">
         <button data-act="card-mix-inc" data-board="${item.boardId}" data-field="${field}">+</button>
       </div>
     </div>`;
@@ -1779,7 +1783,7 @@ function renderCard(item){
         </div>
         <div class="count-stepper">
           <button data-act="count-dec" data-board="${item.boardId}">−</button>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" class="count-input" data-board="${item.boardId}" value="${item.count}" title="Click to type an exact number">
+          <input type="number" class="count-input" data-board="${item.boardId}" value="${item.count}" title="Click to type an exact number">
           <button data-act="count-inc" data-board="${item.boardId}">+</button>
         </div>
         <button class="icobtn" data-act="remove-board" data-board="${item.boardId}" title="Remove from board">
@@ -1791,6 +1795,7 @@ function renderCard(item){
         ${c.hp?`<span class="pill">HP ${c.hp}</span>`:''}
         ${c.speed?`<span class="pill">${esc(c.speed)}</span>`:''}
         ${c.cr?`<span class="pill">CR ${esc(c.cr)}</span>`:''}
+        ${c.critRange && c.critRange<20 ? `<span class="pill pill-crit" title="Attack rolls crit on ${c.critRange}-20, not just a natural 20">⚡ Crits ${c.critRange}-20</span>` : ''}
         <span class="count-lbl">× instances</span>
       </div>
     </div>
@@ -1825,6 +1830,19 @@ function renderBoard(){
 function isTargetFieldFocused(){
   const el = document.activeElement;
   return !!(el && el.matches && el.matches('#targetsBody input[data-tid]'));
+}
+// Same idea for the board's own count-input/mix-input fields. A blur on one
+// of these schedules a deferred renderBoard() purely for cosmetic catch-up
+// (see the focusout handler) - but if the user has ALREADY moved on to a
+// sibling field (typing into the mix panel's next box, say) by the time
+// that deferred call actually fires, running it anyway tears down and
+// rebuilds the very field they're now mid-edit on, discarding focus and
+// whatever they've typed so far (confirmed - see test_ui_tweaks.js). Skip
+// it in that case; the sibling field's own eventual blur schedules its own
+// catch-up, so nothing is lost, just deferred one more hop.
+function isBoardFieldFocused(){
+  const el = document.activeElement;
+  return !!(el && (el.classList.contains('count-input') || el.classList.contains('mix-input')));
 }
 
 function renderTargets(){
@@ -2396,6 +2414,13 @@ function renderModal(){
           <div class="field-row">
             <div class="field"><label>Speed</label><input value="${esc(c.speed||'')}" data-cfield="speed"></div>
             <div class="field"><label>Proficiency bonus</label><input type="number" value="${c.pb??''}" data-cfield="pb"></div>
+            <div class="field"><label>Crits on</label>
+              <select data-cfield="critRange">
+                <option value="20" ${(c.critRange||20)===20?'selected':''}>20 only</option>
+                <option value="19" ${c.critRange===19?'selected':''}>19–20</option>
+                <option value="18" ${c.critRange===18?'selected':''}>18–20</option>
+              </select>
+            </div>
           </div>
           <div class="sec-title">Ability scores &amp; saves</div>
           <div class="abil-grid">
@@ -2439,6 +2464,7 @@ function renderModal(){
 function setCreatureField(field, value){
   if(!editingCreature) return;
   if(field==='ac' || field==='hp' || field==='pb') editingCreature[field] = value===''? null : +value;
+  else if(field==='critRange') editingCreature[field] = +value;
   else editingCreature[field] = value;
 }
 function getEntry(id){ return editingCreature.entries.find(e=>e.id===id); }
@@ -2912,7 +2938,7 @@ document.addEventListener('focusout', e=>{
     // synchronous renderBoard() from here would; with the render-skip
     // guard above, Store.setBoard() itself no longer supplies this for
     // free the way it used to.
-    setTimeout(renderBoard, 0);
+    setTimeout(()=>{ if(!isBoardFieldFocused()) renderBoard(); }, 0);
   }
   if(e.target.classList.contains('mix-input')){
     // mixState/cardMix are pure local UI state, never written to Store - so
@@ -2937,7 +2963,7 @@ document.addEventListener('focusout', e=>{
         e.target.value = s[field];
       }
     }
-    setTimeout(renderBoard, 0);
+    setTimeout(()=>{ if(!isBoardFieldFocused()) renderBoard(); }, 0);
   }
 });
 document.addEventListener('keydown', e=>{

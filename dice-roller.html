@@ -2765,26 +2765,34 @@ document.addEventListener('focusout', e=>{
     const item = board.items.find(it=>it.boardId===bid);
     if(item){
       syncCardMixTotal(bid, item.count);
-      // patch this exact input's own value in place - never call
-      // renderBoard()/setBoardOptimistic() directly from here. Tapping
-      // another board control (a mix stepper, the mix toggle, etc) starts
-      // with a mousedown that fires this blur first; a full board rebuild
-      // at that instant destroys the very button the user's pointer is
-      // already down on, and the click that follows is silently dropped by
-      // the browser (confirmed - see test_repro_broken3.js). Patching only
-      // this one node can never orphan anything else, so it's always safe.
+      // patch this exact input's own value in place rather than calling
+      // renderBoard() from here - a full rebuild triggered by a mousedown-
+      // caused blur, right as the user's pointer is already down on some
+      // OTHER board button, destroys that button and the browser silently
+      // drops the click that follows (confirmed - see test_repro_broken3.js).
       e.target.value = item.count;
     }
-    // Store.setBoard() is just as dangerous as calling renderBoard()
-    // directly - its onBoard subscription (near the bottom of this file)
-    // renders the whole board too, and that fires fast enough off the
-    // await inside setBoard() to still land inside the same mousedown-to-
-    // mouseup window above. Deferring the whole call with setTimeout(0)
-    // pushes it past that window - any board control that depends on the
-    // new count (the mix toggle appearing, the mix panel's totals) catches
-    // up the moment any other click renders the board for its own reason,
-    // so nothing is lost by waiting the extra tick to persist it.
-    setTimeout(()=>{ Store.setBoard(board.items); ghMaybeAutoPush(); }, 0);
+    // this alone used to be just as dangerous as calling renderBoard()
+    // directly, because the onBoard subscription below re-renders the whole
+    // board too - immediately in local-storage mode, or whenever a db-backed
+    // artifact's write confirmation comes back over the wire, which can land
+    // at any later moment including mid-click on something else entirely.
+    // That subscription now skips rendering anything it didn't actually
+    // change (see Store.onBoard), so this can go out synchronously and
+    // reliably instead of gambling a setTimeout(0) against however long a
+    // real tap or a network round trip takes - and it can't be lost to a
+    // backgrounded tab throttling a deferred timer either.
+    Store.setBoard(board.items);
+    ghMaybeAutoPush();
+    // the data itself is safely persisted and this input's own value is
+    // already patched above - this is purely cosmetic catch-up for
+    // anything ELSE that depends on the new count (the mix toggle
+    // appearing once it crosses 1, the mix panel's totals). Deferred so it
+    // can't land mid-click on some other board control the way a
+    // synchronous renderBoard() from here would; with the render-skip
+    // guard above, Store.setBoard() itself no longer supplies this for
+    // free the way it used to.
+    setTimeout(renderBoard, 0);
   }
 });
 document.addEventListener('keydown', e=>{
@@ -2801,7 +2809,26 @@ document.getElementById('scrim').addEventListener('click', ()=>{
 
 /* ============================== init ============================== */
 Store.onCreatures(list=>{ creatures = list; renderLibrary(); renderBoard(); });
-Store.onBoard(data=>{ board = data && data.items ? data : { items: [] }; renderBoard(); renderLibrary(); });
+Store.onBoard(data=>{
+  const incoming = data && data.items ? data : { items: [] };
+  // When this artifact runs with the db capability, Store.setBoard() is an
+  // async network write, and this listener fires whenever that write's
+  // confirmation comes back over the wire - completely independent of
+  // anything in this tab's own event loop. setBoardOptimistic already
+  // applied the same change to `board` (and rendered it) the instant the
+  // user acted, so nine times out of ten this snapshot is just an echo of
+  // our own write arriving late. Rendering it anyway is redundant at best;
+  // at worst it's a full board rebuild landing at a totally unpredictable
+  // moment - including mid-click on some other button, which silently eats
+  // that click the same way the count-input's blur handler used to (see
+  // there). Comparing against what's already showing and skipping the
+  // no-op case removes the danger at its actual source, in every mode,
+  // rather than trying to out-time it from one call site at a time.
+  if(JSON.stringify(incoming.items)===JSON.stringify(board.items)) return;
+  board = incoming;
+  renderBoard();
+  renderLibrary();
+});
 Store.onTargets(data=>{
   const incoming = data && data.items ? data : { items: [], activeId: null };
   // targets is local-only and every call here is synchronous (see Store), but

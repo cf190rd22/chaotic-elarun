@@ -222,6 +222,12 @@ select,option{background:var(--surface-2);color:var(--text);}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
+/* a spellcasting-style trait's frequency groups (At Will, N/Day, ...), each
+   on its own line and set off with a left rule so they read as a sub-list
+   nested under the trait rather than one run-on paragraph */
+.spell-preamble{margin-bottom:4px;}
+.spell-freq-list{display:flex;flex-direction:column;gap:4px;margin-top:4px;padding-left:10px;border-left:2px solid var(--border-light);}
+.spell-freq-lbl{color:var(--text);}
 .roll-btn{display:flex;align-items:center;gap:5px;background:var(--accent-dim);border:1px solid var(--accent-bd);color:var(--accent);border-radius:7px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .roll-btn:hover{filter:brightness(1.25);}
 .roll-btn.bonus{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
@@ -250,9 +256,17 @@ select,option{background:var(--surface-2);color:var(--text);}
 .ft-link:hover{color:var(--red);}
 
 /* ---------- log panel ---------- */
-.logpanel{width:298px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
-.log-hdr{padding:12px 14px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.logpanel{width:298px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg);transition:width .15s ease;}
+.logpanel.collapsed{width:40px;}
+.log-hdr{padding:12px 14px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.log-hdr .smallbtn{margin-left:auto;}
+.logpanel.collapsed .log-hdr{padding:12px 7px;justify-content:center;}
+.logpanel.collapsed .log-hdr-title,.logpanel.collapsed .log-hdr .smallbtn,.logpanel.collapsed .log-list{display:none;}
 .log-hdr-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-mute);font-family:'DM Mono',monospace;}
+.logpanel-collapse-btn{flex-shrink:0;background:none;border:1px solid var(--border);border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;}
+.logpanel-collapse-btn:hover{background:var(--surface-2);color:var(--text);}
+.logpanel-collapse-btn svg{transition:transform .15s;}
+.logpanel.collapsed .logpanel-collapse-btn svg{transform:rotate(180deg);}
 .log-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column-reverse;gap:8px;}
 .log-empty{margin:auto;color:var(--text-mute);font-size:12px;text-align:center;padding:20px;line-height:1.6;}
 .log-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;}
@@ -385,6 +399,14 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
   .library-collapse-btn{display:none;}
   .logpanel{position:fixed;right:0;top:54px;bottom:0;width:80vw;max-width:320px;transform:translateX(101%);transition:transform .2s ease;z-index:40;}
   .logpanel.open{transform:translateX(0);}
+  /* same reasoning as the library's collapsed override just above - the
+     drawer swipe-in already covers "hide this panel" here, so the desktop
+     minimise-to-a-strip state shouldn't also apply */
+  .logpanel.collapsed{width:80vw;max-width:320px;}
+  .logpanel.collapsed .log-hdr-title{display:inline;}
+  .logpanel.collapsed .log-hdr .smallbtn{display:inline-block;}
+  .logpanel.collapsed .log-list{display:flex;}
+  .logpanel-collapse-btn{display:none;}
   .card{width:100%;}
   .brand .sub{display:none;}
 }
@@ -486,6 +508,9 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 
     <aside class="logpanel" id="logPanel">
       <div class="log-hdr">
+        <button class="logpanel-collapse-btn" data-act="toggle-logpanel-collapse" title="Minimise roll log">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
         <span class="log-hdr-title">Roll log</span>
         <button class="smallbtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">Clear</button>
       </div>
@@ -525,6 +550,29 @@ function highlightText(text){
   return esc(text)
     .replace(SAVE_RE, m=>`<span class="pill-dc">${m}</span>`)
     .replace(CONDITIONS_RE, m=>`<span class="pill-cond">${m}</span>`);
+}
+// Spellcasting/innate-spellcasting/psionics traits list their spells as one
+// long run-on sentence - "At Will: X, Y. 3/Day Each: Z. 1/Day: W" - grouped
+// by usage frequency but with no visual break between groups. Splits that
+// into a nested list, one row per frequency, so "everything At Will" reads
+// apart from "everything 1/day" instead of one undifferentiated paragraph.
+// Falls through to plain highlightText untouched for any description that
+// doesn't actually contain this pattern.
+const SPELL_FREQ_RE = /\b(At Will|Constant|\d+e?\s*\/\s*(?:Day|Week|Month|Short Rest|Long Rest|Rest)(?:\s+Each)?)\s*:\s*/gi;
+function formatEntryDesc(text){
+  const matches = [...text.matchAll(SPELL_FREQ_RE)];
+  if(!matches.length) return highlightText(text);
+  const preamble = text.slice(0, matches[0].index).trim();
+  const rows = matches.map((m,i)=>{
+    const label = m[1].replace(/\s+/g,' ').trim();
+    const start = m.index + m[0].length;
+    const end = i+1 < matches.length ? matches[i+1].index : text.length;
+    const spells = text.slice(start, end).trim().replace(/[.;]+$/, '');
+    return { label, spells };
+  });
+  const preambleHtml = preamble ? `<div class="spell-preamble">${highlightText(preamble)}</div>` : '';
+  const rowsHtml = rows.map(r=>`<div class="spell-freq-row"><b class="spell-freq-lbl">${esc(r.label)}:</b> ${highlightText(r.spells)}</div>`).join('');
+  return preambleHtml + `<div class="spell-freq-list">${rowsHtml}</div>`;
 }
 function fmtMod(n){ n = n||0; return (n>=0?'+':'')+n; }
 function clamp(n,lo,hi){ return Math.max(lo,Math.min(hi,n)); }
@@ -1714,7 +1762,7 @@ function renderCard(item){
           // depends on what the entry actually is - a "trait" bucket can still
           // hold a real attack/save if the parser found one before any heading.
           if(t==='trait' && e.kind==='other'){
-            return `<div class="trait-row"><b>${esc(e.name)}.</b> ${highlightText(e.text)}</div>`;
+            return `<div class="trait-row"><b>${esc(e.name)}.</b> ${formatEntryDesc(e.text)}</div>`;
           }
           const tag = entryTagText(e, c);
           const btnClass = e.kind==='multi' ? 'multi' : (t==='bonus'?'bonus':t==='reaction'?'reaction':t==='legendary'?'legendary':'');
@@ -1791,7 +1839,7 @@ function renderCard(item){
               </button>
             </div>
           </div>
-          ${descOpen && e.text ? `<div class="entry-desc-body">${highlightText(e.text)}</div>` : ''}
+          ${descOpen && e.text ? `<div class="entry-desc-body">${formatEntryDesc(e.text)}</div>` : ''}
           ${mixPanel}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
@@ -2678,6 +2726,7 @@ function onGlobalClick(e){
   switch(act){
     case 'toggle-sidebar': document.getElementById('libraryPanel').classList.toggle('open'); document.getElementById('scrim').classList.toggle('show'); break;
     case 'toggle-library-collapse': document.getElementById('libraryPanel').classList.toggle('collapsed'); break;
+    case 'toggle-logpanel-collapse': document.getElementById('logPanel').classList.toggle('collapsed'); break;
     case 'toggle-logpanel': {
       const panel = document.getElementById('logPanel');
       panel.classList.toggle('open');

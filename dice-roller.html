@@ -99,7 +99,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .targets-active-tag{color:var(--green);font-weight:700;text-transform:none;letter-spacing:0;font-size:10.5px;font-family:'DM Sans',sans-serif;}
 .targets-body{padding:0 16px 12px;}
 .targets-table-wrap{overflow-x:auto;}
-.targets-table{width:100%;min-width:420px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
+.targets-table{width:100%;min-width:600px;table-layout:fixed;border-collapse:collapse;font-size:12px;}
 .targets-table th{text-align:left;font-size:9.5px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;font-weight:700;padding:4px 6px;white-space:nowrap;overflow:hidden;}
 .targets-table td{padding:3px 6px;overflow:hidden;}
 .targets-table tr.active td{background:var(--green-dim);}
@@ -109,6 +109,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .targets-table col.c-ac{width:52px;}
 .targets-table col.c-acadj{width:64px;}
 .targets-table col.c-eff{width:42px;}
+.targets-table col.c-spelldc{width:64px;}
 .targets-table col.c-del{width:26px;}
 .targets-table td:nth-child(5){color:var(--text-2);font-family:'DM Mono',monospace;font-weight:700;text-align:center;}
 .target-radio{width:16px;height:16px;border-radius:99px;border:2px solid var(--border);background:none;cursor:pointer;padding:0;flex-shrink:0;}
@@ -170,6 +171,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .entry-name{font-size:12.5px;font-weight:600;}
 .entry-tag-row{display:flex;align-items:center;gap:5px;margin-top:1px;}
 .entry-tag{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;}
+.entry-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;opacity:.75;}
 .entry-desc-toggle{background:none;border:none;color:var(--text-mute);cursor:pointer;padding:2px;display:flex;flex-shrink:0;}
 .entry-desc-toggle:hover{color:var(--text-2);}
 .entry-desc-toggle svg{transition:transform .15s;}
@@ -439,9 +441,9 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
           <div class="targets-table-wrap">
             <table class="targets-table">
               <colgroup>
-                <col class="c-radio"><col><col class="c-ac"><col class="c-acadj"><col class="c-eff"><col><col class="c-del">
+                <col class="c-radio"><col class="c-name"><col class="c-ac"><col class="c-acadj"><col class="c-eff"><col class="c-spelldc"><col class="c-notes"><col class="c-del">
               </colgroup>
-              <thead><tr><th></th><th>Name</th><th>AC</th><th>AC adj.</th><th>Eff.</th><th>Notes</th><th></th></tr></thead>
+              <thead><tr><th></th><th>Name</th><th>AC</th><th>AC adj.</th><th>Eff.</th><th>Spell DC</th><th>Notes</th><th></th></tr></thead>
               <tbody id="targetsBody"></tbody>
             </table>
           </div>
@@ -481,11 +483,13 @@ function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'
 // sentence to spot the one word that actually matters at the table.
 const CONDITIONS = ['Blinded','Charmed','Deafened','Exhaustion','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious'];
 const CONDITIONS_RE = new RegExp('\\b('+CONDITIONS.join('|')+')\\b', 'gi');
-// Same idea for "DC 14 Dexterity saving throw" phrases in raw prose - the
-// structured tag line already pills these for attacks/saves (see
-// entryTagText/attackCore/saveCore), but the full free-text description is
-// plain prose the parser never touched, so it needs its own pass.
-const SAVE_RE = /\bDC\s*\d+\s+(?:Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)(?:\s+saving\s+throw)?\b/gi;
+// Same idea for "DC 14 Dexterity saving throw" (and "DC 12 Wisdom
+// (Medicine)" ability checks) in raw prose - the structured tag line
+// already pills these for attacks/saves (see entryTagText/attackCore/
+// saveCore), but the full free-text description is plain prose the parser
+// never touched, so it needs its own pass. The optional skill parenthetical
+// is folded into the same pill rather than left dangling right after it.
+const SAVE_RE = /\bDC\s*\d+\s+(?:Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)(?:\s*\([A-Za-z][A-Za-z ]*\))?(?:\s+saving\s+throw)?(?!\w)/gi;
 function highlightText(text){
   return esc(text)
     .replace(SAVE_RE, m=>`<span class="pill-dc">${m}</span>`)
@@ -1437,17 +1441,36 @@ function renderLibrary(){
 // coloured pill so it stands out from the surrounding to-hit/damage text
 // instead of blending into one flat line. Every dynamic value is escaped
 // here since the caller no longer escapes the result itself.
+// Pulls reach/range/target-count straight out of the raw statblock prose -
+// there's no structured field for any of these, and they're exactly the
+// numbers a DM needs at a glance (can this thing even hit me from here, how
+// many of us does it catch) without having to open the full text every time.
+function attackMetaTag(text){
+  if(!text) return '';
+  const parts = [];
+  const reach = text.match(/\breach\s+\d+\s*ft\.?/i);
+  if(reach) parts.push(reach[0]);
+  const range = text.match(/\brange\s+\d+(?:\/\d+)?\s*ft\.?/i);
+  if(range) parts.push(range[0]);
+  const target = text.match(/\b(one|two|three|four|five)\s+(target|targets|creature|creatures)\b|\beach creature within[^,.;]*/i);
+  if(target) parts.push(target[0]);
+  return parts.join(' · ');
+}
 function entryTagText(entry, creature){
   if(entry.kind==='attack'){
     let t = esc(fmtMod(entry.toHit))+' to hit';
     if(entry.dmg && entry.dmg.length) t += ' · ' + esc(entry.dmg.map(d=>d.dice+(d.type?' '+d.type:'')).join(' + '));
     if(entry.extraSave) t += ` · <span class="pill-dc">DC ${esc(entry.extraSave.dc)} ${esc(entry.extraSave.ability)}</span>`;
+    const meta = attackMetaTag(entry.text);
+    if(meta) t += ` <span class="entry-meta">${esc(meta)}</span>`;
     return t;
   }
   if(entry.kind==='save'){
     let t = `<span class="pill-dc">DC ${esc(entry.save.dc)} ${esc(entry.save.ability)} save</span>`;
     if(entry.dmg && entry.dmg.length) t += ' · ' + esc(entry.dmg.map(d=>d.dice+(d.type?' '+d.type:'')).join(' + '));
     if(entry.save.half) t += ' (half on success)';
+    const meta = attackMetaTag(entry.text);
+    if(meta) t += ` <span class="entry-meta">${esc(meta)}</span>`;
     return t;
   }
   if(entry.kind==='multi'){
@@ -1490,7 +1513,8 @@ function renderCard(item){
     </button>`;
   }).join('');
 
-  const groupsHtml = ATYPE_ORDER.filter(t=>groups[t].length).map(t=>{
+  const groupHtmlByType = {};
+  ATYPE_ORDER.filter(t=>groups[t].length).forEach(t=>{
     const gid = item.boardId+'-'+t;
     const collapsed = collapsedGroups.has(gid);
     const body = groups[t].map(e=>{
@@ -1581,14 +1605,14 @@ function renderCard(item){
           ${mixPanel}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
-    return `<div class="group g-${t} ${collapsed?'collapsed':''}">
+    groupHtmlByType[t] = `<div class="group g-${t} ${collapsed?'collapsed':''}">
       <div class="group-hdr" data-act="toggle-group" data-gid="${gid}">
         <span class="swatch"></span>${ATYPE_LABEL[t]}
         <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
       <div class="group-body">${body}</div>
     </div>`;
-  }).join('');
+  });
 
   const infoRows = infoRowsHtml(c);
   const infoGid = item.boardId+'-info';
@@ -1600,6 +1624,12 @@ function renderCard(item){
       </div>
       <div class="group-body">${infoRows}</div>
     </div>` : '';
+  // Info/Traits are reference material (defenses, senses, passive
+  // regeneration etc) a DM wants to check WITHOUT wading through the
+  // rollable Actions/Reactions first - so they sit right under the AC/HP
+  // pills, each still independently collapsible to stay compact.
+  const referenceGroupsHtml = (groupHtmlByType['trait']||'') + infoGroupHtml;
+  const actionGroupsHtml = ['action','bonus','reaction','legendary'].map(t=>groupHtmlByType[t]||'').join('');
 
   const cardCollapsed = collapsedCards.has(item.boardId);
   const curCardMode = cardMode.get(item.boardId);
@@ -1660,10 +1690,10 @@ function renderCard(item){
     </div>
     <div class="card-body">
       ${cardMixPanel}
+      ${referenceGroupsHtml}
       <div class="saves-row">${savesHtml}</div>
       ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
-      ${groupsHtml}
-      ${infoGroupHtml}
+      ${actionGroupsHtml}
     </div>
   </div>`;
 }
@@ -1700,7 +1730,7 @@ function renderTargets(){
   // confirming a write) would yank focus and any unsaved keystrokes with it.
   if(isTargetFieldFocused()) return;
   if(!targets.items.length){
-    body.innerHTML = `<tr><td colspan="7" class="targets-empty">Add your players (or any NPC) here to see hit/miss against them when you roll an attack.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="8" class="targets-empty">Add your players (or any NPC) here to see hit/miss against them when you roll an attack.</td></tr>`;
   } else {
     // if the same rows already exist in the same order, patch their values in
     // place instead of replacing the HTML - a click on a button in this table
@@ -1727,6 +1757,7 @@ function renderTargets(){
         patch('name', t.name||'');
         patch('ac', t.ac??'');
         patch('acAdj', t.acAdj||'');
+        patch('spellDC', t.spellDC??'');
         patch('notes', t.notes||'');
         const effCell = tr.querySelector(`#tgteff-${t.id}`);
         if(effCell) effCell.textContent = (t.ac||0)+(t.acAdj||0);
@@ -1741,6 +1772,7 @@ function renderTargets(){
           <td><input type="text" inputmode="numeric" pattern="[0-9]*" value="${t.ac??''}" placeholder="AC" data-tid="${t.id}" data-tfield="ac"></td>
           <td><input type="text" inputmode="numeric" pattern="-?[0-9]*" value="${t.acAdj||''}" placeholder="±0" data-tid="${t.id}" data-tfield="acAdj"></td>
           <td id="tgteff-${t.id}">${eff}</td>
+          <td><input type="text" inputmode="numeric" pattern="[0-9]*" value="${t.spellDC??''}" placeholder="DC" title="This player's spell save DC" data-tid="${t.id}" data-tfield="spellDC"></td>
           <td><input value="${esc(t.notes||'')}" placeholder="Notes" data-tid="${t.id}" data-tfield="notes"></td>
           <td><button class="iconx" data-act="remove-target" data-tid="${t.id}" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
         </tr>`;
@@ -2306,7 +2338,7 @@ function onGlobalInput(e){
     const tgt = targets.items.find(x=>x.id===t.dataset.tid);
     if(!tgt) return;
     const f = t.dataset.tfield;
-    if(f==='ac' || f==='acAdj'){
+    if(f==='ac' || f==='acAdj' || f==='spellDC'){
       // some mobile keyboards autocorrect a typed hyphen into an en-dash or
       // minus sign (- => – or −) which Number() doesn't recognise as a sign
       // at all - normalise those back to a plain ASCII "-" before parsing.
@@ -2477,7 +2509,13 @@ function onGlobalClick(e){
     }
     case 'add-board': {
       const items = board.items.slice();
-      items.push({ boardId: uid('b'), creatureId: el.dataset.creature, count: 1 });
+      const boardId = uid('b');
+      items.push({ boardId, creatureId: el.dataset.creature, count: 1 });
+      // Traits/Info now sit right under the AC/HP pills, ahead of Actions -
+      // start them collapsed so a creature with a long traits list doesn't
+      // push the actual rollable actions off the bottom of the card.
+      collapsedGroups.add(boardId+'-trait');
+      collapsedGroups.add(boardId+'-info');
       setBoardOptimistic(items);
       break;
     }
@@ -2579,7 +2617,7 @@ function onGlobalClick(e){
     case 'toggle-targets': document.getElementById('targetsPanel').classList.toggle('collapsed'); break;
     case 'add-target': {
       const items = targets.items.slice();
-      items.push({ id: uid('t'), name:'', ac:null, acAdj:0, notes:'' });
+      items.push({ id: uid('t'), name:'', ac:null, acAdj:0, spellDC:null, notes:'' });
       setTargetsOptimistic({ items, activeId: targets.activeId });
       break;
     }
@@ -2660,8 +2698,28 @@ document.addEventListener('focusout', e=>{
   if(e.target.classList.contains('count-input')){
     const bid = e.target.dataset.board;
     const item = board.items.find(it=>it.boardId===bid);
-    if(item) syncCardMixTotal(bid, item.count);
-    setBoardOptimistic(board.items);
+    if(item){
+      syncCardMixTotal(bid, item.count);
+      // patch this exact input's own value in place - never call
+      // renderBoard()/setBoardOptimistic() directly from here. Tapping
+      // another board control (a mix stepper, the mix toggle, etc) starts
+      // with a mousedown that fires this blur first; a full board rebuild
+      // at that instant destroys the very button the user's pointer is
+      // already down on, and the click that follows is silently dropped by
+      // the browser (confirmed - see test_repro_broken3.js). Patching only
+      // this one node can never orphan anything else, so it's always safe.
+      e.target.value = item.count;
+    }
+    // Store.setBoard() is just as dangerous as calling renderBoard()
+    // directly - its onBoard subscription (near the bottom of this file)
+    // renders the whole board too, and that fires fast enough off the
+    // await inside setBoard() to still land inside the same mousedown-to-
+    // mouseup window above. Deferring the whole call with setTimeout(0)
+    // pushes it past that window - any board control that depends on the
+    // new count (the mix toggle appearing, the mix panel's totals) catches
+    // up the moment any other click renders the board for its own reason,
+    // so nothing is lost by waiting the extra tick to persist it.
+    setTimeout(()=>{ Store.setBoard(board.items); ghMaybeAutoPush(); }, 0);
   }
 });
 document.addEventListener('keydown', e=>{

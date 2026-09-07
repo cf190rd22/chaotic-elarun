@@ -206,7 +206,14 @@ select,option{background:var(--surface-2);color:var(--text);}
 .mix-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-3);border:1px solid var(--border);border-radius:7px;padding:3px;}
 .mix-stepper button{width:22px;height:22px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
 .mix-stepper button:hover{background:var(--surface);color:var(--text);}
-.mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
+/* typeable again - the +/- either side always worked, but typing a number
+   directly was asked for back once it was confirmed this device/browser can
+   actually take keyboard input into a normal field (unlike the Claude app,
+   where every text-input variant tried failed) */
+.mix-stepper .mix-input{width:26px;height:22px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:12px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0;}
+.mix-stepper .mix-input:focus{outline:none;border-color:var(--accent-bd);}
+.mix-stepper .mix-input::-webkit-inner-spin-button,.mix-stepper .mix-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.mix-stepper .mix-input{-moz-appearance:textfield;appearance:textfield;}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
 .mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}
@@ -257,10 +264,24 @@ select,option{background:var(--surface-2);color:var(--text);}
 .log-card-hdr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:5px;}
 .log-card-hdr .lname{font-size:11.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .log-card-hdr .lwho{font-size:9.5px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
-.log-inst{font-size:11.5px;font-family:'DM Mono',monospace;padding:4px 0;border-top:1px dashed var(--border-light);line-height:1.5;}
+/* flex row so the per-instance "vs..." select always sits flush against the
+   right edge (margin-left:auto) regardless of how long the roll text before
+   it happens to be - without this it just flows inline after that text, so
+   its left edge drifts row to row instead of forming a straight column */
+.log-inst{display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px;font-size:11.5px;font-family:'DM Mono',monospace;padding:4px 0;border-top:1px dashed var(--border-light);line-height:1.5;}
 .log-inst:first-child{border-top:none;}
 .log-inst.spaced{padding:7px 0;}
-.log-inst .idx{color:var(--text-mute);font-weight:700;margin-right:1px;}
+.log-inst-text{flex:1;min-width:0;}
+/* the multiattack variant is a <details> whose own <summary> and expanded
+   detail div need to stack vertically, not sit side by side as flex items -
+   .multi-inst summary already handles its own internal row layout below */
+.log-inst.multi-inst{display:block;}
+/* colours match the roll mode that instance actually used - normal/adv/
+   disadv - rather than an arbitrary per-instance colour, so it's clear at
+   a glance which numbers came from which mode in a mixed batch */
+.log-inst .idx{color:var(--text);font-weight:700;margin-right:1px;}
+.log-inst .idx.adv{color:var(--green);}
+.log-inst .idx.disadv{color:var(--red);}
 .crit{color:var(--amber);font-weight:700;}
 .fumble{color:var(--red);font-weight:700;}
 .dmg-total{color:var(--orange);font-weight:700;}
@@ -273,9 +294,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .apply-target-select:focus{border-color:var(--accent-bd);}
 .apply-ac-input{width:48px;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:3px 5px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-2);outline:none;}
 .apply-ac-input:focus{border-color:var(--accent-bd);}
-.inst-apply-select{background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 4px;font-size:10px;color:var(--text-2);outline:none;max-width:130px;margin-left:6px;}
+.inst-apply-select{background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 4px;font-size:10px;color:var(--text-2);outline:none;max-width:130px;margin-left:auto;flex-shrink:0;}
 .inst-apply-select:focus{border-color:var(--accent-bd);}
-.multi-inst summary .inst-apply-select{margin-left:auto;}
 .agg-summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace;padding:2px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--border-light);}
 .pill-hit,.pill-miss,.pill-neutral,.pill-dc,.pill-cond{display:inline-block;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-right:2px;}
 .pill-hit{background:var(--green-dim);color:var(--green);border:1px solid var(--green-bd);}
@@ -1102,31 +1122,49 @@ function stepCount(bid, delta){
   if(changed) syncCardMixTotal(bid, changed.count);
   setBoardOptimistic(items);
 }
+// Mutate-only versions, shared by the +/- steppers (which render right
+// away) and the typeable mix-input's blur commit (which needs to patch its
+// own value in place and defer the rest - see the focusout handler - rather
+// than force a synchronous re-render that could yank focus out from under
+// whichever field the user tabbed to next).
+function commitMixEntryInput(key, field, value){
+  const s = mixState.get(key);
+  if(!s) return false;
+  s[field] = clamp(value, 0, 50);
+  return true;
+}
+function commitCardMixInput(bid, field, value){
+  const s = cardMix.get(bid);
+  const item = board.items.find(it=>it.boardId===bid);
+  if(!s || !item) return false;
+  const newField = clamp(value, 0, 50);
+  const newSum = s.normal+s.adv+s.disadv - s[field] + newField;
+  if(newSum < 1) return false; // never let every instance vanish from the split
+  s[field] = newField;
+  // editing the split directly is now the source of truth - the instance
+  // count up top just follows it, so there's never a "totals X, needs to
+  // total Y" mismatch to reconcile by hand
+  item.count = newSum;
+  // once the split fully covers every instance, it's the thing driving
+  // rolls now - stand down the blunt all-or-nothing A/D toggle so only
+  // one override is ever in effect at a time
+  if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
+  return true;
+}
 function stepMixEntry(key, field, delta){
   const s = mixState.get(key);
   if(!s) return;
-  s[field] = clamp(s[field]+delta, 0, 50);
+  commitMixEntryInput(key, field, s[field]+delta);
   renderBoard();
 }
 function stepCardMix(bid, field, delta){
   const s = cardMix.get(bid);
   if(!s) return;
-  const newField = clamp(s[field]+delta, 0, 50);
-  const newSum = s.normal+s.adv+s.disadv - s[field] + newField;
-  if(newSum < 1) return; // never let every instance vanish from the split
-  s[field] = newField;
-  // editing the split directly is now the source of truth - the instance
-  // count up top just follows it, so there's never a "totals X, needs to
-  // total Y" mismatch to reconcile by hand
-  const item = board.items.find(it=>it.boardId===bid);
-  if(item){
-    item.count = newSum;
-    // once the split fully covers every instance, it's the thing driving
-    // rolls now - stand down the blunt all-or-nothing A/D toggle so only
-    // one override is ever in effect at a time
-    if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
-  }
-  setBoardOptimistic(board.items);
+  if(commitCardMixInput(bid, field, s[field]+delta)) setBoardOptimistic(board.items);
+}
+function isBoardFieldFocused(){
+  const el = document.activeElement;
+  return !!(el && el.classList && el.classList.contains('mix-input'));
 }
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm'
@@ -1392,6 +1430,11 @@ function firstAttackInst(logEntry){
   forEachAttackInst(logEntry, inst=>{ if(!found) found = inst; });
   return found;
 }
+// Remembers the last "apply to" target chosen for a specific creature's
+// specific attack (boardId + the attack's own entry id), so rolling that
+// same attack again picks the same target back up instead of resetting to
+// "None" every time - see rollEntry, which consults this on every new roll.
+let lastApplyTarget = new Map();
 function applyResultToAC(entryId, ac, name){
   const logEntry = resultsById.get(entryId);
   if(!logEntry) return;
@@ -1399,6 +1442,7 @@ function applyResultToAC(entryId, ac, name){
     const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=ac);
     inst.vsTarget = { name: name||'', ac, hit };
   });
+  if(logEntry.srcKey) lastApplyTarget.set(logEntry.srcKey, { ac, name: name||'' });
   renderBoard();
   renderLog();
 }
@@ -1406,6 +1450,7 @@ function clearResultTarget(entryId){
   const logEntry = resultsById.get(entryId);
   if(!logEntry) return;
   forEachAttackInst(logEntry, inst=>{ delete inst.vsTarget; });
+  if(logEntry.srcKey) lastApplyTarget.delete(logEntry.srcKey);
   renderBoard();
   renderLog();
 }
@@ -1434,7 +1479,8 @@ function clearInstanceTarget(entryId, instIdx){
 }
 
 function rollAttackInstance(entry, modeOverride, critMin){
-  const { rolls, chosen } = rollD20(modeOverride || rollMode);
+  const mode = modeOverride || rollMode;
+  const { rolls, chosen } = rollD20(mode);
   const isCrit = chosen >= (critMin||20);
   const isFumble = chosen === 1;
   const total = isFumble ? chosen : chosen + (entry.toHit||0);
@@ -1446,7 +1492,11 @@ function rollAttackInstance(entry, modeOverride, critMin){
     const hit = isFumble ? false : (isCrit ? true : total >= effAC);
     vsTarget = { name: tgt.name || 'target', ac: effAC, hit };
   }
-  return { d20rolls: rolls, chosen, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
+  // keep the mode that was actually rolled under, not just the resulting
+  // dice - inferring adv/disadv back from chosen vs max/min of the two
+  // rolls looks right until the two dice tie, at which point max and min
+  // are the same value and a disadvantage roll gets misread as advantage
+  return { d20rolls: rolls, chosen, mode, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
 }
 
 function rollSaveEffectInstance(entry){
@@ -1489,6 +1539,17 @@ function rollEntry(creature, entry, times, boardId, modeOverride){
       else instances.push({ i, kind:'note', text: entry.text });
     }
     logEntry = { creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind: entry.kind, instances };
+  }
+  if(boardId){
+    // carry forward whatever target this exact attack was last pointed at,
+    // rather than starting every fresh roll back at "None" - see
+    // lastApplyTarget and applyResultToAC/clearResultTarget
+    logEntry.srcKey = boardId+'::'+entry.id;
+    const remembered = lastApplyTarget.get(logEntry.srcKey);
+    if(remembered) forEachAttackInst(logEntry, inst=>{
+      const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=remembered.ac);
+      inst.vsTarget = { name: remembered.name, ac: remembered.ac, hit };
+    });
   }
   pushLog(logEntry);
   if(boardId){
@@ -1687,7 +1748,7 @@ function renderCard(item){
               <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
               <div class="mix-stepper">
                 <button data-act="mix-dec" data-key="${mixKey}" data-field="${field}">−</button>
-                <span>${mix[field]}</span>
+                <input type="number" class="mix-input" data-key="${mixKey}" data-field="${field}" value="${mix[field]}" min="0" max="50">
                 <button data-act="mix-inc" data-key="${mixKey}" data-field="${field}">+</button>
               </div>
             </div>`;
@@ -1780,7 +1841,7 @@ function renderCard(item){
       <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
       <div class="mix-stepper">
         <button data-act="card-mix-dec" data-board="${item.boardId}" data-field="${field}">−</button>
-        <span>${cmix[field]}</span>
+        <input type="number" class="mix-input" data-board="${item.boardId}" data-field="${field}" value="${cmix[field]}" min="0" max="50">
         <button data-act="card-mix-inc" data-board="${item.boardId}" data-field="${field}">+</button>
       </div>
     </div>`;
@@ -1979,20 +2040,20 @@ function attackCore(inst){
 function saveCore(inst){
   return `<span class="pill-dc">DC ${esc(inst.dc)} ${esc(inst.ability)} save</span>${inst.half?' (half on success)':''} — ${dmgHalfStr(inst.dmg.map(d=>({...d})))}`;
 }
-const INST_COLORS = ['accent','amber','teal','purple','orange','green'];
-function instBadge(i, colored){
-  const color = colored ? INST_COLORS[(i-1) % INST_COLORS.length] : null;
-  return `<span class="idx"${color?` style="color:var(--${color})"`:''}>#${i}</span>`;
+function instBadge(i, mode){
+  return `<span class="idx${mode?' '+mode:''}">#${i}</span>`;
 }
 // a card-level split assigns one mode per creature-copy (see rollEntry's
 // modeFor), applied uniformly to every sub-attack within that copy - so
-// the first attack roll found is representative of the whole instance
+// the first attack roll found is representative of the whole instance.
+// Reads the mode each attack was actually rolled under (stashed on the
+// instance by rollAttackInstance) rather than inferring it back from the
+// dice - a tied pair of d20s under disadvantage would otherwise look
+// identical to advantage, since max and min are the same value when equal.
 function instanceRollMode(topInst){
-  const rep = attackPartsOf(topInst).find(a=>a.d20rolls && a.d20rolls.length===2);
-  if(!rep) return null;
-  if(rep.chosen === Math.max(...rep.d20rolls)) return 'adv';
-  if(rep.chosen === Math.min(...rep.d20rolls)) return 'disadv';
-  return null;
+  const rep = attackPartsOf(topInst)[0];
+  if(!rep || !rep.mode || rep.mode==='normal') return null;
+  return rep.mode;
 }
 function multiSummarize(inst){
   const hasTarget = inst.subs.some(s=>s.vsTarget);
@@ -2032,13 +2093,16 @@ function instApplyToHtml(entry, instIdx){
   </select>`;
 }
 
-function renderMultiInstHtml(inst, colored, applyHtml){
+function renderMultiInstHtml(inst, applyHtml){
   const sum = multiSummarize(inst);
+  const instMode = instanceRollMode(inst);
   // with no target set there's no hit/miss to show, so the plain "N attacks"
   // pill is free to carry the adv/disadv colour instead - hit/miss already
   // own green/red once a target's involved, so leave those alone rather
-  // than layering a second meaning onto the same colours
-  const mode = sum.hasTarget ? null : instanceRollMode(inst);
+  // than layering a second meaning onto the same colours. The #N badge
+  // itself is a separate element, so it always gets the mode colour
+  // regardless - that's the whole point, telling instances apart by mode.
+  const mode = sum.hasTarget ? null : instMode;
   const pills = sum.hasTarget
     ? `${sum.hitCount?`<span class="pill-hit">${sum.hitCount} HIT</span>`:''}${sum.missCount?`<span class="pill-miss">${sum.missCount} MISS</span>`:''}`
     : `<span class="pill-neutral${mode?' '+mode:''}">${sum.total} attacks</span>`;
@@ -2049,7 +2113,7 @@ function renderMultiInstHtml(inst, colored, applyHtml){
     : '<span class="dmg-none">no damage</span>';
   return `<details class="log-inst multi-inst">
     <summary>
-      ${instBadge(inst.i, colored)} ${pills}${critTag} ${dmgHtml}
+      ${instBadge(inst.i, instMode)} ${pills}${critTag} ${dmgHtml}
       ${applyHtml||''}
       <svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
@@ -2058,12 +2122,13 @@ function renderMultiInstHtml(inst, colored, applyHtml){
 }
 
 function renderInstancesHtml(entry){
-  // when several instances (creatures) roll at once, badge each one a different
-  // colour and give it a bit more breathing room so they read as separate creatures
+  // when several instances (creatures) roll at once, give the row a bit more
+  // breathing room so they read as separate creatures, and badge each one
+  // with the mode (normal/adv/disadv) it actually rolled under
   const multi = entry.instances.length > 1;
   return entry.instances.map((inst,idx)=>{
     const applyHtml = multi ? instApplyToHtml(entry, idx) : '';
-    if(inst.kind==='multi') return renderMultiInstHtml(inst, multi, applyHtml);
+    if(inst.kind==='multi') return renderMultiInstHtml(inst, applyHtml);
     let core;
     if(inst.kind==='attack') core = attackCore(inst);
     else if(inst.kind==='save') core = saveCore(inst);
@@ -2075,7 +2140,7 @@ function renderInstancesHtml(entry){
       }
     }
     else core = esc(inst.text||'');
-    return `<div class="log-inst${multi?' spaced':''}">${instBadge(inst.i, multi)} ${core} ${applyHtml}</div>`;
+    return `<div class="log-inst${multi?' spaced':''}"><span class="log-inst-text">${instBadge(inst.i, instanceRollMode(inst))} ${core}</span>${applyHtml}</div>`;
   }).join('');
 }
 
@@ -2898,6 +2963,38 @@ document.addEventListener('focusout', e=>{
     // catch up on anything a rebuild would have shown while we were skipping.
     setTimeout(renderTargets, 0);
   }
+  if(e.target.classList.contains('mix-input')){
+    const raw = e.target.value.trim();
+    const n = clamp(parseInt(raw,10)||0, 0, 50);
+    if(e.target.dataset.key){
+      commitMixEntryInput(e.target.dataset.key, e.target.dataset.field, n);
+      const s = mixState.get(e.target.dataset.key);
+      // patch this exact input's own value in place rather than calling
+      // renderBoard() from here - a full rebuild triggered by a mousedown-
+      // caused blur, right as the user's pointer is already down on some
+      // OTHER board button, destroys that button and the browser silently
+      // drops the click that follows.
+      if(s) e.target.value = s[e.target.dataset.field];
+    } else if(e.target.dataset.board){
+      if(commitCardMixInput(e.target.dataset.board, e.target.dataset.field, n)){
+        Store.setBoard(board.items);
+        ghMaybeAutoPush();
+      }
+      const s = cardMix.get(e.target.dataset.board);
+      if(s) e.target.value = s[e.target.dataset.field];
+    }
+    // the data itself is already committed and this input's own value is
+    // already patched above - this is purely cosmetic catch-up for
+    // anything ELSE that depends on the new value (the "Roll N mixed"
+    // label, the status line, the mix toggle's "engaged" ring). Deferred
+    // so it can't land mid-click on some other board control, and guarded
+    // so it doesn't yank focus out from under a sibling mix-input the user
+    // has already tabbed into.
+    setTimeout(()=>{ if(!isBoardFieldFocused()) renderBoard(); }, 0);
+  }
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.classList && e.target.classList.contains('mix-input')) e.target.blur();
 });
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');

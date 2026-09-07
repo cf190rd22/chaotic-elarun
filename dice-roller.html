@@ -1087,7 +1087,28 @@ function cardMixEngaged(mix, total){
   return !!mix && (mix.adv>0 || mix.disadv>0) && (mix.normal+mix.adv+mix.disadv)===total;
 }
 let editingCreature = null;
-let modalMode = null; // 'paste' | 'edit' | 'options'
+let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm'
+// in-page stand-in for window.confirm(), which doesn't work reliably inside
+// this artifact's sandboxed iframe (see delete-creature's fix for the same
+// underlying issue) - holds the message and the callback to run if the
+// viewer actually confirms, while modalMode 'confirm' is showing it.
+let pendingConfirm = null;
+function showConfirm(message, onConfirm, onCancel){
+  // remember whatever modal was open (e.g. 'options', so its Backup status
+  // line is still there to report into once this resolves) and go back to
+  // it afterward, rather than always closing everything down to nothing.
+  pendingConfirm = { message, onConfirm, onCancel, returnToMode: modalMode };
+  modalMode = 'confirm';
+  renderModal();
+}
+function resolveConfirm(cb){
+  const returnToMode = pendingConfirm ? pendingConfirm.returnToMode : null;
+  pendingConfirm = null;
+  modalMode = returnToMode;
+  if(modalMode) renderModal();
+  else { editingCreature = null; document.getElementById('modalRoot').innerHTML = ''; }
+  if(cb) cb();
+}
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
 const resultsById = new Map(); // logEntry.id -> logEntry - lets the "check vs AC" control find and mutate an already-rolled instance
 let logUnread = 0;
@@ -1135,26 +1156,34 @@ function isValidBackup(obj){
     && obj.settings && typeof obj.settings==='object');
 }
 
-async function applyBackupPayload(data, { confirmMsg, alertOnDone=true } = {}){
-  if(!isValidBackup(data)){ alert("That doesn't look like an Encounter Roller backup file."); return false; }
-  const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
-  const msg = confirmMsg || `Restore this backup (from ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`;
-  if(!confirm(msg)) return false;
-  await Store.replaceAllCreatures(data.creatures);
-  await Store.setBoard(data.board.items);
-  await Store.setTargets(data.targets);
-  Object.assign(settings, data.settings);
-  saveSettings();
-  renderLibrary(); renderBoard(); renderTargets();
-  if(alertOnDone) alert('Backup restored.');
-  return true;
+// Returns a Promise<boolean> (true once actually applied) instead of using
+// window.confirm()/alert() - both are unreliable inside this artifact's
+// sandboxed iframe (see delete-creature's fix for the same underlying
+// issue) - via the in-page confirm modal (showConfirm) and the backup
+// status line instead.
+function applyBackupPayload(data, { confirmMsg, alertOnDone=true } = {}){
+  return new Promise(resolve=>{
+    if(!isValidBackup(data)){ setBackupStatus("That doesn't look like an Encounter Roller backup file.", true); resolve(false); return; }
+    const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
+    const msg = confirmMsg || `Restore this backup (from ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`;
+    showConfirm(msg, async ()=>{
+      await Store.replaceAllCreatures(data.creatures);
+      await Store.setBoard(data.board.items);
+      await Store.setTargets(data.targets);
+      Object.assign(settings, data.settings);
+      saveSettings();
+      renderLibrary(); renderBoard(); renderTargets();
+      if(alertOnDone) setBackupStatus('Backup restored.');
+      resolve(true);
+    }, ()=>resolve(false));
+  });
 }
 
 async function importBackupFile(file){
   let text;
-  try{ text = await file.text(); }catch(e){ alert('Could not read that file.'); return; }
+  try{ text = await file.text(); }catch(e){ setBackupStatus('Could not read that file.', true); return; }
   let data;
-  try{ data = JSON.parse(text); }catch(e){ alert('That file is not valid backup JSON.'); return; }
+  try{ data = JSON.parse(text); }catch(e){ setBackupStatus('That file is not valid backup JSON.', true); return; }
   await applyBackupPayload(data);
 }
 
@@ -1226,6 +1255,13 @@ function ghSetStatus(msg, isError){
   el.style.color = isError ? 'var(--red)' : 'var(--text-mute)';
 }
 
+function setBackupStatus(msg, isError){
+  const el = document.getElementById('backupStatus');
+  if(!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--red)' : 'var(--text-mute)';
+}
+
 // reads the GitHub sync fields straight out of the open Options modal - only
 // ever called while that modal is open, so the fields are guaranteed present
 function ghSaveFromForm(){
@@ -1240,7 +1276,11 @@ function ghSaveFromForm(){
 
 async function ghPushNow(silent){
   const cfg = ghLoadConfig();
-  if(!ghConfigured(cfg)){ if(!silent) alert('Set up token / owner / repo / path first.'); return; }
+  // ghSetStatus already surfaces this inline (visible right under the
+  // buttons that trigger it) - an alert() on top was not just redundant,
+  // it's unreliable inside this artifact's sandboxed iframe (see
+  // delete-creature's fix for the same underlying issue), so it's gone.
+  if(!ghConfigured(cfg)){ if(!silent) ghSetStatus('Set up token / owner / repo / path first.', true); return; }
   if(!silent) ghSetStatus('Pushing…');
   try{
     await ghApiPush(cfg, JSON.stringify(buildBackupPayload(), null, 2));
@@ -1249,17 +1289,16 @@ async function ghPushNow(silent){
     ghSetStatus('✓ Pushed at '+new Date(cfg.lastPush).toLocaleTimeString());
   }catch(e){
     ghSetStatus('✗ '+e.message, true);
-    if(!silent) alert('Push failed: '+e.message);
   }
 }
 
 async function ghPullNow(){
   const cfg = ghLoadConfig();
-  if(!ghConfigured(cfg)){ alert('Set up token / owner / repo / path first.'); return; }
+  if(!ghConfigured(cfg)){ ghSetStatus('Set up token / owner / repo / path first.', true); return; }
   ghSetStatus('Pulling…');
   let data;
   try{ data = await ghApiPull(cfg); }
-  catch(e){ ghSetStatus('✗ '+e.message, true); alert('Pull failed: '+e.message); return; }
+  catch(e){ ghSetStatus('✗ '+e.message, true); return; }
   const when = data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown time';
   const applied = await applyBackupPayload(data, {
     confirmMsg: `Pull the backup from GitHub (saved ${when})?\n\nThis replaces your current creatures, board, and targets in this browser - it can't be undone.`,
@@ -2184,6 +2223,7 @@ function openOptionsModal(){
 function closeModal(){
   editingCreature = null;
   modalMode = null;
+  pendingConfirm = null;
   document.getElementById('modalRoot').innerHTML = '';
 }
 
@@ -2250,6 +2290,20 @@ function entryEditHtml(entry, allEntries){
 
 function renderModal(){
   const root = document.getElementById('modalRoot');
+  if(modalMode==='confirm'){
+    if(!pendingConfirm){ modalMode = null; root.innerHTML = ''; return; }
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal" style="max-width:380px;">
+        <div class="modal-body" style="padding-top:18px;white-space:pre-line;">${esc(pendingConfirm.message)}</div>
+        <div class="modal-ft" style="justify-content:flex-end;gap:8px;">
+          <button class="btn" data-act="confirm-no">Cancel</button>
+          <button class="btn primary" data-act="confirm-yes">Confirm</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
   if(modalMode==='options'){
     const ghCfg = ghLoadConfig();
     let ghPulledFromSheet = false;
@@ -2273,6 +2327,7 @@ function renderModal(){
             <button class="btn" data-act="import-backup">⭱ Restore from backup</button>
           </div>
           <input type="file" id="restoreFileInput" accept="application/json,.json" hidden>
+          <div id="backupStatus" class="hint" style="margin:6px 0 0;"></div>
           <div class="sec-title">GitHub sync</div>
           <div class="hint" style="margin-top:0;">Push this same backup straight to a repo instead of downloading it - the same way your character sheets sync. The token is stored in this browser only, in plain text, so use a fine-grained token scoped to just this one repo rather than a full-access classic one.</div>
           ${ghPulledFromSheet ? `<div class="hint" style="margin-top:0;color:var(--accent);">Pulled the token, owner and repo in from your character sheet's sync settings, already saved in this browser - check them and pick your own path below, then hit Save.</div>` : ''}
@@ -2552,13 +2607,20 @@ function onGlobalClick(e){
     case 'open-add-modal': openAddModal(); break;
     case 'open-options': openOptionsModal(); break;
     case 'close-modal': closeModal(); break;
+    case 'confirm-yes': resolveConfirm(pendingConfirm && pendingConfirm.onConfirm); break;
+    case 'confirm-no': resolveConfirm(pendingConfirm && pendingConfirm.onCancel); break;
     case 'export-backup': exportBackup(); break;
     case 'import-backup': document.getElementById('restoreFileInput').click(); break;
     case 'dismiss-storage-warning': el.parentElement.remove(); storageWarningShown = false; break;
     case 'gh-save': ghSaveFromForm(); ghSetStatus('Settings saved.'); break;
     case 'gh-push': ghSaveFromForm(); ghPushNow(false); break;
     case 'gh-pull': ghSaveFromForm(); ghPullNow(); break;
-    case 'overlay-close': if(e.target===el) closeModal(); break;
+    case 'overlay-close': {
+      if(e.target!==el) break;
+      if(modalMode==='confirm') resolveConfirm(pendingConfirm && pendingConfirm.onCancel);
+      else closeModal();
+      break;
+    }
     case 'start-blank': editingCreature = blankCreature(); modalMode='edit'; renderModal(); break;
     case 'parse-statblock': {
       const raw = document.getElementById('pasteArea').value;

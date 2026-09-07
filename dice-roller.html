@@ -141,13 +141,23 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
-.count-stepper{display:flex;align-items:center;gap:2px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:2px;margin-left:auto;}
-.count-stepper button{width:19px;height:19px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
+.count-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto;}
+.count-stepper button{width:24px;height:24px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:14px;line-height:1;border-radius:5px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
 .count-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;min-width:14px;text-align:center;}
-.count-input{width:20px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;background:transparent;border:none;color:var(--text);border-radius:4px;padding:1px 0;}
-.count-input:hover{background:var(--surface-3);}
-.count-input:focus{outline:none;background:var(--surface-3);box-shadow:0 0 0 1px var(--accent-bd);}
+/* font-size is 16px on purpose, not the surrounding 11.5px - iOS Safari
+   silently zooms the ENTIRE PAGE in on focus for any input whose text is
+   smaller than 16px, which on a field this narrow reads as "tapping it
+   does nothing" (the zoom yanks the whole viewport away before typing even
+   registers). A transform:scale() to shrink the text back down was tried
+   and reverted - it also scales down the tappable hit area along with it,
+   trading the zoom bug for a "can't land a tap on it at all" one. Sized
+   generously too (30x24, not 20x19) so it reads as an obviously separate,
+   obviously tappable field next to the +/- buttons, not a sliver of text
+   wedged between them.*/
+.count-input{width:30px;height:24px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;}
+.count-input:hover{border-color:var(--accent-bd);}
+.count-input:focus{outline:none;border-color:var(--accent-bd);box-shadow:0 0 0 1px var(--accent-bd);}
 .count-lbl{font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-left:5px;}
 
 .saves-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:9px 13px;border-bottom:1px solid var(--border-light);}
@@ -195,13 +205,15 @@ select,option{background:var(--surface-2);color:var(--text);}
 .mix-lbl{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;}
 .mix-lbl.adv{color:var(--green);}
 .mix-lbl.dis{color:var(--red);}
-.mix-stepper{display:flex;align-items:center;gap:2px;background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:2px;}
-.mix-stepper button{width:18px;height:18px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:12px;line-height:1;border-radius:4px;}
+.mix-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-3);border:1px solid var(--border);border-radius:7px;padding:3px;}
+.mix-stepper button{width:22px;height:22px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
 .mix-stepper button:hover{background:var(--surface);color:var(--text);}
 .mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
-.mix-stepper .mix-input{width:16px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:11px;background:transparent;border:none;color:var(--text);border-radius:4px;padding:0;}
-.mix-stepper .mix-input:hover{background:var(--surface);}
-.mix-stepper .mix-input:focus{outline:none;background:var(--surface);box-shadow:0 0 0 1px var(--accent-bd);}
+/* 16px font-size, not 11px, and a real tap-sized box - same iOS
+   auto-zoom-on-focus issue as .count-input, see the comment there. */
+.mix-stepper .mix-input{width:26px;height:22px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;}
+.mix-stepper .mix-input:hover{border-color:var(--accent-bd);}
+.mix-stepper .mix-input:focus{outline:none;border-color:var(--accent-bd);box-shadow:0 0 0 1px var(--accent-bd);}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
 .mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}

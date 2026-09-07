@@ -1088,6 +1088,42 @@ function syncCardMixTotal(boardId, newTotal){
 function cardMixEngaged(mix, total){
   return !!mix && (mix.adv>0 || mix.disadv>0) && (mix.normal+mix.adv+mix.disadv)===total;
 }
+// The three +/- stepper actions, factored out so both a plain tap and the
+// press-and-hold auto-repeat (see the pointerdown/pointerup wiring near
+// onGlobalClick) can call the exact same logic - one source of truth
+// instead of a click-driven copy and a hold-driven copy drifting apart.
+function stepCount(bid, delta){
+  const items = board.items.map(it=> it.boardId===bid ? {...it, count: clamp(it.count+delta,1,50)} : it);
+  const changed = items.find(it=>it.boardId===bid);
+  if(changed) syncCardMixTotal(bid, changed.count);
+  setBoardOptimistic(items);
+}
+function stepMixEntry(key, field, delta){
+  const s = mixState.get(key);
+  if(!s) return;
+  s[field] = clamp(s[field]+delta, 0, 50);
+  renderBoard();
+}
+function stepCardMix(bid, field, delta){
+  const s = cardMix.get(bid);
+  if(!s) return;
+  const newField = clamp(s[field]+delta, 0, 50);
+  const newSum = s.normal+s.adv+s.disadv - s[field] + newField;
+  if(newSum < 1) return; // never let every instance vanish from the split
+  s[field] = newField;
+  // editing the split directly is now the source of truth - the instance
+  // count up top just follows it, so there's never a "totals X, needs to
+  // total Y" mismatch to reconcile by hand
+  const item = board.items.find(it=>it.boardId===bid);
+  if(item){
+    item.count = newSum;
+    // once the split fully covers every instance, it's the thing driving
+    // rolls now - stand down the blunt all-or-nothing A/D toggle so only
+    // one override is ever in effect at a time
+    if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
+  }
+  setBoardOptimistic(board.items);
+}
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm'
 // in-page stand-in for window.confirm(), which doesn't work reliably inside
@@ -2681,13 +2717,6 @@ function onGlobalClick(e){
       renderBoard();
       break;
     }
-    case 'mix-inc': case 'mix-dec': {
-      const s = mixState.get(el.dataset.key);
-      if(!s) break;
-      s[el.dataset.field] = clamp(s[el.dataset.field] + (act==='mix-inc'?1:-1), 0, 50);
-      renderBoard();
-      break;
-    }
     case 'roll-mix': {
       const item = board.items.find(it=>it.boardId===el.dataset.board);
       const c = item && creatures.find(cr=>cr.id===item.creatureId);
@@ -2703,51 +2732,12 @@ function onGlobalClick(e){
       }
       break;
     }
-    case 'count-inc': {
-      const bid = el.dataset.board;
-      const items = board.items.map(it=> it.boardId===bid ? {...it, count: clamp(it.count+1,1,50)} : it);
-      const changed = items.find(it=>it.boardId===bid);
-      if(changed) syncCardMixTotal(bid, changed.count);
-      setBoardOptimistic(items);
-      break;
-    }
-    case 'count-dec': {
-      const bid = el.dataset.board;
-      const items = board.items.map(it=> it.boardId===bid ? {...it, count: clamp(it.count-1,1,50)} : it);
-      const changed = items.find(it=>it.boardId===bid);
-      if(changed) syncCardMixTotal(bid, changed.count);
-      setBoardOptimistic(items);
-      break;
-    }
     case 'toggle-card-mix': {
       const bid = el.dataset.board;
       const item = board.items.find(it=>it.boardId===bid);
       const s = getCardMix(bid, item?item.count:1);
       s.open = !s.open;
       renderBoard();
-      break;
-    }
-    case 'card-mix-inc': case 'card-mix-dec': {
-      const bid = el.dataset.board, field = el.dataset.field;
-      const s = cardMix.get(bid);
-      if(!s) break;
-      const delta = act==='card-mix-inc' ? 1 : -1;
-      const newField = clamp(s[field] + delta, 0, 50);
-      const newSum = s.normal + s.adv + s.disadv - s[field] + newField;
-      if(newSum < 1) break; // never let every instance vanish from the split
-      s[field] = newField;
-      // editing the split directly is now the source of truth - the instance
-      // count up top just follows it, so there's never a "totals X, needs to
-      // total Y" mismatch to reconcile by hand
-      const item = board.items.find(it=>it.boardId===bid);
-      if(item){
-        item.count = newSum;
-        // once the split fully covers every instance, it's the thing driving
-        // rolls now - stand down the blunt all-or-nothing A/D toggle so only
-        // one override is ever in effect at a time
-        if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
-      }
-      setBoardOptimistic(board.items);
       break;
     }
     case 'toggle-group': {
@@ -2833,6 +2823,65 @@ function onGlobalClick(e){
     case 'dismiss-result': lastResults.delete(el.dataset.key); renderBoard(); break;
   }
 }
+
+// Press-and-hold auto-repeat for the +/- stepper buttons, so getting from
+// 1 to 20 is one held finger instead of 19 separate taps. Typed/tapped-open
+// number entry (a plain text field, then a full numpad modal) was tried and
+// dropped - it never worked reliably on the reporting device - while every
+// tap on these exact buttons always has. So: keep the tap, just let holding
+// it repeat.
+//
+// This drives BOTH the plain tap and the hold entirely from pointerdown/
+// pointerup, calling stepCount/stepMixEntry/stepCardMix directly - it does
+// NOT go through onGlobalClick's 'click' handling at all (there's no case
+// for these six actions any more). That's deliberate: every step here
+// re-renders the board, which replaces the pressed button's DOM node, so a
+// real trailing click's target after a hold is genuinely ambiguous across
+// browsers (mousedown landed on a node that's since been detached). Rather
+// than trying to reliably suppress-or-not a native click that may or may
+// not still fire, there's simply no native click in this path to reason
+// about: pointerdown reads the button's data-* attributes once (plain
+// strings, safe to keep reading even once the node is detached) and a
+// timer calls the step function directly on an interval.
+const STEPPER_ACTS = {
+  'count-inc': el => stepCount(el.dataset.board, 1),
+  'count-dec': el => stepCount(el.dataset.board, -1),
+  'mix-inc': el => stepMixEntry(el.dataset.key, el.dataset.field, 1),
+  'mix-dec': el => stepMixEntry(el.dataset.key, el.dataset.field, -1),
+  'card-mix-inc': el => stepCardMix(el.dataset.board, el.dataset.field, 1),
+  'card-mix-dec': el => stepCardMix(el.dataset.board, el.dataset.field, -1),
+};
+let stepperTimer = null, stepperFn = null, stepperFired = false;
+function stopStepper(){
+  clearTimeout(stepperTimer);
+  stepperTimer = null;
+  // a quick tap (released before the hold threshold) never entered repeat -
+  // apply its one step now, on release, same as any other button's tap
+  if(!stepperFired && stepperFn) stepperFn();
+  stepperFn = null;
+  stepperFired = false;
+}
+document.addEventListener('pointerdown', e=>{
+  const el = e.target.closest && e.target.closest('[data-act]');
+  const fn = el && STEPPER_ACTS[el.dataset.act];
+  if(!fn) return;
+  // touch would otherwise ALSO synthesize a compatibility click after this
+  // press - preventing it here keeps this handler the single source of
+  // truth for the tap instead of racing a second, separate trigger
+  e.preventDefault();
+  stepperFn = () => fn(el);
+  stepperFired = false;
+  let delay = 450; // first repeat waits well past any normal tap's press time
+  const tick = ()=>{
+    stepperFired = true;
+    fn(el);
+    delay = Math.max(50, delay-40); // speeds up the longer it's held
+    stepperTimer = setTimeout(tick, delay);
+  };
+  stepperTimer = setTimeout(tick, delay);
+});
+document.addEventListener('pointerup', stopStepper);
+document.addEventListener('pointercancel', ()=>{ clearTimeout(stepperTimer); stepperTimer=null; stepperFn=null; stepperFired=false; });
 
 document.addEventListener('click', onGlobalClick);
 document.addEventListener('input', onGlobalInput);

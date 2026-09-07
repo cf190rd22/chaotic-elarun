@@ -53,7 +53,6 @@ select,option{background:var(--surface-2);color:var(--text);}
 .iconbtn:hover{background:var(--surface-2);color:var(--text);}
 .iconbtn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .iconbtn.primary:hover{background:rgba(91,142,240,.18);}
-.badge{position:absolute;top:-2px;right:-2px;background:var(--red);width:9px;height:9px;border-radius:99px;border:2px solid var(--bg);}
 
 /* ---------- layout ---------- */
 .layout{flex:1;display:flex;min-height:0;overflow:hidden;position:relative;}
@@ -200,6 +199,9 @@ select,option{background:var(--surface-2);color:var(--text);}
 .mix-stepper button{width:18px;height:18px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:12px;line-height:1;border-radius:4px;}
 .mix-stepper button:hover{background:var(--surface);color:var(--text);}
 .mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
+.mix-stepper .mix-input{width:16px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:11px;background:transparent;border:none;color:var(--text);border-radius:4px;padding:0;}
+.mix-stepper .mix-input:hover{background:var(--surface);}
+.mix-stepper .mix-input:focus{outline:none;background:var(--surface);box-shadow:0 0 0 1px var(--accent-bd);}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
 .mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}
@@ -403,9 +405,8 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
         <span class="btn-label">Options</span>
       </button>
-      <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log" style="position:relative;">
+      <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
-        <span id="logBadge" class="badge" hidden></span>
       </button>
     </div>
   </div>
@@ -1111,7 +1112,6 @@ function resolveConfirm(cb){
 }
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
 const resultsById = new Map(); // logEntry.id -> logEntry - lets the "check vs AC" control find and mutate an already-rolled instance
-let logUnread = 0;
 
 const SETTINGS_KEY = 'er_settings_v1';
 let settings = { critMode: 'double' }; // 'double' (standard 5e) | 'perkins' (max damage + reroll)
@@ -1323,18 +1323,6 @@ function pushLog(entry){
   resultsById.set(entry.id, entry);
   while(log.length > 200){ const removed = log.pop(); resultsById.delete(removed.id); }
   renderLog();
-  const drawerBtn = document.querySelector('[data-act="toggle-logpanel"]');
-  const isDrawerMode = drawerBtn && getComputedStyle(drawerBtn).display !== 'none';
-  if(isDrawerMode && !document.getElementById('logPanel').classList.contains('open')){
-    logUnread++;
-    renderLogBadge();
-  }
-}
-
-function renderLogBadge(){
-  const el = document.getElementById('logBadge');
-  if(!el) return;
-  el.hidden = logUnread<=0;
 }
 
 function activeTarget(){
@@ -1659,7 +1647,7 @@ function renderCard(item){
               <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
               <div class="mix-stepper">
                 <button data-act="mix-dec" data-key="${mixKey}" data-field="${field}">−</button>
-                <span>${mix[field]}</span>
+                <input type="text" inputmode="numeric" pattern="[0-9]*" class="mix-input" data-key="${mixKey}" data-field="${field}" value="${mix[field]}" title="Click to type an exact number">
                 <button data-act="mix-inc" data-key="${mixKey}" data-field="${field}">+</button>
               </div>
             </div>`;
@@ -1695,11 +1683,11 @@ function renderCard(item){
               </div>
             </div>
             <div class="roll-btn-group">
+              ${mixBtn}
               <button class="roll-btn ${rollBtnCls}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="${rollBtnTitle}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
                 Roll
               </button>
-              ${mixBtn}
             </div>
           </div>
           ${descOpen && e.text ? `<div class="entry-desc-body">${highlightText(e.text)}</div>` : ''}
@@ -1749,7 +1737,7 @@ function renderCard(item){
       <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
       <div class="mix-stepper">
         <button data-act="card-mix-dec" data-board="${item.boardId}" data-field="${field}">−</button>
-        <span>${cmix[field]}</span>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" class="mix-input" data-board="${item.boardId}" data-field="${field}" value="${cmix[field]}" title="Click to type an exact number">
         <button data-act="card-mix-inc" data-board="${item.boardId}" data-field="${field}">+</button>
       </div>
     </div>`;
@@ -2478,6 +2466,28 @@ function onGlobalInput(e){
     item.count = clamp(parseInt(raw,10), 1, 50);
     return;
   }
+  if(t.classList.contains('mix-input')){
+    // same reasoning as count-input above - update the field live as they
+    // type, no renderBoard() until they commit on blur/Enter.
+    const raw = t.value.replace(/[^\d]/g,'');
+    if(raw==='') return;
+    const val = clamp(parseInt(raw,10), 0, 50);
+    if(t.dataset.key){
+      const s = mixState.get(t.dataset.key);
+      if(s) s[t.dataset.field] = val;
+    } else if(t.dataset.board){
+      const s = cardMix.get(t.dataset.board);
+      const item = board.items.find(it=>it.boardId===t.dataset.board);
+      if(s && item){
+        s[t.dataset.field] = val;
+        // the split drives the top instance count while it's being edited
+        // directly, same as the +/- steppers (see card-mix-inc/dec) - never
+        // let it drop to 0 mid-edit (e.g. a field cleared before retyping)
+        item.count = Math.max(1, s.normal+s.adv+s.disadv);
+      }
+    }
+    return;
+  }
   if(t.dataset.tid && t.dataset.tfield){
     const tgt = targets.items.find(x=>x.id===t.dataset.tid);
     if(!tgt) return;
@@ -2590,16 +2600,13 @@ function onGlobalClick(e){
       const panel = document.getElementById('logPanel');
       panel.classList.toggle('open');
       document.getElementById('scrim').classList.toggle('show');
-      if(panel.classList.contains('open')){ logUnread = 0; renderLogBadge(); }
       break;
     }
     case 'clear-log': {
       log = [];
       lastResults.clear();
       resultsById.clear();
-      logUnread = 0;
       renderLog();
-      renderLogBadge();
       renderBoard();
       break;
     }
@@ -2895,12 +2902,37 @@ document.addEventListener('focusout', e=>{
     // free the way it used to.
     setTimeout(renderBoard, 0);
   }
+  if(e.target.classList.contains('mix-input')){
+    // mixState/cardMix are pure local UI state, never written to Store - so
+    // there's no db round trip to worry about here, but a synchronous
+    // renderBoard() right on this blur is still the same danger as
+    // count-input's (see above): patch this input in place and defer the
+    // rest for cosmetic catch-up only (the Roll-mixed button's label, the
+    // status line, the mix toggle's "engaged" ring).
+    const key = e.target.dataset.key, bid = e.target.dataset.board, field = e.target.dataset.field;
+    if(key){
+      const s = mixState.get(key);
+      if(s) e.target.value = s[field];
+    } else if(bid){
+      const s = cardMix.get(bid);
+      const item = board.items.find(it=>it.boardId===bid);
+      if(s && item){
+        const sum = s.normal+s.adv+s.disadv;
+        if(sum>=1){
+          item.count = sum;
+          if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
+        }
+        e.target.value = s[field];
+      }
+    }
+    setTimeout(renderBoard, 0);
+  }
 });
 document.addEventListener('keydown', e=>{
-  if(e.key==='Enter' && e.target.classList.contains('count-input')) e.target.blur();
+  if(e.key==='Enter' && (e.target.classList.contains('count-input') || e.target.classList.contains('mix-input'))) e.target.blur();
 });
 document.addEventListener('focusin', e=>{
-  if(e.target.classList.contains('count-input')) e.target.select();
+  if(e.target.classList.contains('count-input') || e.target.classList.contains('mix-input')) e.target.select();
 });
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');

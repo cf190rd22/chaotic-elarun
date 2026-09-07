@@ -2943,9 +2943,13 @@ document.addEventListener('focusout', e=>{
 document.addEventListener('keydown', e=>{
   if(e.key==='Enter' && (e.target.classList.contains('count-input') || e.target.classList.contains('mix-input'))) e.target.blur();
 });
-document.addEventListener('focusin', e=>{
-  if(e.target.classList.contains('count-input') || e.target.classList.contains('mix-input')) e.target.select();
-});
+// deliberately NOT calling .select() here anymore - doing anything
+// programmatic (even just selecting existing text) inside the focusin
+// handler risks fighting with iOS Safari's own focus-then-show-keyboard
+// sequence, and on a nested iframe (which is exactly what this is, running
+// as a published Artifact) that sequence is already fragile. Losing
+// auto-select-on-tap is a much smaller cost than the field not letting you
+// type into it at all.
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');
   document.getElementById('logPanel').classList.remove('open');

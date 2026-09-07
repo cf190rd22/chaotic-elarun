@@ -87,6 +87,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .icobtn:hover{color:var(--text);background:var(--surface-3);}
 .star-btn.active{color:var(--amber);}
 .trash-btn:hover{color:var(--red);}
+.trash-btn.armed{background:var(--red-dim);border:1px solid var(--red-bd);color:var(--red);animation:trash-armed-pulse 1s ease-in-out infinite;}
+@keyframes trash-armed-pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
 
 /* ---------- board ---------- */
 .main-col{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
@@ -1008,6 +1010,27 @@ function reportStorageFailure(err){
 }
 
 /* ============================== app state ============================== */
+// Published as an Artifact, this page runs inside a sandboxed iframe where
+// window.confirm() is unreliable (silently does nothing, or resolves in a
+// way that never lets the delete through) - so "delete a creature" needs an
+// in-page arm/confirm step instead of a native dialog. Holds the one
+// creature id currently armed (a second click within DELETE_ARM_MS deletes
+// it for real); armDeleteId() replaces whichever was armed before.
+let armedDeleteId = null;
+let armedDeleteTimer = null;
+const DELETE_ARM_MS = 4000;
+function armDeleteId(id){
+  armedDeleteId = id;
+  clearTimeout(armedDeleteTimer);
+  armedDeleteTimer = setTimeout(()=>{ armedDeleteId = null; renderLibrary(); }, DELETE_ARM_MS);
+  renderLibrary();
+}
+function disarmDelete(){
+  if(armedDeleteId===null) return;
+  armedDeleteId = null;
+  clearTimeout(armedDeleteTimer);
+  renderLibrary();
+}
 let creatures = [];
 let board = { items: [] };
 let targets = { items: [], activeId: null };
@@ -1460,9 +1483,13 @@ function renderLibrary(){
       <button class="icobtn" data-act="edit-creature" data-creature="${c.id}" title="Edit">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
       </button>
-      <button class="icobtn trash-btn" data-act="delete-creature" data-creature="${c.id}" title="Delete from library">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
-      </button>
+      ${armedDeleteId===c.id
+        ? `<button class="icobtn trash-btn armed" data-act="delete-creature" data-creature="${c.id}" title="Click again to permanently delete ${esc(c.name)}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>`
+        : `<button class="icobtn trash-btn" data-act="delete-creature" data-creature="${c.id}" title="Delete from library">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+          </button>`}
     </div>`;
   }).join('');
 }
@@ -2495,6 +2522,9 @@ function onGlobalClick(e){
   const el = e.target.closest('[data-act]');
   const seg = e.target.closest('#rollModeSeg button');
   if(seg){ rollMode = seg.dataset.mode; document.querySelectorAll('#rollModeSeg button').forEach(b=>b.classList.toggle('active', b===seg)); return; }
+  // clicking anything other than the still-armed delete button itself means
+  // "never mind" - disarm it rather than leave it primed for a stray tap later.
+  if(armedDeleteId!==null && !(el && el.dataset.act==='delete-creature' && el.dataset.creature===armedDeleteId)) disarmDelete();
   if(!el) return;
   const act = el.dataset.act;
 
@@ -2561,12 +2591,21 @@ function onGlobalClick(e){
     }
     case 'edit-creature': { const c = creatures.find(x=>x.id===el.dataset.creature); if(c) openEditModal(c); break; }
     case 'delete-creature': {
-      const c = creatures.find(x=>x.id===el.dataset.creature);
-      if(c && confirm(`Delete "${c.name}" from your library? This can't be undone.`)){
-        Store.deleteCreature(c.id);
-        Store.setBoard(board.items.filter(it=>it.creatureId!==c.id));
-        ghMaybeAutoPush();
+      const cid = el.dataset.creature;
+      const c = creatures.find(x=>x.id===cid);
+      if(!c) break;
+      if(armedDeleteId!==cid){
+        // first click just arms it - window.confirm() is unreliable inside
+        // this artifact's sandboxed iframe, so the confirmation has to live
+        // on the page itself: click the trash icon again to actually delete.
+        armDeleteId(cid);
+        break;
       }
+      armedDeleteId = null;
+      clearTimeout(armedDeleteTimer);
+      Store.deleteCreature(c.id);
+      Store.setBoard(board.items.filter(it=>it.creatureId!==c.id));
+      ghMaybeAutoPush();
       break;
     }
     case 'add-board': {

@@ -146,20 +146,15 @@ select,option{background:var(--surface-2);color:var(--text);}
 .count-stepper button{width:24px;height:24px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:14px;line-height:1;border-radius:5px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
 .count-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;min-width:14px;text-align:center;}
-/* font-size is 16px on purpose, not the surrounding 11.5px - iOS Safari
-   silently zooms the ENTIRE PAGE in on focus for any input whose text is
-   smaller than 16px, which on a field this narrow reads as "tapping it
-   does nothing" (the zoom yanks the whole viewport away before typing even
-   registers). A transform:scale() to shrink the text back down was tried
-   and reverted - it also scales down the tappable hit area along with it,
-   trading the zoom bug for a "can't land a tap on it at all" one. Sized
-   generously too (30x24, not 20x19) so it reads as an obviously separate,
-   obviously tappable field next to the +/- buttons, not a sliver of text
-   wedged between them.*/
-.count-input{width:30px;height:24px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:0;box-sizing:border-box;-moz-appearance:textfield;appearance:textfield;}
+/* a button, not a text input - opens the numpad modal (see openNumpad).
+   Every text-input variant tried here (plain, type=number, various sizes,
+   JS simplified down to nothing) still wouldn't reliably take a tap-to-
+   type; every button-based control in this app has never had that problem,
+   so number entry is built out of buttons instead of fighting the input
+   any further. Sized generously (30x24) so it reads as an obviously
+   separate, obviously tappable control next to the +/- buttons.*/
+.count-input{width:30px;height:24px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:13px;background:var(--surface-3);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:0;cursor:pointer;}
 .count-input:hover{border-color:var(--accent-bd);}
-.count-input:focus{outline:none;border-color:var(--accent-bd);box-shadow:0 0 0 1px var(--accent-bd);}
-.count-input::-webkit-inner-spin-button,.count-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .count-lbl{font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-left:5px;}
 
 .saves-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:9px 13px;border-bottom:1px solid var(--border-light);}
@@ -211,17 +206,23 @@ select,option{background:var(--surface-2);color:var(--text);}
 .mix-stepper button{width:22px;height:22px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:13px;line-height:1;border-radius:4px;}
 .mix-stepper button:hover{background:var(--surface);color:var(--text);}
 .mix-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11px;min-width:13px;text-align:center;}
-/* 16px font-size, not 11px, and a real tap-sized box - same iOS
-   auto-zoom-on-focus issue as .count-input, see the comment there. */
-.mix-stepper .mix-input{width:26px;height:22px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:16px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0;box-sizing:border-box;-moz-appearance:textfield;appearance:textfield;}
+/* a button, opens the numpad modal - see the comment on .count-input for
+   why this isn't a text input. */
+.mix-stepper .mix-input{width:26px;height:22px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;font-size:12px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0;cursor:pointer;}
 .mix-stepper .mix-input:hover{border-color:var(--accent-bd);}
-.mix-stepper .mix-input:focus{outline:none;border-color:var(--accent-bd);box-shadow:0 0 0 1px var(--accent-bd);}
-.mix-stepper .mix-input::-webkit-inner-spin-button,.mix-stepper .mix-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
 .mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}
 .mix-status.ok{color:var(--green);}
 .mix-status.warn{color:var(--amber);}
+.numpad-modal{max-width:280px;}
+.numpad-display{font-family:'DM Mono',monospace;font-size:34px;font-weight:800;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px 0;margin-bottom:12px;color:var(--text);}
+.numpad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.numpad-key{height:50px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);font-size:19px;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;}
+.numpad-key:hover{background:var(--surface-3);}
+.numpad-key:active{background:var(--accent-dim);border-color:var(--accent-bd);}
+.numpad-clear{color:var(--red);}
+.numpad-back{font-size:17px;}
 .trait-row{padding:7px 0;border-top:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
 .trait-row:first-child{border-top:none;}
 .trait-row b{color:var(--text);}
@@ -1125,6 +1126,65 @@ function resolveConfirm(cb){
   else { editingCreature = null; document.getElementById('modalRoot').innerHTML = ''; }
   if(cb) cb();
 }
+// A from-scratch numeric keypad, entirely built from buttons - not a text
+// <input>. Every native text input tried for the instance count and the
+// mix-panel counts (plain, type=number, sized up, JS simplified down to
+// nothing) still wouldn't reliably take a tap-to-type on the reporting
+// device, while every button-based control in this whole app (the +/-
+// steppers, the roll buttons, this app's own modals) has never once been
+// reported broken. So: stop trying to make a text field work here, and
+// build number entry out of the one interaction that's actually proven
+// reliable. `target` is one of:
+//   { kind:'count', boardId, current }
+//   { kind:'mix-entry', key, field, current }
+//   { kind:'mix-card', boardId, field, current }
+let numpadTarget = null;
+function openNumpad(target, label){
+  // value shows the current count, but the first digit tap should overwrite
+  // it rather than append to it (like a calculator clearing a stale result) -
+  // otherwise tapping "1" "4" on an existing count of 1 types "114".
+  numpadTarget = { ...target, value: String(target.current ?? ''), started:false, label, returnToMode: modalMode };
+  modalMode = 'numpad';
+  renderModal();
+}
+function closeNumpad(){
+  const returnToMode = numpadTarget ? numpadTarget.returnToMode : null;
+  numpadTarget = null;
+  modalMode = returnToMode;
+  if(modalMode) renderModal();
+  else document.getElementById('modalRoot').innerHTML = '';
+}
+function applyNumpad(){
+  if(!numpadTarget) return;
+  const n = clamp(parseInt(numpadTarget.value, 10) || 0, 0, 50);
+  if(numpadTarget.kind==='count'){
+    const item = board.items.find(it=>it.boardId===numpadTarget.boardId);
+    if(item){
+      item.count = Math.max(1, n);
+      syncCardMixTotal(numpadTarget.boardId, item.count);
+      Store.setBoard(board.items);
+      ghMaybeAutoPush();
+    }
+  } else if(numpadTarget.kind==='mix-entry'){
+    const s = mixState.get(numpadTarget.key);
+    if(s) s[numpadTarget.field] = n;
+  } else if(numpadTarget.kind==='mix-card'){
+    const s = cardMix.get(numpadTarget.boardId);
+    const item = board.items.find(it=>it.boardId===numpadTarget.boardId);
+    if(s && item){
+      s[numpadTarget.field] = n;
+      const sum = s.normal+s.adv+s.disadv;
+      if(sum>=1){
+        item.count = sum;
+        if(cardMixEngaged(s, item.count)) cardMode.set(numpadTarget.boardId, undefined);
+      }
+      Store.setBoard(board.items);
+      ghMaybeAutoPush();
+    }
+  }
+  closeNumpad();
+  renderBoard();
+}
 const lastResults = new Map(); // boardId::key -> {entryName, atype, kind, instances} - last roll shown inline on a card
 const resultsById = new Map(); // logEntry.id -> logEntry - lets the "check vs AC" control find and mutate an already-rolled instance
 
@@ -1663,7 +1723,7 @@ function renderCard(item){
               <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
               <div class="mix-stepper">
                 <button data-act="mix-dec" data-key="${mixKey}" data-field="${field}">−</button>
-                <input type="number" class="mix-input" data-key="${mixKey}" data-field="${field}" value="${mix[field]}" title="Click to type an exact number">
+                <button class="mix-input" data-act="open-mix-entry-numpad" data-key="${mixKey}" data-field="${field}" data-label="${esc(label)}" title="Tap to set an exact number">${mix[field]}</button>
                 <button data-act="mix-inc" data-key="${mixKey}" data-field="${field}">+</button>
               </div>
             </div>`;
@@ -1743,9 +1803,14 @@ function renderCard(item){
 
   const cardCollapsed = collapsedCards.has(item.boardId);
   const curCardMode = cardMode.get(item.boardId);
-  const cmix = item.count>1 ? peekCardMix(item.boardId) : null;
+  // gate on count>1 OR the panel already being open - dialing one field of
+  // an open split down while another is still 0 can transiently drop the
+  // running total to 1 (each numpad apply re-renders right away), and that
+  // shouldn't slam the panel shut out from under whoever is mid-edit
+  const rawCmix = peekCardMix(item.boardId);
+  const cmix = (item.count>1 || (rawCmix && rawCmix.open)) ? rawCmix : null;
   const cmixEngaged = cardMixEngaged(cmix, item.count);
-  const cardMixBtn = item.count>1 ? `<button class="card-mode-btn mix${cmix&&cmix.open?' open':''}${cmixEngaged?' active':''}" data-act="toggle-card-mix" data-board="${item.boardId}" title="Split this creature's instances across normal/advantage/disadvantage">
+  const cardMixBtn = (item.count>1 || (cmix && cmix.open)) ? `<button class="card-mode-btn mix${cmix&&cmix.open?' open':''}${cmixEngaged?' active':''}" data-act="toggle-card-mix" data-board="${item.boardId}" title="Split this creature's instances across normal/advantage/disadvantage">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="17" y2="18"/></svg>
     </button>` : '';
   const cardMixPanel = (cmix && cmix.open) ? (()=>{
@@ -1753,7 +1818,7 @@ function renderCard(item){
       <span class="mix-lbl${cls?' '+cls:''}">${label}</span>
       <div class="mix-stepper">
         <button data-act="card-mix-dec" data-board="${item.boardId}" data-field="${field}">−</button>
-        <input type="number" class="mix-input" data-board="${item.boardId}" data-field="${field}" value="${cmix[field]}" title="Click to type an exact number">
+        <button class="mix-input" data-act="open-mix-card-numpad" data-board="${item.boardId}" data-field="${field}" data-label="${esc(label)}" title="Tap to set an exact number">${cmix[field]}</button>
         <button data-act="card-mix-inc" data-board="${item.boardId}" data-field="${field}">+</button>
       </div>
     </div>`;
@@ -1783,7 +1848,7 @@ function renderCard(item){
         </div>
         <div class="count-stepper">
           <button data-act="count-dec" data-board="${item.boardId}">−</button>
-          <input type="number" class="count-input" data-board="${item.boardId}" value="${item.count}" title="Click to type an exact number">
+          <button class="count-input" data-act="open-count-numpad" data-board="${item.boardId}" title="Tap to set an exact number">${item.count}</button>
           <button data-act="count-inc" data-board="${item.boardId}">+</button>
         </div>
         <button class="icobtn" data-act="remove-board" data-board="${item.boardId}" title="Remove from board">
@@ -1830,19 +1895,6 @@ function renderBoard(){
 function isTargetFieldFocused(){
   const el = document.activeElement;
   return !!(el && el.matches && el.matches('#targetsBody input[data-tid]'));
-}
-// Same idea for the board's own count-input/mix-input fields. A blur on one
-// of these schedules a deferred renderBoard() purely for cosmetic catch-up
-// (see the focusout handler) - but if the user has ALREADY moved on to a
-// sibling field (typing into the mix panel's next box, say) by the time
-// that deferred call actually fires, running it anyway tears down and
-// rebuilds the very field they're now mid-edit on, discarding focus and
-// whatever they've typed so far (confirmed - see test_ui_tweaks.js). Skip
-// it in that case; the sibling field's own eventual blur schedules its own
-// catch-up, so nothing is lost, just deferred one more hop.
-function isBoardFieldFocused(){
-  const el = document.activeElement;
-  return !!(el && (el.classList.contains('count-input') || el.classList.contains('mix-input')));
 }
 
 function renderTargets(){
@@ -2322,6 +2374,30 @@ function renderModal(){
     </div>`;
     return;
   }
+  if(modalMode==='numpad'){
+    if(!numpadTarget){ modalMode = null; root.innerHTML = ''; return; }
+    const displayVal = numpadTarget.value===''? '0' : numpadTarget.value;
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal numpad-modal">
+        <div class="modal-hdr"><h2>${esc(numpadTarget.label)}</h2><button class="icobtn" data-act="numpad-cancel"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="numpad-display">${esc(displayVal)}</div>
+          <div class="numpad-grid">
+            ${[1,2,3,4,5,6,7,8,9].map(d=>`<button class="numpad-key" data-act="numpad-digit" data-digit="${d}">${d}</button>`).join('')}
+            <button class="numpad-key numpad-clear" data-act="numpad-clear">C</button>
+            <button class="numpad-key" data-act="numpad-digit" data-digit="0">0</button>
+            <button class="numpad-key numpad-back" data-act="numpad-backspace" title="Backspace">⌫</button>
+          </div>
+        </div>
+        <div class="modal-ft" style="justify-content:flex-end;gap:8px;">
+          <button class="btn" data-act="numpad-cancel">Cancel</button>
+          <button class="btn primary" data-act="numpad-apply">Apply</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
   if(modalMode==='options'){
     const ghCfg = ghLoadConfig();
     let ghPulledFromSheet = false;
@@ -2492,40 +2568,6 @@ function setMultiField(eid, idx, field, value){
 function onGlobalInput(e){
   const t = e.target;
   if(t.id==='searchInput'){ librarySearch = t.value; renderLibrary(); return; }
-  if(t.classList.contains('count-input')){
-    // update the underlying count as they type, but don't renderBoard() here -
-    // that would tear down and rebuild this very input mid-keystroke and throw
-    // away focus/cursor position. The full rebuild (which also fixes up the
-    // displayed value, mix panel, etc) happens once they commit on blur/Enter.
-    const item = board.items.find(it=>it.boardId===t.dataset.board);
-    if(!item) return;
-    const raw = t.value.replace(/[^\d]/g,'');
-    if(raw==='') return;
-    item.count = clamp(parseInt(raw,10), 1, 50);
-    return;
-  }
-  if(t.classList.contains('mix-input')){
-    // same reasoning as count-input above - update the field live as they
-    // type, no renderBoard() until they commit on blur/Enter.
-    const raw = t.value.replace(/[^\d]/g,'');
-    if(raw==='') return;
-    const val = clamp(parseInt(raw,10), 0, 50);
-    if(t.dataset.key){
-      const s = mixState.get(t.dataset.key);
-      if(s) s[t.dataset.field] = val;
-    } else if(t.dataset.board){
-      const s = cardMix.get(t.dataset.board);
-      const item = board.items.find(it=>it.boardId===t.dataset.board);
-      if(s && item){
-        s[t.dataset.field] = val;
-        // the split drives the top instance count while it's being edited
-        // directly, same as the +/- steppers (see card-mix-inc/dec) - never
-        // let it drop to 0 mid-edit (e.g. a field cleared before retyping)
-        item.count = Math.max(1, s.normal+s.adv+s.disadv);
-      }
-    }
-    return;
-  }
   if(t.dataset.tid && t.dataset.tfield){
     const tgt = targets.items.find(x=>x.id===t.dataset.tid);
     if(!tgt) return;
@@ -2654,6 +2696,40 @@ function onGlobalClick(e){
     case 'close-modal': closeModal(); break;
     case 'confirm-yes': resolveConfirm(pendingConfirm && pendingConfirm.onConfirm); break;
     case 'confirm-no': resolveConfirm(pendingConfirm && pendingConfirm.onCancel); break;
+    case 'open-count-numpad': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      if(!item) break;
+      openNumpad({ kind:'count', boardId: item.boardId, current: item.count }, 'Set instance count');
+      break;
+    }
+    case 'open-mix-entry-numpad': {
+      const key = el.dataset.key, field = el.dataset.field;
+      const s = mixState.get(key);
+      if(!s) break;
+      openNumpad({ kind:'mix-entry', key, field, current: s[field] }, `Set ${el.dataset.label} count`);
+      break;
+    }
+    case 'open-mix-card-numpad': {
+      const bid = el.dataset.board, field = el.dataset.field;
+      const s = cardMix.get(bid);
+      if(!s) break;
+      openNumpad({ kind:'mix-card', boardId: bid, field, current: s[field] }, `Set ${el.dataset.label} count`);
+      break;
+    }
+    case 'numpad-digit': {
+      if(!numpadTarget) break;
+      let v = (!numpadTarget.started || numpadTarget.value==='0') ? '' : numpadTarget.value;
+      numpadTarget.started = true;
+      v += el.dataset.digit;
+      if(+v > 50) v = '50';
+      numpadTarget.value = v;
+      renderModal();
+      break;
+    }
+    case 'numpad-clear': if(numpadTarget){ numpadTarget.value = ''; numpadTarget.started = true; renderModal(); } break;
+    case 'numpad-backspace': if(numpadTarget){ numpadTarget.value = numpadTarget.value.slice(0,-1); numpadTarget.started = true; renderModal(); } break;
+    case 'numpad-cancel': closeNumpad(); break;
+    case 'numpad-apply': applyNumpad(); break;
     case 'export-backup': exportBackup(); break;
     case 'import-backup': document.getElementById('restoreFileInput').click(); break;
     case 'dismiss-storage-warning': el.parentElement.remove(); storageWarningShown = false; break;
@@ -2663,6 +2739,7 @@ function onGlobalClick(e){
     case 'overlay-close': {
       if(e.target!==el) break;
       if(modalMode==='confirm') resolveConfirm(pendingConfirm && pendingConfirm.onCancel);
+      else if(modalMode==='numpad') closeNumpad();
       else closeModal();
       break;
     }
@@ -2906,76 +2983,7 @@ document.addEventListener('focusout', e=>{
     // catch up on anything a rebuild would have shown while we were skipping.
     setTimeout(renderTargets, 0);
   }
-  if(e.target.classList.contains('count-input')){
-    const bid = e.target.dataset.board;
-    const item = board.items.find(it=>it.boardId===bid);
-    if(item){
-      syncCardMixTotal(bid, item.count);
-      // patch this exact input's own value in place rather than calling
-      // renderBoard() from here - a full rebuild triggered by a mousedown-
-      // caused blur, right as the user's pointer is already down on some
-      // OTHER board button, destroys that button and the browser silently
-      // drops the click that follows (confirmed - see test_repro_broken3.js).
-      e.target.value = item.count;
-    }
-    // this alone used to be just as dangerous as calling renderBoard()
-    // directly, because the onBoard subscription below re-renders the whole
-    // board too - immediately in local-storage mode, or whenever a db-backed
-    // artifact's write confirmation comes back over the wire, which can land
-    // at any later moment including mid-click on something else entirely.
-    // That subscription now skips rendering anything it didn't actually
-    // change (see Store.onBoard), so this can go out synchronously and
-    // reliably instead of gambling a setTimeout(0) against however long a
-    // real tap or a network round trip takes - and it can't be lost to a
-    // backgrounded tab throttling a deferred timer either.
-    Store.setBoard(board.items);
-    ghMaybeAutoPush();
-    // the data itself is safely persisted and this input's own value is
-    // already patched above - this is purely cosmetic catch-up for
-    // anything ELSE that depends on the new count (the mix toggle
-    // appearing once it crosses 1, the mix panel's totals). Deferred so it
-    // can't land mid-click on some other board control the way a
-    // synchronous renderBoard() from here would; with the render-skip
-    // guard above, Store.setBoard() itself no longer supplies this for
-    // free the way it used to.
-    setTimeout(()=>{ if(!isBoardFieldFocused()) renderBoard(); }, 0);
-  }
-  if(e.target.classList.contains('mix-input')){
-    // mixState/cardMix are pure local UI state, never written to Store - so
-    // there's no db round trip to worry about here, but a synchronous
-    // renderBoard() right on this blur is still the same danger as
-    // count-input's (see above): patch this input in place and defer the
-    // rest for cosmetic catch-up only (the Roll-mixed button's label, the
-    // status line, the mix toggle's "engaged" ring).
-    const key = e.target.dataset.key, bid = e.target.dataset.board, field = e.target.dataset.field;
-    if(key){
-      const s = mixState.get(key);
-      if(s) e.target.value = s[field];
-    } else if(bid){
-      const s = cardMix.get(bid);
-      const item = board.items.find(it=>it.boardId===bid);
-      if(s && item){
-        const sum = s.normal+s.adv+s.disadv;
-        if(sum>=1){
-          item.count = sum;
-          if(cardMixEngaged(s, item.count)) cardMode.set(bid, undefined);
-        }
-        e.target.value = s[field];
-      }
-    }
-    setTimeout(()=>{ if(!isBoardFieldFocused()) renderBoard(); }, 0);
-  }
 });
-document.addEventListener('keydown', e=>{
-  if(e.key==='Enter' && (e.target.classList.contains('count-input') || e.target.classList.contains('mix-input'))) e.target.blur();
-});
-// deliberately NOT calling .select() here anymore - doing anything
-// programmatic (even just selecting existing text) inside the focusin
-// handler risks fighting with iOS Safari's own focus-then-show-keyboard
-// sequence, and on a nested iframe (which is exactly what this is, running
-// as a published Artifact) that sequence is already fragile. Losing
-// auto-select-on-tap is a much smaller cost than the field not letting you
-// type into it at all.
 document.getElementById('scrim').addEventListener('click', ()=>{
   document.getElementById('libraryPanel').classList.remove('open');
   document.getElementById('logPanel').classList.remove('open');

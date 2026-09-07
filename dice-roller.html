@@ -29,6 +29,12 @@
 html,body{height:100%;margin:0;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;}
 button,input,select,textarea{font-family:inherit;color:inherit;}
+/* plain (non-button) numbers like the count/mix displays are still tap
+   targets next to +/- buttons - without this, a tap on them selects the
+   text like any other paragraph, which looks exactly like a broken
+   editable field. buttons get the same treatment for the same reason:
+   no visible "select this" affordance on something that isn't text to read. */
+button,.count-stepper span,.mix-stepper span{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
 select,option{background:var(--surface-2);color:var(--text);}
 .mono{font-family:'DM Mono','SFMono-Regular',Consolas,monospace;}
 
@@ -139,13 +145,13 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-collapse-btn .chev{transition:transform .15s;}
 .card.collapsed .card-collapse-btn .chev{transform:rotate(-90deg);}
 .card-name{font-size:15px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.card-name-count{font-size:12px;font-weight:700;color:var(--text-mute);font-family:'DM Mono',monospace;}
 .card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
 .pill-crit{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
 .count-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto;}
 .count-stepper button{width:24px;height:24px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:14px;line-height:1;border-radius:5px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
-.count-stepper span{font-family:'DM Mono',monospace;font-weight:700;font-size:11.5px;min-width:14px;text-align:center;}
 .count-lbl{font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-left:5px;}
 
 .saves-row{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:9px 13px;border-bottom:1px solid var(--border-light);}
@@ -1756,16 +1762,15 @@ function renderCard(item){
         <button class="icobtn card-collapse-btn" data-act="toggle-card-collapse" data-board="${item.boardId}" title="${cardCollapsed?'Expand':'Minimise'}">
           <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="card-name">${esc(c.name)}</div>
+        <div class="card-name">${esc(c.name)}${item.count>1?` <span class="card-name-count">×${item.count}</span>`:''}</div>
         <div class="card-mode-group">
           <button class="card-mode-btn adv${curCardMode==='adv'?' active':''}" data-act="card-mode" data-board="${item.boardId}" data-mode="adv" title="All rolls below use advantage until you turn this off">A</button>
           <button class="card-mode-btn dis${curCardMode==='disadv'?' active':''}" data-act="card-mode" data-board="${item.boardId}" data-mode="disadv" title="All rolls below use disadvantage until you turn this off">D</button>
           ${cardMixBtn}
         </div>
         <div class="count-stepper">
-          <button data-act="count-dec" data-board="${item.boardId}">−</button>
-          <span>${item.count}</span>
-          <button data-act="count-inc" data-board="${item.boardId}">+</button>
+          <button data-act="count-dec" data-board="${item.boardId}" title="Fewer instances">−</button>
+          <button data-act="count-inc" data-board="${item.boardId}" title="More instances">+</button>
         </div>
         <button class="icobtn" data-act="remove-board" data-board="${item.boardId}" title="Remove from board">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

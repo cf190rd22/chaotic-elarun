@@ -558,7 +558,12 @@ function highlightText(text){
 // apart from "everything 1/day" instead of one undifferentiated paragraph.
 // Falls through to plain highlightText untouched for any description that
 // doesn't actually contain this pattern.
-const SPELL_FREQ_RE = /\b(At Will|Constant|\d+e?\s*\/\s*(?:Day|Week|Month|Short Rest|Long Rest|Rest)(?:\s+Each)?)\s*:\s*/gi;
+// Shared with parseStatblock below, which needs the same vocabulary to stop
+// "At Will:" being mistaken for a brand new entry name and split off of
+// Spellcasting entirely, rather than kept as part of its own description.
+const SPELL_FREQ_LABEL = '(At Will|Constant|\\d+e?\\s*\\/\\s*(?:Day|Week|Month|Short Rest|Long Rest|Rest)(?:\\s+Each)?)';
+const SPELL_FREQ_RE = new RegExp('\\b'+SPELL_FREQ_LABEL+'\\s*:\\s*', 'gi');
+const SPELL_FREQ_LABEL_RE = new RegExp('^'+SPELL_FREQ_LABEL+'$', 'i');
 function formatEntryDesc(text){
   const matches = [...text.matchAll(SPELL_FREQ_RE)];
   if(!matches.length) return highlightText(text);
@@ -859,8 +864,11 @@ function parseStatblock(raw){
     if(SECTIONS[sectionKey] && clean.length < 30){ currentSection = SECTIONS[sectionKey]; continue; }
     if(currentSection===null && META_LINE_RE.test(clean)) continue;
     // entry names are terminated by either a period ("Bite.") or a colon ("Bite:")
+    // - but "At Will:", "3/Day Each:" etc. look exactly like a new entry name
+    // under that same rule, and would otherwise get split off of Spellcasting
+    // into their own separate entries instead of staying part of its text
     const m = /^([A-Z][A-Za-z0-9()'’\-–—\/ ]{1,70}?)[.:]\s*(.*)$/.exec(clean);
-    if(m && m[1].split(' ').length <= 8){
+    if(m && m[1].split(' ').length <= 8 && !SPELL_FREQ_LABEL_RE.test(m[1].trim())){
       rawEntries.push({ section: currentSection || 'trait', name: m[1].trim(), body: (m[2]||'').trim() });
     } else if(rawEntries.length && currentSection){
       rawEntries[rawEntries.length-1].body += ' ' + clean;

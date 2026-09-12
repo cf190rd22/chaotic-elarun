@@ -39291,7 +39291,7 @@
             "_modeAdvSaves": [],
             "_modeAdvAbilChecks": [],
             "_flag": true,
-            "_modeActive": true
+            "_modeActive": false
           },
           {
             "name": "Lvl 7: Fire Resistance",
@@ -40218,9 +40218,7 @@
           "1": 4,
           "2": 3
         },
-        "activeModes": [
-          "Aura of Chaos"
-        ],
+        "activeModes": [],
         "acEffective": 22,
         "hpMax": 84,
         "_slotUsedCompact": {},
@@ -40443,5 +40441,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1788620724666
+  "_updated": 1789217074193
 }

@@ -13406,7 +13406,14 @@
           "feat_188_Heavily Armored_choice": "Constitution ",
           "feat_216_Weapon Master_choice": "Scimitar "
         },
-        "customFeatures": [],
+        "customFeatures": [
+          {
+            "level": 0,
+            "name": "New Feature",
+            "description": "",
+            "_type": "race"
+          }
+        ],
         "spells": [
           {
             "name": "Blade Ward",
@@ -18989,6 +18996,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1789215243184,
-  "_unchanged": true
+  "_updated": 1789215337499
 }

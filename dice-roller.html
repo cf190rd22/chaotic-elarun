@@ -251,8 +251,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-result-hdr{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-mute);font-family:'DM Mono',monospace;margin-bottom:3px;}
 .save-result{padding:0 13px;}
 .save-result .card-result{margin:0 0 9px;}
-.card-notes{padding:9px 13px;border-bottom:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
-.card-notes a{color:var(--accent);}
+.card-notes{padding:9px 13px;border-bottom:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;overflow-wrap:anywhere;}
+.card-notes a{color:var(--accent);overflow-wrap:anywhere;}
 .card-ft{padding:9px 13px;display:flex;justify-content:flex-end;}
 .ft-link{background:none;border:none;color:var(--text-mute);font-size:10.5px;cursor:pointer;display:flex;align-items:center;gap:4px;}
 .ft-link:hover{color:var(--red);}
@@ -580,6 +580,16 @@ function formatEntryDesc(text){
   const preambleHtml = preamble ? `<div class="spell-preamble">${highlightText(preamble)}</div>` : '';
   const rowsHtml = rows.map(r=>`<div class="spell-freq-row"><b class="spell-freq-lbl">${esc(r.label)}:</b> ${highlightText(r.spells)}</div>`).join('');
   return preambleHtml + `<div class="spell-freq-list">${rowsHtml}</div>`;
+}
+// The creature Notes field renders as raw HTML (so a pasted <a href> link
+// works), but most people just paste a bare URL and expect it to already be
+// clickable rather than writing the anchor tag themselves. Auto-linkifies
+// bare URLs - but only when there's no <a> tag already in there, so a note
+// that DOES spell out its own HTML link never gets double-processed.
+const BARE_URL_RE = /\bhttps?:\/\/[^\s<>"']+/gi;
+function autoLinkNotes(html){
+  if(/<a[\s>]/i.test(html)) return html;
+  return html.replace(BARE_URL_RE, url=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(url)}</a>`);
 }
 function fmtMod(n){ n = n||0; return (n>=0?'+':'')+n; }
 function clamp(n,lo,hi){ return Math.max(lo,Math.min(hi,n)); }
@@ -1949,7 +1959,7 @@ function renderCard(item){
       ${referenceGroupsHtml}
       <div class="saves-row">${savesHtml}</div>
       ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
-      ${c.notes ? `<div class="card-notes">${c.notes}</div>` : ''}
+      ${c.notes ? `<div class="card-notes">${autoLinkNotes(c.notes)}</div>` : ''}
       ${actionGroupsHtml}
     </div>
   </div>`;

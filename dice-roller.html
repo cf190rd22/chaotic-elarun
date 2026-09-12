@@ -251,6 +251,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-result-hdr{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-mute);font-family:'DM Mono',monospace;margin-bottom:3px;}
 .save-result{padding:0 13px;}
 .save-result .card-result{margin:0 0 9px;}
+.card-notes{padding:9px 13px;border-bottom:1px solid var(--border-light);font-size:11.5px;color:var(--text-2);line-height:1.55;}
+.card-notes a{color:var(--accent);}
 .card-ft{padding:9px 13px;display:flex;justify-content:flex-end;}
 .ft-link{background:none;border:none;color:var(--text-mute);font-size:10.5px;cursor:pointer;display:flex;align-items:center;gap:4px;}
 .ft-link:hover{color:var(--red);}
@@ -878,7 +880,7 @@ function parseStatblock(raw){
   const entries = rawEntries.map(buildEntry);
   linkMultiattacks(entries);
 
-  return { name, ac, hp, speed, cr, pb, critRange:20, abilities, saves, entries, favourite:false, ...info };
+  return { name, ac, hp, speed, cr, pb, critRange:20, abilities, saves, entries, favourite:false, notes:'', ...info };
 }
 
 function blankCreature(){
@@ -887,7 +889,7 @@ function blankCreature(){
     abilities: Object.fromEntries(ABILS.map(k=>[k,{score:10,mod:0}])),
     saves: Object.fromEntries(ABILS.map(k=>[k,0])),
     entries: [], favourite:false,
-    resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:''
+    resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:'', notes:''
   };
 }
 
@@ -1947,6 +1949,7 @@ function renderCard(item){
       ${referenceGroupsHtml}
       <div class="saves-row">${savesHtml}</div>
       ${saveResult ? `<div class="save-result">${renderCardResult(item.boardId+'::save', saveResult)}</div>` : ''}
+      ${c.notes ? `<div class="card-notes">${c.notes}</div>` : ''}
       ${actionGroupsHtml}
     </div>
   </div>`;
@@ -2582,6 +2585,12 @@ function renderModal(){
             <div class="field"><label>Saving throws</label><input value="${esc(c.savingThrowsText||'')}" data-cfield="savingThrowsText"></div>
             <div class="field"><label>Languages</label><input value="${esc(c.languages||'')}" data-cfield="languages"></div>
             <div class="field"><label>Gear</label><input value="${esc(c.gear||'')}" data-cfield="gear"></div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:1">
+              <label>Notes (HTML allowed - shown on the card above Actions)</label>
+              <textarea class="ee-text" data-cfield="notes" placeholder='e.g. &lt;a href="https://..." target="_blank"&gt;D&amp;D Beyond&lt;/a&gt;'>${esc(c.notes||'')}</textarea>
+            </div>
           </div>
           ${groupsHtml}
         </div>

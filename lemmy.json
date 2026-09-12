@@ -13080,7 +13080,7 @@
             "mod": 1
           },
           "Charisma": {
-            "score": 16,
+            "score": 17,
             "mod": 3
           }
         },
@@ -13186,7 +13186,7 @@
             "bonus": 1,
             "state": "half",
             "adv": false,
-            "dis": false,
+            "dis": true,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -18997,5 +18997,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1789215495187
+  "_updated": 1789215524455
 }

@@ -38075,7 +38075,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44033,7 +44033,8 @@
         "_slotUsed": {
           "152-L2": 3,
           "152-L1": 1,
-          "152-L4": 0
+          "152-L4": 1,
+          "152-L3": 1
         },
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
@@ -44057,7 +44058,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 53,
+        "hpCurrent": 54,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -44126,7 +44127,8 @@
         "_slotUsedCompact": {
           "1": 1,
           "2": 3,
-          "4": 0
+          "3": 1,
+          "4": 1
         },
         "_trackersForDm": [
           {
@@ -44184,7 +44186,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44378,5 +44380,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789222142548
+  "_updated": 1789225900090
 }

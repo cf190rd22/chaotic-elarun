@@ -1,0 +1,519 @@
+{
+  "app": "encounter-roller",
+  "version": 1,
+  "exportedAt": "2026-09-12T10:03:06.006Z",
+  "creatures": [
+    {
+      "id": "sample-bramble-goblin",
+      "favourite": false,
+      "name": "Bramble Goblin",
+      "ac": 14,
+      "hp": 12,
+      "speed": "30 ft.",
+      "cr": "1/4",
+      "pb": 2,
+      "abilities": {
+        "str": {
+          "score": 8,
+          "mod": -1
+        },
+        "dex": {
+          "score": 15,
+          "mod": 2
+        },
+        "con": {
+          "score": 10,
+          "mod": 0
+        },
+        "int": {
+          "score": 10,
+          "mod": 0
+        },
+        "wis": {
+          "score": 9,
+          "mod": -1
+        },
+        "cha": {
+          "score": 8,
+          "mod": -1
+        }
+      },
+      "saves": {
+        "str": -1,
+        "dex": 2,
+        "con": 0,
+        "int": 0,
+        "wis": -1,
+        "cha": -1
+      },
+      "entries": [
+        {
+          "id": "ex1-scimitar",
+          "name": "Scimitar",
+          "atype": "action",
+          "kind": "attack",
+          "toHit": 4,
+          "dmg": [
+            {
+              "dice": "1d6+2",
+              "type": "slashing"
+            }
+          ],
+          "text": "Melee Weapon Attack: +4 to hit, reach 5 ft."
+        },
+        {
+          "id": "ex1-shortbow",
+          "name": "Shortbow",
+          "atype": "action",
+          "kind": "attack",
+          "toHit": 4,
+          "dmg": [
+            {
+              "dice": "1d6+2",
+              "type": "piercing"
+            }
+          ],
+          "text": "Ranged Weapon Attack: +4 to hit, range 80/320 ft."
+        },
+        {
+          "id": "ex1-nimble",
+          "name": "Nimble Escape",
+          "atype": "bonus",
+          "kind": "other",
+          "dmg": [],
+          "text": "The goblin can take the Disengage or Hide action."
+        }
+      ]
+    },
+    {
+      "id": "sample-river-troll",
+      "favourite": false,
+      "name": "River Troll",
+      "ac": 15,
+      "hp": 84,
+      "speed": "30 ft., swim 30 ft.",
+      "cr": "5",
+      "pb": 3,
+      "abilities": {
+        "str": {
+          "score": 18,
+          "mod": 4
+        },
+        "dex": {
+          "score": 13,
+          "mod": 1
+        },
+        "con": {
+          "score": 20,
+          "mod": 5
+        },
+        "int": {
+          "score": 7,
+          "mod": -2
+        },
+        "wis": {
+          "score": 9,
+          "mod": -1
+        },
+        "cha": {
+          "score": 7,
+          "mod": -2
+        }
+      },
+      "saves": {
+        "str": 4,
+        "dex": 1,
+        "con": 5,
+        "int": -2,
+        "wis": -1,
+        "cha": -2
+      },
+      "entries": [
+        {
+          "id": "ex2-multi",
+          "name": "Multiattack",
+          "atype": "action",
+          "kind": "multi",
+          "dmg": [],
+          "text": "The troll makes three attacks: one bite and two claws.",
+          "multi": [
+            {
+              "ref": "ex2-bite",
+              "count": 1
+            },
+            {
+              "ref": "ex2-claw",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "ex2-bite",
+          "name": "Bite",
+          "atype": "action",
+          "kind": "attack",
+          "toHit": 7,
+          "dmg": [
+            {
+              "dice": "1d6+4",
+              "type": "piercing"
+            }
+          ],
+          "text": "Melee Attack Roll: +7, reach 5 ft."
+        },
+        {
+          "id": "ex2-claw",
+          "name": "Claw",
+          "atype": "action",
+          "kind": "attack",
+          "toHit": 7,
+          "dmg": [
+            {
+              "dice": "2d6+4",
+              "type": "slashing"
+            }
+          ],
+          "text": "Melee Attack Roll: +7, reach 5 ft."
+        },
+        {
+          "id": "ex2-slam",
+          "name": "Tail Sweep",
+          "atype": "reaction",
+          "kind": "save",
+          "dmg": [
+            {
+              "dice": "1d8+4",
+              "type": "bludgeoning"
+            }
+          ],
+          "save": {
+            "dc": 14,
+            "ability": "DEX",
+            "half": true
+          },
+          "text": "When a creature moves within 10 feet of the troll, it can force a DC 14 Dexterity save, dealing half damage on a success."
+        },
+        {
+          "id": "ex2-regen",
+          "name": "Regeneration",
+          "atype": "trait",
+          "kind": "other",
+          "dmg": [],
+          "text": "The troll regains 10 hit points at the start of its turn, unless it has taken fire or acid damage since its last turn."
+        }
+      ]
+    },
+    {
+      "name": "Warrior Veteran",
+      "ac": 17,
+      "hp": 65,
+      "speed": "30 ft.",
+      "cr": "3",
+      "pb": null,
+      "abilities": {
+        "str": {
+          "score": 16,
+          "mod": 3
+        },
+        "dex": {
+          "score": 13,
+          "mod": 1
+        },
+        "con": {
+          "score": 14,
+          "mod": 2
+        },
+        "int": {
+          "score": 10,
+          "mod": 0
+        },
+        "wis": {
+          "score": 11,
+          "mod": 0
+        },
+        "cha": {
+          "score": 10,
+          "mod": 0
+        }
+      },
+      "saves": {
+        "str": 3,
+        "dex": 1,
+        "con": 2,
+        "int": 0,
+        "wis": 0,
+        "cha": 0
+      },
+      "entries": [
+        {
+          "id": "e0vd1nlcpgq5",
+          "name": "Multiattack",
+          "atype": "action",
+          "kind": "multi",
+          "dmg": [],
+          "text": "Three Greatsword or Heavy Crossbow attacks.",
+          "multi": [
+            {
+              "ref": "edbn2o1bpgq5",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "edbn2o1bpgq5",
+          "name": "Greatsword",
+          "atype": "action",
+          "kind": "attack",
+          "dmg": [
+            {
+              "dice": "2d6+3",
+              "type": "slashing"
+            }
+          ],
+          "text": "+5 hit, reach 5 ft. 2d6+3 slashing.",
+          "toHit": 5
+        },
+        {
+          "id": "e9qe4s30pgq6",
+          "name": "Heavy Crossbow",
+          "atype": "action",
+          "kind": "attack",
+          "dmg": [
+            {
+              "dice": "2d10+1",
+              "type": "piercing"
+            }
+          ],
+          "text": "+3 hit, range 100/400 ft. 2d10+1 piercing.",
+          "toHit": 3
+        },
+        {
+          "id": "el794l3bpgq6",
+          "name": "Hold Person (2/Day)",
+          "atype": "action",
+          "kind": "save",
+          "dmg": [],
+          "text": "One creature within 60 ft. must succeed on a DC 13 WIS save or become Paralyzed for 1 minute. Target repeats the save at the end of each of its turns.",
+          "save": {
+            "dc": 13,
+            "ability": "WIS",
+            "half": false
+          }
+        },
+        {
+          "id": "eb7qrs0wpgq6",
+          "name": "Shatter (2/Day)",
+          "atype": "action",
+          "kind": "save",
+          "dmg": [
+            {
+              "dice": "3d8",
+              "type": "thunder"
+            }
+          ],
+          "text": "Each creature in a 10-ft. radius within 60 ft. must make a DC 13 CON save, taking 3d8 thunder damage on a failure, or half as much on a success.",
+          "save": {
+            "dc": 13,
+            "ability": "CON",
+            "half": true
+          }
+        },
+        {
+          "id": "ee866jr4pgq6",
+          "name": "Goes Down Fighting",
+          "atype": "reaction",
+          "kind": "other",
+          "dmg": [],
+          "text": "When reduced to 0 HP, the warrior can immediately make one melee or ranged weapon attack before falling unconscious."
+        },
+        {
+          "id": "e0xmwmxepgq6",
+          "name": "Shield (3/Day)",
+          "atype": "reaction",
+          "kind": "other",
+          "dmg": [],
+          "text": "Until the start of its next turn, the warrior gains +5 AC including against the triggering attack, and takes no damage from Magic Missile."
+        },
+        {
+          "id": "e7nfabrmpgq6",
+          "name": "Sentinel Strike",
+          "atype": "reaction",
+          "kind": "other",
+          "dmg": [],
+          "text": "When a creature within 5 ft. of the warrior attacks a creature other than the warrior, the warrior can make one melee weapon attack against the attacker."
+        },
+        {
+          "id": "euqt54g4pgq6",
+          "name": "Sentinel",
+          "atype": "trait",
+          "kind": "other",
+          "dmg": [],
+          "text": "Creatures within the warrior's reach provoke an opportunity attack even when they take the Disengage action. A creature hit by one of these attacks has its speed reduced to 0 for the rest of the turn."
+        }
+      ],
+      "favourite": true,
+      "resistances": "",
+      "immunities": "",
+      "vulnerabilities": "",
+      "condImmunities": "",
+      "senses": "Passive Perception 12",
+      "languages": "Common plus one other",
+      "skills": "Athletics +5, Perception +2",
+      "savingThrowsText": "",
+      "gear": "Greatsword, Heavy Crossbow, Splint Armour, Arcane Focus",
+      "id": "cb20x2b2rcr7"
+    },
+    {
+      "name": "Mage",
+      "ac": 15,
+      "hp": 81,
+      "speed": "30 ft.",
+      "cr": "6",
+      "pb": 3,
+      "abilities": {
+        "str": {
+          "score": 9,
+          "mod": -1
+        },
+        "dex": {
+          "score": 14,
+          "mod": 2
+        },
+        "con": {
+          "score": 11,
+          "mod": 0
+        },
+        "int": {
+          "score": 17,
+          "mod": 3
+        },
+        "wis": {
+          "score": 12,
+          "mod": 1
+        },
+        "cha": {
+          "score": 11,
+          "mod": 0
+        }
+      },
+      "saves": {
+        "str": -1,
+        "dex": 2,
+        "con": 0,
+        "int": 3,
+        "wis": 1,
+        "cha": 0
+      },
+      "entries": [
+        {
+          "id": "eq9zb5wlslq7",
+          "name": "SAVE",
+          "atype": "trait",
+          "kind": "other",
+          "dmg": [],
+          "text": "INT +6, WIS +4"
+        },
+        {
+          "id": "egz7loumslq7",
+          "name": "SPELLCASTING",
+          "atype": "trait",
+          "kind": "other",
+          "dmg": [],
+          "text": "INT, spell save DC 14."
+        },
+        {
+          "id": "eq9ias77slq7",
+          "name": "At Will",
+          "atype": "trait",
+          "kind": "other",
+          "dmg": [],
+          "text": "Detect Magic, Light, Mage Armor, Mage Hand, Prestidigitation"
+        },
+        {
+          "id": "eebxioyeslq7",
+          "name": "Multiattack",
+          "atype": "action",
+          "kind": "multi",
+          "dmg": [],
+          "text": "Three Arcane Burst attacks.",
+          "multi": [
+            {
+              "ref": "e7h35tevslq7",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "e7h35tevslq7",
+          "name": "Arcane Burst",
+          "atype": "action",
+          "kind": "attack",
+          "dmg": [
+            {
+              "dice": "3d8+3",
+              "type": "force"
+            }
+          ],
+          "text": "+6 hit, reach 5 ft. or range 120 ft. 3d8+3 force.",
+          "toHit": 6
+        },
+        {
+          "id": "ejcrqmb9slq7",
+          "name": "Spellcasting",
+          "atype": "action",
+          "kind": "other",
+          "dmg": [],
+          "text": "The mage casts one of its prepared spells (see above)."
+        },
+        {
+          "id": "eq85eq10slq7",
+          "name": "Misty Step (3/Day)",
+          "atype": "bonus",
+          "kind": "other",
+          "dmg": [],
+          "text": "The mage teleports up to 30 ft. to an unoccupied space it can see."
+        },
+        {
+          "id": "eyubdompslq7",
+          "name": "Protective Magic (3/Day)",
+          "atype": "reaction",
+          "kind": "other",
+          "dmg": [],
+          "text": "The mage casts Counterspell or Shield in response to the triggering spell."
+        }
+      ],
+      "favourite": true,
+      "resistances": "https://5e-spellbook.app?spellbook=N4IgLglmA2CmIC4QFkCGBzeAaEBnADrNNLogNogBiEATrAEarEg4CSAdgG4S4T0TQoATxYgAwgHt2sAAQSAZjMnQAJqMrQRAXRwBjCdAkBXGohABiXQAYAzLABM8AL5A",
+      "immunities": "",
+      "vulnerabilities": "",
+      "condImmunities": "",
+      "senses": "Passive Perception 14",
+      "languages": "Common and any three",
+      "skills": "Arcana +6, History +6, Perception +4",
+      "savingThrowsText": "",
+      "gear": "",
+      "id": "c19l4rzvsz6e"
+    }
+  ],
+  "board": {
+    "items": [
+      {
+        "boardId": "bv5z6hu9rhea",
+        "creatureId": "cb20x2b2rcr7",
+        "count": 1
+      },
+      {
+        "boardId": "bvohwrx7t295",
+        "creatureId": "c19l4rzvsz6e",
+        "count": 1
+      }
+    ]
+  },
+  "targets": {
+    "items": [],
+    "activeId": null
+  },
+  "settings": {
+    "critMode": "double"
+  }
+}

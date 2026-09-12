@@ -1154,6 +1154,25 @@ function getMixState(key, defaultTotal){
 // before ever opening the panel. Only the toggle-mix click itself, which
 // knows the true current count, is allowed to create the initial state.
 function peekMixState(key){ return mixState.get(key) || null; }
+let dmgOnlyState = new Map(); // "boardId::entryId" -> {open, hits} for the "skip to-hit, just roll damage" panel
+function getDmgOnlyState(key, defaultHits){
+  let s = dmgOnlyState.get(key);
+  if(!s){ s = { open:false, hits: clamp(defaultHits,1,50) }; dmgOnlyState.set(key, s); }
+  return s;
+}
+function peekDmgOnlyState(key){ return dmgOnlyState.get(key) || null; }
+function commitDmgOnlyHits(key, value){
+  const s = dmgOnlyState.get(key);
+  if(!s) return false;
+  s.hits = clamp(value, 1, 50);
+  return true;
+}
+function stepDmgOnlyHits(key, delta){
+  const s = dmgOnlyState.get(key);
+  if(!s) return;
+  commitDmgOnlyHits(key, s.hits+delta);
+  renderBoard();
+}
 let cardMix = new Map(); // boardId -> {open, normal, adv, disadv}, a persistent split across the card's instances that every Roll click below respects once it's engaged
 function getCardMix(boardId, defaultTotal){
   let s = cardMix.get(boardId);
@@ -1567,6 +1586,28 @@ function rollAttackInstance(entry, modeOverride, critMin){
   return { d20rolls: rolls, chosen, mode, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
 }
 
+// Skips the attack roll entirely - for when the hit was already decided
+// some other way (rolled by hand, or just declared "these N landed") and
+// all that's left to do is roll the damage dice. chosen stays null so
+// attackCore/instApplyToHtml/applyToRowHtml all know not to render a d20
+// line, a crit check, or an "apply to target" control that has nothing
+// real (no total) to compare against an AC.
+function rollDamageOnlyInstance(entry){
+  const dmg = (entry.dmg||[]).map(c=>rollDamage(c, false));
+  return { d20rolls:[], chosen:null, mode:null, toHit: entry.toHit, total:null, isCrit:false, isFumble:false, dmg, extraSave: entry.extraSave, vsTarget:null };
+}
+function rollDamageOnly(creature, entry, hits, boardId){
+  hits = clamp(hits,1,50);
+  const instances = [];
+  for(let i=1;i<=hits;i++) instances.push({ i, kind:'attack', ...rollDamageOnlyInstance(entry) });
+  const logEntry = { creatureName: creature.name, entryName: entry.name+' (damage only)', atype: entry.atype, kind: entry.kind, instances };
+  pushLog(logEntry);
+  if(boardId){
+    lastResults.set(boardId+'::'+entry.id, logEntry);
+    renderBoard();
+  }
+}
+
 function rollSaveEffectInstance(entry){
   const dmg = (entry.dmg||[]).map(c=>{
     const full = rollDamage(c, false);
@@ -1828,6 +1869,25 @@ function renderCard(item){
               <button class="btn primary" data-act="roll-mix" data-board="${item.boardId}" data-entry="${e.id}" ${total?'':'disabled'}>Roll ${total} mixed</button>
             </div>`;
           })() : '';
+          // sometimes the to-hit roll already happened somewhere else (rolled
+          // by hand, or just declared "3 of these landed") and all that's
+          // wanted is the damage - skip the attack roll and roll dice for
+          // however many hits are actually being asked for
+          const showDmgOnly = e.kind==='attack';
+          const dmgOnlyKey = item.boardId+'::'+e.id;
+          const dmgOnly = showDmgOnly ? peekDmgOnlyState(dmgOnlyKey) : null;
+          const dmgOnlyBtn = showDmgOnly ? `<button class="mix-toggle${dmgOnly&&dmgOnly.open?' open':''}" data-act="toggle-dmgonly" data-key="${dmgOnlyKey}" data-board="${item.boardId}" data-entry="${e.id}" title="Skip the to-hit roll - just roll damage for however many attacks already hit">DMG</button>` : '';
+          const dmgOnlyPanel = (dmgOnly && dmgOnly.open) ? `<div class="mix-panel">
+            <div class="mix-row">
+              <span class="mix-lbl">Hits</span>
+              <div class="mix-stepper">
+                <button data-act="dmgonly-dec" data-key="${dmgOnlyKey}">−</button>
+                <input type="number" class="mix-input" data-dmgonly="1" data-key="${dmgOnlyKey}" min="1" max="50" value="${dmgOnly.hits}">
+                <button data-act="dmgonly-inc" data-key="${dmgOnlyKey}">+</button>
+              </div>
+            </div>
+            <button class="btn primary" data-act="roll-dmgonly" data-board="${item.boardId}" data-entry="${e.id}">Roll damage ×${dmgOnly.hits}</button>
+          </div>` : '';
           // a card-level flat/adv/disadv split (set once for the whole
           // creature, see renderCard) takes over from the blunt all-or-
           // nothing A/D toggle whenever it's actually engaged - see
@@ -1853,6 +1913,7 @@ function renderCard(item){
             </div>
             <div class="roll-btn-group">
               ${mixBtn}
+              ${dmgOnlyBtn}
               <button class="roll-btn ${rollBtnCls}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="${rollBtnTitle}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
                 Roll
@@ -1861,6 +1922,7 @@ function renderCard(item){
           </div>
           ${descOpen && e.text ? `<div class="entry-desc-body">${formatEntryDesc(e.text)}</div>` : ''}
           ${mixPanel}
+          ${dmgOnlyPanel}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     groupHtmlByType[t] = `<div class="group g-${t} ${collapsed?'collapsed':''}">
@@ -2095,6 +2157,15 @@ function dmgHalfStr(dmgArr){
 }
 
 function attackCore(inst){
+  if(inst.chosen===null){
+    // damage-only: the hit already happened outside this roll (rolled
+    // manually, or just declared) - there's no d20 to show and no crit to
+    // check for, since that's decided by the attack roll this skipped
+    let line = `<b>Hit</b> <span class="dmgonly-tag">(damage only)</span>`;
+    if(inst.dmg && inst.dmg.length) line += ` — dmg ${dmgStr(inst.dmg)}`;
+    if(inst.extraSave) line += `<div class="sub-line">also: <span class="pill-dc">DC ${esc(inst.extraSave.dc)} ${esc(inst.extraSave.ability)}</span></div>`;
+    return line;
+  }
   const crit = inst.isCrit ? ' <span class="crit">CRIT!</span>' : '';
   const fumble = inst.isFumble ? ' <span class="fumble">FUMBLE</span>' : '';
   let line = `d20 ${d20Str(inst)} ${fmtMod(inst.toHit)} = <b>${inst.total}</b>${crit}${fumble}`;
@@ -2153,7 +2224,10 @@ function multiDetailHtml(inst){
 function instApplyToHtml(entry, instIdx){
   const topInst = entry.instances[instIdx];
   const rep = attackPartsOf(topInst)[0];
-  if(!rep) return '';
+  // a damage-only instance has no attack roll (chosen===null) and so no
+  // total to compare against a target's AC - there's nothing to send
+  // elsewhere, the hit was already a given
+  if(!rep || rep.chosen===null) return '';
   const cur = rep.vsTarget;
   const matched = cur ? targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===cur.ac && (!cur.name || t.name===cur.name)) : null;
   return `<select class="inst-apply-select" data-eid="${entry.id}" data-instidx="${instIdx}" title="Send this attacker's roll at a different target">
@@ -2288,7 +2362,10 @@ function perTargetHtml(entry){
 // roll to check in the first place (saves/throws have no AC to compare to).
 function applyToRowHtml(entry){
   const rep = firstAttackInst(entry);
-  if(!rep) return '';
+  // a damage-only result (chosen===null) skipped the attack roll entirely -
+  // there's no total to compare against a target's AC, so there's nothing
+  // here to point at a different target
+  if(!rep || rep.chosen===null) return '';
   const cur = rep.vsTarget;
   const matched = cur ? targets.items.find(t=>((t.ac||0)+(t.acAdj||0))===cur.ac && (!cur.name || t.name===cur.name)) : null;
   return `<div class="apply-row">
@@ -2877,6 +2954,21 @@ function onGlobalClick(e){
       }
       break;
     }
+    case 'toggle-dmgonly': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const s = getDmgOnlyState(el.dataset.key, item?item.count:1);
+      s.open = !s.open;
+      renderBoard();
+      break;
+    }
+    case 'roll-dmgonly': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const c = item && creatures.find(cr=>cr.id===item.creatureId);
+      const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
+      const s = entry && dmgOnlyState.get(item.boardId+'::'+entry.id);
+      if(c && entry && s) rollDamageOnly(c, entry, s.hits, item.boardId);
+      break;
+    }
     case 'toggle-card-mix': {
       const bid = el.dataset.board;
       const item = board.items.find(it=>it.boardId===bid);
@@ -2995,6 +3087,8 @@ const STEPPER_ACTS = {
   'mix-dec': el => stepMixEntry(el.dataset.key, el.dataset.field, -1),
   'card-mix-inc': el => stepCardMix(el.dataset.board, el.dataset.field, 1),
   'card-mix-dec': el => stepCardMix(el.dataset.board, el.dataset.field, -1),
+  'dmgonly-inc': el => stepDmgOnlyHits(el.dataset.key, 1),
+  'dmgonly-dec': el => stepDmgOnlyHits(el.dataset.key, -1),
 };
 let stepperTimer = null, stepperFn = null, stepperFired = false;
 function stopStepper(){
@@ -3041,6 +3135,18 @@ document.addEventListener('focusout', e=>{
   }
   if(e.target.classList.contains('mix-input')){
     const raw = e.target.value.trim();
+    if(e.target.dataset.dmgonly){
+      // shares the .mix-input class purely for styling - it's the "hits"
+      // count for the damage-only panel, not a normal/adv/disadv field, so
+      // it gets its own commit path (clamped 1-50, not 0-50, and reads from
+      // dmgOnlyState rather than mixState/cardMix)
+      const hits = clamp(parseInt(raw,10)||1, 1, 50);
+      commitDmgOnlyHits(e.target.dataset.key, hits);
+      const s = dmgOnlyState.get(e.target.dataset.key);
+      if(s) e.target.value = s.hits;
+      setTimeout(()=>{ if(!isBoardFieldFocused()) renderBoard(); }, 0);
+      return;
+    }
     const n = clamp(parseInt(raw,10)||0, 0, 50);
     if(e.target.dataset.key){
       commitMixEntryInput(e.target.dataset.key, e.target.dataset.field, n);

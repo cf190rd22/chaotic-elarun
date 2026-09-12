@@ -44254,7 +44254,7 @@
         "_dmHidden": true,
         "_collapsedSpLevels": {
           "0": false,
-          "1": true,
+          "1": false,
           "3": false,
           "4": false
         },
@@ -44378,5 +44378,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789219547618
+  "_updated": 1789222142548
 }

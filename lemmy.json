@@ -18262,16 +18262,6 @@
         ],
         "trackers": [
           {
-            "key": "item_charges_frostfell_cloak",
-            "label": "Frostfell Cloak Charges",
-            "cur": 0,
-            "max": 5,
-            "reset": "dawn",
-            "_custom": true,
-            "_trackerType": "boxes",
-            "_catId": 1784151662696
-          },
-          {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
             "cur": 1,
@@ -18282,17 +18272,14 @@
             "_catId": 1784151662696
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_gust",
-            "label": "Chaos: Gust",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
+            "key": "item_charges_frostfell_cloak",
+            "label": "Frostfell Cloak Charges",
+            "cur": 4,
+            "max": 5,
+            "reset": "dawn",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 400,
-            "_catId": 1784152058622,
-            "actionLink": "Chaos: Gust"
+            "_trackerType": "boxes",
+            "_catId": 1784151662696
           },
           {
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
@@ -18346,6 +18333,20 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_gust",
+            "label": "Chaos: Gust",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 400,
+            "_catId": 1784152058622,
+            "actionLink": "Chaos: Gust",
+            "_origIdx": 2
           }
         ],
         "_grantImmunities": [],
@@ -18841,16 +18842,6 @@
         },
         "_trackersForDm": [
           {
-            "key": "item_charges_frostfell_cloak",
-            "label": "Frostfell Cloak Charges",
-            "cur": 0,
-            "max": 5,
-            "reset": "dawn",
-            "_custom": true,
-            "_trackerType": "boxes",
-            "_catId": 1784151662696
-          },
-          {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
             "cur": 1,
@@ -18861,17 +18852,14 @@
             "_catId": 1784151662696
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_gust",
-            "label": "Chaos: Gust",
-            "max": 1,
-            "cur": 0,
-            "_trackerType": "boxes",
-            "reset": "long",
+            "key": "item_charges_frostfell_cloak",
+            "label": "Frostfell Cloak Charges",
+            "cur": 4,
+            "max": 5,
+            "reset": "dawn",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 400,
-            "_catId": 1784152058622,
-            "actionLink": "Chaos: Gust"
+            "_trackerType": "boxes",
+            "_catId": 1784151662696
           },
           {
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
@@ -18925,6 +18913,20 @@
             "_raceSync": true,
             "_catId": 1784152083378,
             "actionLink": "Relentless Endurance"
+          },
+          {
+            "key": "feat_blades_of_chaos:_path_of_storm_chaos:_gust",
+            "label": "Chaos: Gust",
+            "max": 1,
+            "cur": 1,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 400,
+            "_catId": 1784152058622,
+            "actionLink": "Chaos: Gust",
+            "_origIdx": 2
           }
         ],
         "saveDcEffective": 15,
@@ -18997,5 +18999,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1789223987024
+  "_updated": 1789224232873
 }

@@ -13398,23 +13398,22 @@
         "toolProfs": "Clarinet, Dulcimer, Fiddle, Harp, Lute, Tantan, Yarting",
         "defenses": "Cold*",
         "notes": "",
-        "overrides": {},
+        "overrides": {
+          "feat_169_Musician": {
+            "name": "Musician",
+            "level": 0,
+            "description": "<details open=\"\"><summary><button class=\"_det-cut-btn\" contenteditable=\"false\" title=\"Cut this block to clipboard\" style=\"float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;\">✂ cut</button>Instrument Training</summary><div class=\"det-body\"><p>You gain proficiency with three Musical Instruments of your choice.</p></div></details><details open=\"\"><summary><button class=\"_det-cut-btn\" contenteditable=\"false\" title=\"Cut this block to clipboard\" style=\"float: right; font-size: 9px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; margin-left: 6px; vertical-align: middle;\">✂ cut</button>Encouraging Song</summary><div class=\"det-body\"><p>As you finish a Short or Long Rest, you can play a song on a Musical Instrument with which you have proficiency and give Heroic Inspiration to allies who hear the song. The number of allies you can affect in this way equals your Proficiency Bonus.</p></div></details>"
+          }
+        },
         "choices": {
           "sub_69_Fighting Style_choice": "Two-Weapon Fighting",
           "class_65_Ability Score Improvement_choice": "Weapon expert ",
           "class_65_Ability Score Improvement_asi": "Scimitar ",
           "feat_188_Heavily Armored_choice": "Constitution ",
           "feat_216_Weapon Master_choice": "Scimitar ",
-          "custom_0_choice": "Entwrtai"
+          "custom_0_choice": "Entertainer background "
         },
-        "customFeatures": [
-          {
-            "level": 0,
-            "name": "New Feature",
-            "description": "",
-            "_type": "custom"
-          }
-        ],
+        "customFeatures": [],
         "spells": [
           {
             "name": "Blade Ward",
@@ -18398,13 +18397,13 @@
           "tempHp": 0
         },
         "_secCollapsed": {
-          "core": true,
+          "core": false,
           "saves": false,
           "skills": false,
           "passives": false,
           "senses": true,
-          "defenses": true,
-          "feats": true,
+          "defenses": false,
+          "feats": false,
           "languages": false,
           "proficiencies": false,
           "jump": true,
@@ -18998,6 +18997,6 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1789215423187,
+  "_updated": 1789215483177,
   "_unchanged": true
 }

@@ -43874,6 +43874,26 @@
             "_subclassSync": true,
             "_syncMinLevel": 9,
             "group": "Polar Land"
+          },
+          {
+            "name": "Misty Step",
+            "level": 2,
+            "school": "Conjuration",
+            "time": "BA",
+            "range": "Self",
+            "components": "V",
+            "duration": "Instantaneous",
+            "desc": "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space you can see.",
+            "area": "",
+            "hit": "",
+            "effect": "Teleport",
+            "source": "Sorcerer",
+            "_sourceBook": "PHB",
+            "_assigned": true,
+            "_featSync": true,
+            "_syncSourceId": 185,
+            "_syncSourceName": "Fey Touched",
+            "_freecast": true
           }
         ],
         "_grantImmunities": [],
@@ -44015,7 +44035,7 @@
         },
         "_hideAdjHighlight": true,
         "_subSpellsCollapsed": false,
-        "_hideUnassigned": true,
+        "_hideUnassigned": false,
         "spellcastingAbility": "WIS",
         "_grantChoices": {
           "grant_168_Magic_Initiate_0": [
@@ -44029,7 +44049,7 @@
             "Bless"
           ]
         },
-        "_grantChoicesCollapsed": true,
+        "_grantChoicesCollapsed": false,
         "_actFiltersCollapsed": true,
         "_actViewMode": "list",
         "spellSourceFilter": [
@@ -44322,5 +44342,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789856471709
+  "_updated": 1789856580795
 }

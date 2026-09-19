@@ -37309,7 +37309,7 @@
             "state": "prof",
             "adv": false,
             "dis": false,
-            "bonus": 4,
+            "bonus": 3,
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -40447,5 +40447,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789823105271
+  "_updated": 1789825259509
 }

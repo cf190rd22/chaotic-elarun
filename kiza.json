@@ -39574,7 +39574,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 69,
+        "hpCurrent": 41,
         "hpTemp": 0,
         "_adjOpen": false,
         "_topOpen": false,
@@ -40447,5 +40447,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789227644211
+  "_updated": 1789819200465
 }

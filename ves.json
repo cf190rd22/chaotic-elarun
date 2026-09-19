@@ -38061,7 +38061,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38088,7 +38088,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 3,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38102,7 +38102,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
             "label": "Nat.Recovery: Cast Circle Spell",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38116,7 +38116,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
             "label": "Nat.Recovery: Recover Spell Slots",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -38130,7 +38130,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -40297,7 +40297,8 @@
             "_subclassSync": false,
             "_raceSync": false,
             "_spellAdjActive": false,
-            "_spellAdjDuration": ""
+            "_spellAdjDuration": "",
+            "_singleUsed": false
           },
           {
             "name": "Healing Word",
@@ -43897,7 +43898,9 @@
             "_syncSourceName": "Fey Touched",
             "_freecast": true,
             "_singleUse": false,
-            "notes": "30ft teleport"
+            "notes": "30ft teleport",
+            "_freecasted": false,
+            "_singleUsed": false
           },
           {
             "name": "Bless",
@@ -43921,7 +43924,9 @@
             "_syncSourceName": "Fey Touched",
             "_freecast": true,
             "_singleUse": false,
-            "notes": "1d4 - Attack Roll or Saving Throw"
+            "notes": "1d4 - Attack Roll or Saving Throw",
+            "_freecasted": false,
+            "_singleUsed": false
           }
         ],
         "_grantImmunities": [],
@@ -44030,12 +44035,7 @@
           "maxHp": 0,
           "tempHp": 0
         },
-        "_slotUsed": {
-          "152-L2": 3,
-          "152-L1": 1,
-          "152-L4": 1,
-          "152-L3": 2
-        },
+        "_slotUsed": {},
         "_collapsedActSubgroups": {},
         "_secCollapsed": {
           "quickStats": false,
@@ -44058,7 +44058,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 40,
+        "hpCurrent": 52,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -44124,12 +44124,7 @@
         "activeModes": [],
         "acEffective": 18,
         "hpMax": 59,
-        "_slotUsedCompact": {
-          "1": 1,
-          "2": 3,
-          "3": 2,
-          "4": 1
-        },
+        "_slotUsedCompact": {},
         "_trackersForDm": [
           {
             "key": "feat_blades_of_chaos:_path_of_passage_chaos:_anchor",
@@ -44172,7 +44167,7 @@
             "key": "cls_druid_wild_shape",
             "label": "Wild Shape",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44199,7 +44194,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 3,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44213,7 +44208,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_cast_circle_spell",
             "label": "Nat.Recovery: Cast Circle Spell",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44227,7 +44222,7 @@
             "key": "sub_circle_of_the_land_nat.recovery:_recover_spell_slots",
             "label": "Nat.Recovery: Recover Spell Slots",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44241,7 +44236,7 @@
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44380,5 +44375,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789828485166
+  "_updated": 1789831371891
 }

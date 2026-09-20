@@ -59727,22 +59727,22 @@
     "monsters": [
       {
         "name": "Aarakocra",
-        "subtitle": "Winged Guardians of the Sky",
-        "lore": "Aarakocra are birdlike folk who soar the skies of countless worlds and the endless expanses of the Elemental Plane of Air. They often resemble avians common to the lands where they dwell; some resemble hawks or condors, while others appear similar to hummingbirds or archaeopteryxes. In many lands, aarakocra tell of their ancient heroics resisting the wicked Queen of Chaos alongside the mysterious Wind Dukes of Aaqa.\nAarakocra aeromancers control magical winds from the endless storms of the Elemental Plane of Air.\nAarakocra skirmishers are adept at fighting aerial foes amid the clouds. They often attack land-bound threats with diving strikes from above.",
+        "lore": "Aarakocra are birdlike folk who soar the skies of countless worlds and the endless expanses of the Elemental Plane of Air. They often resemble avians common to the lands where they dwell; some resemble hawks or condors, while others appear similar to hummingbirds or archaeopteryxes. In many lands, aarakocra tell of their ancient heroics resisting the wicked Queen of Chaos alongside the mysterious Wind Dukes of Aaqa.\nAarakocra aeromancers control magical winds from the endless storms of the Elemental Plane of Air.",
         "habitat": [
           "Mountain",
-          "Planar (Elemental Plane of Air)"
+          "Planar (Elemental Plane of Air); Treasure: Implements",
+          "Individual"
         ],
-        "treasure": "Implements, Individual",
+        "treasure": "",
         "variants": [
           {
-            "name": "Aarakocra Aeromancer",
-            "ac": "16",
-            "initiative": "+3 (13)",
+            "name": "AARAKOCRA AEROMANCER",
+            "ac": "16 Initiative +3 (13)",
             "hp": "66 (12d8 + 12)",
             "speed": "20 ft., Fly 50 ft.",
             "cr": "4",
-            "size": "Medium Elemental",
+            "initiative": "",
+            "size": "Medium",
             "type": "Elemental",
             "alignment": "Neutral",
             "saves": "",
@@ -59750,8 +59750,6 @@
             "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Passive Perception 17",
             "languages": "Aarakocra, Primordial (Auran)",
             "stats": {},
@@ -59767,27 +59765,31 @@
               },
               {
                 "name": "Spellcasting",
-                "desc": "The aarakocra casts one of the following spells, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 13): At Will: Elementalism, Gust of Wind, Mage Hand, Message 1/Day: Lightning Bolt"
+                "desc": "The aarakocra casts one of the following spells, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 13):\nAt Will: Elementalism, Gust of Wind, Mage Hand, Message\n1/Day: Lightning Bolt"
               }
             ],
             "bonusActions": [],
             "reactions": [
               {
                 "name": "Feather Fall (1/Day)",
-                "desc": "The aarakocra casts Feather Fall in response to that spell’s trigger, using the same spellcasting ability as Spellcasting."
+                "desc": "The aarakocra casts Feather Fall in response to that spell’s trigger, using the same spellcasting ability as Spellcasting.\nAarakocra Skirmisher"
+              },
+              {
+                "name": "Aarakocra skirmishers are adept at fighting aerial foes amid the clouds",
+                "desc": "They often attack land-bound threats with diving strikes from above.\nAARAKOCRA SKIRMISHER"
               }
             ],
             "legendaryActions": [],
             "lairActions": []
           },
           {
-            "name": "Aarakocra Skirmisher",
-            "ac": "12",
-            "initiative": "+2 (12)",
+            "name": "AARAKOCRA SKIRMISHER",
+            "ac": "12 Initiative +2 (12)",
             "hp": "11 (2d8 + 2)",
             "speed": "20 ft., Fly 50 ft.",
             "cr": "1/4",
-            "size": "Medium Elemental",
+            "initiative": "",
+            "size": "Medium",
             "type": "Elemental",
             "alignment": "Neutral",
             "saves": "",
@@ -59795,8 +59797,6 @@
             "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Passive Perception 15",
             "languages": "Aarakocra, Primordial (Auran)",
             "stats": {},
@@ -59808,7 +59808,31 @@
               },
               {
                 "name": "Wind Javelin",
-                "desc": "Melee or Ranged Attack Roll: +4, reach 5 ft. or range 30/120 ft. Hit: 5 (1d6 + 2) Piercing damage plus 2 (1d4) Thunder damage. Hit or Miss: The javelin magically returns to the aarakocra’s hand immediately after a ranged attack."
+                "desc": "Melee or Ranged Attack Roll: +4, reach 5 ft. or range 30/120 ft. Hit: 5 (1d6 + 2) Piercing damage plus 2 (1d4) Thunder damage. Hit or Miss: The javelin magically returns to the aarakocra’s hand immediately after a ranged attack.\nAARON MILLER\nAboleth\nAgeless Alien Mastermind\nHabitat: Underdark, Underwater; Treasure: Relics\nKEV WALKER\nA GNOME CULTIST CONSULTS AN ALL-KNOWING ABOLETH"
+              },
+              {
+                "name": "In aquatic abysses, aboleths dream of dead empires and orchestrate plots that unfold across ages",
+                "desc": "These elusive, amphibious immortals physically and mentally overwhelm their victims and transform creatures with a slimy, aberrant infection, reshaping other beings to serve them beneath the waves."
+              },
+              {
+                "name": "Aboleths possess terrifying intellects and have alien mindsets",
+                "desc": "These creatures possess perfect memories of proto-worlds and incomprehensible dominions from the multiverse’s earliest eons. Their secrets are innumerable and unfathomable. Aboleths lurk in places awash in primordial mysteries: the ruins of aquatic empires, hidden magical nexuses, or weak places between planes of existence. In these lairs, aboleths dream of epochs past, collect throngs of psychically dominated servants, consume the minds of unwitting victims, and prepare for their return to power."
+              },
+              {
+                "name": "Aboleths’ alien goals and methods are often mysterious to other creatures",
+                "desc": "Roll on or choose a result from the Aboleth Schemes table to inspire an aboleth’s schemes.\nAboleth Schemes\n1d6\tThe Aboleth Seeks To...\n1\tAccomplish incomprehensible plans that lead it to act in seemingly random ways.\n2\tLearn more of the world by kidnapping people and consuming their minds.\n3\tManipulate innocents into worshiping it as a god by using its telepathy from hiding.\n4\tOpen a gate to the distant past or future, releasing an invasion from another time.\n5\tRouse a dragon turtle, a kraken, or another sea monster to flood a coastal city.\n6\tTrick treasure hunters into recovering relics from its long-fallen empire.\nAboleth Lairs"
+              },
+              {
+                "name": "Aboleths usually dwell in submerged ruins and caverns",
+                "desc": "They keep air-filled spaces for their terrestrial servants and to hold treasures that would be damaged by water.\nThe region containing an aboleth’s lair is warped by it, creating the following effects:"
+              },
+              {
+                "name": "Foul Water",
+                "desc": "Water sources within 1 mile of the lair are supernaturally fouled. Creatures other than the aboleth and its allies that drink such water must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 1 hour."
+              },
+              {
+                "name": "Psionic Projection",
+                "desc": "While in its lair, the aboleth can cast Project Image, requiring no spell components and using Intelligence as the spellcasting ability (spell save DC 16). When casting the spell this way, the spell’s range is 1 mile, and the aboleth can use its telepathy as if it were in the illusion’s space.\nIf the aboleth dies or moves its lair elsewhere, these effects end immediately.\n“The lies we call reason are fragile things, vulnerable and raw on the shores of eons. But in the dream-vaults of dread ancients roil seas of terrifying truth. Our age is an island, and the ebb of primordial tides avows the Stygian wave.”\n—Evard, Sighs of the All-Seeing Worm\nABOLETH"
               }
             ],
             "bonusActions": [],
@@ -59819,23 +59843,19 @@
         ]
       },
       {
-        "name": "Aboleth",
-        "subtitle": "Ageless Alien Mastermind",
-        "lore": "In aquatic abysses, aboleths dream of dead empires and orchestrate plots that unfold across ages. These elusive, amphibious immortals physically and mentally overwhelm their victims and transform creatures with a slimy, aberrant infection, reshaping other beings to serve them beneath the waves.\nAboleths possess terrifying intellects and have alien mindsets. These creatures possess perfect memories of proto-worlds and incomprehensible dominions from the multiverse’s earliest eons. Their secrets are innumerable and unfathomable. Aboleths lurk in places awash in primordial mysteries: the ruins of aquatic empires, hidden magical nexuses, or weak places between planes of existence. In these lairs, aboleths dream of epochs past, collect throngs of psychically dominated servants, consume the minds of unwitting victims, and prepare for their return to power.\nAboleths’ alien goals and methods are often mysterious to other creatures. Roll on or choose a result from the Aboleth Schemes table to inspire an aboleth’s schemes.\nAccomplish incomprehensible plans that lead it to act in seemingly random ways.\nLearn more of the world by kidnapping people and consuming their minds.\nManipulate innocents into worshiping it as a god by using its telepathy from hiding.\nOpen a gate to the distant past or future, releasing an invasion from another time.\nRouse a dragon turtle, a kraken, or another sea monster to flood a coastal city.\nTrick treasure hunters into recovering relics from its long-fallen empire.\nAboleths usually dwell in submerged ruins and caverns. They keep air-filled spaces for their terrestrial servants and to hold treasures that would be damaged by water.\nThe region containing an aboleth’s lair is warped by it, creating the following effects:\nFoul Water. Water sources within 1 mile of the lair are supernaturally fouled. Creatures other than the aboleth and its allies that drink such water must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 1 hour.\nPsionic Projection. While in its lair, the aboleth can cast Project Image, requiring no spell components and using Intelligence as the spellcasting ability (spell save DC 16). When casting the spell this way, the spell’s range is 1 mile, and the aboleth can use its telepathy as if it were in the illusion’s space.\nIf the aboleth dies or moves its lair elsewhere, these effects end immediately.\n“The lies we call reason are fragile things, vulnerable and raw on the shores of eons. But in the dream-vaults of dread ancients roil seas of terrifying truth. Our age is an island, and the ebb of primordial tides avows the Stygian wave.”",
-        "habitat": [
-          "Underdark",
-          "Underwater"
-        ],
-        "treasure": "Relics",
+        "name": "ABOLETH",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Aboleth Lairs",
-            "ac": "17",
-            "initiative": "+7 (17)",
+            "name": "ABOLETH",
+            "ac": "17 Initiative +7 (17)",
             "hp": "150 (20d10 + 40)",
             "speed": "10 ft., Swim 40 ft.",
             "cr": "10",
-            "size": "Large Aberration",
+            "initiative": "",
+            "size": "Large",
             "type": "Aberration",
             "alignment": "Lawful Evil",
             "saves": "",
@@ -59843,8 +59863,6 @@
             "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Darkvision 120 ft.; Passive Perception 20",
             "languages": "Deep Speech; telepathy 120 ft.",
             "stats": {},
@@ -59863,7 +59881,7 @@
               },
               {
                 "name": "Mucus Cloud",
-                "desc": "While underwater, the aboleth is surrounded by mucus. Constitution Saving Throw: DC 14, each creature in a 5-foot Emanation originating from the aboleth at the end of the aboleth’s turn. Failure: The target is cursed. Until the curse ends, the target’s skin becomes slimy, the target can breathe air and water, and it can’t regain Hit Points unless it is underwater. While the cursed creature is outside a body of water, the creature takes 6 (1d12) Acid damage at the end of every 10 minutes unless moisture is applied to its skin before those minutes have passed."
+                "desc": "While underwater, the aboleth is surrounded by mucus. Constitution Saving Throw: DC 14, each creature in a 5-foot Emanation originating from the aboleth at the end of the aboleth’s turn. Failure: The target is cursed. Until the curse ends, the target’s skin becomes slimy, the target can breathe air and water, and it can’t regain Hit Points unless it is underwater.\nWhile the cursed creature is outside a body of water, the creature takes 6 (1d12) Acid damage at the end of every 10 minutes unless moisture is applied to its skin before those minutes have passed."
               },
               {
                 "name": "Probing Telepathy",
@@ -59885,19 +59903,31 @@
               },
               {
                 "name": "Dominate Mind (2/Day)",
-                "desc": "Wisdom Saving Throw: DC 16, one creature the aboleth can see within 30 feet. Failure: The target has the Charmed condition until the aboleth dies or is on a different plane of existence from the target. While Charmed, the target acts as an ally to the aboleth and is under its control while within 60 feet of it. In addition, the aboleth and the target can communicate telepathically with each other over any distance. The target repeats the save whenever it takes damage as well as after every 24 hours it spends at least 1 mile away from the aboleth, ending the effect on itself on a success."
+                "desc": "Wisdom Saving Throw: DC 16, one creature the aboleth can see within 30 feet. Failure: The target has the Charmed condition until the aboleth dies or is on a different plane of existence from the target. While Charmed, the target acts as an ally to the aboleth and is under its control while within 60 feet of it. In addition, the aboleth and the target can communicate telepathically with each other over any distance.\nThe target repeats the save whenever it takes damage as well as after every 24 hours it spends at least 1 mile away from the aboleth, ending the effect on itself on a success."
               }
             ],
             "bonusActions": [],
             "reactions": [],
             "legendaryActions": [
               {
+                "name": "Legendary Action Uses: 3 (4 in Lair)",
+                "desc": "Immediately after another creature’s turn, the aboleth can expend a use to take one of the following actions. The aboleth regains all expended uses at the start of each of its turns."
+              },
+              {
                 "name": "Lash",
                 "desc": "The aboleth makes one Tentacle attack."
               },
               {
                 "name": "Psychic Drain",
-                "desc": "If the aboleth has at least one creature Charmed or Grappled, it uses Consume Memories and regains 5 (1d10) Hit Points."
+                "desc": "If the aboleth has at least one creature Charmed or Grappled, it uses Consume Memories and regains 5 (1d10) Hit Points.\nAir Elemental\nPrimal Spirit of Wind and Storm\nHabitat: Desert, Mountain, Planar (Elemental Plane of Air); Treasure: None\nCHRIS COLD"
+              },
+              {
+                "name": "Energetic spirits from the Elemental Plane of Air, air elementals gather clouds and winds into ever-changing bodies with indistinct limbs and vague features",
+                "desc": "Beyond their home plane, these elementals might serve magic-users who conjure them, or they might congregate around nexuses of unbridled planar energy, such as wind-scoured mountain peaks or endless storms. In battle, air elementals batter enemies with powerful gusts or transform into whirlwinds to fling away foes."
+              },
+              {
+                "name": "Air elementals often have distinctive compositions",
+                "desc": "Roll on or choose a result from the Air Elemental Compositions table to inspire the elemental’s appearance.\nAir Elemental Compositions\n1d6\tThe Air Elemental’s Body Features...\n1\tCumulus or cirrus clouds.\n2\tA mixture of vibrantly colored gases.\n3\tA pungent, sour-looking miasma\n4\tShifting cloud clusters that resemble animals and simple shapes.\n5\tSinister features obscured in a misty mass.\n6\tSwirling storm clouds.\nAIR ELEMENTAL"
               }
             ],
             "lairActions": []
@@ -59905,33 +59935,26 @@
         ]
       },
       {
-        "name": "Air Elemental",
-        "subtitle": "Primal Spirit of Wind and Storm",
-        "lore": "Energetic spirits from the Elemental Plane of Air, air elementals gather clouds and winds into ever-changing bodies with indistinct limbs and vague features. Beyond their home plane, these elementals might serve magic-users who conjure them, or they might congregate around nexuses of unbridled planar energy, such as wind-scoured mountain peaks or endless storms. In battle, air elementals batter enemies with powerful gusts or transform into whirlwinds to fling away foes.\nAir elementals often have distinctive compositions. Roll on or choose a result from the Air Elemental Compositions table to inspire the elemental’s appearance.\nThe Air Elemental’s Body Features...\nShifting cloud clusters that resemble animals and simple shapes.",
-        "habitat": [
-          "Desert",
-          "Mountain",
-          "Planar (Elemental Plane of Air)"
-        ],
-        "treasure": "None",
+        "name": "AIR ELEMENTAL",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Swirling storm clouds.",
-            "ac": "15",
-            "initiative": "+5 (15)",
+            "name": "AIR ELEMENTAL",
+            "ac": "15 Initiative +5 (15)",
             "hp": "90 (12d10 + 24)",
             "speed": "10 ft., Fly 90 ft. (hover)",
             "cr": "5",
-            "size": "Large Elemental",
+            "initiative": "",
+            "size": "Large",
             "type": "Elemental",
             "alignment": "Neutral",
             "saves": "",
             "skills": "",
-            "dmgResist": "Bludgeoning, Lightning, Piercing, Slashing",
-            "dmgImmune": "Poison, Thunder",
-            "condImmune": "Exhaustion, Grappled, Paralyzed, Petrified, Poisoned, Prone, Restrained, Unconscious",
-            "vulnerabilities": "",
-            "gear": "",
+            "dmgResist": "",
+            "dmgImmune": "",
+            "condImmune": "",
             "senses": "Darkvision 60 ft.; Passive Perception 10",
             "languages": "Primordial (Auran)",
             "stats": {},
@@ -59952,7 +59975,19 @@
               },
               {
                 "name": "Whirlwind (Recharge 4–6)",
-                "desc": "Strength Saving Throw: DC 13, one Medium or smaller creature in the elemental’s space. Failure: 24 (4d10 + 2) Thunder damage, and the target is pushed up to 20 feet straight away from the elemental and has the Prone condition. Success: Half damage only. What can withstand the storm’s scream? The lightning’s spear? The want of sweet breath? Air is the mightiest of elements—respect its power."
+                "desc": "Strength Saving Throw: DC 13, one Medium or smaller creature in the elemental’s space. Failure: 24 (4d10 + 2) Thunder damage, and the target is pushed up to 20 feet straight away from the elemental and has the Prone condition. Success: Half damage only.\nWhat can withstand the storm’s scream? The lightning’s spear? The want of sweet breath? Air is the mightiest of elements—respect its power.\n—Husam, Son of the Breezes, ruler of djinn\nAnimal Lord\nImmortal Regent of the Wild\nHabitat: Planar (Beastlands); Treasure: Relics\nWhile I don’t deny the compliment, I assure you, I’m more akin to a god than a “pretty kitty.”\n—Brother of Shadows, Cat Lord"
+              },
+              {
+                "name": "Animal lords are the immortal spirits of legendary animals",
+                "desc": "They serve as the divine protectors of animals of their kind, and they appear as hybrids of humanoids and the animals they defend. They frequently change into giant, idealized versions of the animals they’re associated with—albeit with glowing eyes. When contending with people, they sometimes appear as humanlike beings with subtle, animal-like features. No matter their appearance, animal lords exhibit the instincts and predilections of the animals they represent, tempered by their intellect and experience."
+              },
+              {
+                "name": "Most animal lords make their homes in the Beastlands, but they occasionally journey to the Feywild or other idyllic realms",
+                "desc": "They rarely travel to the Material Plane, making exceptions only when a world faces environmental disaster or droves of animals are otherwise in jeopardy.\nVALERA LUTFULLINA"
+              },
+              {
+                "name": "Among the best-known animal lords are those that represent cats, hawks, lizards, and wolves, but animal lords exist for beasts of all types",
+                "desc": "Some animal lords even embody creatures that are rare or extinct on Material Plane worlds, like megafauna or dinosaurs. Using their divine might, animal lords can summon spectral animals, channel spiritual energy, and exhibit powers associated with one of three broad groups: foragers, hunters, or sages. These powers are tied to an animal lord’s personality and traits associated with the creature it resembles. Roll on or choose results from the relevant Animal Lord Appearances table to inspire what creature an animal lord resembles.\nForager Animal Lord Appearances\n1d10\tBestial Shape\n1\tBear\n2\tBee\n3\tBison\n4\tCapybara\n5\tCarp\n1d10\tBestial Shape\n6\tRabbit\n7\tRooster\n8\tSloth\n9\tStag\n10\tVulture\nHunter Animal Lord Appearances\n1d10\tBestial Shape\n1\tAlligator\n2\tBadger\n3\tBat\n4\tCat\n5\tHawk\n1d10\tBestial Shape\n6\tMongoose\n7\tPraying mantis\n8\tShark\n9\tSnake\n10\tWolf\nSage Animal Lord Appearances\n1d10\tBestial Shape\n1\tCoyote\n2\tCrow\n3\tElephant\n4\tLizard\n5\tMouse\n1d10\tBestial Shape\n6\tOwl\n7\tSalmon\n8\tSpider\n9\tTurtle\n10\tWhale\nANIMAL LORD"
               }
             ],
             "bonusActions": [],
@@ -59963,31 +59998,26 @@
         ]
       },
       {
-        "name": "Animal Lord",
-        "subtitle": "Immortal Regent of the Wild",
-        "lore": "While I don’t deny the compliment, I assure you, I’m more akin to a god than a “pretty kitty.”\nAnimal lords are the immortal spirits of legendary animals. They serve as the divine protectors of animals of their kind, and they appear as hybrids of humanoids and the animals they defend. They frequently change into giant, idealized versions of the animals they’re associated with—albeit with glowing eyes. When contending with people, they sometimes appear as humanlike beings with subtle, animal-like features. No matter their appearance, animal lords exhibit the instincts and predilections of the animals they represent, tempered by their intellect and experience.\nMost animal lords make their homes in the Beastlands, but they occasionally journey to the Feywild or other idyllic realms. They rarely travel to the Material Plane, making exceptions only when a world faces environmental disaster or droves of animals are otherwise in jeopardy.\nAmong the best-known animal lords are those that represent cats, hawks, lizards, and wolves, but animal lords exist for beasts of all types. Some animal lords even embody creatures that are rare or extinct on Material Plane worlds, like megafauna or dinosaurs. Using their divine might, animal lords can summon spectral animals, channel spiritual energy, and exhibit powers associated with one of three broad groups: foragers, hunters, or sages. These powers are tied to an animal lord’s personality and traits associated with the creature it resembles. Roll on or choose results from the relevant Animal Lord Appearances table to inspire what creature an animal lord resembles.",
-        "habitat": [
-          "Planar (Beastlands)"
-        ],
-        "treasure": "Relics",
+        "name": "ANIMAL LORD",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Whale",
-            "ac": "19",
-            "initiative": "+19 (29)",
+            "name": "ANIMAL LORD",
+            "ac": "19 Initiative +19 (29)",
             "hp": "323 (34d8 + 170)",
             "speed": "60 ft., Fly 60 ft. (hover), Swim 60 ft.",
             "cr": "20",
-            "size": "Medium Celestial",
+            "initiative": "",
+            "size": "Medium",
             "type": "Celestial",
             "alignment": "Neutral",
             "saves": "",
             "skills": "Acrobatics +13, Athletics +13, Perception +18, Stealth +13",
-            "dmgResist": "Cold, Fire, Necrotic, Psychic, Radiant",
-            "dmgImmune": "Charmed, Frightened, Stunned",
+            "dmgResist": "",
+            "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Truesight 120 ft.; Passive Perception 28",
             "languages": "All",
             "stats": {},
@@ -60052,7 +60082,7 @@
               },
               {
                 "name": "Spellcasting",
-                "desc": "The animal lord casts one of the following spells, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 20): At Will: Animal Friendship, Animal Messenger, Speak with Animals 2/Day Each: Awaken, Greater Restoration 1/Day Each (Sage Only): Animal Shapes, Sunburst"
+                "desc": "The animal lord casts one of the following spells, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 20):\nAt Will: Animal Friendship, Animal Messenger, Speak with Animals\n2/Day Each: Awaken, Greater Restoration\n1/Day Each (Sage Only): Animal Shapes, Sunburst"
               }
             ],
             "bonusActions": [
@@ -60064,12 +60094,24 @@
             "reactions": [],
             "legendaryActions": [
               {
+                "name": "Legendary Action Uses: 3",
+                "desc": "Immediately after another creature’s turn, the animal lord can expend a use to take one of the following actions. The animal lord regains all expended uses at the start of each of its turns."
+              },
+              {
                 "name": "Feral Strike",
                 "desc": "The animal lord moves up to its Speed without provoking Opportunity Attacks, and it makes one Rend attack."
               },
               {
                 "name": "Radiant Strike",
-                "desc": "The animal lord makes one Radiant Ray attack. You call yourself hunter, but your fear makes you smell like prey."
+                "desc": "The animal lord makes one Radiant Ray attack.\nYou call yourself hunter, but your fear makes you smell like prey.\n—Wind and Moon, Wolf Lord\nAnimated Objects\nMundane Objects Come to Life\nHabitat: Urban; Treasure: None\nSIMON DOMINIC"
+              },
+              {
+                "name": "Magic can manipulate mundane items, compelling them to perform simple tasks",
+                "desc": "Such animate objects might be unassuming tools or decorations that can defend their creator. These objects follow simple instructions from whatever force or magic-user created them. If left unattended, they might defend an area for ages or repeat a task until they wear out.\nRoll on or choose a result from the Animated Object Catalysts table to inspire what sort of magic motivates an ambulatory item.\nAnimated Object Catalysts\n1d10\tThe Object Was Animated By...\n1\tA Celestial or Fiend using the object to protect or torment a mortal.\n2\tA combination of magic and technology, such as alchemy or alien science.\n3\tThe essence of someone transformed by a supernatural trickster.\n4\tFey as part of their games or wiles.\n5\tHappenstance, with the item gaining a semblance of life after a hundred years of use.\n6\tA magic-user in need of a guardian or servant.\n7\tThe song of a magical instrument.\n8\tA spirit possessing the object.\n9\tWild magic, a spell that went awry, or a chaotic Artifact.\n10\tThe will of a powerful psychic being.\nAnimated Armor"
+              },
+              {
+                "name": "Animated suits of armor might move with steady deliberateness or awkward gaits",
+                "desc": "They’re often constructed from plate armor, making them easy to mistake for soldiers or helmed horrors. Other types of armor or even metal statuary might also become animated armor.\nANIMATED ARMOR"
               }
             ],
             "lairActions": []
@@ -60077,31 +60119,26 @@
         ]
       },
       {
-        "name": "Animated Objects",
-        "subtitle": "Mundane Objects Come to Life",
-        "lore": "Magic can manipulate mundane items, compelling them to perform simple tasks. Such animate objects might be unassuming tools or decorations that can defend their creator. These objects follow simple instructions from whatever force or magic-user created them. If left unattended, they might defend an area for ages or repeat a task until they wear out.\nRoll on or choose a result from the Animated Object Catalysts table to inspire what sort of magic motivates an ambulatory item.\nA Celestial or Fiend using the object to protect or torment a mortal.\nA combination of magic and technology, such as alchemy or alien science.\nThe essence of someone transformed by a supernatural trickster.\nHappenstance, with the item gaining a semblance of life after a hundred years of use.\nA magic-user in need of a guardian or servant.\nWild magic, a spell that went awry, or a chaotic Artifact.\nAnimated suits of armor might move with steady deliberateness or awkward gaits. They’re often constructed from plate armor, making them easy to mistake for soldiers or helmed horrors. Other types of armor or even metal statuary might also become animated armor.\nAnimated brooms keep their surroundings tidy and defend them when necessary. Launching into the air, these brooms dart about, attacking foes from unexpected angles. Other flying objects, like animated tools or staffs, might also use this stat block.\nAnimated flying swords move as if wielded by unseen warriors. Whether an animated blade is newly forged or a constellation of broken fragments, the object behaves the same. Other weapons from the Player’s Handbook can also be animated and use game statistics similar to those here.\nAnimated rugs of smothering might attack any creature that steps on them, or they might be passed off as superficially similar magic items, such as Carpets of Flying, and attack those who speak a supposed command word. Deadly tapestries, furs, and similar items also use this stat block.",
-        "habitat": [
-          "Urban"
-        ],
-        "treasure": "None",
+        "name": "ANIMATED ARMOR",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Animated Armor",
-            "ac": "18",
-            "initiative": "+2 (12)",
+            "name": "ANIMATED ARMOR",
+            "ac": "18 Initiative +2 (12)",
             "hp": "33 (6d8 + 6)",
             "speed": "25 ft.",
             "cr": "1",
-            "size": "Medium Construct",
+            "initiative": "",
+            "size": "Medium",
             "type": "Construct",
             "alignment": "Unaligned",
             "saves": "",
             "skills": "",
             "dmgResist": "",
-            "dmgImmune": "Poison, Psychic",
-            "condImmune": "Charmed, Deafened, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
+            "dmgImmune": "",
+            "condImmune": "",
             "senses": "Blindsight 60 ft.; Passive Perception 6",
             "languages": "None",
             "stats": {},
@@ -60113,31 +60150,41 @@
               },
               {
                 "name": "Slam",
-                "desc": "Melee Attack Roll: +4, reach 5 ft. Hit: 5 (1d6 + 2) Bludgeoning damage."
+                "desc": "Melee Attack Roll: +4, reach 5 ft. Hit: 5 (1d6 + 2) Bludgeoning damage.\nAnimated Broom"
+              },
+              {
+                "name": "Animated brooms keep their surroundings tidy and defend them when necessary",
+                "desc": "Launching into the air, these brooms dart about, attacking foes from unexpected angles. Other flying objects, like animated tools or staffs, might also use this stat block.\nANIMATED BROOM"
               }
             ],
             "bonusActions": [],
             "reactions": [],
             "legendaryActions": [],
             "lairActions": []
-          },
+          }
+        ]
+      },
+      {
+        "name": "ANIMATED BROOM",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
+        "variants": [
           {
-            "name": "Animated Broom",
-            "ac": "15",
-            "initiative": "+5 (15)",
+            "name": "ANIMATED BROOM",
+            "ac": "15 Initiative +5 (15)",
             "hp": "14 (4d6)",
             "speed": "5 ft., Fly 50 ft. (hover)",
             "cr": "1/4",
-            "size": "Small Construct",
+            "initiative": "",
+            "size": "Small",
             "type": "Construct",
             "alignment": "Unaligned",
             "saves": "",
             "skills": "",
             "dmgResist": "",
-            "dmgImmune": "Poison, Psychic",
-            "condImmune": "Charmed, Deafened, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
+            "dmgImmune": "",
+            "condImmune": "",
             "senses": "Blindsight 60 ft.; Passive Perception 7",
             "languages": "None",
             "stats": {},
@@ -60150,71 +60197,11 @@
             "actions": [
               {
                 "name": "Slam",
-                "desc": "Melee Attack Roll: +5, reach 5 ft. Hit: 5 (1d4 + 3) Bludgeoning damage."
-              }
-            ],
-            "bonusActions": [],
-            "reactions": [],
-            "legendaryActions": [],
-            "lairActions": []
-          },
-          {
-            "name": "Animated Flying Sword",
-            "ac": "17",
-            "initiative": "+4 (14)",
-            "hp": "14 (4d6)",
-            "speed": "5 ft., Fly 50 ft. (hover)",
-            "cr": "1/4",
-            "size": "Small Construct",
-            "type": "Construct",
-            "alignment": "Unaligned",
-            "saves": "",
-            "skills": "",
-            "dmgResist": "",
-            "dmgImmune": "Poison, Psychic",
-            "condImmune": "Charmed, Deafened, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
-            "senses": "Blindsight 60 ft.; Passive Perception 7",
-            "languages": "None",
-            "stats": {},
-            "traits": [],
-            "actions": [
+                "desc": "Melee Attack Roll: +5, reach 5 ft. Hit: 5 (1d4 + 3) Bludgeoning damage.\nAnimated Flying Sword"
+              },
               {
-                "name": "Slash",
-                "desc": "Melee Attack Roll: +4, reach 5 ft. Hit: 6 (1d8 + 2) Slashing damage. Lyin’ next to the chest were the bones of Cap’n Scornblade himself, still clutchin’ his rusty sword. Imagine my surprise when the blade flew from his bony grasp! Still got the scar."
-              }
-            ],
-            "bonusActions": [],
-            "reactions": [],
-            "legendaryActions": [],
-            "lairActions": []
-          },
-          {
-            "name": "Animated Rug of Smothering",
-            "ac": "12",
-            "initiative": "+4 (14)",
-            "hp": "27 (5d10)",
-            "speed": "10 ft.",
-            "cr": "2",
-            "size": "Large Construct",
-            "type": "Construct",
-            "alignment": "Unaligned",
-            "saves": "",
-            "skills": "",
-            "dmgResist": "",
-            "dmgImmune": "Poison, Psychic",
-            "condImmune": "Charmed, Deafened, Exhaustion, Frightened, Paralyzed, Petrified, Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
-            "senses": "Blindsight 60 ft.; Passive Perception 6",
-            "languages": "None",
-            "stats": {},
-            "traits": [],
-            "actions": [
-              {
-                "name": "Smother",
-                "desc": "Melee Attack Roll: +5, reach 5 ft. Hit: 10 (2d6 + 3) Bludgeoning damage. If the target is a Medium or smaller creature, the rug can give it the Grappled condition (escape DC 13) instead of dealing damage. Until the grapple ends, the target has the Blinded and Restrained conditions, is suffocating, and takes 10 (2d6 + 3) Bludgeoning damage at the start of each of its turns. The rug can smother only one creature at a time. While grappling the target, the rug can’t take this action, the rug halves the damage it takes (round down), and the target takes the same amount of damage."
+                "name": "Animated flying swords move as if wielded by unseen warriors",
+                "desc": "Whether an animated blade is newly forged or a constellation of broken fragments, the object behaves the same. Other weapons from the Player’s Handbook can also be animated and use game statistics similar to those here.\nANIMATED FLYING SWORD"
               }
             ],
             "bonusActions": [],
@@ -60225,23 +60212,115 @@
         ]
       },
       {
-        "name": "Ankheg",
-        "subtitle": "Burrowing Insectile Predator",
-        "lore": "Oversize insects, ankhegs burrow close to the surface, creating sprawling underground labyrinths. From these tunnels, they burst forth to dissolve and devour smaller creatures using their acid-dripping mandibles and sprays of digestive enzymes.\nAnkhegs are the bane of farmers whose grazing livestock are easy prey for these monsters. Many ankhegs hunt alone, but those in places with ample food might collect in nests of several dozen and threaten whole towns. Ankheg nests can be challenging to wipe out unless the monsters’ tunnels are cleared out and their eggs destroyed.\nAnkheg tunnels are roughly cylindrical and are often littered with the remains of ankhegs’ meals and subterranean treasures. Roll on or choose a result from the Ankheg Tunnel Discoveries table to inspire what might be found in an ankheg’s tunnel.\nThough they feed on things under the soil, ankhegs prefer live meat—your cattle, your dogs, or you.\nAnother tunnel (either natural or of worked stone) that extends into the Underdark.\nA buried ruin or grave exposed by the tunnel.\nA cluster of 1d4 fresh ankheg eggs that can be broken and used as vials of Acid.\nA dead ankheg and evidence of a deadlier subterranean predator.\nA piece of ankheg carapace usable as a Shield.\nA pouch with 2d6 GP near a puddle of acid.",
-        "habitat": [
-          "Forest",
-          "Grassland"
-        ],
-        "treasure": "None",
+        "name": "ANIMATED FLYING SWORD",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "A viciously mauled scarecrow.",
-            "ac": "14",
-            "initiative": "+0 (10)",
+            "name": "ANIMATED FLYING SWORD",
+            "ac": "17 Initiative +4 (14)",
+            "hp": "14 (4d6)",
+            "speed": "5 ft., Fly 50 ft. (hover)",
+            "cr": "1/4",
+            "initiative": "",
+            "size": "Small",
+            "type": "Construct",
+            "alignment": "Unaligned",
+            "saves": "",
+            "skills": "",
+            "dmgResist": "",
+            "dmgImmune": "",
+            "condImmune": "",
+            "senses": "Blindsight 60 ft.; Passive Perception 7",
+            "languages": "None",
+            "stats": {},
+            "traits": [],
+            "actions": [
+              {
+                "name": "Slash",
+                "desc": "Melee Attack Roll: +4, reach 5 ft. Hit: 6 (1d8 + 2) Slashing damage."
+              },
+              {
+                "name": "Lyin’ next to the chest were the bones of Cap’n Scornblade himself, still clutchin’ his rusty sword",
+                "desc": "Imagine my surprise when the blade flew from his bony grasp! Still got the scar.\n—Levity Quickstitch, Rogue\nAnimated Rug of Smothering"
+              },
+              {
+                "name": "Animated rugs of smothering might attack any creature that steps on them, or they might be passed off as superficially similar magic items, such as Carpets of Flying, and attack those who speak a supposed command word",
+                "desc": "Deadly tapestries, furs, and similar items also use this stat block.\nANIMATED RUG OF SMOTHERING"
+              }
+            ],
+            "bonusActions": [],
+            "reactions": [],
+            "legendaryActions": [],
+            "lairActions": []
+          }
+        ]
+      },
+      {
+        "name": "ANIMATED RUG OF SMOTHERING",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
+        "variants": [
+          {
+            "name": "ANIMATED RUG OF SMOTHERING",
+            "ac": "12 Initiative +4 (14)",
+            "hp": "27 (5d10)",
+            "speed": "10 ft.",
+            "cr": "2",
+            "initiative": "",
+            "size": "Large",
+            "type": "Construct",
+            "alignment": "Unaligned",
+            "saves": "",
+            "skills": "",
+            "dmgResist": "",
+            "dmgImmune": "",
+            "condImmune": "",
+            "senses": "Blindsight 60 ft.; Passive Perception 6",
+            "languages": "None",
+            "stats": {},
+            "traits": [],
+            "actions": [
+              {
+                "name": "Smother",
+                "desc": "Melee Attack Roll: +5, reach 5 ft. Hit: 10 (2d6 + 3) Bludgeoning damage. If the target is a Medium or smaller creature, the rug can give it the Grappled condition (escape DC 13) instead of dealing damage. Until the grapple ends, the target has the Blinded and Restrained conditions, is suffocating, and takes 10 (2d6 + 3) Bludgeoning damage at the start of each of its turns. The rug can smother only one creature at a time.\nWhile grappling the target, the rug can’t take this action, the rug halves the damage it takes (round down), and the target takes the same amount of damage.\nAnkheg\nBurrowing Insectile Predator\nHabitat: Forest, Grassland; Treasure: None"
+              },
+              {
+                "name": "Oversize insects, ankhegs burrow close to the surface, creating sprawling underground labyrinths",
+                "desc": "From these tunnels, they burst forth to dissolve and devour smaller creatures using their acid-dripping mandibles and sprays of digestive enzymes.\nDOMENICO CAVA"
+              },
+              {
+                "name": "Ankhegs are the bane of farmers whose grazing livestock are easy prey for these monsters",
+                "desc": "Many ankhegs hunt alone, but those in places with ample food might collect in nests of several dozen and threaten whole towns. Ankheg nests can be challenging to wipe out unless the monsters’ tunnels are cleared out and their eggs destroyed."
+              },
+              {
+                "name": "Ankheg tunnels are roughly cylindrical and are often littered with the remains of ankhegs’ meals and subterranean treasures",
+                "desc": "Roll on or choose a result from the Ankheg Tunnel Discoveries table to inspire what might be found in an ankheg’s tunnel.\nThough they feed on things under the soil, ankhegs prefer live meat—your cattle, your dogs, or you.\n—Feil Jenkins, Sage of Kirwak\nAnkheg Tunnel Discoveries\n1d8\tInside the Ankheg Tunnel Is...\n1\tAnother tunnel (either natural or of worked stone) that extends into the Underdark.\n2\tA buried ruin or grave exposed by the tunnel.\n3\tA cluster of 1d4 fresh ankheg eggs that can be broken and used as vials of Acid.\n4\tA dead ankheg and evidence of a deadlier subterranean predator.\n5\tA piece of ankheg carapace usable as a Shield.\n6\tA pouch with 2d6 GP near a puddle of acid.\n7\tA stray farm or woodland animal.\n8\tA viciously mauled scarecrow.\nANKHEG"
+              }
+            ],
+            "bonusActions": [],
+            "reactions": [],
+            "legendaryActions": [],
+            "lairActions": []
+          }
+        ]
+      },
+      {
+        "name": "ANKHEG",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
+        "variants": [
+          {
+            "name": "ANKHEG",
+            "ac": "14 Initiative +0 (10)",
             "hp": "45 (6d10 + 12)",
             "speed": "30 ft., Burrow 10 ft.",
             "cr": "2",
-            "size": "Large Monstrosity",
+            "initiative": "",
+            "size": "Large",
             "type": "Monstrosity",
             "alignment": "Unaligned",
             "saves": "",
@@ -60249,8 +60328,6 @@
             "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Darkvision 60 ft., Tremorsense 60 ft.; Passive Perception 11",
             "languages": "None",
             "stats": {},
@@ -60267,7 +60344,15 @@
               },
               {
                 "name": "Acid Spray (Recharge 6)",
-                "desc": "Dexterity Saving Throw: DC 12, each creature in a 30-foot-long, 5-foot-wide Line. Failure: 14 (4d6) Acid damage. Success: Half damage."
+                "desc": "Dexterity Saving Throw: DC 12, each creature in a 30-foot-long, 5-foot-wide Line. Failure: 14 (4d6) Acid damage. Success: Half damage.\nArcanaloth\nYugoloth of Magical Manipulation\nHabitat: Planar (Lower Planes); Treasure: Arcana"
+              },
+              {
+                "name": "While all yugoloths are fiendish manifestations of wickedness and greed, arcanaloths bend their considerable intellects toward hoarding and exploiting secrets",
+                "desc": "They then deploy these secrets to ensnare countless victims and lesser villains, beguiling foes with false promises and powerful magic."
+              },
+              {
+                "name": "Arcanaloths possess considerable spellcasting prowess and frequently disguise themselves with magic",
+                "desc": "While they prefer to let magical servants or other yugoloths do their fighting for them, arcanaloths can defend themselves with arcane might, banishing opponents into the pages of their magic tomes.\nJOHN PATRICK GAÑAS\nARCANALOTH"
               }
             ],
             "bonusActions": [],
@@ -60278,31 +60363,26 @@
         ]
       },
       {
-        "name": "Arcanaloth",
-        "subtitle": "Yugoloth of Magical Manipulation",
-        "lore": "While all yugoloths are fiendish manifestations of wickedness and greed, arcanaloths bend their considerable intellects toward hoarding and exploiting secrets. They then deploy these secrets to ensnare countless victims and lesser villains, beguiling foes with false promises and powerful magic.\nArcanaloths possess considerable spellcasting prowess and frequently disguise themselves with magic. While they prefer to let magical servants or other yugoloths do their fighting for them, arcanaloths can defend themselves with arcane might, banishing opponents into the pages of their magic tomes.\nJOHN PATRICK GAÑAS",
-        "habitat": [
-          "Planar (Lower Planes)"
-        ],
-        "treasure": "Arcana",
+        "name": "ARCANALOTH",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Arcanaloth",
-            "ac": "18",
-            "initiative": "+5 (15)",
+            "name": "ARCANALOTH",
+            "ac": "18 Initiative +5 (15)",
             "hp": "175 (27d8 + 54)",
             "speed": "30 ft., Fly 30 ft. (hover)",
             "cr": "12",
-            "size": "Medium Fiend (Yugoloth)",
+            "initiative": "",
+            "size": "Medium",
             "type": "Fiend",
-            "alignment": "Neutral Evil",
+            "alignment": "Neutral",
             "saves": "",
             "skills": "Arcana +9, Deception +7, Insight +7, Perception +7",
-            "dmgResist": "Cold, Fire, Lightning",
-            "dmgImmune": "Acid, Poison",
-            "condImmune": "Charmed, Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
+            "dmgResist": "",
+            "dmgImmune": "",
+            "condImmune": "",
             "senses": "Truesight 120 ft.; Passive Perception 17",
             "languages": "All; telepathy 120 ft.",
             "stats": {},
@@ -60331,7 +60411,7 @@
               },
               {
                 "name": "Banishing Claw (Requires Soul Tome)",
-                "desc": "Melee Attack Roll: +9, reach 5 ft. Hit: 10 (2d4 + 5) Slashing damage plus 19 (3d12) Psychic damage. If the target is a creature, it is subjected to the following effect. Charisma Saving Throw: DC 17. Failure: The target is trapped in a demiplane inside the Soul Tome. While trapped there, the target has the Incapacitated condition. At the end of each of its turns, the target repeats the save, escaping the tome on a success. When the target escapes, it appears in the space it left or, if that space is occupied, the nearest unoccupied space. If the target fails three of these saves while in the demiplane, it becomes bound to the tome and can escape only if the tome is reduced to 0 Hit Points."
+                "desc": "Melee Attack Roll: +9, reach 5 ft. Hit: 10 (2d4 + 5) Slashing damage plus 19 (3d12) Psychic damage. If the target is a creature, it is subjected to the following effect. Charisma Saving Throw: DC 17. Failure: The target is trapped in a demiplane inside the Soul Tome. While trapped there, the target has the Incapacitated condition. At the end of each of its turns, the target repeats the save, escaping the tome on a success. When the target escapes, it appears in the space it left or, if that space is occupied, the nearest unoccupied space.\nIf the target fails three of these saves while in the demiplane, it becomes bound to the tome and can escape only if the tome is reduced to 0 Hit Points."
               },
               {
                 "name": "Fiendish Burst",
@@ -60339,7 +60419,7 @@
               },
               {
                 "name": "Spellcasting",
-                "desc": "The arcanaloth casts one of the following spells, requiring no Material components and using Intelligence as the spellcasting ability (spell save DC 17): At Will: Alter Self, Detect Magic, Identify, Mage Hand, Prestidigitation 1/Day Each: Contact Other Plane, Detect Thoughts, Dimension Door, Mind Blank"
+                "desc": "The arcanaloth casts one of the following spells, requiring no Material components and using Intelligence as the spellcasting ability (spell save DC 17):\nAt Will: Alter Self, Detect Magic, Identify, Mage Hand, Prestidigitation\n1/Day Each: Contact Other Plane, Detect Thoughts, Dimension Door, Mind Blank"
               }
             ],
             "bonusActions": [
@@ -60351,7 +60431,35 @@
             "reactions": [
               {
                 "name": "Counterspell",
-                "desc": "The arcanaloth casts Counterspell in response to that spell’s trigger, using the same spellcasting ability as Spellcasting."
+                "desc": "The arcanaloth casts Counterspell in response to that spell’s trigger, using the same spellcasting ability as Spellcasting.\nArch-hag\nHag of Forbidden Secrets and Magical Malice\nHabitat: Any; Treasure: Arcana\nDARIO JELUSIC"
+              },
+              {
+                "name": "Immortal and unpredictable, arch-hags hoard secrets and strike magical bargains, altering fate to indulge their fickle whims",
+                "desc": "These timeless schemers pursue the secrets of the multiverse and work strange magic in pursuit of their inscrutable goals."
+              },
+              {
+                "name": "Arch-hags are unpredictable, self-interested, and greedy, with bizarre fascinations and affectations",
+                "desc": "Nevertheless, they often make deals to further their plots. These hags are fonts of secret knowledge, particularly lore regarding forbidden magic and multiversal secrets. They might share their knowledge, but their secrets always have a price. In trade for their secrets, arch-hags might request peculiar errands, valuable magic items, or preternatural currency, like one’s memories, a year of one’s life, or the ability to cry."
+              },
+              {
+                "name": "Most arch-hags avoid battle, but if forced to fight, they unleash dangerous magic, such as spectral claws, arcing lightning, and mind-bending spells",
+                "desc": "An arch-hag can curse other magic-users, confounding the spellcasters’ incantations and forcing the spellcasters to say the opposite of what they mean. Even if an arch-hag is brought low, its preparations allow it to magically slip away and begin plotting its revenge."
+              },
+              {
+                "name": "Every arch-hag has a unique weakness tied to a fateful encounter the hag had in the past or something that embodies the antithesis of the hag’s magic",
+                "desc": "A hag goes out of its way to keep this vulnerability secret. Although an arch-hag isn’t physically harmed by its weakness, it can be destroyed only while its weakness is nearby. Roll on or choose a result from the Arch-hag Anathemas table to inspire an arch-hag’s weakness.\nArch-hag Anathemas\n1d10\tThe Arch-hag’s Weakness Is...\n1\tThe bones of the arch-hag’s first love.\n2\tA devil’s tear.\n3\tAn egg with a miniature castle inside.\n4\tA flower that blooms only when time stops.\n5\tA gift from the hag’s twin.\n6\tThe multiverse’s worst pun.\n7\tOne of the hag’s missing teeth.\n8\tSnow from the top of Mount Celestia.\n9\tA star pulled from the sky.\n10\tA thread from the Lady of Pain’s robes.\nArch-hag Lairs"
+              },
+              {
+                "name": "Each arch-hag creates a magical home, such as a hidden demiplane, a mansion atop a storm cloud, or—in the case of the arch-hag Baba Yaga—a hut atop giant chicken legs",
+                "desc": "The interiors of these lairs frequently change or exhibit bewildering features.\nThe region containing an arch-hag’s lair is altered by its presence, creating the following effects:"
+              },
+              {
+                "name": "Lapsus Linguae",
+                "desc": "Creatures (excluding the hag and its allies) within 1 mile of the lair subtract 1d10 from any ability checks they make when they take the Influence action."
+              },
+              {
+                "name": "Meddlesome Magic",
+                "desc": "Whenever a creature other than the hag or its allies finishes a Long Rest while within 1 mile of the lair, the next time that creature casts a spell using a spell slot, it also casts Confusion centered on itself. The spell uses the creature’s spellcasting ability and doesn’t require Concentration.\nIf the arch-hag is destroyed or moves its lair elsewhere, these effects end immediately.\nHeh! People who know too much grow old before their time. Ask me your questions, but be certain that every secret has its cost.\n—Baba Yaga, Mother of Witches\nARCH-HAG"
               }
             ],
             "legendaryActions": [],
@@ -60360,31 +60468,26 @@
         ]
       },
       {
-        "name": "Arch-hag",
-        "subtitle": "Hag of Forbidden Secrets and Magical Malice",
-        "lore": "Immortal and unpredictable, arch-hags hoard secrets and strike magical bargains, altering fate to indulge their fickle whims. These timeless schemers pursue the secrets of the multiverse and work strange magic in pursuit of their inscrutable goals.\nArch-hags are unpredictable, self-interested, and greedy, with bizarre fascinations and affectations. Nevertheless, they often make deals to further their plots. These hags are fonts of secret knowledge, particularly lore regarding forbidden magic and multiversal secrets. They might share their knowledge, but their secrets always have a price. In trade for their secrets, arch-hags might request peculiar errands, valuable magic items, or preternatural currency, like one’s memories, a year of one’s life, or the ability to cry.\nMost arch-hags avoid battle, but if forced to fight, they unleash dangerous magic, such as spectral claws, arcing lightning, and mind-bending spells. An arch-hag can curse other magic-users, confounding the spellcasters’ incantations and forcing the spellcasters to say the opposite of what they mean. Even if an arch-hag is brought low, its preparations allow it to magically slip away and begin plotting its revenge.\nEvery arch-hag has a unique weakness tied to a fateful encounter the hag had in the past or something that embodies the antithesis of the hag’s magic. A hag goes out of its way to keep this vulnerability secret. Although an arch-hag isn’t physically harmed by its weakness, it can be destroyed only while its weakness is nearby. Roll on or choose a result from the Arch-hag Anathemas table to inspire an arch-hag’s weakness.\nThe Arch-hag’s Weakness Is...\nThe bones of the arch-hag’s first love.\nA gift from the hag’s twin.\nThe multiverse’s worst pun.\nOne of the hag’s missing teeth.\nA thread from the Lady of Pain’s robes.\nEach arch-hag creates a magical home, such as a hidden demiplane, a mansion atop a storm cloud, or—in the case of the arch-hag Baba Yaga—a hut atop giant chicken legs. The interiors of these lairs frequently change or exhibit bewildering features.\nThe region containing an arch-hag’s lair is altered by its presence, creating the following effects:\nLapsus Linguae. Creatures (excluding the hag and its allies) within 1 mile of the lair subtract 1d10 from any ability checks they make when they take the Influence action.\nMeddlesome Magic. Whenever a creature other than the hag or its allies finishes a Long Rest while within 1 mile of the lair, the next time that creature casts a spell using a spell slot, it also casts Confusion centered on itself. The spell uses the creature’s spellcasting ability and doesn’t require Concentration.\nIf the arch-hag is destroyed or moves its lair elsewhere, these effects end immediately.\nHeh! People who know too much grow old before their time. Ask me your questions, but be certain that every secret has its cost.",
-        "habitat": [
-          "Any"
-        ],
-        "treasure": "Arcana",
+        "name": "ARCH-HAG",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Arch-hag Lairs",
-            "ac": "20",
-            "initiative": "+16 (26)",
+            "name": "ARCH-HAG",
+            "ac": "20 Initiative +16 (26)",
             "hp": "333 (29d10 + 174)",
             "speed": "40 ft.",
             "cr": "21",
-            "size": "Large Fey",
+            "initiative": "",
+            "size": "Large",
             "type": "Fey",
-            "alignment": "Neutral Evil",
+            "alignment": "Neutral",
             "saves": "",
             "skills": "Deception +14, Perception +11, Persuasion +21",
-            "dmgResist": "Cold, Fire, Psychic",
-            "dmgImmune": "Charmed, Exhaustion, Frightened",
+            "dmgResist": "",
+            "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Truesight 60 ft.; Passive Perception 21",
             "languages": "All",
             "stats": {},
@@ -60421,7 +60524,7 @@
               },
               {
                 "name": "Spellcasting",
-                "desc": "The hag casts one of the following spells, requiring no Material components and using Charisma as the spellcasting ability (spell save DC 22): At Will: Detect Thoughts, Dimension Door, Dispel Magic, Hypnotic Pattern 2/Day Each: Mass Suggestion, Modify Memory, Plane Shift"
+                "desc": "The hag casts one of the following spells, requiring no Material components and using Charisma as the spellcasting ability (spell save DC 22):\nAt Will: Detect Thoughts, Dimension Door, Dispel Magic, Hypnotic Pattern\n2/Day Each: Mass Suggestion, Modify Memory, Plane Shift"
               }
             ],
             "bonusActions": [
@@ -60438,12 +60541,24 @@
             ],
             "legendaryActions": [
               {
+                "name": "Legendary Action Uses: 3 (4 in Lair)",
+                "desc": "Immediately after another creature’s turn, the hag can expend a use to take one of the following actions. The hag regains all expended uses at the start of each of its turns."
+              },
+              {
                 "name": "Hag’s Swipe",
                 "desc": "The hag makes one Spectral Claw attack."
               },
               {
                 "name": "Malicious Magic",
-                "desc": "The hag uses Spellcasting to cast Dimension Door or Hypnotic Pattern. The hag can’t take this action again until the start of its next turn."
+                "desc": "The hag uses Spellcasting to cast Dimension Door or Hypnotic Pattern. The hag can’t take this action again until the start of its next turn.\nAssassin\nContract Killer\nHabitat: Any; Treasure: Implements, Individual\nVIKO MENEZES"
+              },
+              {
+                "name": "Assassins are professional killers skilled at stealthily approaching their victims and striking unseen",
+                "desc": "Most assassins kill for a reason, perhaps hiring themselves out to wealthy patrons or slaying for an unscrupulous cause. They use poisons and other deadly tools, and they might carry equipment to help them break into secure areas or avoid capture."
+              },
+              {
+                "name": "Many assassins adhere to a professional code or exhibit some signature quirk",
+                "desc": "Roll on or choose a result from the Assassin Modus Operandi table to inspire an assassin’s distinctive habits.\nAssassin Modus Operandi\n1d6\tThe Assassin Is Infamous For...\n1\tArranging their victims in artful tableaux.\n2\tHiding within large objects, such as suits of armor or hollow furnishings.\n3\tLeaving behind a signature item, such as a calling card, flower, seashell, or tooth.\n4\tPosing as celebrities, holy people, or servants.\n5\tTaking trophies from their victims.\n6\tUsing poison with a distinctive color or smell.\nASSASSIN"
               }
             ],
             "lairActions": []
@@ -60451,31 +60566,26 @@
         ]
       },
       {
-        "name": "Assassin",
-        "subtitle": "Contract Killer",
-        "lore": "Assassins are professional killers skilled at stealthily approaching their victims and striking unseen. Most assassins kill for a reason, perhaps hiring themselves out to wealthy patrons or slaying for an unscrupulous cause. They use poisons and other deadly tools, and they might carry equipment to help them break into secure areas or avoid capture.\nMany assassins adhere to a professional code or exhibit some signature quirk. Roll on or choose a result from the Assassin Modus Operandi table to inspire an assassin’s distinctive habits.\nHiding within large objects, such as suits of armor or hollow furnishings.\nLeaving behind a signature item, such as a calling card, flower, seashell, or tooth.",
-        "habitat": [
-          "Any"
-        ],
-        "treasure": "Implements, Individual",
+        "name": "ASSASSIN",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Using poison with a distinctive color or smell.",
-            "ac": "16",
-            "initiative": "+10 (20)",
+            "name": "ASSASSIN",
+            "ac": "16 Initiative +10 (20)",
             "hp": "97 (15d8 + 30)",
             "speed": "30 ft.",
             "cr": "8",
-            "size": "Medium or Small Humanoid",
+            "initiative": "",
+            "size": "Medium",
             "type": "Humanoid",
             "alignment": "Neutral",
             "saves": "",
             "skills": "Acrobatics +7, Perception +6, Stealth +10",
-            "dmgResist": "Poison",
+            "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "Light Crossbow, Shortsword, Studded Leather Armor",
             "senses": "Passive Perception 16",
             "languages": "Common, Thieves’ Cant",
             "stats": {},
@@ -60502,7 +60612,15 @@
             "bonusActions": [
               {
                 "name": "Cunning Action",
-                "desc": "The assassin takes the Dash, Disengage, or Hide action."
+                "desc": "The assassin takes the Dash, Disengage, or Hide action.\nAwakened Plants\nVegetation Given Magical Life\nHabitat: Forest; Treasure: None"
+              },
+              {
+                "name": "Magic can invest plants with mobility, sapience, and even a voice",
+                "desc": "Spells such as Awaken or the influence of other planes of existence might bring mundane vegetation to life, while other remarkable plants might naturally have these features.\nJust because we protect the forest doesn’t mean it’s defenseless.\n—Rivergleam, Pixie\nAwakened Shrub"
+              },
+              {
+                "name": "Awakened shrubs can be any sort of small plant, from forest bushes to clustered flowers",
+                "desc": "They often appear near awakened trees or in regions imbued with primal magic. Some have whimsical appearances or foliage resembling rudimentary facial features, while others look like animate topiary creatures.\nVICKI PANGESTU\nAWAKENED SHRUB"
               }
             ],
             "reactions": [],
@@ -60512,31 +60630,26 @@
         ]
       },
       {
-        "name": "Awakened Plants",
-        "subtitle": "Vegetation Given Magical Life",
-        "lore": "Magic can invest plants with mobility, sapience, and even a voice. Spells such as Awaken or the influence of other planes of existence might bring mundane vegetation to life, while other remarkable plants might naturally have these features.\nJust because we protect the forest doesn’t mean it’s defenseless.\nAwakened shrubs can be any sort of small plant, from forest bushes to clustered flowers. They often appear near awakened trees or in regions imbued with primal magic. Some have whimsical appearances or foliage resembling rudimentary facial features, while others look like animate topiary creatures.\nSome awakened trees stand in still, meditative states for long periods, making them easy to mistake for normal plants, while others patrol regions of natural power. Awakened trees are sometimes brought to life by influences from the Feywild, which make them colorful and endlessly blooming, or by Shadowfell energy, which covers them with grotesque burls or makes them look lifeless.",
-        "habitat": [
-          "Forest"
-        ],
-        "treasure": "None",
+        "name": "AWAKENED SHRUB",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Awakened Shrub",
-            "ac": "9",
-            "initiative": "",
+            "name": "AWAKENED SHRUB",
+            "ac": "9 Initiative −1 (9)",
             "hp": "10 (3d6)",
             "speed": "20 ft.",
             "cr": "0",
-            "size": "Small Plant",
+            "initiative": "",
+            "size": "Small",
             "type": "Plant",
             "alignment": "Neutral",
             "saves": "",
             "skills": "",
-            "dmgResist": "Piercing",
+            "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "Fire",
-            "gear": "",
             "senses": "Passive Perception 10",
             "languages": "Common plus one other language",
             "stats": {},
@@ -60544,39 +60657,11 @@
             "actions": [
               {
                 "name": "Rake",
-                "desc": "Melee Attack Roll: +1, reach 5 ft. Hit: 1 Slashing damage."
-              }
-            ],
-            "bonusActions": [],
-            "reactions": [],
-            "legendaryActions": [],
-            "lairActions": []
-          },
-          {
-            "name": "Awakened Tree",
-            "ac": "13",
-            "initiative": "",
-            "hp": "59 (7d12 + 14)",
-            "speed": "20 ft.",
-            "cr": "2",
-            "size": "Huge Plant",
-            "type": "Plant",
-            "alignment": "Neutral",
-            "saves": "",
-            "skills": "",
-            "dmgResist": "Bludgeoning, Piercing",
-            "dmgImmune": "",
-            "condImmune": "",
-            "vulnerabilities": "Fire",
-            "gear": "",
-            "senses": "Passive Perception 10",
-            "languages": "Common plus one other language",
-            "stats": {},
-            "traits": [],
-            "actions": [
+                "desc": "Melee Attack Roll: +1, reach 5 ft. Hit: 1 Slashing damage.\nAwakened Tree"
+              },
               {
-                "name": "Slam",
-                "desc": "Melee Attack Roll: +6, reach 10 ft. Hit: 14 (3d6 + 4) Bludgeoning damage."
+                "name": "Some awakened trees stand in still, meditative states for long periods, making them easy to mistake for normal plants, while others patrol regions of natural power",
+                "desc": "Awakened trees are sometimes brought to life by influences from the Feywild, which make them colorful and endlessly blooming, or by Shadowfell energy, which covers them with grotesque burls or makes them look lifeless.\nAWAKENED TREE"
               }
             ],
             "bonusActions": [],
@@ -60587,24 +60672,65 @@
         ]
       },
       {
-        "name": "Axe Beaks",
-        "subtitle": "Flightless Avian Predators",
-        "lore": "Axe beaks are flightless, birdlike creatures with distinctive axe-shaped beaks. Swift predators, they chase down prey and use their beaks to hack through foliage protecting their quarry. Axe beaks live in varied environments. Colorfully plumed axe beaks race across tropical plains, while axe beaks with snowy feathers hunt the tundra.\nAxe beaks are difficult to train, but those hatched and raised in captivity can become reliable mounts.\nThe thing’s got an axe for a face and a giant, angry rooster for everything else—of course I want to ride it!\nAlone or in small groups, axe beaks stalk prey to feed their flocks. When working together, axe beaks use rudimentary tactics, with some distracting threats while others strike vulnerable targets or rush young axe beaks to safety.\nGiant axe beaks typically dwell in secluded, primeval realms, such as isolated islands or underground wildernesses. They often compete with dinosaurs and other giant beasts for territory.",
-        "habitat": [
-          "Arctic",
-          "Grassland",
-          "Hill"
-        ],
-        "treasure": "None",
+        "name": "AWAKENED TREE",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Axe Beak",
-            "ac": "11",
-            "initiative": "+1 (11)",
+            "name": "AWAKENED TREE",
+            "ac": "13 Initiative −2 (8)",
+            "hp": "59 (7d12 + 14)",
+            "speed": "20 ft.",
+            "cr": "2",
+            "initiative": "",
+            "size": "Huge",
+            "type": "Plant",
+            "alignment": "Neutral",
+            "saves": "",
+            "skills": "",
+            "dmgResist": "",
+            "dmgImmune": "",
+            "condImmune": "",
+            "senses": "Passive Perception 10",
+            "languages": "Common plus one other language",
+            "stats": {},
+            "traits": [],
+            "actions": [
+              {
+                "name": "Slam",
+                "desc": "Melee Attack Roll: +6, reach 10 ft. Hit: 14 (3d6 + 4) Bludgeoning damage.\nAxe Beaks\nFlightless Avian Predators\nHabitat: Arctic, Grassland, Hill; Treasure: None"
+              },
+              {
+                "name": "Axe beaks are flightless, birdlike creatures with distinctive axe-shaped beaks",
+                "desc": "Swift predators, they chase down prey and use their beaks to hack through foliage protecting their quarry. Axe beaks live in varied environments. Colorfully plumed axe beaks race across tropical plains, while axe beaks with snowy feathers hunt the tundra.\nAxe beaks are difficult to train, but those hatched and raised in captivity can become reliable mounts.\nThe thing’s got an axe for a face and a giant, angry rooster for everything else—of course I want to ride it!\n—Batley Summerfoot, Adventurer\nALEX STONE\nAxe Beak"
+              },
+              {
+                "name": "Alone or in small groups, axe beaks stalk prey to feed their flocks",
+                "desc": "When working together, axe beaks use rudimentary tactics, with some distracting threats while others strike vulnerable targets or rush young axe beaks to safety.\nAXE BEAK"
+              }
+            ],
+            "bonusActions": [],
+            "reactions": [],
+            "legendaryActions": [],
+            "lairActions": []
+          }
+        ]
+      },
+      {
+        "name": "AXE BEAK",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
+        "variants": [
+          {
+            "name": "AXE BEAK",
+            "ac": "11 Initiative +1 (11)",
             "hp": "19 (3d10 + 3)",
             "speed": "50 ft.",
             "cr": "1/4",
-            "size": "Large Monstrosity",
+            "initiative": "",
+            "size": "Large",
             "type": "Monstrosity",
             "alignment": "Unaligned",
             "saves": "",
@@ -60612,8 +60738,6 @@
             "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Passive Perception 10",
             "languages": "None",
             "stats": {},
@@ -60621,22 +60745,34 @@
             "actions": [
               {
                 "name": "Beak",
-                "desc": "Melee Attack Roll: +4, reach 5 ft. Hit: 6 (1d8 + 2) Slashing damage."
+                "desc": "Melee Attack Roll: +4, reach 5 ft. Hit: 6 (1d8 + 2) Slashing damage.\nGiant Axe Beak"
+              },
+              {
+                "name": "Giant axe beaks typically dwell in secluded, primeval realms, such as isolated islands or underground wildernesses",
+                "desc": "They often compete with dinosaurs and other giant beasts for territory.\nGIANT AXE BEAK"
               }
             ],
             "bonusActions": [],
             "reactions": [],
             "legendaryActions": [],
             "lairActions": []
-          },
+          }
+        ]
+      },
+      {
+        "name": "GIANT AXE BEAK",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
+        "variants": [
           {
-            "name": "Giant Axe Beak",
-            "ac": "15",
-            "initiative": "+5 (15)",
+            "name": "GIANT AXE BEAK",
+            "ac": "15 Initiative +5 (15)",
             "hp": "84 (8d12 + 32)",
             "speed": "50 ft.",
             "cr": "5",
-            "size": "Huge Monstrosity",
+            "initiative": "",
+            "size": "Huge",
             "type": "Monstrosity",
             "alignment": "Unaligned",
             "saves": "",
@@ -60644,8 +60780,6 @@
             "dmgResist": "",
             "dmgImmune": "",
             "condImmune": "",
-            "vulnerabilities": "",
-            "gear": "",
             "senses": "Passive Perception 14",
             "languages": "None",
             "stats": {},
@@ -60661,7 +60795,7 @@
               },
               {
                 "name": "Talons",
-                "desc": "Melee Attack Roll: +8, reach 5 ft. Hit: 14 (2d8 + 5) Piercing damage. If the target is a Large or smaller creature, it has the Prone condition."
+                "desc": "Melee Attack Roll: +8, reach 5 ft. Hit: 14 (2d8 + 5) Piercing damage. If the target is a Large or smaller creature, it has the Prone condition.\nAzers\nFiery Smiths of Living Metal\nHabitat: Mountain, Planar (Elemental Plane of Fire); Treasure: Armaments, Individual\nAzers are living bronze folk who work the primal elements of creation to craft weapons and magical wonders among the multiverse’s mightiest infernos.\nAzer Pyromancer\nAzer pyromancers conjure flames from the Elemental Plane of Fire to defend themselves and stoke magical forges.\nAZER PYROMANCER"
               }
             ],
             "bonusActions": [],
@@ -60672,32 +60806,26 @@
         ]
       },
       {
-        "name": "Azers",
-        "subtitle": "Fiery Smiths of Living Metal",
-        "lore": "Azers are living bronze folk who work the primal elements of creation to craft weapons and magical wonders among the multiverse’s mightiest infernos.\nAzer pyromancers conjure flames from the Elemental Plane of Fire to defend themselves and stoke magical forges.\nAzer sentinels defend their communities’ smiths and channel their flames through their weapons.",
-        "habitat": [
-          "Mountain",
-          "Planar (Elemental Plane of Fire)"
-        ],
-        "treasure": "Armaments, Individual",
+        "name": "AZER PYROMANCER",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
         "variants": [
           {
-            "name": "Azer Pyromancer",
-            "ac": "18",
-            "initiative": "+2 (12)",
+            "name": "AZER PYROMANCER",
+            "ac": "18 Initiative +2 (12)",
             "hp": "97 (13d8 + 39)",
             "speed": "30 ft.",
             "cr": "6",
-            "size": "Medium Elemental",
+            "initiative": "",
+            "size": "Medium",
             "type": "Elemental",
             "alignment": "Lawful Neutral",
             "saves": "",
             "skills": "Arcana +4, Perception +7",
             "dmgResist": "",
-            "dmgImmune": "Fire, Poison",
-            "condImmune": "Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
+            "dmgImmune": "",
+            "condImmune": "",
             "senses": "Passive Perception 17",
             "languages": "Primordial (Ignan)",
             "stats": {},
@@ -60722,36 +60850,42 @@
               },
               {
                 "name": "Spellcasting",
-                "desc": "The azer casts one of the following spells, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 15): At Will: Elementalism, Mage Hand 1/Day: Fireball"
+                "desc": "The azer casts one of the following spells, requiring no Material components and using Wisdom as the spellcasting ability (spell save DC 15):\nAt Will: Elementalism, Mage Hand\n1/Day: Fireball"
               }
             ],
             "bonusActions": [],
             "reactions": [
               {
                 "name": "Hellish Rebuke (2/Day)",
-                "desc": "The azer casts Hellish Rebuke in response to that spell’s trigger, using the same spellcasting ability as Spellcasting."
+                "desc": "The azer casts Hellish Rebuke in response to that spell’s trigger, using the same spellcasting ability as Spellcasting.\nAzer Sentinel\nAzer sentinels defend their communities’ smiths and channel their flames through their weapons.\nKAI CARPENTER\nAZER SENTINEL"
               }
             ],
             "legendaryActions": [],
             "lairActions": []
-          },
+          }
+        ]
+      },
+      {
+        "name": "AZER SENTINEL",
+        "lore": "",
+        "habitat": [],
+        "treasure": "",
+        "variants": [
           {
-            "name": "Azer Sentinel",
-            "ac": "17",
-            "initiative": "+1 (11)",
+            "name": "AZER SENTINEL",
+            "ac": "17 Initiative +1 (11)",
             "hp": "39 (6d8 + 12)",
             "speed": "30 ft.",
             "cr": "2",
-            "size": "Medium Elemental",
+            "initiative": "",
+            "size": "Medium",
             "type": "Elemental",
             "alignment": "Lawful Neutral",
             "saves": "",
             "skills": "",
             "dmgResist": "",
-            "dmgImmune": "Fire, Poison",
-            "condImmune": "Poisoned",
-            "vulnerabilities": "",
-            "gear": "",
+            "dmgImmune": "",
+            "condImmune": "",
             "senses": "Passive Perception 11",
             "languages": "Primordial (Ignan)",
             "stats": {},
@@ -60768,7 +60902,7 @@
             "actions": [
               {
                 "name": "Burning Hammer",
-                "desc": "Melee Attack Roll: +5, reach 5 ft. Hit: 8 (1d10 + 3) Bludgeoning damage plus 3 (1d6) Fire damage."
+                "desc": "Melee Attack Roll: +5, reach 5 ft. Hit:"
               }
             ],
             "bonusActions": [],
@@ -60781,5 +60915,6 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1789914968468
+  "_updated": 1789915042102,
+  "_unchanged": true
 }

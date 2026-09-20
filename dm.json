@@ -41770,7 +41770,9 @@
         "_actTagsCollapsed": false,
         "_collapsedSpLevels": {},
         "_grantImmunities": [],
-        "_grantResistances": [],
+        "_grantResistances": [
+          "poison"
+        ],
         "_grantVulnerabilities": [],
         "_grantSourcesAbilScore": {},
         "_grantLanguages": [],
@@ -41803,7 +41805,7 @@
         "_grantFlatBonusDamageFinesse": 0,
         "_grantFlatBonusDamageThrown": 0,
         "_grantFlatBonusDC": 0,
-        "_grantFlatBonusMaxHp": 0,
+        "_grantFlatBonusMaxHp": 7,
         "_grantSourcesSpeed": [],
         "_grantSourcesAC": [],
         "_grantSourcesInit": [],
@@ -41837,7 +41839,7 @@
         "passivePerception": 14,
         "passiveInsight": 17,
         "acEffective": 16,
-        "hpMax": 52,
+        "hpMax": 59,
         "_slotTotal": {
           "1": 4,
           "2": 3,
@@ -63652,5 +63654,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1789920467507
+  "_updated": 1789920585547
 }

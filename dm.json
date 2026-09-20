@@ -39648,7 +39648,7 @@
             "concentration": true,
             "area": "",
             "hit": "",
-            "_assigned": false,
+            "_assigned": true,
             "tags": [
               "buff"
             ]
@@ -42300,7 +42300,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42541,7 +42541,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42605,7 +42605,7 @@
             "desc": "You create a sound or an image of an object within range that lasts for the duration. See the descriptions below for the effects of each. The illusion ends if you cast this spell again.\nIf a creature takes a Study action to examine the sound or image, the creature can determine that it is an illusion with a successful Intelligence (Investigation) check against your spell save DC. If a creature discerns the illusion for what it is, the illusion becomes faint to the creature.\nSound. If you create a sound, its volume can range from a whisper to a scream. It can be your voice, someone else’s voice, a lion’s roar, a beating of drums, or any other sound you choose. The sound continues unabated throughout the duration, or you can make discrete sounds at different times before the spell ends.\nImage. If you create an image of an object—such as a chair, muddy footprints, or a small chest—it must be no larger than a 5-foot Cube. The image can’t create sound, light, smell, or any other sensory effect. Physical interaction with the image reveals it to be an illusion, since things can pass through it.",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42698,7 +42698,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": false,
+            "_assigned": true,
             "_freecasted": false
           },
           {
@@ -42886,7 +42886,7 @@
             "area": "",
             "hit": "",
             "effect": "1d6 damage",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43133,7 +43133,7 @@
               "heal"
             ],
             "source": "Sojourner",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43290,7 +43290,7 @@
             "area": "",
             "hit": "",
             "source": "Wizard",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43353,7 +43353,7 @@
             "desc": "You create a shard of ice and fling it at one creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 Piercing damage. Hit or miss, the shard then explodes. The target and each creature within 5 feet of it must succeed on a Dexterity saving throw or take 2d6 Cold damage.\n───────────────────\nAt Higher Levels: Using a Higher-Level Spell Slot. The Cold damage increases by 1d6 for each spell slot level above 1.",
             "area": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43398,7 +43398,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -43429,7 +43429,7 @@
             "area": "",
             "hit": "",
             "source": "Sorcerer",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -44218,7 +44218,7 @@
             "area": "",
             "hit": "STR",
             "effect": "2d6 bludgeoning, STR Save",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -45022,7 +45022,7 @@
             "area": "",
             "hit": "DEX",
             "effect": "2d6 fire, DEX Save",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -45170,7 +45170,7 @@
             "area": "",
             "hit": "CON",
             "effect": "3d10 thunder, CON Save",
-            "_assigned": true,
+            "_assigned": false,
             "_freecasted": false
           },
           {
@@ -47878,7 +47878,7 @@
             "key": "cls_sorcerer_innate_sorcery",
             "label": "Innate Sorcery",
             "max": 2,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -47888,7 +47888,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 7,
-            "cur": 0,
+            "cur": 7,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -47899,7 +47899,7 @@
             "key": "cls_sorcerer_sorcerous_restoration",
             "label": "Sorcerous Restoration",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48239,7 +48239,7 @@
             "key": "cls_sorcerer_innate_sorcery",
             "label": "Innate Sorcery",
             "max": 2,
-            "cur": 0,
+            "cur": 2,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48249,7 +48249,7 @@
             "key": "cls_sorcerer_sorcery_points",
             "label": "Sorcery Points",
             "max": 7,
-            "cur": 0,
+            "cur": 7,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -48260,7 +48260,7 @@
             "key": "cls_sorcerer_sorcerous_restoration",
             "label": "Sorcerous Restoration",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -60915,5 +60915,5 @@
     ]
   },
   "nextId": 242,
-  "_updated": 1789908487995
+  "_updated": 1789910300941
 }

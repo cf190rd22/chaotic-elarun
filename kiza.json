@@ -39578,7 +39578,9 @@
             "_origIdx": 2
           }
         ],
-        "_slotUsed": {},
+        "_slotUsed": {
+          "157-L2": 2
+        },
         "_defTags": [
           {
             "type": "resistance",
@@ -40241,7 +40243,9 @@
         ],
         "acEffective": 22,
         "hpMax": 84,
-        "_slotUsedCompact": {},
+        "_slotUsedCompact": {
+          "2": 2
+        },
         "deathSaves": {
           "pass": 0,
           "fail": 0
@@ -40460,5 +40464,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1790434512745
+  "_updated": 1790437026896
 }

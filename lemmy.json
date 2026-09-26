@@ -18305,7 +18305,7 @@
             "key": "_custom_1786797585106",
             "label": "Portent dice",
             "max": 20,
-            "cur": 7,
+            "cur": 0,
             "reset": "long",
             "_custom": true,
             "_trackerType": "hp"
@@ -18883,7 +18883,7 @@
             "key": "_custom_1786797585106",
             "label": "Portent dice",
             "max": 20,
-            "cur": 7,
+            "cur": 0,
             "reset": "long",
             "_custom": true,
             "_trackerType": "hp"
@@ -19007,5 +19007,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1790430330601
+  "_updated": 1790430459929
 }

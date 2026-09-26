@@ -18952,7 +18952,11 @@
         "_playerNotes": {},
         "_actViewMode": "list",
         "_actFiltersCollapsed": false,
-        "_actFilter": "weapon"
+        "_actFilter": "all",
+        "_actAtypeFilter": "all",
+        "_collapsedActGroups": {
+          "action": true
+        }
       }
     ],
     "_exportedAt": 1784299506434,
@@ -19010,5 +19014,6 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1790433770680
+  "_updated": 1790433918185,
+  "_unchanged": true
 }

@@ -18412,7 +18412,7 @@
           "skills": false,
           "passives": false,
           "senses": true,
-          "defenses": false,
+          "defenses": true,
           "feats": false,
           "languages": false,
           "proficiencies": false,
@@ -19002,6 +19002,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1790425953431,
-  "_unchanged": true
+  "_updated": 1790426061352
 }

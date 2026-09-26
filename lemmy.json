@@ -15586,7 +15586,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": true
           },
           {
             "name": "Glyph of Warding",
@@ -19015,6 +19015,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1790436710000,
-  "_unchanged": true
+  "_updated": 1790436769708
 }

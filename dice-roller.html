@@ -53,6 +53,8 @@ select,option{background:var(--surface-2);color:var(--text);}
 .seg button[data-mode=normal].active{background:var(--accent-dim);color:var(--accent);}
 .seg button[data-mode=adv].active{background:var(--green-dim);color:var(--green);}
 .seg button[data-mode=disadv].active{background:var(--red-dim);color:var(--red);}
+.page-seg button.active{background:var(--accent-dim);color:var(--accent);}
+body.page-pc .dm-only{display:none!important;}
 .topbar-spacer{flex:1;}
 .topbar-tools{display:contents;}
 .iconbtn{background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text-2);height:32px;padding:0 11px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;cursor:pointer;}
@@ -336,6 +338,32 @@ select,option{background:var(--surface-2);color:var(--text);}
 .dmg-half{color:var(--green);}
 .sub-line{padding-left:10px;color:var(--text-2);}
 
+/* ---------- PC quick roller ---------- */
+.pcroller{flex:1;display:none;flex-direction:column;min-height:0;overflow:hidden;}
+.pcroller-hdr{display:flex;align-items:flex-start;gap:14px;padding:16px 20px 0;}
+.pcroller-hdr .hint{flex:1;margin:0;}
+.pc-combo-bar{margin:12px 20px 0;background:var(--surface);border:1px solid var(--accent-bd);border-left:3px solid var(--accent);border-radius:9px;padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0;}
+.pc-combo-label{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;}
+.pc-combo-total{font-size:17px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);}
+.pc-combo-empty{margin:0;}
+.pc-list{flex:1;overflow-y:auto;padding:14px 20px 24px;display:flex;flex-direction:column;gap:10px;}
+.pcitem{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:11px 13px;}
+.pcitem.included{border-color:var(--accent-bd);}
+.pcitem-check{display:flex;align-items:center;height:36px;flex-shrink:0;}
+.pcitem-check input{width:17px;height:17px;cursor:pointer;accent-color:var(--accent);}
+.pcitem-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;}
+.pcitem-name{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;font-weight:600;color:var(--text);outline:none;}
+.pcitem-name:focus{border-color:var(--accent-bd);}
+.pcitem-dice-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.pcitem-die-btn{background:var(--surface-3);border:1px solid var(--border);border-radius:6px;color:var(--text-2);font-size:11px;font-weight:700;font-family:'DM Mono',monospace;padding:5px 9px;cursor:pointer;}
+.pcitem-die-btn:hover{border-color:var(--accent-bd);color:var(--text);}
+.pcitem-clear-btn{background:none;border:none;color:var(--text-mute);font-size:10.5px;cursor:pointer;margin-left:auto;padding:5px 4px;}
+.pcitem-clear-btn:hover{color:var(--red);}
+.pcitem-formula{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);outline:none;}
+.pcitem-formula:focus{border-color:var(--accent-bd);}
+.pcitem-formula::placeholder{color:var(--text-mute);font-weight:500;}
+.pcitem .iconx{margin-top:7px;}
+
 /* ---------- modal ---------- */
 .modal-overlay{position:fixed;inset:0;background:rgba(5,7,12,.72);display:flex;align-items:center;justify-content:center;z-index:60;padding:18px;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
@@ -456,22 +484,26 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 <body>
 <div class="app">
   <div class="topbar">
-    <button class="drawer-btn" data-act="toggle-sidebar" title="Creature library" aria-label="Toggle library">
+    <button class="drawer-btn dm-only" data-act="toggle-sidebar" title="Creature library" aria-label="Toggle library">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="brand">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5M3 16.5l9-5.5 9 5.5"/></svg>
       Encounter Roller
-      <span class="sub">DM combat dice</span>
+      <span class="sub" id="brandSub">DM combat dice</span>
+    </div>
+    <div class="seg page-seg" id="pageSeg">
+      <button data-page="dm" class="active">DM board</button>
+      <button data-page="pc">PC rolls</button>
     </div>
     <div class="topbar-spacer"></div>
     <div class="topbar-tools">
-      <div class="seg" id="rollModeSeg">
+      <div class="seg dm-only" id="rollModeSeg">
         <button data-mode="disadv">Disadv</button>
         <button data-mode="normal" class="active">Normal</button>
         <button data-mode="adv">Adv</button>
       </div>
-      <button class="iconbtn" id="resetRollsBtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">
+      <button class="iconbtn dm-only" id="resetRollsBtn" data-act="clear-log" title="Clear the roll log and dismiss every card popup">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
         <span class="btn-label">Reset rolls</span>
       </button>
@@ -479,13 +511,13 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
         <span class="btn-label">Options</span>
       </button>
-      <button class="drawer-btn" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log">
+      <button class="drawer-btn dm-only" data-act="toggle-logpanel" title="Roll log" aria-label="Toggle log">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg>
       </button>
     </div>
   </div>
 
-  <div class="layout">
+  <div class="layout" id="dmLayout">
     <div class="scrim" id="scrim"></div>
 
     <aside class="library" id="libraryPanel">
@@ -543,6 +575,18 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
       </div>
       <div class="log-list" id="logList"></div>
     </aside>
+  </div>
+
+  <div class="pcroller" id="pcRoller" style="display:none">
+    <div class="pcroller-hdr">
+      <div class="hint">Build a quick damage formula for a PC when you don't have (or need) a full statblock. Click a die to add it, type to edit the formula directly, name it, and tick whichever items apply this turn to see them combined into one total. Nothing here rolls for you — it only tells you what to pick up and throw.</div>
+      <button class="iconbtn primary" data-act="pc-add-item" style="justify-content:center;flex-shrink:0;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add item
+      </button>
+    </div>
+    <div class="pc-combo-bar" id="pcComboBar"></div>
+    <div class="pc-list" id="pcList"></div>
   </div>
 </div>
 
@@ -620,6 +664,14 @@ const DEFAULT_SPELL_LIBRARY = [
       {level:3,name:'Lightning bolt',type:'Damage',action:'action'},
     ]
   },
+];
+// Seed content for the PC Quick Roller (see further down) - one worked
+// example showing the point of it: two separate named items (main hand +
+// offhand), each individually clear, that can also be ticked together to
+// see the combined dice for a single turn. Not toggled on by default.
+const DEFAULT_PC_ITEMS = [
+  { id:'pcex1', name:'Example: Longsword', formula:'1d8+4', include:false },
+  { id:'pcex2', name:'Example: Offhand shortsword', formula:'1d6', include:false },
 ];
 // CR can be a fraction ("1/8") as well as a whole number - this is the one
 // other place (besides parsing a pasted statblock's own CR line) that needs
@@ -708,6 +760,48 @@ function parseSpellRowsText(raw){
     if(action) out.action = action;
     return out;
   }).filter(Boolean);
+}
+// PC Quick Roller formula maths - combines dice NOTATION, never rolls
+// anything (see the roller UI itself). "2d8" + "1d6" + "+4" becomes one
+// { dice:{8:2,6:1}, flat:4 } bag that formatFormulaTerms turns back into
+// "2d8 + 1d6 + 4" - letting a weapon, an offhand, and a damage add-on like
+// Sneak Attack or Divine Smite tally into a single thing to go and roll.
+function parseFormulaToTerms(str){
+  const clean = String(str||'').replace(/\s+/g,'');
+  const dice = {};
+  let flat = 0;
+  if(!clean) return { dice, flat };
+  const tokens = clean.match(/[+-]?\d*d\d+|[+-]?\d+/gi) || [];
+  for(const tok of tokens){
+    const dM = /^([+-]?)(\d*)d(\d+)$/i.exec(tok);
+    if(dM){
+      const sign = dM[1]==='-' ? -1 : 1;
+      const count = dM[2]==='' ? 1 : parseInt(dM[2],10);
+      const sides = parseInt(dM[3],10);
+      dice[sides] = (dice[sides]||0) + sign*count;
+      continue;
+    }
+    flat += parseInt(tok,10);
+  }
+  return { dice, flat };
+}
+function mergeFormulaTerms(list){
+  const dice = {};
+  let flat = 0;
+  for(const t of list){
+    for(const [sides,count] of Object.entries(t.dice)) dice[sides] = (dice[sides]||0) + count;
+    flat += t.flat;
+  }
+  return { dice, flat };
+}
+function formatFormulaTerms(terms){
+  const bits = Object.entries(terms.dice)
+    .filter(([,c])=>c!==0)
+    .sort((a,b)=>+b[0]-+a[0])
+    .map(([sides,count])=>({ sign: count<0?'-':'+', text: `${Math.abs(count)}d${sides}` }));
+  if(terms.flat!==0) bits.push({ sign: terms.flat<0?'-':'+', text: `${Math.abs(terms.flat)}` });
+  if(!bits.length) return '—';
+  return bits.map((b,i)=> i===0 ? (b.sign==='-'?'-':'')+b.text : ` ${b.sign} ${b.text}`).join('');
 }
 
 /* ============================== utilities ============================== */
@@ -1114,11 +1208,12 @@ const Store = (() => {
   let mode = null; // null until init() decides 'db' or 'local' - never guess in between
   let readyResolve;
   const readyPromise = new Promise(res=>{ readyResolve = res; });
-  const listeners = { creatures: [], board: [], targets: [], library: [] };
+  const listeners = { creatures: [], board: [], targets: [], library: [], pc: [] };
   const LS_CREATURES = 'er_creatures_v1';
   const LS_BOARD = 'er_board_v1';
   const LS_TARGETS = 'er_targets_v1';
   const LS_LIBRARY = 'er_library_v1';
+  const LS_PC = 'er_pcroller_v1';
 
   // localStorage.setItem throws if storage is full or blocked (private-mode
   // Safari, a quota hit) - left unguarded, that exception becomes a silently
@@ -1167,11 +1262,21 @@ const Store = (() => {
     saveLocal(LS_LIBRARY, seed);
     return seed;
   }
+  function loadLocalPc(){
+    try{
+      const raw = localStorage.getItem(LS_PC);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    const seed = { items: DEFAULT_PC_ITEMS };
+    saveLocal(LS_PC, seed);
+    return seed;
+  }
 
   let localCreatures = loadLocalCreatures();
   let localBoard = loadLocalBoard();
   let localTargets = loadLocalTargets();
   let localLibrary = loadLocalLibrary();
+  let localPc = loadLocalPc();
 
   async function init(){
     try{
@@ -1198,11 +1303,20 @@ const Store = (() => {
         const data = snap.data();
         listeners.library.forEach(fn=>fn({ features: data.features||[], spells: data.spells||[] }));
       }, err=>console.error('library sub', err));
+      db.doc('pc/state').onSnapshot(snap=>{
+        if(!snap.exists){
+          db.doc('pc/state').set({ items: DEFAULT_PC_ITEMS }).catch(e=>console.error('pc seed', e));
+          return;
+        }
+        const data = snap.data();
+        listeners.pc.forEach(fn=>fn({ items: data.items||[] }));
+      }, err=>console.error('pc sub', err));
     } else {
       mode = 'local';
       listeners.creatures.forEach(fn=>fn(localCreatures));
       listeners.board.forEach(fn=>fn(localBoard));
       listeners.library.forEach(fn=>fn(localLibrary));
+      listeners.pc.forEach(fn=>fn(localPc));
     }
     // targets (the player/monster AC tracker) always uses plain localStorage,
     // never the db capability, on purpose - it's the one thing being typed
@@ -1228,6 +1342,19 @@ const Store = (() => {
       localLibrary = data;
       saveLocal(LS_LIBRARY, localLibrary);
       listeners.library.forEach(fn=>fn(localLibrary));
+    }
+  }
+
+  function onPc(fn){ listeners.pc.push(fn); if(mode==='local') fn(localPc); }
+
+  async function setPc(data){
+    await readyPromise;
+    if(mode==='db'){
+      await db.doc('pc/state').set(data).catch(e=>{ reportStorageFailure(e); throw e; });
+    } else {
+      localPc = data;
+      saveLocal(LS_PC, localPc);
+      listeners.pc.forEach(fn=>fn(localPc));
     }
   }
 
@@ -1297,7 +1424,7 @@ const Store = (() => {
     listeners.targets.forEach(fn=>fn(localTargets));
   }
 
-  return { init, onCreatures, onBoard, onTargets, onLibrary, saveCreature, deleteCreature, replaceAllCreatures, setBoard, setTargets, setLibrary, get mode(){ return mode; } };
+  return { init, onCreatures, onBoard, onTargets, onLibrary, onPc, saveCreature, deleteCreature, replaceAllCreatures, setBoard, setTargets, setLibrary, setPc, get mode(){ return mode; } };
 })();
 
 // Surfaces a persistent, hard-to-miss banner the moment ANY save fails, for
@@ -1342,6 +1469,8 @@ let board = { items: [] };
 let targets = { items: [], activeId: null };
 let featureLibrary = [];
 let spellLibrary = [];
+let pcItems = [];
+let currentPage = 'dm'; // 'dm' (encounter board) | 'pc' (PC quick roller)
 let log = [];
 let rollMode = 'normal';
 let librarySearch = '';
@@ -2275,6 +2404,10 @@ function isTargetFieldFocused(){
   const el = document.activeElement;
   return !!(el && el.matches && el.matches('#targetsBody input[data-tid]'));
 }
+function isPcFieldFocused(){
+  const el = document.activeElement;
+  return !!(el && el.dataset && el.dataset.pcid);
+}
 
 function renderTargets(){
   const body = document.getElementById('targetsBody');
@@ -2671,6 +2804,58 @@ function renderLog(){
   }
   el.innerHTML = log.map(renderLogCard).join('');
 }
+
+/* ============================== PC quick roller ============================== */
+function switchPage(page){
+  currentPage = page;
+  document.body.classList.toggle('page-pc', page==='pc');
+  document.getElementById('dmLayout').style.display = page==='pc' ? 'none' : 'flex';
+  document.getElementById('pcRoller').style.display = page==='pc' ? 'flex' : 'none';
+  document.getElementById('brandSub').textContent = page==='pc' ? 'PC quick rolls' : 'DM combat dice';
+  document.querySelectorAll('#pageSeg button').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
+  if(page==='pc') renderPcRoller();
+}
+// Only the combined total needs to refresh on every keystroke (a typed
+// formula edit should update it live) - rebuilding the whole item list on
+// every keystroke would blow away focus mid-type, the same class of bug
+// the board/targets code elsewhere in this file goes out of its way to avoid.
+function renderPcComboBar(){
+  const bar = document.getElementById('pcComboBar');
+  if(!bar) return;
+  const included = pcItems.filter(it=>it.include);
+  if(!included.length){
+    bar.innerHTML = `<div class="pc-combo-empty hint">Tick items below to combine their dice into one total.</div>`;
+    return;
+  }
+  const combined = mergeFormulaTerms(included.map(it=>parseFormulaToTerms(it.formula)));
+  bar.innerHTML = `
+    <span class="pc-combo-label">Combined (${included.length} selected)</span>
+    <span class="pc-combo-total">${esc(formatFormulaTerms(combined))}</span>
+    <button class="smallbtn" data-act="pc-combo-clear">Clear selection</button>
+  `;
+}
+function renderPcRoller(){
+  renderPcComboBar();
+  const list = document.getElementById('pcList');
+  if(!list) return;
+  list.innerHTML = pcItems.length ? pcItems.map(it=>`
+    <div class="pcitem ${it.include?'included':''}">
+      <label class="pcitem-check"><input type="checkbox" data-act="pc-toggle-include" data-id="${it.id}" ${it.include?'checked':''}></label>
+      <div class="pcitem-main">
+        <input class="pcitem-name" placeholder="Name (e.g. Longsword, Sneak Attack)" data-pcid="${it.id}" data-pcfield="name" value="${esc(it.name)}">
+        <div class="pcitem-dice-row">
+          ${[4,6,8,10,12,20,100].map(d=>`<button class="pcitem-die-btn" data-act="pc-add-die" data-id="${it.id}" data-die="${d}">d${d}</button>`).join('')}
+          <button class="pcitem-die-btn" data-act="pc-add-mod" data-id="${it.id}" data-delta="1">+1</button>
+          <button class="pcitem-die-btn" data-act="pc-add-mod" data-id="${it.id}" data-delta="-1">−1</button>
+          <button class="pcitem-clear-btn" data-act="pc-clear-formula" data-id="${it.id}">Clear</button>
+        </div>
+        <input class="pcitem-formula" data-pcid="${it.id}" data-pcfield="formula" value="${esc(it.formula)}" placeholder="e.g. 1d8+4 — or click dice above">
+      </div>
+      <button class="iconx" data-act="pc-delete-item" data-id="${it.id}" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+  `).join('') : `<div class="lib-empty">No items yet — add a weapon, spell, or bonus damage source above.</div>`;
+}
+function savePc(){ Store.setPc({ items: pcItems }); }
 
 /* ============================== modal ============================== */
 function openAddModal(){
@@ -3147,6 +3332,15 @@ function onGlobalInput(e){
       return;
     }
   }
+  if(t.dataset.pcid && t.dataset.pcfield){
+    const it = pcItems.find(x=>x.id===t.dataset.pcid);
+    if(!it) return;
+    it[t.dataset.pcfield] = t.value;
+    // persisted on blur (see the focusout listener) rather than every
+    // keystroke - the combo total still needs to track a live formula edit
+    if(t.dataset.pcfield==='formula') renderPcComboBar();
+    return;
+  }
   if(!editingCreature) return;
   if(t.dataset.cfield){ setCreatureField(t.dataset.cfield, t.value); return; }
   if(t.dataset.abil && t.dataset.abilfield){
@@ -3227,6 +3421,8 @@ function onGlobalClick(e){
   const el = e.target.closest('[data-act]');
   const seg = e.target.closest('#rollModeSeg button');
   if(seg){ rollMode = seg.dataset.mode; document.querySelectorAll('#rollModeSeg button').forEach(b=>b.classList.toggle('active', b===seg)); return; }
+  const pageBtn = e.target.closest('#pageSeg button');
+  if(pageBtn){ switchPage(pageBtn.dataset.page); return; }
   // clicking anything other than the still-armed delete button itself means
   // "never mind" - disarm it rather than leave it primed for a stray tap later.
   if(armedDeleteId!==null && !(el && el.dataset.act==='delete-creature' && el.dataset.creature===armedDeleteId)) disarmDelete();
@@ -3371,6 +3567,57 @@ function onGlobalClick(e){
       renderModal();
       break;
     }
+
+    case 'pc-add-item':
+      pcItems.push({ id: uid('p'), name:'', formula:'', include:false });
+      savePc();
+      renderPcRoller();
+      break;
+    case 'pc-delete-item':
+      pcItems = pcItems.filter(it=>it.id!==el.dataset.id);
+      savePc();
+      renderPcRoller();
+      break;
+    case 'pc-toggle-include': {
+      const it = pcItems.find(x=>x.id===el.dataset.id);
+      if(it) it.include = !it.include;
+      savePc();
+      renderPcRoller();
+      break;
+    }
+    case 'pc-add-die': {
+      const it = pcItems.find(x=>x.id===el.dataset.id);
+      if(!it) break;
+      const terms = parseFormulaToTerms(it.formula);
+      const sides = el.dataset.die;
+      terms.dice[sides] = (terms.dice[sides]||0) + 1;
+      it.formula = formatFormulaTerms(terms).replace(/—/,'');
+      savePc();
+      renderPcRoller();
+      break;
+    }
+    case 'pc-add-mod': {
+      const it = pcItems.find(x=>x.id===el.dataset.id);
+      if(!it) break;
+      const terms = parseFormulaToTerms(it.formula);
+      terms.flat += +el.dataset.delta;
+      it.formula = formatFormulaTerms(terms).replace(/—/,'');
+      savePc();
+      renderPcRoller();
+      break;
+    }
+    case 'pc-clear-formula': {
+      const it = pcItems.find(x=>x.id===el.dataset.id);
+      if(it) it.formula = '';
+      savePc();
+      renderPcRoller();
+      break;
+    }
+    case 'pc-combo-clear':
+      pcItems.forEach(it=>{ it.include = false; });
+      savePc();
+      renderPcRoller();
+      break;
 
     case 'toggle-fav': {
       const c = creatures.find(x=>x.id===el.dataset.creature);
@@ -3632,6 +3879,7 @@ document.addEventListener('focusout', e=>{
     // catch up on anything a rebuild would have shown while we were skipping.
     setTimeout(renderTargets, 0);
   }
+  if(e.target.dataset.pcid && e.target.dataset.pcfield) savePc();
   if(e.target.classList.contains('mix-input')){
     const raw = e.target.value.trim();
     if(e.target.dataset.dmgonly){
@@ -3720,6 +3968,19 @@ Store.onLibrary(data=>{
   // only matters while the library browse/import modal is actually open -
   // every other screen reads featureLibrary/spellLibrary fresh when it opens
   if(modalMode==='library') renderModal();
+});
+Store.onPc(data=>{
+  const incoming = (data && data.items) || [];
+  // Same hazard as Store.onBoard above: this fires every time our OWN write
+  // round-trips back (e.g. the save a field's blur triggers), not just on
+  // a change from elsewhere. Re-rendering on that echo is worse here than
+  // it looks - a blur that happens to land right as the next click starts
+  // (type a name, then immediately click a die button) can regenerate the
+  // die button out from under that very click. Skipping the no-op case
+  // removes the danger instead of trying to out-time it.
+  if(JSON.stringify(incoming)===JSON.stringify(pcItems)) return;
+  pcItems = incoming;
+  if(currentPage==='pc' && !isPcFieldFocused()) renderPcRoller();
 });
 Store.init();
 renderLog();

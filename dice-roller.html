@@ -342,6 +342,9 @@ body.page-pc .dm-only{display:none!important;}
 .pcroller{flex:1;display:none;flex-direction:column;min-height:0;overflow:hidden;}
 .pcroller-hdr{display:flex;align-items:flex-start;gap:14px;padding:16px 20px 0;}
 .pcroller-hdr .hint{flex:1;margin:0;}
+.pcroller-insert-row{display:flex;align-items:center;gap:8px;padding:10px 20px 0;flex-wrap:wrap;}
+.pc-insert-select{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;color:var(--text-2);outline:none;}
+.pc-insert-select:focus{border-color:var(--accent-bd);}
 .pcroller-search-row{padding:10px 20px 0;}
 .pcroller-search-row .search-wrap{max-width:320px;}
 #pcSearchInput{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;font-size:12.5px;color:var(--text);outline:none;}
@@ -596,6 +599,13 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
         Add item
       </button>
     </div>
+    <div class="pcroller-insert-row">
+      <select id="pcScalingSelect" class="pc-insert-select">
+        <option value="">Insert from library…</option>
+      </select>
+      <select id="pcScalingLevelSelect" class="pc-insert-select" style="display:none"></select>
+      <button class="smallbtn" id="pcScalingInsertBtn" data-act="pc-insert-scaling" style="display:none">+ Insert</button>
+    </div>
     <div class="pcroller-search-row">
       <div class="search-wrap">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -690,6 +700,27 @@ const DEFAULT_PC_ITEMS = [
   { id:'pcex1', name:'Example: Longsword', formula:'1d8+4', tags:'weapon, main hand', include:false },
   { id:'pcex2', name:'Example: Offhand shortsword', formula:'1d6', tags:'weapon, offhand', include:false },
 ];
+// Level/slot-scaling features - things like Divine Smite where the dice
+// change with the spell slot (or character level) spent, capped once it
+// stops improving. Declarative (count/sides/perLevel/cap), not a function,
+// so it stays plain data the same way every other library in this file is -
+// easy to read, easy to extend with another scaling feature later without
+// touching any logic. diceCountAtLevel() below is the one formula that
+// reads it. Levels the dropdown offers run minLevel..maxLevel; the COUNT
+// stops climbing at capCount even though higher levels remain selectable
+// (a 9th-level Divine Smite is still only 5d8, same as a 4th).
+const PC_SCALING_LIBRARY = [
+  { id:'divine-smite', name:'Divine Smite', tags:'paladin, smite, divine smite',
+    sides:8, baseCount:2, perLevelCount:1, capCount:5, minLevel:1, maxLevel:9 },
+];
+function diceCountAtLevel(preset, level){
+  return Math.min(preset.capCount, preset.baseCount + (level-preset.minLevel)*preset.perLevelCount);
+}
+function ordinal(n){
+  const v = n % 100;
+  if(v>=11 && v<=13) return n+'th';
+  return n + ({1:'st',2:'nd',3:'rd'}[n%10] || 'th');
+}
 // CR can be a fraction ("1/8") as well as a whole number - this is the one
 // other place (besides parsing a pasted statblock's own CR line) that needs
 // to turn that text into an actual number to compute with.
@@ -2824,6 +2855,27 @@ function renderLog(){
 }
 
 /* ============================== PC quick roller ============================== */
+// Populated once (not from renderPcRoller, which runs on every tick/click/
+// edit) - rebuilding these <option>s on every re-render would reset
+// whatever the user currently has picked mid-insert.
+function populatePcScalingLibrary(){
+  const sel = document.getElementById('pcScalingSelect');
+  if(!sel) return;
+  PC_SCALING_LIBRARY.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+}
+function resetPcScalingInserter(){
+  const presetSel = document.getElementById('pcScalingSelect');
+  const levelSel = document.getElementById('pcScalingLevelSelect');
+  const btn = document.getElementById('pcScalingInsertBtn');
+  if(presetSel) presetSel.value = '';
+  if(levelSel){ levelSel.style.display = 'none'; levelSel.innerHTML = ''; }
+  if(btn) btn.style.display = 'none';
+}
 function switchPage(page){
   currentPage = page;
   document.body.classList.toggle('page-pc', page==='pc');
@@ -3435,6 +3487,20 @@ function onGlobalChange(e){
     renderModal();
     return;
   }
+  if(t.id==='pcScalingSelect'){
+    const preset = PC_SCALING_LIBRARY.find(p=>p.id===t.value);
+    const levelSel = document.getElementById('pcScalingLevelSelect');
+    const btn = document.getElementById('pcScalingInsertBtn');
+    if(!preset){ levelSel.style.display='none'; levelSel.innerHTML=''; btn.style.display='none'; return; }
+    const opts = [];
+    for(let lvl=preset.minLevel; lvl<=preset.maxLevel; lvl++){
+      opts.push(`<option value="${lvl}">${ordinal(lvl)} level slot (${diceCountAtLevel(preset,lvl)}d${preset.sides})</option>`);
+    }
+    levelSel.innerHTML = opts.join('');
+    levelSel.style.display = '';
+    btn.style.display = '';
+    return;
+  }
   if(!editingCreature) return;
   if(t.dataset.efield==='kind' && t.dataset.eid){
     const entry = getEntry(t.dataset.eid);
@@ -3674,6 +3740,21 @@ function onGlobalClick(e){
       // keystroke (the name) rather than a trip back to find the new row
       const nameEl = document.querySelector(`[data-pcid="${newItem.id}"][data-pcfield="name"]`);
       if(nameEl) nameEl.focus();
+      break;
+    }
+    case 'pc-insert-scaling': {
+      const presetId = document.getElementById('pcScalingSelect').value;
+      const preset = PC_SCALING_LIBRARY.find(p=>p.id===presetId);
+      const levelSel = document.getElementById('pcScalingLevelSelect');
+      if(!preset || !levelSel.value) break;
+      const level = +levelSel.value;
+      const count = diceCountAtLevel(preset, level);
+      pcItems.push({ id: uid('p'), name: `${preset.name} (${ordinal(level)} level)`, formula: `${count}d${preset.sides}`, tags: preset.tags, include:false });
+      savePc();
+      renderPcRoller();
+      // ready for the next insert straight away rather than leaving the
+      // dropdowns sitting on the level you just used
+      resetPcScalingInserter();
       break;
     }
 
@@ -4042,6 +4123,7 @@ Store.onPc(data=>{
 });
 Store.init();
 renderLog();
+populatePcScalingLibrary();
 </script>
 </body>
 </html>

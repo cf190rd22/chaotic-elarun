@@ -372,8 +372,11 @@ body.page-pc .dm-only{display:none!important;}
 .pc-chip.active .pc-chip-name{color:var(--accent);}
 .pc-chip-formula{font-size:12px;font-family:'DM Mono',monospace;font-weight:700;color:var(--text-mute);}
 .pc-chip.active .pc-chip-formula{color:var(--accent);}
-.pc-chip-edit-btn{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;color:var(--text-mute);width:30px;flex-shrink:0;cursor:pointer;font-size:12px;}
+.pc-chip-count{font-family:'DM Mono',monospace;font-weight:800;color:var(--accent);}
+.pc-chip-edit-btn,.pc-chip-minus-btn{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;color:var(--text-mute);width:30px;flex-shrink:0;cursor:pointer;font-size:12px;}
 .pc-chip-edit-btn:hover{color:var(--text);border-color:var(--accent-bd);}
+.pc-chip-minus-btn{font-size:16px;font-weight:700;line-height:1;}
+.pc-chip-minus-btn:hover{color:var(--red);border-color:var(--red-bd);}
 .pc-chip-grid .pcitem{flex:1 1 100%;}
 .pcitem{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--accent-bd);border-radius:11px;padding:11px 13px;}
 .pcitem-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;}
@@ -715,11 +718,15 @@ const DEFAULT_SPELL_LIBRARY = [
 ];
 // Seed content for the PC Quick Roller (see further down) - one worked
 // example showing the point of it: two separate named items (main hand +
-// offhand), each individually clear, that can also be ticked together to
-// see the combined dice for a single turn. Not toggled on by default.
+// offhand), each individually addable, that can also be clicked on
+// together to see the combined dice for a single turn. Not added by
+// default. comboCount is how many times an item is currently "in" the
+// combined total (0 = not included; each click on its chip adds one more
+// casting/swing/whatever of it, not just an on/off tick - see
+// pcComboCount/computePcCombined below for why).
 const DEFAULT_PC_ITEMS = [
-  { id:'pcex1', name:'Example: Longsword', formula:'1d8+4', tags:'weapon, main hand', include:false },
-  { id:'pcex2', name:'Example: Offhand shortsword', formula:'1d6', tags:'weapon, offhand', include:false },
+  { id:'pcex1', name:'Example: Longsword', formula:'1d8+4', tags:'weapon, main hand', comboCount:0 },
+  { id:'pcex2', name:'Example: Offhand shortsword', formula:'1d6', tags:'weapon, offhand', comboCount:0 },
 ];
 // Level/slot-scaling features - things like Divine Smite where the dice
 // change with the spell slot (or character level) spent, capped once it
@@ -886,6 +893,14 @@ function mergeFormulaTerms(list){
     flat += t.flat;
   }
   return { dice, flat };
+}
+// Repeats a parsed formula n times - "1d8+4" scaled by 3 is 3d8+12, the
+// same as if that term had been merged into the total three separate
+// times. Used for a PC roller item added more than once (see pcComboCount).
+function scaleFormulaTerms(terms, n){
+  const dice = {};
+  for(const [sides,count] of Object.entries(terms.dice)) dice[sides] = count*n;
+  return { dice, flat: terms.flat*n };
 }
 function formatFormulaTerms(terms){
   const bits = Object.entries(terms.dice)
@@ -2946,19 +2961,33 @@ function switchPage(page){
   document.querySelectorAll('#pageSeg button').forEach(b=>b.classList.toggle('active', b.dataset.page===page));
   if(page==='pc') renderPcRoller();
 }
-// Only the combined total needs to refresh on every keystroke (a typed
-// Folds the ticked items AND the manual scratch term into one set of dice/
+// Reads however many times an item is currently in the combo - a plain
+// count, not a checkbox, so the same item can be added two or three times
+// (two swings with the same dagger, casting the same spell slot twice...).
+// Falls back to the old include:true/false shape for anything saved
+// before this existed, so a browser/db that already has items from
+// before this change keeps reading them correctly without a migration
+// pass - the first add/remove on one just starts writing comboCount.
+function pcComboCount(it){
+  return typeof it.comboCount==='number' ? it.comboCount : (it.include ? 1 : 0);
+}
+// Folds every item's count (each repeat scaled into the dice total, not
+// just counted once) AND the manual scratch term into one set of dice/
 // flat totals - the single source of truth for both the full bar render
 // and the lightweight live-update path below it.
 function computePcCombined(){
-  const included = pcItems.filter(it=>it.include);
+  const included = pcItems.filter(it=>pcComboCount(it)>0);
   const manualTrim = pcManualBonus.trim();
-  const terms = included.map(it=>parseFormulaToTerms(it.formula));
+  const terms = included.map(it=>scaleFormulaTerms(parseFormulaToTerms(it.formula), pcComboCount(it)));
   if(manualTrim) terms.push(parseFormulaToTerms(manualTrim));
-  return { included, manualTrim, combined: mergeFormulaTerms(terms) };
+  const totalAdds = included.reduce((sum,it)=>sum+pcComboCount(it), 0);
+  return { included, totalAdds, manualTrim, combined: mergeFormulaTerms(terms) };
 }
-function pcComboLabel(included, manualTrim){
-  if(included.length) return `${included.length} ticked${manualTrim?' + manual':''}`;
+function pcComboLabel(included, totalAdds, manualTrim){
+  if(included.length){
+    const addsNote = totalAdds>included.length ? ` (${totalAdds} adds)` : '';
+    return `${included.length} item${included.length===1?'':'s'}${addsNote}${manualTrim?' + manual':''}`;
+  }
   return manualTrim ? 'Manual only' : 'Nothing yet';
 }
 // Full rebuild - called whenever something other than the manual-bonus
@@ -2966,11 +2995,11 @@ function pcComboLabel(included, manualTrim){
 function renderPcComboBar(){
   const bar = document.getElementById('pcComboBar');
   if(!bar) return;
-  const { included, manualTrim, combined } = computePcCombined();
+  const { included, totalAdds, manualTrim, combined } = computePcCombined();
   const hasAny = included.length>0 || !!manualTrim;
   bar.innerHTML = `
     <div class="pc-combo-top">
-      <span class="pc-combo-label" id="pcComboLabel">${esc(pcComboLabel(included, manualTrim))}</span>
+      <span class="pc-combo-label" id="pcComboLabel">${esc(pcComboLabel(included, totalAdds, manualTrim))}</span>
       <span class="pc-combo-total" id="pcComboTotalText">${esc(formatFormulaTerms(combined))}</span>
       <button class="smallbtn" data-act="pc-save-combo" ${hasAny?'':'disabled'}>💾 Save as item</button>
       <button class="smallbtn" data-act="pc-combo-clear" ${hasAny?'':'disabled'}>Clear</button>
@@ -2989,11 +3018,11 @@ function renderPcComboBar(){
 // guard in this file, just reached by sidestepping the problem instead of
 // detecting focus, since this element's own input is what triggers it).
 function updatePcComboTotalOnly(){
-  const { included, manualTrim, combined } = computePcCombined();
+  const { included, totalAdds, manualTrim, combined } = computePcCombined();
   const hasAny = included.length>0 || !!manualTrim;
   const labelEl = document.getElementById('pcComboLabel');
   const totalEl = document.getElementById('pcComboTotalText');
-  if(labelEl) labelEl.textContent = pcComboLabel(included, manualTrim);
+  if(labelEl) labelEl.textContent = pcComboLabel(included, totalAdds, manualTrim);
   if(totalEl) totalEl.textContent = formatFormulaTerms(combined);
   document.querySelectorAll('#pcComboBar [data-act="pc-save-combo"], #pcComboBar [data-act="pc-combo-clear"]').forEach(b=>{ b.disabled = !hasAny; });
 }
@@ -3029,17 +3058,22 @@ function pcItemEditCardHtml(it){
       </div>
     </div>`;
 }
-// Everything that ISN'T being edited is a compact chip: tap it anywhere to
-// tick/untick (that's the whole interaction - no hunting for a tiny
-// checkbox inside a big card), tap the pencil to expand it into the full
-// editor above instead.
+// Everything that ISN'T being edited is a compact chip: tap its face to
+// add one more of it to the combined total - every tap adds, none of them
+// toggle back off, so there's no "I tapped it again and it just vanished"
+// moment. A ×N badge shows once it's been added more than once. The only
+// way to back off is the − button, and only by exactly one at a time -
+// so overshooting by one tap is a one-tap fix, not a full reset. Tap the
+// pencil to expand it into the full editor above instead.
 function pcItemChipHtml(it){
+  const count = pcComboCount(it);
   return `
     <div class="pc-chip-wrap">
-      <div class="pc-chip ${it.include?'active':''}" data-act="pc-toggle-include" data-id="${it.id}">
-        <span class="pc-chip-name">${esc(it.name)||'(unnamed)'}</span>
+      <div class="pc-chip ${count>0?'active':''}" data-act="pc-chip-add" data-id="${it.id}">
+        <span class="pc-chip-name">${esc(it.name)||'(unnamed)'}${count>1?` <span class="pc-chip-count">×${count}</span>`:''}</span>
         <span class="pc-chip-formula">${esc(it.formula)||'—'}</span>
       </div>
+      ${count>0 ? `<button class="pc-chip-minus-btn" data-act="pc-chip-remove-one" data-id="${it.id}" title="Remove one">−</button>` : ''}
       <button class="pc-chip-edit-btn" data-act="pc-toggle-edit" data-id="${it.id}" title="Edit">✎</button>
     </div>`;
 }
@@ -3863,7 +3897,7 @@ function onGlobalClick(e){
     }
 
     case 'pc-add-item': {
-      const newItem = { id: uid('p'), name:'', formula:'', tags:'', include:false };
+      const newItem = { id: uid('p'), name:'', formula:'', tags:'', comboCount:0 };
       pcItems.push(newItem);
       savePc();
       // a brand new item has nothing worth showing as a chip yet - open
@@ -3879,9 +3913,16 @@ function onGlobalClick(e){
       savePc();
       renderPcRoller();
       break;
-    case 'pc-toggle-include': {
+    case 'pc-chip-add': {
       const it = pcItems.find(x=>x.id===el.dataset.id);
-      if(it) it.include = !it.include;
+      if(it) it.comboCount = pcComboCount(it) + 1;
+      savePc();
+      renderPcRoller();
+      break;
+    }
+    case 'pc-chip-remove-one': {
+      const it = pcItems.find(x=>x.id===el.dataset.id);
+      if(it) it.comboCount = Math.max(0, pcComboCount(it) - 1);
       savePc();
       renderPcRoller();
       break;
@@ -3920,7 +3961,7 @@ function onGlobalClick(e){
       break;
     }
     case 'pc-combo-clear':
-      pcItems.forEach(it=>{ it.include = false; });
+      pcItems.forEach(it=>{ it.comboCount = 0; });
       pcManualBonus = '';
       savePc();
       renderPcRoller();
@@ -3928,7 +3969,7 @@ function onGlobalClick(e){
     case 'pc-save-combo': {
       const { included, manualTrim, combined } = computePcCombined();
       if(!included.length && !manualTrim) break;
-      const newItem = { id: uid('p'), name:'', formula: formatFormulaTerms(combined).replace(/—/,''), tags:'', include:false };
+      const newItem = { id: uid('p'), name:'', formula: formatFormulaTerms(combined).replace(/—/,''), tags:'', comboCount:0 };
       pcItems.push(newItem);
       savePc();
       // land straight in the name field, editor open - the whole point of
@@ -3946,7 +3987,7 @@ function onGlobalClick(e){
       if(!preset || !levelSel.value) break;
       const level = +levelSel.value;
       const count = diceCountAtLevel(preset, level);
-      pcItems.push({ id: uid('p'), name: `${preset.name} (${ordinal(level)} level)`, formula: `${count}d${preset.sides}`, tags: preset.tags, include:false });
+      pcItems.push({ id: uid('p'), name: `${preset.name} (${ordinal(level)} level)`, formula: `${count}d${preset.sides}`, tags: preset.tags, comboCount:0 });
       savePc();
       renderPcRoller();
       // ready for the next insert straight away rather than leaving the

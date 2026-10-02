@@ -388,6 +388,25 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 .btn.primary{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .btn.primary:hover{background:rgba(91,142,240,.2);}
 .parsed-name-banner{background:var(--green-dim);border:1px solid var(--green-bd);color:var(--green);border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:14px;}
+.lib-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.lib-tab{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:7px 14px;font-size:11.5px;font-weight:700;letter-spacing:.03em;color:var(--text-mute);cursor:pointer;}
+.lib-tab.active{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
+.lib-theme{margin-bottom:18px;}
+.lib-theme-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.lib-power{background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:8px;}
+.lib-power-hdr{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.lib-power-name{font-weight:700;font-size:12.5px;color:var(--text);flex:1;}
+.lib-power-recharge{font-weight:500;color:var(--text-mute);font-size:11px;}
+.lib-power-meta{font-size:10.5px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
+.lib-power-text{font-size:11.5px;color:var(--text-2);line-height:1.55;}
+.lib-power-note{font-size:11px;color:var(--text-mute);line-height:1.55;margin-top:6px;border-top:1px solid var(--border-light);padding-top:6px;font-style:italic;}
+.lib-spell-table{border:1px solid var(--border);border-radius:9px;overflow:hidden;}
+.lib-spell-row{display:flex;align-items:center;gap:10px;padding:7px 12px;border-bottom:1px solid var(--border-light);font-size:11.5px;}
+.lib-spell-row:last-child{border-bottom:none;}
+.lib-spell-lvl{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-mute);width:56px;flex-shrink:0;}
+.lib-spell-name{flex:1;color:var(--text);}
+.lib-spell-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
+.smallbtn.added{color:var(--green);border-color:var(--green-bd);background:var(--green-dim);}
 
 @media(max-width:900px){
   .drawer-btn{display:inline-flex;}
@@ -534,6 +553,89 @@ const ABIL_FULL = {str:'Strength',dex:'Dexterity',con:'Constitution',int:'Intell
 const ATYPE_LABEL = {action:'Actions',bonus:'Bonus Actions',reaction:'Reactions',legendary:'Legendary Actions',trait:'Traits'};
 const ATYPE_ORDER = ['action','bonus','reaction','legendary','trait'];
 const NUM_WORD = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+
+// Reusable thematic powers (from Forge of Foes) - each has an action type
+// and a save DC expressed relative to the CR of whatever creature it ends
+// up on ("DC = 12 + 1/2 CR"), not a fixed number, since the same power gets
+// reused across creatures of very different power levels. Resolved against
+// a real creature's CR at insert time - see resolveDcFormula/insertFeature.
+const FEATURE_LIBRARY = [
+  { theme:'Charm or Fey',
+    intro:'Compulsion powers wielded by fey creatures and others with a penchant for enchantment demonstrate a supernatural capability to influence characters. These powers should be used sparingly, so as to present an interesting challenge without becoming frustrating or repeatedly removing the sense of agency that players enjoy.',
+    powers:[
+      { name:'Words of Treachery', action:'action', recharge:'',
+        text:'This creature speaks deceitful words at a target within 20 feet of them who can see and hear them. The target must succeed on a Charisma saving throw (DC = 12 + 1/2 CR) or immediately use their reaction to move up to 10 feet and make a melee or ranged weapon attack against a target of this creature’s choice. The compelled target uses an attack they would typically make against a foe.',
+        note:'This power works well when you roleplay what the creature says, then have the player attempt their saving throw and roleplay the outcome. Turning a character into an ally in combat can be a powerful option for a foe, as many characters deal more damage with their actions than monsters do. You can alter the power to work without spending the target’s reaction if you feel that losing a reaction might lessen a player’s fun. You can also decide whether a creature immune to the charmed condition is immune to this effect, or if it channels a different type of compulsion.' },
+      { name:'Charming Words', action:'action', recharge:'5–6',
+        text:'This creature chooses any number of targets within 60 feet of them who can hear them. Each target must succeed on a Charisma saving throw (DC = 11 + 1/2 CR) or be charmed by this creature until the end of their next turn.',
+        note:'This area-of-effect compulsion can keep a monster alive by preventing some or all of the characters from attacking them. It’s best used when a fight has other potential targets, so characters can attack a different creature and stay engaged.' },
+    ]
+  },
+];
+
+// Flat spell lists grouped by why you'd add them to a statblock, not by
+// class/school. "Action-Balancing" entries are level+name only; "Add-On"
+// entries also carry a Type (Damage/Defense/Control) and an Action economy
+// (Action/Bonus action/Reaction) - whichever's given maps straight onto the
+// same action/bonus/reaction buckets every other entry already uses.
+const SPELL_LIBRARY = [
+  { category:'Action-Balancing Spells',
+    spells:[
+      {level:1,name:'Fog cloud'},{level:1,name:'Hellish rebuke'},{level:1,name:'Shield'},
+      {level:2,name:'Blur'},{level:2,name:'Darkness'},{level:2,name:'Spiritual weapon'},
+      {level:3,name:'Blink'},{level:3,name:'Fear'},{level:3,name:'Fly'},{level:3,name:'Haste'},{level:3,name:'Slow'},{level:3,name:'Spirit guardians'},
+      {level:4,name:'Fire shield'},{level:4,name:'Greater invisibility'},
+      {level:5,name:'Antilife shell'},{level:5,name:'Cloudkill'},
+      {level:7,name:'Divine word'},
+      {level:9,name:'Foresight'},
+    ]
+  },
+  { category:'Add-On Spells',
+    spells:[
+      {level:1,name:'Burning hands',type:'Damage',action:'action'},
+      {level:1,name:'Guiding bolt',type:'Damage',action:'action'},
+      {level:1,name:'Hellish rebuke',type:'Damage',action:'reaction'},
+      {level:1,name:'Inflict wounds',type:'Damage',action:'action'},
+      {level:1,name:'Shield',type:'Defense',action:'reaction'},
+      {level:1,name:'Sleep',type:'Control',action:'action'},
+      {level:2,name:'Acid arrow',type:'Damage',action:'action'},
+      {level:2,name:'Darkness',type:'Control',action:'action'},
+      {level:2,name:'Invisibility',type:'Defense',action:'action'},
+      {level:2,name:'Misty step',type:'Defense',action:'bonus'},
+      {level:2,name:'Scorching ray',type:'Damage',action:'action'},
+      {level:2,name:'Shatter',type:'Damage',action:'action'},
+      {level:2,name:'Spiritual weapon',type:'Damage',action:'bonus'},
+      {level:2,name:'Web',type:'Control',action:'action'},
+      {level:3,name:'Counterspell',type:'Control',action:'reaction'},
+      {level:3,name:'Dispel magic',type:'Control',action:'action'},
+      {level:3,name:'Fireball',type:'Damage',action:'action'},
+      {level:3,name:'Lightning bolt',type:'Damage',action:'action'},
+    ]
+  },
+];
+// CR can be a fraction ("1/8") as well as a whole number - this is the one
+// other place (besides parsing a pasted statblock's own CR line) that needs
+// to turn that text into an actual number to compute with.
+function crToNumber(cr){
+  if(!cr) return 0;
+  const s = String(cr).trim();
+  const m = /^(\d+)\s*\/\s*(\d+)$/.exec(s);
+  if(m) return (+m[1])/(+m[2]);
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? n : 0;
+}
+// Understands "<base> + 1/2 CR" (every formula in the library so far uses
+// this shape) and falls back to a bare "DC <n>"/"DC = <n>" if a future
+// import has a flat number instead. Returns null if neither matches, so
+// the caller can fall back to leaving the formula as plain reference text
+// rather than inventing a number.
+function resolveDcFormula(text, cr){
+  const halfCrM = /(\d+)\s*\+\s*1\s*\/\s*2\s*CR/i.exec(text);
+  if(halfCrM) return (+halfCrM[1]) + Math.floor(crToNumber(cr)/2);
+  const flatM = /DC\s*=?\s*(\d+)/i.exec(text);
+  if(flatM) return +flatM[1];
+  return null;
+}
 
 /* ============================== utilities ============================== */
 function uid(p){ return p+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4); }
@@ -1256,7 +1358,8 @@ function isBoardFieldFocused(){
   return !!(el && el.classList && el.classList.contains('mix-input'));
 }
 let editingCreature = null;
-let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm'
+let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm' | 'library'
+let libraryTab = 'features'; // which tab the feature/spell library modal is showing
 // in-page stand-in for window.confirm(), which doesn't work reliably inside
 // this artifact's sandboxed iframe (see delete-creature's fix for the same
 // underlying issue) - holds the message and the callback to run if the
@@ -2622,6 +2725,65 @@ function renderModal(){
     </div>`;
     return;
   }
+  if(modalMode==='library'){
+    const c = editingCreature;
+    const hasEntry = name => c.entries.some(e=>e.name===name || e.name.startsWith(name+' '));
+    const insertBtn = (act, dataAttrs, label) => {
+      const added = hasEntry(label);
+      return `<button class="smallbtn${added?' added':''}" data-act="${act}" ${dataAttrs}>${added?'✓ Added — insert again':'+ Insert'}</button>`;
+    };
+    const featuresHtml = FEATURE_LIBRARY.map((theme,ti)=>`
+      <div class="lib-theme">
+        <div class="lib-theme-name">${esc(theme.theme)}</div>
+        <div class="hint">${esc(theme.intro)}</div>
+        ${theme.powers.map((p,pi)=>{
+          const dc = resolveDcFormula(p.text, c.cr);
+          return `<div class="lib-power">
+            <div class="lib-power-hdr">
+              <span class="lib-power-name">${esc(p.name)}${p.recharge?` <span class="lib-power-recharge">(Recharge ${esc(p.recharge)})</span>`:''}</span>
+              <span class="lib-power-meta">${esc(ATYPE_LABEL[p.action]||p.action)}${dc!=null?` · DC ${dc}`:''}</span>
+              ${insertBtn('insert-feature', `data-theme="${ti}" data-power="${pi}"`, p.name)}
+            </div>
+            <div class="lib-power-text">${esc(p.text)}</div>
+            ${p.note?`<div class="lib-power-note">${esc(p.note)}</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    `).join('');
+    const spellsHtml = SPELL_LIBRARY.map((cat,ci)=>`
+      <div class="lib-theme">
+        <div class="lib-theme-name">${esc(cat.category)}</div>
+        <div class="lib-spell-table">
+          ${cat.spells.map((s,si)=>`
+            <div class="lib-spell-row">
+              <span class="lib-spell-lvl">${s.level===0?'Cantrip':'Lvl '+s.level}</span>
+              <span class="lib-spell-name">${esc(s.name)}</span>
+              <span class="lib-spell-meta">${s.type?esc(s.type)+' · ':''}${esc(ATYPE_LABEL[s.action]||s.action||'')}</span>
+              ${insertBtn('insert-spell', `data-cat="${ci}" data-spell="${si}"`, s.name)}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal">
+        <div class="modal-hdr"><h2>Feature &amp; spell library</h2><button class="icobtn" data-act="close-library"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="hint">Insert a ready-made power or spell straight into ${esc(c.name||'this creature')}'s actions. Save DCs that scale with CR are resolved against this creature's CR (${esc(c.cr||'—')}) the moment you insert them — edit the DC afterwards if you change the CR.</div>
+          <div class="lib-tabs">
+            <button class="lib-tab ${libraryTab==='features'?'active':''}" data-act="library-tab" data-tab="features">Features</button>
+            <button class="lib-tab ${libraryTab==='spells'?'active':''}" data-act="library-tab" data-tab="spells">Spells</button>
+          </div>
+          ${libraryTab==='spells' ? spellsHtml : featuresHtml}
+        </div>
+        <div class="modal-ft">
+          <button class="btn primary" data-act="close-library">Done — back to editing</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
   if(modalMode==='edit'){
     const c = editingCreature;
     const groupsHtml = ATYPE_ORDER.map(t=>{
@@ -2687,6 +2849,7 @@ function renderModal(){
               <textarea class="ee-text" data-cfield="notes" placeholder='e.g. &lt;a href="https://..." target="_blank"&gt;D&amp;D Beyond&lt;/a&gt;'>${esc(c.notes||'')}</textarea>
             </div>
           </div>
+          <div class="sec-title">Feature &amp; spell library <button class="smallbtn" data-act="open-library">Browse →</button></div>
           ${groupsHtml}
         </div>
         <div class="modal-ft">
@@ -2895,6 +3058,36 @@ function onGlobalClick(e){
     case 'remove-dmg': { const en = getEntry(el.dataset.eid); en.dmg.splice(+el.dataset.dmgidx,1); renderModal(); break; }
     case 'add-multipart': { const en = getEntry(el.dataset.eid); en.multi = en.multi||[]; en.multi.push({ref:'',count:1}); renderModal(); break; }
     case 'remove-multipart': { const en = getEntry(el.dataset.eid); en.multi.splice(+el.dataset.midx,1); renderModal(); break; }
+
+    case 'open-library': modalMode = 'library'; renderModal(); break;
+    case 'close-library': modalMode = 'edit'; renderModal(); break;
+    case 'library-tab': libraryTab = el.dataset.tab; renderModal(); break;
+    case 'insert-feature': {
+      const theme = FEATURE_LIBRARY[+el.dataset.theme];
+      const power = theme && theme.powers[+el.dataset.power];
+      if(!power) break;
+      const dc = resolveDcFormula(power.text, editingCreature.cr);
+      const name = power.name + (power.recharge ? ` (Recharge ${power.recharge})` : '');
+      const entry = { id: uid('e'), name, atype: power.action, dmg:[], text: power.text + (power.note ? '\n\n'+power.note : '') };
+      if(dc!=null){ entry.kind = 'save'; entry.save = { dc, ability:'CHA', half:false }; }
+      else { entry.kind = 'other'; }
+      editingCreature.entries.push(entry);
+      renderModal();
+      break;
+    }
+    case 'insert-spell': {
+      const cat = SPELL_LIBRARY[+el.dataset.cat];
+      const spell = cat && cat.spells[+el.dataset.spell];
+      if(!spell) break;
+      const lvlTxt = spell.level===0 ? 'Cantrip' : `Level ${spell.level}`;
+      const descBits = [lvlTxt];
+      if(spell.type) descBits.push(spell.type);
+      const entry = { id: uid('e'), name: spell.name, atype: spell.action || 'action', kind:'other', dmg:[],
+        text: descBits.join(' · ') + ' spell — see your spell reference for its effect.' };
+      editingCreature.entries.push(entry);
+      renderModal();
+      break;
+    }
 
     case 'toggle-fav': {
       const c = creatures.find(x=>x.id===el.dataset.creature);

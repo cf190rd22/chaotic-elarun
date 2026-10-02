@@ -88,6 +88,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .lib-item-body{flex:1;min-width:0;cursor:pointer;}
 .lib-item-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .lib-item-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:1px;}
+.lib-item-role{font-size:9px;color:var(--accent);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
 .icobtn{background:none;border:none;cursor:pointer;color:var(--text-mute);padding:3px;display:flex;border-radius:5px;}
 .icobtn:hover{color:var(--text);background:var(--surface-3);}
 .star-btn.active{color:var(--amber);}
@@ -153,6 +154,7 @@ select,option{background:var(--surface-2);color:var(--text);}
 .card-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
 .pill-crit{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
+.pill-role{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .count-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto;}
 .count-stepper button{width:24px;height:24px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:14px;line-height:1;border-radius:5px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
@@ -890,12 +892,12 @@ function parseStatblock(raw){
   const entries = rawEntries.map(buildEntry);
   linkMultiattacks(entries);
 
-  return { name, ac, hp, speed, cr, pb, critRange:20, abilities, saves, entries, favourite:false, notes:'', ...info };
+  return { name, ac, hp, speed, cr, pb, critRange:20, role:'', abilities, saves, entries, favourite:false, notes:'', ...info };
 }
 
 function blankCreature(){
   return {
-    name:'New Creature', ac:null, hp:null, speed:'', cr:'', pb:null, critRange:20,
+    name:'New Creature', ac:null, hp:null, speed:'', cr:'', pb:null, critRange:20, role:'',
     abilities: Object.fromEntries(ABILS.map(k=>[k,{score:10,mod:0}])),
     saves: Object.fromEntries(ABILS.map(k=>[k,0])),
     entries: [], favourite:false,
@@ -1715,12 +1717,16 @@ function renderLibrary(){
       <div class="lib-item-body" data-act="add-board" data-creature="${c.id}" title="Add to board">
         <div class="lib-item-name">${esc(c.name)}</div>
         <div class="lib-item-meta">${c.cr? 'CR '+esc(c.cr)+' · ':''}${c.ac?'AC '+c.ac+' · ':''}${c.hp?'HP '+c.hp:''}</div>
+        ${c.role ? `<div class="lib-item-role">${esc(c.role)}</div>` : ''}
       </div>
       <button class="icobtn" data-act="add-board" data-creature="${c.id}" title="Add to board">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
       <button class="icobtn" data-act="edit-creature" data-creature="${c.id}" title="Edit">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
+      </button>
+      <button class="icobtn" data-act="duplicate-creature" data-creature="${c.id}" title="Duplicate - clone this one to customize, leaving the original untouched">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       </button>
       ${armedDeleteId===c.id
         ? `<button class="icobtn trash-btn armed" data-act="delete-creature" data-creature="${c.id}" title="Click again to permanently delete ${esc(c.name)}">
@@ -2012,6 +2018,7 @@ function renderCard(item){
         ${c.hp?`<span class="pill">HP ${c.hp}</span>`:''}
         ${c.speed?`<span class="pill">${esc(c.speed)}</span>`:''}
         ${c.cr?`<span class="pill">CR ${esc(c.cr)}</span>`:''}
+        ${c.role?`<span class="pill pill-role">${esc(c.role)}</span>`:''}
         ${c.critRange && c.critRange<20 ? `<span class="pill pill-crit" title="Attack rolls crit on ${c.critRange}-20, not just a natural 20">⚡ Crits ${c.critRange}-20</span>` : ''}
         <span class="count-lbl">× instances</span>
       </div>
@@ -2645,6 +2652,7 @@ function renderModal(){
                 <option value="18" ${c.critRange===18?'selected':''}>18–20</option>
               </select>
             </div>
+            <div class="field"><label>Role</label><input value="${esc(c.role||'')}" data-cfield="role" placeholder="e.g. Tier 2 bruiser"></div>
           </div>
           <div class="sec-title">Ability scores &amp; saves</div>
           <div class="abil-grid">
@@ -2894,6 +2902,21 @@ function onGlobalClick(e){
       break;
     }
     case 'edit-creature': { const c = creatures.find(x=>x.id===el.dataset.creature); if(c) openEditModal(c); break; }
+    case 'duplicate-creature': {
+      const c = creatures.find(x=>x.id===el.dataset.creature);
+      if(!c) break;
+      // a deep clone under a new id and name - the source creature (e.g. a
+      // reusable template like Forge of Foes' "Brute") is never touched,
+      // so it stays a clean starting point to duplicate again later
+      const copy = JSON.parse(JSON.stringify(c));
+      delete copy.id;
+      copy.name = c.name + ' (copy)';
+      copy.favourite = false;
+      copy.entries.forEach(e=>{ e.id = uid('e'); });
+      Store.saveCreature(copy);
+      ghMaybeAutoPush();
+      break;
+    }
     case 'delete-creature': {
       const cid = el.dataset.creature;
       const c = creatures.find(x=>x.id===cid);

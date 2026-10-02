@@ -407,6 +407,10 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 .lib-spell-name{flex:1;color:var(--text);}
 .lib-spell-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
 .smallbtn.added{color:var(--green);border-color:var(--green-bd);background:var(--green-dim);}
+.limport-recharge{width:100px;flex-shrink:0;background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:6px 7px;font-size:12px;color:var(--text);}
+.limport-level{width:44px;flex-shrink:0;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:4px 5px;font-size:11.5px;color:var(--text);}
+.limport-name{flex:1;min-width:0;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:11.5px;color:var(--text);}
+.limport-type{width:90px;flex-shrink:0;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:11.5px;color:var(--text);}
 
 @media(max-width:900px){
   .drawer-btn{display:inline-flex;}
@@ -559,7 +563,11 @@ const NUM_WORD = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9
 // up on ("DC = 12 + 1/2 CR"), not a fixed number, since the same power gets
 // reused across creatures of very different power levels. Resolved against
 // a real creature's CR at insert time - see resolveDcFormula/insertFeature.
-const FEATURE_LIBRARY = [
+// These two arrays are only the SEED/default content for a first run - the
+// live library (what actually renders and can be pasted into) is Store-
+// backed state (featureLibrary/spellLibrary below), so anything added via
+// the bulk paste-and-review importer persists the same way creatures do.
+const DEFAULT_FEATURE_LIBRARY = [
   { theme:'Charm or Fey',
     intro:'Compulsion powers wielded by fey creatures and others with a penchant for enchantment demonstrate a supernatural capability to influence characters. These powers should be used sparingly, so as to present an interesting challenge without becoming frustrating or repeatedly removing the sense of agency that players enjoy.',
     powers:[
@@ -578,7 +586,7 @@ const FEATURE_LIBRARY = [
 // entries also carry a Type (Damage/Defense/Control) and an Action economy
 // (Action/Bonus action/Reaction) - whichever's given maps straight onto the
 // same action/bonus/reaction buckets every other entry already uses.
-const SPELL_LIBRARY = [
+const DEFAULT_SPELL_LIBRARY = [
   { category:'Action-Balancing Spells',
     spells:[
       {level:1,name:'Fog cloud'},{level:1,name:'Hellish rebuke'},{level:1,name:'Shield'},
@@ -635,6 +643,71 @@ function resolveDcFormula(text, cr){
   const flatM = /DC\s*=?\s*(\d+)/i.exec(text);
   if(flatM) return +flatM[1];
   return null;
+}
+// Normalizes whatever word a pasted "Action" column/line uses ("Bonus
+// action", "Reaction", "Legendary Action", plain "Action") down to the same
+// atype vocabulary every entry in the app already uses. Returns '' (not a
+// guess) when the text doesn't look like any of them, so the importer can
+// tell "unrecognised" apart from "they meant action" and ask instead of
+// silently filing something in the wrong bucket.
+function normalizeActionWord(s){
+  if(!s) return '';
+  const t = s.toLowerCase();
+  if(t.includes('bonus')) return 'bonus';
+  if(t.includes('reaction')) return 'reaction';
+  if(t.includes('legendary')) return 'legendary';
+  if(t.includes('action')) return 'action';
+  return '';
+}
+// One power per paste, blank-line separated. Within a block: the first line
+// is the name - optionally with a trailing "(Recharge 5-6)" - then anywhere
+// after it an optional "Action: ..." line and an optional "Note: ..." line
+// (to end of block), with everything else making up the power's own text.
+// Deliberately NOT a free-form prose parser (guessing paragraph boundaries
+// from unmarked book text is exactly the kind of fragile heuristic that's
+// caused grief elsewhere in this app) - the three prefixes are something a
+// pasted block can be reformatted to match in a few seconds, and what comes
+// out the other end is predictable rather than a guess.
+function parseFeaturePowersText(raw){
+  const blocks = String(raw||'').split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean);
+  return blocks.map(block=>{
+    const lines = block.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(!lines.length) return null;
+    let nameLine = lines[0];
+    let recharge = '';
+    const rechargeM = /\(Recharge\s*([\d–\-]+)\)\s*$/i.exec(nameLine);
+    if(rechargeM){ recharge = rechargeM[1].replace('-','–'); nameLine = nameLine.slice(0, rechargeM.index).trim(); }
+    let action = 'action';
+    let note = '';
+    const bodyLines = [];
+    for(let i=1;i<lines.length;i++){
+      const l = lines[i];
+      const actionM = /^Action:\s*(.+)$/i.exec(l);
+      const noteM = /^Note:\s*(.+)$/i.exec(l);
+      if(actionM){ action = normalizeActionWord(actionM[1]) || 'action'; continue; }
+      if(noteM){ note = [noteM[1], ...lines.slice(i+1)].join(' '); break; }
+      bodyLines.push(l);
+    }
+    return { name: nameLine, recharge, action, text: bodyLines.join(' '), note };
+  }).filter(Boolean);
+}
+// One spell per line, columns split on tabs, pipes, or 2+ spaces (whatever
+// survives a copy from a PDF/doc table) - "Level  Name" or
+// "Level  Name  Type  Action". Level accepts "Cantrip"/"0" or a plain
+// number; Action is normalized through normalizeActionWord and left blank
+// (not guessed) when absent or unrecognised.
+function parseSpellRowsText(raw){
+  return String(raw||'').split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
+    const parts = line.split(/\t|\s{2,}|\|/).map(s=>s.trim()).filter(Boolean);
+    if(parts.length<2) return null;
+    const [lvlRaw, name, type, actionRaw] = parts;
+    const level = /cantrip/i.test(lvlRaw) ? 0 : (parseInt(lvlRaw,10) || 0);
+    const action = actionRaw ? normalizeActionWord(actionRaw) : '';
+    const out = { level, name };
+    if(type) out.type = type;
+    if(action) out.action = action;
+    return out;
+  }).filter(Boolean);
 }
 
 /* ============================== utilities ============================== */
@@ -1041,10 +1114,11 @@ const Store = (() => {
   let mode = null; // null until init() decides 'db' or 'local' - never guess in between
   let readyResolve;
   const readyPromise = new Promise(res=>{ readyResolve = res; });
-  const listeners = { creatures: [], board: [], targets: [] };
+  const listeners = { creatures: [], board: [], targets: [], library: [] };
   const LS_CREATURES = 'er_creatures_v1';
   const LS_BOARD = 'er_board_v1';
   const LS_TARGETS = 'er_targets_v1';
+  const LS_LIBRARY = 'er_library_v1';
 
   // localStorage.setItem throws if storage is full or blocked (private-mode
   // Safari, a quota hit) - left unguarded, that exception becomes a silently
@@ -1084,10 +1158,20 @@ const Store = (() => {
     }catch(e){}
     return { items: [], activeId: null };
   }
+  function loadLocalLibrary(){
+    try{
+      const raw = localStorage.getItem(LS_LIBRARY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    const seed = { features: DEFAULT_FEATURE_LIBRARY, spells: DEFAULT_SPELL_LIBRARY };
+    saveLocal(LS_LIBRARY, seed);
+    return seed;
+  }
 
   let localCreatures = loadLocalCreatures();
   let localBoard = loadLocalBoard();
   let localTargets = loadLocalTargets();
+  let localLibrary = loadLocalLibrary();
 
   async function init(){
     try{
@@ -1103,10 +1187,22 @@ const Store = (() => {
         const data = snap.exists ? snap.data() : { items: [] };
         listeners.board.forEach(fn=>fn(data.items ? data : { items: [] }));
       }, err=>console.error('board sub', err));
+      db.doc('library/state').onSnapshot(snap=>{
+        if(!snap.exists){
+          // first time this db has been used - seed it with the built-in
+          // defaults so a brand new install isn't an empty library; the
+          // seed write triggers this same snapshot again once it lands
+          db.doc('library/state').set({ features: DEFAULT_FEATURE_LIBRARY, spells: DEFAULT_SPELL_LIBRARY }).catch(e=>console.error('library seed', e));
+          return;
+        }
+        const data = snap.data();
+        listeners.library.forEach(fn=>fn({ features: data.features||[], spells: data.spells||[] }));
+      }, err=>console.error('library sub', err));
     } else {
       mode = 'local';
       listeners.creatures.forEach(fn=>fn(localCreatures));
       listeners.board.forEach(fn=>fn(localBoard));
+      listeners.library.forEach(fn=>fn(localLibrary));
     }
     // targets (the player/monster AC tracker) always uses plain localStorage,
     // never the db capability, on purpose - it's the one thing being typed
@@ -1122,6 +1218,18 @@ const Store = (() => {
   function onCreatures(fn){ listeners.creatures.push(fn); if(mode==='local') fn(localCreatures); }
   function onBoard(fn){ listeners.board.push(fn); if(mode==='local') fn(localBoard); }
   function onTargets(fn){ listeners.targets.push(fn); if(mode==='local') fn(localTargets); }
+  function onLibrary(fn){ listeners.library.push(fn); if(mode==='local') fn(localLibrary); }
+
+  async function setLibrary(data){
+    await readyPromise;
+    if(mode==='db'){
+      await db.doc('library/state').set(data).catch(e=>{ reportStorageFailure(e); throw e; });
+    } else {
+      localLibrary = data;
+      saveLocal(LS_LIBRARY, localLibrary);
+      listeners.library.forEach(fn=>fn(localLibrary));
+    }
+  }
 
   async function saveCreature(creature){
     await readyPromise;
@@ -1189,7 +1297,7 @@ const Store = (() => {
     listeners.targets.forEach(fn=>fn(localTargets));
   }
 
-  return { init, onCreatures, onBoard, onTargets, saveCreature, deleteCreature, replaceAllCreatures, setBoard, setTargets, get mode(){ return mode; } };
+  return { init, onCreatures, onBoard, onTargets, onLibrary, saveCreature, deleteCreature, replaceAllCreatures, setBoard, setTargets, setLibrary, get mode(){ return mode; } };
 })();
 
 // Surfaces a persistent, hard-to-miss banner the moment ANY save fails, for
@@ -1232,6 +1340,8 @@ function disarmDelete(){
 let creatures = [];
 let board = { items: [] };
 let targets = { items: [], activeId: null };
+let featureLibrary = [];
+let spellLibrary = [];
 let log = [];
 let rollMode = 'normal';
 let librarySearch = '';
@@ -1360,6 +1470,12 @@ function isBoardFieldFocused(){
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm' | 'library'
 let libraryTab = 'features'; // which tab the feature/spell library modal is showing
+// Non-null while the "paste to add" bulk importer is open over the library
+// modal. kind: 'features'|'spells'. step: 'paste' (raw textarea + which
+// group it's going into) or 'review' (parsed, editable, before it's saved).
+// groupMode 'new' creates a theme/category from newGroupName(+newGroupIntro);
+// 'existing' appends into featureLibrary[groupIndex]/spellLibrary[groupIndex].
+let libraryImport = null;
 // in-page stand-in for window.confirm(), which doesn't work reliably inside
 // this artifact's sandboxed iframe (see delete-creature's fix for the same
 // underlying issue) - holds the message and the callback to run if the
@@ -2640,6 +2756,104 @@ function entryEditHtml(entry, allEntries){
   </div>`;
 }
 
+// The "paste to add" bulk importer, shown over the library browse modal
+// while libraryImport is set. Two steps: 'paste' (raw textarea + which
+// theme/category it lands in) and 'review' (parsed into editable cards -
+// nothing is saved to the actual library until "Add to library" is clicked).
+function renderLibraryImport(root, c){
+  const imp = libraryImport;
+  const isFeatures = imp.kind==='features';
+  const groups = isFeatures ? featureLibrary : spellLibrary;
+  const groupLabel = isFeatures ? 'theme' : 'category';
+  const groupNameOf = g => isFeatures ? g.theme : g.category;
+
+  if(imp.step==='paste'){
+    const exampleHtml = isFeatures
+      ? `<code>Charming Words (Recharge 5–6)<br>Action: action<br>Each target must succeed on a Charisma saving throw (DC = 11 + 1/2 CR) or be charmed by this creature until the end of their next turn.<br>Note: best used when there are other targets to attack instead.</code>`
+      : `<code>1&#9;Fog cloud<br>2&#9;Misty step&#9;Defense&#9;Bonus action<br>3&#9;Fireball&#9;Damage&#9;Action</code>`;
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal">
+        <div class="modal-hdr"><h2>Paste ${isFeatures?'features':'spells'} to add</h2><button class="icobtn" data-act="cancel-library-import"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="field-row">
+            <div class="field"><label>Add to ${groupLabel}</label>
+              <select data-act="import-group-select">
+                <option value="new" ${imp.groupMode==='new'?'selected':''}>+ New ${groupLabel}</option>
+                ${groups.map((g,i)=>`<option value="${i}" ${imp.groupMode==='existing'&&imp.groupIndex===i?'selected':''}>${esc(groupNameOf(g))}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          ${imp.groupMode==='new' ? `
+            <div class="field-row">
+              <div class="field"><label>${isFeatures?'Theme':'Category'} name</label><input data-limport="newName" value="${esc(imp.newGroupName)}"></div>
+            </div>
+            ${isFeatures ? `<div class="field-row">
+              <div class="field"><label>Intro (optional)</label><textarea class="ee-text" data-limport="newIntro">${esc(imp.newGroupIntro)}</textarea></div>
+            </div>` : ''}
+          ` : ''}
+          <div class="hint">
+            ${isFeatures
+              ? 'One power per paragraph, separated by a blank line. First line is the name — optionally with a trailing "(Recharge 5–6)". An optional "Action: bonus" line sets the action type (defaults to Action). An optional "Note: ..." line marks DM guidance — everything from there to the end of that paragraph becomes the note. Example:'
+              : 'One spell per line, columns separated by tabs or 2+ spaces — "Level  Name" or "Level  Name  Type  Action". Example:'}
+            <br><br>${exampleHtml}
+          </div>
+          <textarea class="paste" data-limport="raw" placeholder="Paste here…">${esc(imp.raw)}</textarea>
+        </div>
+        <div class="modal-ft">
+          <button class="btn" data-act="cancel-library-import">Cancel</button>
+          <button class="btn primary" data-act="parse-library-import">Parse →</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // review step
+  const rowsHtml = isFeatures
+    ? imp.parsed.map((p,i)=>`
+      <div class="entry-edit">
+        <div class="ee-row1">
+          <input class="ee-name" data-limport="row" data-lidx="${i}" data-lfield="name" value="${esc(p.name)}">
+          <input class="limport-recharge" placeholder="Recharge" data-limport="row" data-lidx="${i}" data-lfield="recharge" value="${esc(p.recharge)}">
+          <select data-limport="row" data-lidx="${i}" data-lfield="action">
+            ${ATYPE_ORDER.filter(t=>t!=='trait').map(t=>`<option value="${t}" ${p.action===t?'selected':''}>${ATYPE_LABEL[t]}</option>`).join('')}
+          </select>
+          <button class="iconx" data-act="import-remove-row" data-lidx="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <textarea class="ee-text" placeholder="Description" data-limport="row" data-lidx="${i}" data-lfield="text">${esc(p.text)}</textarea>
+        <textarea class="ee-text" placeholder="DM note (optional)" data-limport="row" data-lidx="${i}" data-lfield="note">${esc(p.note)}</textarea>
+      </div>
+    `).join('')
+    : imp.parsed.map((s,i)=>`
+      <div class="lib-spell-row">
+        <input type="number" class="limport-level" data-limport="row" data-lidx="${i}" data-lfield="level" value="${s.level}">
+        <input class="limport-name" data-limport="row" data-lidx="${i}" data-lfield="name" value="${esc(s.name)}">
+        <input class="limport-type" placeholder="Type" data-limport="row" data-lidx="${i}" data-lfield="type" value="${esc(s.type||'')}">
+        <select data-limport="row" data-lidx="${i}" data-lfield="action">
+          <option value="">—</option>
+          ${['action','bonus','reaction','legendary'].map(t=>`<option value="${t}" ${s.action===t?'selected':''}>${ATYPE_LABEL[t]}</option>`).join('')}
+        </select>
+        <button class="iconx" data-act="import-remove-row" data-lidx="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    `).join('');
+
+  root.innerHTML = `
+  <div class="modal-overlay" data-act="overlay-close">
+    <div class="modal">
+      <div class="modal-hdr"><h2>Check what was parsed</h2><button class="icobtn" data-act="cancel-library-import"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+      <div class="modal-body">
+        <div class="hint">${imp.parsed.length} ${isFeatures?'power':'spell'}${imp.parsed.length===1?'':'s'} found${imp.groupMode==='new' ? ` — going into a new ${groupLabel} called "${esc(imp.newGroupName||'(untitled)')}"` : ` — going into "${esc(groupNameOf(groups[imp.groupIndex])||'')}"`}. Fix anything that parsed wrong, or remove a row, before adding.</div>
+        ${rowsHtml || '<div class="hint">Nothing parsed — go back and check the paste matches the expected format.</div>'}
+      </div>
+      <div class="modal-ft">
+        <button class="btn" data-act="back-to-paste-import">← Back</button>
+        <button class="btn primary" data-act="commit-library-import" ${imp.parsed.length?'':'disabled'}>Add ${imp.parsed.length} to library</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderModal(){
   const root = document.getElementById('modalRoot');
   if(modalMode==='confirm'){
@@ -2727,12 +2941,13 @@ function renderModal(){
   }
   if(modalMode==='library'){
     const c = editingCreature;
+    if(libraryImport) return renderLibraryImport(root, c);
     const hasEntry = name => c.entries.some(e=>e.name===name || e.name.startsWith(name+' '));
     const insertBtn = (act, dataAttrs, label) => {
       const added = hasEntry(label);
       return `<button class="smallbtn${added?' added':''}" data-act="${act}" ${dataAttrs}>${added?'✓ Added — insert again':'+ Insert'}</button>`;
     };
-    const featuresHtml = FEATURE_LIBRARY.map((theme,ti)=>`
+    const featuresHtml = featureLibrary.map((theme,ti)=>`
       <div class="lib-theme">
         <div class="lib-theme-name">${esc(theme.theme)}</div>
         <div class="hint">${esc(theme.intro)}</div>
@@ -2747,10 +2962,10 @@ function renderModal(){
             <div class="lib-power-text">${esc(p.text)}</div>
             ${p.note?`<div class="lib-power-note">${esc(p.note)}</div>`:''}
           </div>`;
-        }).join('')}
+        }).join('') || '<div class="hint">No powers in this theme yet.</div>'}
       </div>
-    `).join('');
-    const spellsHtml = SPELL_LIBRARY.map((cat,ci)=>`
+    `).join('') || '<div class="hint">No feature themes yet — use "Paste to add" below.</div>';
+    const spellsHtml = spellLibrary.map((cat,ci)=>`
       <div class="lib-theme">
         <div class="lib-theme-name">${esc(cat.category)}</div>
         <div class="lib-spell-table">
@@ -2761,10 +2976,10 @@ function renderModal(){
               <span class="lib-spell-meta">${s.type?esc(s.type)+' · ':''}${esc(ATYPE_LABEL[s.action]||s.action||'')}</span>
               ${insertBtn('insert-spell', `data-cat="${ci}" data-spell="${si}"`, s.name)}
             </div>
-          `).join('')}
+          `).join('') || '<div class="hint">No spells in this category yet.</div>'}
         </div>
       </div>
-    `).join('');
+    `).join('') || '<div class="hint">No spell categories yet — use "Paste to add" below.</div>';
     root.innerHTML = `
     <div class="modal-overlay" data-act="overlay-close">
       <div class="modal">
@@ -2774,6 +2989,7 @@ function renderModal(){
           <div class="lib-tabs">
             <button class="lib-tab ${libraryTab==='features'?'active':''}" data-act="library-tab" data-tab="features">Features</button>
             <button class="lib-tab ${libraryTab==='spells'?'active':''}" data-act="library-tab" data-tab="spells">Spells</button>
+            <button class="smallbtn" style="margin-left:auto" data-act="${libraryTab==='spells'?'open-spell-import':'open-feature-import'}">+ Paste to add</button>
           </div>
           ${libraryTab==='spells' ? spellsHtml : featuresHtml}
         </div>
@@ -2918,6 +3134,19 @@ function onGlobalInput(e){
     }
     return;
   }
+  if(libraryImport && t.dataset.limport){
+    const kind = t.dataset.limport;
+    if(kind==='raw'){ libraryImport.raw = t.value; return; }
+    if(kind==='newName'){ libraryImport.newGroupName = t.value; return; }
+    if(kind==='newIntro'){ libraryImport.newGroupIntro = t.value; return; }
+    if(kind==='row'){
+      const row = libraryImport.parsed[+t.dataset.lidx];
+      if(!row) return;
+      const f = t.dataset.lfield;
+      row[f] = f==='level' ? (+t.value || 0) : t.value;
+      return;
+    }
+  }
   if(!editingCreature) return;
   if(t.dataset.cfield){ setCreatureField(t.dataset.cfield, t.value); return; }
   if(t.dataset.abil && t.dataset.abilfield){
@@ -2961,6 +3190,12 @@ function onGlobalChange(e){
     const tgt = targets.items.find(x=>x.id===t.value);
     if(!tgt) return;
     applyInstanceToAC(t.dataset.eid, instIdx, (tgt.ac||0)+(tgt.acAdj||0), tgt.name||'');
+    return;
+  }
+  if(t.dataset.act==='import-group-select' && libraryImport){
+    if(t.value==='new'){ libraryImport.groupMode = 'new'; }
+    else { libraryImport.groupMode = 'existing'; libraryImport.groupIndex = +t.value; }
+    renderModal();
     return;
   }
   if(!editingCreature) return;
@@ -3063,7 +3298,7 @@ function onGlobalClick(e){
     case 'close-library': modalMode = 'edit'; renderModal(); break;
     case 'library-tab': libraryTab = el.dataset.tab; renderModal(); break;
     case 'insert-feature': {
-      const theme = FEATURE_LIBRARY[+el.dataset.theme];
+      const theme = featureLibrary[+el.dataset.theme];
       const power = theme && theme.powers[+el.dataset.power];
       if(!power) break;
       const dc = resolveDcFormula(power.text, editingCreature.cr);
@@ -3076,7 +3311,7 @@ function onGlobalClick(e){
       break;
     }
     case 'insert-spell': {
-      const cat = SPELL_LIBRARY[+el.dataset.cat];
+      const cat = spellLibrary[+el.dataset.cat];
       const spell = cat && cat.spells[+el.dataset.spell];
       if(!spell) break;
       const lvlTxt = spell.level===0 ? 'Cantrip' : `Level ${spell.level}`;
@@ -3085,6 +3320,54 @@ function onGlobalClick(e){
       const entry = { id: uid('e'), name: spell.name, atype: spell.action || 'action', kind:'other', dmg:[],
         text: descBits.join(' · ') + ' spell — see your spell reference for its effect.' };
       editingCreature.entries.push(entry);
+      renderModal();
+      break;
+    }
+
+    case 'open-feature-import':
+      libraryImport = { kind:'features', step:'paste', groupMode:'new', groupIndex:0, newGroupName:'', newGroupIntro:'', raw:'', parsed:[] };
+      renderModal();
+      break;
+    case 'open-spell-import':
+      libraryImport = { kind:'spells', step:'paste', groupMode:'new', groupIndex:0, newGroupName:'', newGroupIntro:'', raw:'', parsed:[] };
+      renderModal();
+      break;
+    case 'cancel-library-import': libraryImport = null; renderModal(); break;
+    case 'back-to-paste-import': libraryImport.step = 'paste'; renderModal(); break;
+    case 'parse-library-import': {
+      if(!libraryImport) break;
+      libraryImport.parsed = libraryImport.kind==='features'
+        ? parseFeaturePowersText(libraryImport.raw)
+        : parseSpellRowsText(libraryImport.raw);
+      libraryImport.step = 'review';
+      renderModal();
+      break;
+    }
+    case 'import-remove-row': {
+      if(!libraryImport) break;
+      libraryImport.parsed.splice(+el.dataset.lidx, 1);
+      renderModal();
+      break;
+    }
+    case 'commit-library-import': {
+      if(!libraryImport || !libraryImport.parsed.length) break;
+      const imp = libraryImport;
+      if(imp.kind==='features'){
+        if(imp.groupMode==='new'){
+          featureLibrary = [...featureLibrary, { theme: imp.newGroupName.trim() || 'Untitled theme', intro: imp.newGroupIntro.trim(), powers: imp.parsed }];
+        } else {
+          featureLibrary = featureLibrary.map((g,i)=> i===imp.groupIndex ? { ...g, powers: [...g.powers, ...imp.parsed] } : g);
+        }
+      } else {
+        if(imp.groupMode==='new'){
+          spellLibrary = [...spellLibrary, { category: imp.newGroupName.trim() || 'Untitled category', spells: imp.parsed }];
+        } else {
+          spellLibrary = spellLibrary.map((g,i)=> i===imp.groupIndex ? { ...g, spells: [...g.spells, ...imp.parsed] } : g);
+        }
+      }
+      Store.setLibrary({ features: featureLibrary, spells: spellLibrary });
+      libraryTab = imp.kind;
+      libraryImport = null;
       renderModal();
       break;
     }
@@ -3430,6 +3713,13 @@ Store.onTargets(data=>{
   if(isTargetFieldFocused()) return;
   targets = incoming;
   renderTargets();
+});
+Store.onLibrary(data=>{
+  featureLibrary = (data && data.features) || [];
+  spellLibrary = (data && data.spells) || [];
+  // only matters while the library browse/import modal is actually open -
+  // every other screen reads featureLibrary/spellLibrary fresh when it opens
+  if(modalMode==='library') renderModal();
 });
 Store.init();
 renderLog();

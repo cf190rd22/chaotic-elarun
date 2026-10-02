@@ -345,10 +345,20 @@ body.page-pc .dm-only{display:none!important;}
 .pcroller-insert-row{display:flex;align-items:center;gap:8px;padding:10px 20px 0;flex-wrap:wrap;}
 .pc-insert-select{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;color:var(--text-2);outline:none;}
 .pc-insert-select:focus{border-color:var(--accent-bd);}
-.pcroller-search-row{padding:10px 20px 0;}
-.pcroller-search-row .search-wrap{max-width:320px;}
+.pcroller-search-row{display:flex;align-items:center;gap:10px;padding:10px 20px 0;flex-wrap:wrap;}
+.pcroller-search-row .search-wrap{max-width:320px;flex:1;min-width:160px;}
 #pcSearchInput{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;font-size:12.5px;color:var(--text);outline:none;}
 #pcSearchInput:focus{border-color:var(--accent-bd);}
+.pc-sort-toggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
+.pc-sort-btn{background:var(--surface);border:none;color:var(--text-mute);font-size:10.5px;font-weight:700;padding:7px 12px;cursor:pointer;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.04em;}
+.pc-sort-btn+.pc-sort-btn{border-left:1px solid var(--border);}
+.pc-sort-btn:hover{color:var(--text);}
+.pc-sort-btn.active{background:var(--accent-dim);color:var(--accent);}
+.pcroller-filter-row{padding:10px 20px 0;}
+.pc-tag-filters{display:flex;flex-wrap:wrap;gap:6px;}
+.pc-tag-chip{background:var(--surface);border:1px solid var(--border);border-radius:99px;color:var(--text-mute);font-size:10.5px;font-weight:700;padding:4px 12px;cursor:pointer;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.03em;}
+.pc-tag-chip:hover{color:var(--text);border-color:var(--accent-bd);}
+.pc-tag-chip.active{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .pc-combo-bar{margin:12px 20px 0;background:var(--surface);border:1px solid var(--accent-bd);border-left:3px solid var(--accent);border-radius:9px;padding:10px 14px;flex-shrink:0;}
 .pc-combo-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .pc-combo-label{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;}
@@ -635,7 +645,12 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="pcSearchInput" placeholder="Search by name or tag…" autocomplete="off">
       </div>
+      <div class="pc-sort-toggle">
+        <button class="pc-sort-btn" data-act="pc-sort-mode" data-sort="name">Name</button>
+        <button class="pc-sort-btn" data-act="pc-sort-mode" data-sort="recent">Recent</button>
+      </div>
     </div>
+    <div class="pcroller-filter-row" id="pcFilterRow"></div>
     <div class="pc-combo-bar" id="pcComboBar"></div>
     <div class="pc-list" id="pcList"></div>
   </div>
@@ -738,7 +753,7 @@ const DEFAULT_PC_ITEMS = [
 // stops climbing at capCount even though higher levels remain selectable
 // (a 9th-level Divine Smite is still only 5d8, same as a 4th).
 const PC_SCALING_LIBRARY = [
-  { id:'divine-smite', name:'Divine Smite', tags:'paladin, smite, divine smite',
+  { id:'divine-smite', name:'Divine Smite', tags:'paladin, smite, divine smite, spell',
     sides:8, baseCount:2, perLevelCount:1, capCount:5, minLevel:1, maxLevel:9 },
 ];
 function diceCountAtLevel(preset, level){
@@ -1579,6 +1594,13 @@ let featureLibrary = [];
 let spellLibrary = [];
 let pcItems = [];
 let pcSearch = '';
+// null = "All"; otherwise an exact tag string (case-insensitive) to filter
+// the chip grid down to - a "group" in the sense requested is just a tag
+// shared across a set of items (e.g. tag everything for one character with
+// their name), so there's no separate grouping concept to maintain beyond
+// whatever tags already exist on pcItems.
+let pcTagFilter = null;
+let pcSortMode = 'name'; // 'name' | 'recent' (by lastUsedAt)
 // A scratch dice/modifier term that's always folded into the combined total
 // alongside whatever's ticked, without needing to be saved as its own item
 // first - the "type a quick +2 and go" path. Deliberately not persisted;
@@ -3034,6 +3056,42 @@ function pcItemMatchesSearch(it, q){
   const needle = q.toLowerCase();
   return (it.name||'').toLowerCase().includes(needle) || (it.tags||'').toLowerCase().includes(needle);
 }
+function pcItemTags(it){
+  return (it.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+}
+// Exact (not substring) match against one tag - this is what the filter
+// chips use, distinct from the free-text search above which is substring.
+function pcItemHasTag(it, tag){
+  if(!tag) return true;
+  const needle = tag.toLowerCase();
+  return pcItemTags(it).some(t=>t.toLowerCase()===needle);
+}
+// Every unique tag currently in use, across every item - "groups" in the
+// sense asked for are just tags shared by a set of items (tag everything
+// for one character with their name, or "weapon"/"spell", and the chip row
+// below becomes the filter for that group) rather than a separate thing
+// to create and manage on its own.
+function allPcTags(){
+  const set = new Set();
+  pcItems.forEach(it=>pcItemTags(it).forEach(t=>set.add(t)));
+  return [...set].sort((a,b)=>a.localeCompare(b));
+}
+function sortPcItems(items){
+  const sorted = [...items];
+  if(pcSortMode==='recent') sorted.sort((a,b)=>(b.lastUsedAt||0)-(a.lastUsedAt||0));
+  else sorted.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  return sorted;
+}
+function renderPcFilterRow(){
+  const el = document.getElementById('pcFilterRow');
+  if(!el) return;
+  const tags = allPcTags();
+  if(!tags.length){ el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="pc-tag-filters">
+    <button class="pc-tag-chip ${!pcTagFilter?'active':''}" data-act="pc-tag-filter" data-tag="">All</button>
+    ${tags.map(t=>`<button class="pc-tag-chip ${pcTagFilter===t?'active':''}" data-act="pc-tag-filter" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}
+  </div>`;
+}
 // The full dice-builder/name/tags/delete editor for exactly one item -
 // shown in place of its chip while pcEditingId===it.id, nowhere else.
 function pcItemEditCardHtml(it){
@@ -3079,15 +3137,21 @@ function pcItemChipHtml(it){
 }
 function renderPcRoller(){
   renderPcComboBar();
+  renderPcFilterRow();
+  document.querySelectorAll('.pc-sort-btn').forEach(b=>b.classList.toggle('active', b.dataset.sort===pcSortMode));
   const list = document.getElementById('pcList');
   if(!list) return;
-  const visible = pcItems.filter(it=>pcItemMatchesSearch(it, pcSearch));
+  const filtered = pcItems.filter(it=>pcItemMatchesSearch(it, pcSearch) && pcItemHasTag(it, pcTagFilter));
+  const visible = sortPcItems(filtered);
   if(!pcItems.length){
     list.innerHTML = `<div class="lib-empty pc-list-empty">No items yet — add a weapon, spell, or bonus damage source above.</div>`;
     return;
   }
   if(!visible.length){
-    list.innerHTML = `<div class="lib-empty pc-list-empty">No items match "${esc(pcSearch)}".</div>`;
+    const bits = [];
+    if(pcSearch) bits.push(`matching "${esc(pcSearch)}"`);
+    if(pcTagFilter) bits.push(`tagged "${esc(pcTagFilter)}"`);
+    list.innerHTML = `<div class="lib-empty pc-list-empty">No items ${bits.length?bits.join(' and '):'to show'}.</div>`;
     return;
   }
   list.innerHTML = `<div class="pc-chip-grid">${visible.map(it =>
@@ -3897,7 +3961,7 @@ function onGlobalClick(e){
     }
 
     case 'pc-add-item': {
-      const newItem = { id: uid('p'), name:'', formula:'', tags:'', comboCount:0 };
+      const newItem = { id: uid('p'), name:'', formula:'', tags:'', comboCount:0, lastUsedAt: Date.now() };
       pcItems.push(newItem);
       savePc();
       // a brand new item has nothing worth showing as a chip yet - open
@@ -3915,7 +3979,7 @@ function onGlobalClick(e){
       break;
     case 'pc-chip-add': {
       const it = pcItems.find(x=>x.id===el.dataset.id);
-      if(it) it.comboCount = pcComboCount(it) + 1;
+      if(it){ it.comboCount = pcComboCount(it) + 1; it.lastUsedAt = Date.now(); }
       savePc();
       renderPcRoller();
       break;
@@ -3966,10 +4030,18 @@ function onGlobalClick(e){
       savePc();
       renderPcRoller();
       break;
+    case 'pc-tag-filter':
+      pcTagFilter = el.dataset.tag || null;
+      renderPcRoller();
+      break;
+    case 'pc-sort-mode':
+      pcSortMode = el.dataset.sort;
+      renderPcRoller();
+      break;
     case 'pc-save-combo': {
       const { included, manualTrim, combined } = computePcCombined();
       if(!included.length && !manualTrim) break;
-      const newItem = { id: uid('p'), name:'', formula: formatFormulaTerms(combined).replace(/—/,''), tags:'', comboCount:0 };
+      const newItem = { id: uid('p'), name:'', formula: formatFormulaTerms(combined).replace(/—/,''), tags:'', comboCount:0, lastUsedAt: Date.now() };
       pcItems.push(newItem);
       savePc();
       // land straight in the name field, editor open - the whole point of
@@ -3987,7 +4059,7 @@ function onGlobalClick(e){
       if(!preset || !levelSel.value) break;
       const level = +levelSel.value;
       const count = diceCountAtLevel(preset, level);
-      pcItems.push({ id: uid('p'), name: `${preset.name} (${ordinal(level)} level)`, formula: `${count}d${preset.sides}`, tags: preset.tags, comboCount:0 });
+      pcItems.push({ id: uid('p'), name: `${preset.name} (${ordinal(level)} level)`, formula: `${count}d${preset.sides}`, tags: preset.tags, comboCount:0, lastUsedAt: Date.now() });
       savePc();
       renderPcRoller();
       // ready for the next insert straight away rather than leaving the

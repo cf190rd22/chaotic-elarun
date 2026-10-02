@@ -371,6 +371,10 @@ body.page-pc .dm-only{display:none!important;}
 .pc-combo-manual-input{flex:1;max-width:240px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12.5px;font-family:'DM Mono',monospace;color:var(--text);outline:none;}
 .pc-combo-manual-input:focus{border-color:var(--accent-bd);}
 .pc-combo-manual-input::placeholder{color:var(--text-mute);font-weight:500;}
+.pc-breakdown{display:flex;flex-direction:column;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);}
+.pc-breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;}
+.pc-breakdown-name{color:var(--text-2);}
+.pc-breakdown-val{font-family:'DM Mono',monospace;font-weight:700;color:var(--accent);white-space:nowrap;}
 .pc-list{flex:1;overflow-y:auto;padding:14px 20px 24px;}
 .pc-list-empty{margin:0;}
 .pc-chip-grid{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;}
@@ -628,10 +632,13 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
   <div class="pcroller" id="pcRoller" style="display:none">
     <div class="pcroller-hdr">
       <div class="hint">Build a quick damage formula for a PC when you don't have (or need) a full statblock. Click a die to add it, type to edit the formula directly, name it, and tick whichever items apply this turn to see them combined into one total. Nothing here rolls for you — it only tells you what to pick up and throw.</div>
-      <button class="iconbtn primary" data-act="pc-add-item" style="justify-content:center;flex-shrink:0;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add item
-      </button>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <button class="smallbtn" data-act="open-pc-import">+ Paste to add</button>
+        <button class="iconbtn primary" data-act="pc-add-item" style="justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add item
+        </button>
+      </div>
     </div>
     <div class="pcroller-insert-row">
       <select id="pcScalingSelect" class="pc-insert-select">
@@ -874,6 +881,19 @@ function parseSpellRowsText(raw){
     if(type) out.type = type;
     if(action) out.action = action;
     return out;
+  }).filter(Boolean);
+}
+// One PC roller item per line, columns split on tabs, pipes, or 2+ spaces -
+// "Name  Formula" or "Name  Formula  Tags". Formula and tags are both
+// optional so a bare list of names still parses into something (empty
+// formula, fill it in afterwards on the review step or later from its chip).
+function parsePcItemRowsText(raw){
+  return String(raw||'').split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
+    const parts = line.split(/\t|\s{2,}|\|/).map(s=>s.trim()).filter(Boolean);
+    if(!parts.length) return null;
+    const [name, formula, tags] = parts;
+    if(!name) return null;
+    return { name, formula: formula||'', tags: tags||'' };
   }).filter(Boolean);
 }
 // PC Quick Roller formula maths - combines dice NOTATION, never rolls
@@ -1293,7 +1313,7 @@ function blankCreature(){
     abilities: Object.fromEntries(ABILS.map(k=>[k,{score:10,mod:0}])),
     saves: Object.fromEntries(ABILS.map(k=>[k,0])),
     entries: [], favourite:false,
-    resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:'', notes:''
+    resistances:'', immunities:'', vulnerabilities:'', condImmunities:'', senses:'', languages:'', skills:'', savingThrowsText:'', gear:'', notes:'', spellbookUrl:''
   };
 }
 
@@ -1610,6 +1630,13 @@ let pcManualBonus = '';
 // tags editor right now - everything else on the page stays a compact,
 // one-tap chip. null means every item is shown collapsed.
 let pcEditingId = null;
+// Whether the combo bar's per-item breakdown is expanded - off by default
+// to keep the bar compact, there "if needed" via one click.
+let pcBreakdownOpen = false;
+// Non-null while the PC item bulk paste-and-review importer is open.
+// step: 'paste' (raw textarea) or 'review' (parsed, editable, before
+// anything is actually added to pcItems).
+let pcImport = null;
 let currentPage = 'dm'; // 'dm' (encounter board) | 'pc' (PC quick roller)
 let log = [];
 let rollMode = 'normal';
@@ -2293,7 +2320,14 @@ function infoRowsHtml(c){
     ['Senses', c.senses], ['Skills', c.skills], ['Saving Throws', c.savingThrowsText],
     ['Languages', c.languages], ['Gear', c.gear]
   ];
-  return FIELDS.filter(([,v])=>v).map(([label,v])=>`<div class="trait-row"><b>${esc(label)}.</b> ${esc(v)}</div>`).join('');
+  const rows = FIELDS.filter(([,v])=>v).map(([label,v])=>`<div class="trait-row"><b>${esc(label)}.</b> ${esc(v)}</div>`).join('');
+  // only linkify http(s) - a pasted "javascript:" or "data:" value becomes
+  // inert plain text instead of an href, rather than something clickable
+  const url = (c.spellbookUrl||'').trim();
+  const spellbookRow = /^https?:\/\//i.test(url)
+    ? `<div class="trait-row"><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Spellbook</a></div>`
+    : '';
+  return rows + spellbookRow;
 }
 
 function renderCard(item){
@@ -3014,6 +3048,18 @@ function pcComboLabel(included, totalAdds, manualTrim){
 }
 // Full rebuild - called whenever something other than the manual-bonus
 // field itself changes (a tick, an edit, a delete...).
+// Per-item lines for the optional breakdown - what EACH ticked item is
+// contributing on its own (count folded in), not just the merged total.
+// Only covers items, not the manual quick-add term - that one's own value
+// is already sitting right there in its own input below, so repeating it
+// here would just be the same number twice.
+function pcBreakdownRowsHtml(included){
+  return included.map(it=>{
+    const count = pcComboCount(it);
+    const scaled = formatFormulaTerms(scaleFormulaTerms(parseFormulaToTerms(it.formula), count));
+    return `<div class="pc-breakdown-row"><span class="pc-breakdown-name">${esc(it.name)||'(unnamed)'}${count>1?` ×${count}`:''}</span><span class="pc-breakdown-val">${esc(scaled)}</span></div>`;
+  }).join('');
+}
 function renderPcComboBar(){
   const bar = document.getElementById('pcComboBar');
   if(!bar) return;
@@ -3023,9 +3069,11 @@ function renderPcComboBar(){
     <div class="pc-combo-top">
       <span class="pc-combo-label" id="pcComboLabel">${esc(pcComboLabel(included, totalAdds, manualTrim))}</span>
       <span class="pc-combo-total" id="pcComboTotalText">${esc(formatFormulaTerms(combined))}</span>
+      ${included.length ? `<button class="smallbtn" data-act="pc-toggle-breakdown">${pcBreakdownOpen?'Hide':'Show'} breakdown</button>` : ''}
       <button class="smallbtn" data-act="pc-save-combo" ${hasAny?'':'disabled'}>💾 Save as item</button>
       <button class="smallbtn" data-act="pc-combo-clear" ${hasAny?'':'disabled'}>Clear</button>
     </div>
+    ${pcBreakdownOpen && included.length ? `<div class="pc-breakdown">${pcBreakdownRowsHtml(included)}</div>` : ''}
     <div class="pc-combo-manual-row">
       <span class="pc-combo-manual-lbl">+ quick add</span>
       <input id="pcManualInput" class="pc-combo-manual-input" placeholder="e.g. +2, 1d4…" value="${esc(pcManualBonus)}">
@@ -3350,8 +3398,58 @@ function renderLibraryImport(root, c){
   </div>`;
 }
 
+// The PC roller's own bulk paste-and-review importer - same two-step shape
+// as renderLibraryImport above (paste, then an editable review before
+// anything is actually added), but flatter: PC items have no themes or
+// categories to choose between, so there's no group-picker step, just
+// straight into the textarea and then the review rows.
+function renderPcImport(root){
+  const imp = pcImport;
+  if(imp.step==='paste'){
+    root.innerHTML = `
+    <div class="modal-overlay" data-act="overlay-close">
+      <div class="modal">
+        <div class="modal-hdr"><h2>Paste items to add</h2><button class="icobtn" data-act="close-pc-import"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="modal-body">
+          <div class="hint">One item per line, columns separated by tabs or 2+ spaces — "Name  Formula" or "Name  Formula  Tags". Formula and tags are both optional, so even a bare list of names parses into something you can fill in on the next step. Example:<br><br>
+          <code>Dagger&#9;1d4+3&#9;weapon, offhand<br>Sneak Attack&#9;3d6&#9;rogue<br>Second Wind&#9;1d10+3</code></div>
+          <textarea class="paste" data-pcimport="raw" placeholder="Paste here…">${esc(imp.raw)}</textarea>
+        </div>
+        <div class="modal-ft">
+          <button class="btn" data-act="close-pc-import">Cancel</button>
+          <button class="btn primary" data-act="parse-pc-import">Parse →</button>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+  const rowsHtml = imp.parsed.map((it,i)=>`
+    <div class="lib-spell-row">
+      <input class="limport-name" placeholder="Name" data-pcimport="row" data-lidx="${i}" data-lfield="name" value="${esc(it.name)}">
+      <input class="limport-name" placeholder="Formula, e.g. 1d8+4" data-pcimport="row" data-lidx="${i}" data-lfield="formula" value="${esc(it.formula)}">
+      <input class="limport-name" placeholder="Tags" data-pcimport="row" data-lidx="${i}" data-lfield="tags" value="${esc(it.tags)}">
+      <button class="iconx" data-act="pc-import-remove-row" data-lidx="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+  `).join('');
+  root.innerHTML = `
+  <div class="modal-overlay" data-act="overlay-close">
+    <div class="modal">
+      <div class="modal-hdr"><h2>Check what was parsed</h2><button class="icobtn" data-act="close-pc-import"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+      <div class="modal-body">
+        <div class="hint">${imp.parsed.length} item${imp.parsed.length===1?'':'s'} found. Fix anything that parsed wrong, or remove a row, before adding.</div>
+        ${rowsHtml || '<div class="hint">Nothing parsed — go back and check the paste matches the expected format.</div>'}
+      </div>
+      <div class="modal-ft">
+        <button class="btn" data-act="back-to-pc-import-paste">← Back</button>
+        <button class="btn primary" data-act="commit-pc-import" ${imp.parsed.length?'':'disabled'}>Add ${imp.parsed.length} items</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderModal(){
   const root = document.getElementById('modalRoot');
+  if(modalMode==='pc-import'){ return renderPcImport(root); }
   if(modalMode==='confirm'){
     if(!pendingConfirm){ modalMode = null; root.innerHTML = ''; return; }
     root.innerHTML = `
@@ -3556,6 +3654,7 @@ function renderModal(){
           <div class="field-row">
             <div class="field"><label>Resistances</label><input value="${esc(c.resistances||'')}" data-cfield="resistances"></div>
             <div class="field"><label>Vulnerabilities</label><input value="${esc(c.vulnerabilities||'')}" data-cfield="vulnerabilities"></div>
+            <div class="field"><label>Spellbook link</label><input value="${esc(c.spellbookUrl||'')}" data-cfield="spellbookUrl" placeholder="https://5e-spellbook.app?..."></div>
           </div>
           <div class="field-row">
             <div class="field"><label>Immunities</label><input value="${esc(c.immunities||'')}" data-cfield="immunities"></div>
@@ -3662,6 +3761,15 @@ function onGlobalInput(e){
       if(!row) return;
       const f = t.dataset.lfield;
       row[f] = f==='level' ? (+t.value || 0) : t.value;
+      return;
+    }
+  }
+  if(pcImport && t.dataset.pcimport){
+    const kind = t.dataset.pcimport;
+    if(kind==='raw'){ pcImport.raw = t.value; return; }
+    if(kind==='row'){
+      const row = pcImport.parsed[+t.dataset.lidx];
+      if(row) row[t.dataset.lfield] = t.value;
       return;
     }
   }
@@ -4038,6 +4146,10 @@ function onGlobalClick(e){
       pcSortMode = el.dataset.sort;
       renderPcRoller();
       break;
+    case 'pc-toggle-breakdown':
+      pcBreakdownOpen = !pcBreakdownOpen;
+      renderPcComboBar();
+      break;
     case 'pc-save-combo': {
       const { included, manualTrim, combined } = computePcCombined();
       if(!included.length && !manualTrim) break;
@@ -4065,6 +4177,45 @@ function onGlobalClick(e){
       // ready for the next insert straight away rather than leaving the
       // dropdowns sitting on the level you just used
       resetPcScalingInserter();
+      break;
+    }
+    case 'open-pc-import':
+      modalMode = 'pc-import';
+      pcImport = { step:'paste', raw:'', parsed:[] };
+      renderModal();
+      break;
+    case 'close-pc-import':
+      modalMode = null;
+      pcImport = null;
+      document.getElementById('modalRoot').innerHTML = '';
+      break;
+    case 'parse-pc-import':
+      if(!pcImport) break;
+      pcImport.parsed = parsePcItemRowsText(pcImport.raw);
+      pcImport.step = 'review';
+      renderModal();
+      break;
+    case 'back-to-pc-import-paste':
+      if(!pcImport) break;
+      pcImport.step = 'paste';
+      renderModal();
+      break;
+    case 'pc-import-remove-row':
+      if(!pcImport) break;
+      pcImport.parsed.splice(+el.dataset.lidx, 1);
+      renderModal();
+      break;
+    case 'commit-pc-import': {
+      if(!pcImport || !pcImport.parsed.length) break;
+      const now = Date.now();
+      pcImport.parsed.forEach(it=>{
+        pcItems.push({ id: uid('p'), name: it.name, formula: it.formula, tags: it.tags, comboCount:0, lastUsedAt: now });
+      });
+      savePc();
+      modalMode = null;
+      pcImport = null;
+      document.getElementById('modalRoot').innerHTML = '';
+      renderPcRoller();
       break;
     }
 

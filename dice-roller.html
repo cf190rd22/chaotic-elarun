@@ -361,7 +361,10 @@ body.page-pc .dm-only{display:none!important;}
 .pc-combo-bar{margin:12px 20px 0;background:var(--surface);border:1px solid var(--accent-bd);border-left:3px solid var(--accent);border-radius:9px;padding:10px 14px;flex-shrink:0;}
 .pc-combo-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .pc-combo-label{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;}
+.pc-combo-label.crit{color:var(--amber);}
 .pc-combo-total{font-size:19px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);}
+.pc-combo-total.crit{color:var(--amber);}
+.pc-combo-normal-note{font-size:10.5px;color:var(--text-mute);font-family:'DM Mono',monospace;margin-top:4px;}
 .pc-combo-top .smallbtn{margin-left:auto;}
 .pc-combo-top .smallbtn+.smallbtn{margin-left:0;}
 .pc-combo-top .smallbtn:disabled{opacity:.4;cursor:not-allowed;}
@@ -375,9 +378,6 @@ body.page-pc .dm-only{display:none!important;}
 .pc-breakdown-name{color:var(--text-2);}
 .pc-breakdown-val{font-family:'DM Mono',monospace;font-weight:700;color:var(--accent);white-space:nowrap;}
 .pc-crit-btn.active{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
-.pc-crit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);}
-.pc-crit-lbl{font-size:10px;color:var(--amber);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;}
-.pc-crit-val{font-size:15px;font-family:'DM Mono',monospace;font-weight:700;color:var(--amber);white-space:nowrap;}
 .pc-list{flex:1;overflow-y:auto;padding:14px 20px 24px;}
 .pc-list-empty{margin:0;}
 .pc-chip-grid{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;}
@@ -969,15 +969,20 @@ function formatFormulaTerms(terms){
 // maths (see rollDamage for the version that actually rolls dice).
 function formatCritFormula(terms){
   if(settings.critMode==='perkins'){
-    // max value of every die group, rolled once more (not doubled) on top,
-    // flat bonus counted only once - same rule as a single damage line,
-    // just applied across however many dice groups the combo has.
-    let maxSum = terms.flat;
+    // max value of every die group, the flat bonus, and a reroll of the
+    // same dice once more on top - kept as three separate addends (not
+    // summed into one opaque number) so the modifier is visibly only
+    // being added the once, not hidden inside the maxed-dice figure.
+    let maxDice = 0;
     for(const [sides,count] of Object.entries(terms.dice)){
-      if(count>0) maxSum += count*(+sides);
+      if(count>0) maxDice += count*(+sides);
     }
+    const fixedBits = [];
+    if(maxDice>0) fixedBits.push({ sign:'+', text:String(maxDice) });
+    if(terms.flat!==0) fixedBits.push({ sign: terms.flat<0?'-':'+', text:String(Math.abs(terms.flat)) });
+    const fixedText = fixedBits.map((b,i)=> i===0 ? (b.sign==='-'?'-':'')+b.text : ` ${b.sign} ${b.text}`).join('') || '0';
     const rerollText = formatFormulaTerms({ dice: terms.dice, flat: 0 });
-    return rerollText==='—' ? String(maxSum) : `${maxSum} + ${rerollText}`;
+    return rerollText==='—' ? fixedText : `${fixedText} + ${rerollText}`;
   }
   // standard 5e: double every die group, flat bonus unchanged
   const doubled = { dice: {}, flat: terms.flat };
@@ -3109,16 +3114,23 @@ function renderPcComboBar(){
   const { included, totalAdds, manualTrim, combined } = computePcCombined();
   const hasAny = included.length>0 || !!manualTrim;
   const critLabel = settings.critMode==='perkins' ? 'Perkins: max + reroll' : 'double the dice';
+  // Once crit is on, the crit figure IS the thing to actually pick up and
+  // roll - it takes the big primary spot the plain total normally has, and
+  // the plain total drops to a small reference line underneath, rather
+  // than the other way round (which buried the number that matters).
+  const critActive = pcCritOn && hasAny;
+  const label = critActive ? `⚡ Crit (${critLabel})` : pcComboLabel(included, totalAdds, manualTrim);
+  const totalText = critActive ? formatCritFormula(combined) : formatFormulaTerms(combined);
   bar.innerHTML = `
     <div class="pc-combo-top">
-      <span class="pc-combo-label" id="pcComboLabel">${esc(pcComboLabel(included, totalAdds, manualTrim))}</span>
-      <span class="pc-combo-total" id="pcComboTotalText">${esc(formatFormulaTerms(combined))}</span>
+      <span class="pc-combo-label${critActive?' crit':''}" id="pcComboLabel">${esc(label)}</span>
+      <span class="pc-combo-total${critActive?' crit':''}" id="pcComboTotalText">${esc(totalText)}</span>
       <button class="smallbtn pc-crit-btn${pcCritOn?' active':''}" data-act="pc-toggle-crit" ${hasAny?'':'disabled'}>⚡ Crit</button>
       ${included.length ? `<button class="smallbtn" data-act="pc-toggle-breakdown">${pcBreakdownOpen?'Hide':'Show'} breakdown</button>` : ''}
       <button class="smallbtn" data-act="pc-save-combo" ${hasAny?'':'disabled'}>💾 Save as item</button>
       <button class="smallbtn" data-act="pc-combo-clear" ${hasAny?'':'disabled'}>Clear</button>
     </div>
-    ${pcCritOn && hasAny ? `<div class="pc-crit-row"><span class="pc-crit-lbl">⚡ Crit (${esc(critLabel)})</span><span class="pc-crit-val" id="pcCritText">${esc(formatCritFormula(combined))}</span></div>` : ''}
+    ${critActive ? `<div class="pc-combo-normal-note" id="pcComboNormalNote">Normal (no crit): ${esc(formatFormulaTerms(combined))}</div>` : ''}
     ${pcBreakdownOpen && included.length ? `<div class="pc-breakdown">${pcBreakdownRowsHtml(included)}</div>` : ''}
     <div class="pc-combo-manual-row">
       <span class="pc-combo-manual-lbl">+ quick add</span>
@@ -3127,7 +3139,7 @@ function renderPcComboBar(){
   `;
 }
 // Called on every keystroke in the manual-bonus field instead of
-// renderPcComboBar() - updating textContent on the two spans rather than
+// renderPcComboBar() - updating textContent on the spans rather than
 // replacing the bar's innerHTML means the input being typed into is never
 // touched, so it never loses focus or cursor position mid-type (the same
 // reasoning as every other "don't rebuild out from under an active edit"
@@ -3136,12 +3148,14 @@ function renderPcComboBar(){
 function updatePcComboTotalOnly(){
   const { included, totalAdds, manualTrim, combined } = computePcCombined();
   const hasAny = included.length>0 || !!manualTrim;
+  const critActive = pcCritOn && hasAny;
+  const critLabel = settings.critMode==='perkins' ? 'Perkins: max + reroll' : 'double the dice';
   const labelEl = document.getElementById('pcComboLabel');
   const totalEl = document.getElementById('pcComboTotalText');
-  const critEl = document.getElementById('pcCritText');
-  if(labelEl) labelEl.textContent = pcComboLabel(included, totalAdds, manualTrim);
-  if(totalEl) totalEl.textContent = formatFormulaTerms(combined);
-  if(critEl) critEl.textContent = formatCritFormula(combined);
+  const noteEl = document.getElementById('pcComboNormalNote');
+  if(labelEl) labelEl.textContent = critActive ? `⚡ Crit (${critLabel})` : pcComboLabel(included, totalAdds, manualTrim);
+  if(totalEl) totalEl.textContent = critActive ? formatCritFormula(combined) : formatFormulaTerms(combined);
+  if(noteEl) noteEl.textContent = critActive ? `Normal (no crit): ${formatFormulaTerms(combined)}` : '';
   document.querySelectorAll('#pcComboBar [data-act="pc-save-combo"], #pcComboBar [data-act="pc-combo-clear"], #pcComboBar [data-act="pc-toggle-crit"]').forEach(b=>{ b.disabled = !hasAny; });
 }
 // Partial, case-insensitive match against the name OR the comma-separated

@@ -13289,7 +13289,7 @@
           "Perception": {
             "bonus": 7,
             "state": "exp",
-            "adv": false,
+            "adv": true,
             "dis": false,
             "_modeAdv": false,
             "_modeDis": false,
@@ -19019,6 +19019,6 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1791034046188,
+  "_updated": 1791034059446,
   "_unchanged": true
 }

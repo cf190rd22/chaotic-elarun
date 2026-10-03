@@ -341,10 +341,6 @@ body.page-pc .dm-only{display:none!important;}
 /* ---------- PC quick roller ---------- */
 .pcroller{flex:1;display:none;flex-direction:column;min-height:0;overflow:hidden;}
 .pcroller-hdr{display:flex;align-items:center;gap:10px;padding:16px 20px 0;flex-wrap:wrap;}
-.pcroller-hdr .hint{flex:1 1 100%;margin:8px 0 0;order:3;}
-.pc-hint-toggle{flex-shrink:0;width:26px;height:26px;border-radius:99px;background:var(--surface);border:1px solid var(--border);color:var(--text-mute);cursor:pointer;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;}
-.pc-hint-toggle:hover{color:var(--text);border-color:var(--accent-bd);}
-.pc-hint-toggle.active{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
 .pcroller-insert-row{display:flex;align-items:center;gap:8px;padding:10px 20px 0;flex-wrap:wrap;}
 .pc-insert-select{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;color:var(--text-2);outline:none;}
 .pc-insert-select:focus{border-color:var(--accent-bd);}
@@ -651,9 +647,7 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 
   <div class="pcroller" id="pcRoller" style="display:none">
     <div class="pcroller-hdr">
-      <button class="pc-hint-toggle" data-act="pc-toggle-hint" title="Show/hide instructions" aria-label="Show or hide instructions">?</button>
-      <div class="hint" id="pcHintText" style="display:none">Build a quick damage formula for a PC when you don't have (or need) a full statblock. Click a die to add it, type to edit the formula directly, name it, and tick whichever items apply this turn to see them combined into one total. Nothing here rolls for you — it only tells you what to pick up and throw.</div>
-      <div style="display:flex;gap:8px;flex-shrink:0;margin-left:auto;">
+      <div style="display:flex;gap:8px;flex-shrink:0;">
         <button class="smallbtn" data-act="open-pc-import">+ Paste to add</button>
         <button class="iconbtn primary" data-act="pc-add-item" style="justify-content:center;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -4215,13 +4209,6 @@ function onGlobalClick(e){
       pcBreakdownOpen = !pcBreakdownOpen;
       renderPcComboBar();
       break;
-    case 'pc-toggle-hint': {
-      const hintEl = document.getElementById('pcHintText');
-      const showing = hintEl.style.display !== 'none';
-      hintEl.style.display = showing ? 'none' : 'block';
-      el.classList.toggle('active', !showing);
-      break;
-    }
     case 'pc-toggle-crit':
       pcCritOn = !pcCritOn;
       renderPcComboBar();

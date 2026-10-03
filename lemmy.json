@@ -18951,7 +18951,9 @@
           "d8": 6
         },
         "_wasDying": false,
-        "_playerNotes": {},
+        "_playerNotes": {
+          "item:Mac-Fuirmidh Cittern": "<ul><li><br></li></ul>"
+        },
         "_actViewMode": "list",
         "_actFiltersCollapsed": false,
         "_actFilter": "all",
@@ -19017,5 +19019,6 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1791032996360
+  "_updated": 1791034046188,
+  "_unchanged": true
 }

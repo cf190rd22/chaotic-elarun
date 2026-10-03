@@ -14474,7 +14474,8 @@
             "_classListImport": true,
             "_syncSourceId": 65,
             "_freecasted": false,
-            "_singleUsed": false
+            "_singleUsed": false,
+            "_lastCastUpcast": 0
           },
           {
             "name": "Silent Image",
@@ -18425,7 +18426,7 @@
         "_autoCalcSkills": true,
         "spellcastingAbility": "CHA",
         "_slotUsed": {
-          "399-L1": 1,
+          "399-L1": 2,
           "399-L3": 1
         },
         "acAdjust": 0,
@@ -18835,7 +18836,7 @@
         "acEffective": 18,
         "hpMax": 51,
         "_slotUsedCompact": {
-          "1": 1,
+          "1": 2,
           "3": 1
         },
         "_featAtypes": {
@@ -19019,5 +19020,6 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1791038919791
+  "_updated": 1791039920658,
+  "_unchanged": true
 }

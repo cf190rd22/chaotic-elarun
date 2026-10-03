@@ -14242,7 +14242,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": false
+            "_singleUsed": true
           },
           {
             "name": "Ghost Light",
@@ -19019,6 +19019,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1791034608523,
-  "_unchanged": true
+  "_updated": 1791034727271
 }

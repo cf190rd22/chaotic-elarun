@@ -375,6 +375,10 @@ body.page-pc .dm-only{display:none!important;}
 .pc-breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;}
 .pc-breakdown-name{color:var(--text-2);}
 .pc-breakdown-val{font-family:'DM Mono',monospace;font-weight:700;color:var(--accent);white-space:nowrap;}
+.pc-crit-btn.active{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
+.pc-crit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);}
+.pc-crit-lbl{font-size:10px;color:var(--amber);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;}
+.pc-crit-val{font-size:15px;font-family:'DM Mono',monospace;font-weight:700;color:var(--amber);white-space:nowrap;}
 .pc-list{flex:1;overflow-y:auto;padding:14px 20px 24px;}
 .pc-list-empty{margin:0;}
 .pc-chip-grid{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;}
@@ -945,6 +949,29 @@ function formatFormulaTerms(terms){
   if(terms.flat!==0) bits.push({ sign: terms.flat<0?'-':'+', text: `${Math.abs(terms.flat)}` });
   if(!bits.length) return '—';
   return bits.map((b,i)=> i===0 ? (b.sign==='-'?'-':'')+b.text : ` ${b.sign} ${b.text}`).join('');
+}
+// Applies the SAME house rule set in Options (settings.critMode) to a
+// PC roller combined total - this page never rolls anything itself, so
+// "crit" here isn't a random result, it's "what do I pick up and roll
+// given one happened". Keeps the two rules in exactly one place rather
+// than this page growing its own separate copy of the DM board's crit
+// maths (see rollDamage for the version that actually rolls dice).
+function formatCritFormula(terms){
+  if(settings.critMode==='perkins'){
+    // max value of every die group, rolled once more (not doubled) on top,
+    // flat bonus counted only once - same rule as a single damage line,
+    // just applied across however many dice groups the combo has.
+    let maxSum = terms.flat;
+    for(const [sides,count] of Object.entries(terms.dice)){
+      if(count>0) maxSum += count*(+sides);
+    }
+    const rerollText = formatFormulaTerms({ dice: terms.dice, flat: 0 });
+    return rerollText==='—' ? String(maxSum) : `${maxSum} + ${rerollText}`;
+  }
+  // standard 5e: double every die group, flat bonus unchanged
+  const doubled = { dice: {}, flat: terms.flat };
+  for(const [sides,count] of Object.entries(terms.dice)) doubled.dice[sides] = count*2;
+  return formatFormulaTerms(doubled);
 }
 
 /* ============================== utilities ============================== */
@@ -1633,6 +1660,11 @@ let pcEditingId = null;
 // Whether the combo bar's per-item breakdown is expanded - off by default
 // to keep the bar compact, there "if needed" via one click.
 let pcBreakdownOpen = false;
+// Whether the current combo should be shown crit-adjusted (per
+// settings.critMode - see formatCritFormula). A momentary per-roll
+// toggle, not a saved property of any item, so it isn't persisted and
+// resets on reload the same way pcManualBonus does.
+let pcCritOn = false;
 // Non-null while the PC item bulk paste-and-review importer is open.
 // step: 'paste' (raw textarea) or 'review' (parsed, editable, before
 // anything is actually added to pcItems).
@@ -3065,14 +3097,17 @@ function renderPcComboBar(){
   if(!bar) return;
   const { included, totalAdds, manualTrim, combined } = computePcCombined();
   const hasAny = included.length>0 || !!manualTrim;
+  const critLabel = settings.critMode==='perkins' ? 'Perkins: max + reroll' : 'double the dice';
   bar.innerHTML = `
     <div class="pc-combo-top">
       <span class="pc-combo-label" id="pcComboLabel">${esc(pcComboLabel(included, totalAdds, manualTrim))}</span>
       <span class="pc-combo-total" id="pcComboTotalText">${esc(formatFormulaTerms(combined))}</span>
+      <button class="smallbtn pc-crit-btn${pcCritOn?' active':''}" data-act="pc-toggle-crit" ${hasAny?'':'disabled'}>⚡ Crit</button>
       ${included.length ? `<button class="smallbtn" data-act="pc-toggle-breakdown">${pcBreakdownOpen?'Hide':'Show'} breakdown</button>` : ''}
       <button class="smallbtn" data-act="pc-save-combo" ${hasAny?'':'disabled'}>💾 Save as item</button>
       <button class="smallbtn" data-act="pc-combo-clear" ${hasAny?'':'disabled'}>Clear</button>
     </div>
+    ${pcCritOn && hasAny ? `<div class="pc-crit-row"><span class="pc-crit-lbl">⚡ Crit (${esc(critLabel)})</span><span class="pc-crit-val" id="pcCritText">${esc(formatCritFormula(combined))}</span></div>` : ''}
     ${pcBreakdownOpen && included.length ? `<div class="pc-breakdown">${pcBreakdownRowsHtml(included)}</div>` : ''}
     <div class="pc-combo-manual-row">
       <span class="pc-combo-manual-lbl">+ quick add</span>
@@ -3092,9 +3127,11 @@ function updatePcComboTotalOnly(){
   const hasAny = included.length>0 || !!manualTrim;
   const labelEl = document.getElementById('pcComboLabel');
   const totalEl = document.getElementById('pcComboTotalText');
+  const critEl = document.getElementById('pcCritText');
   if(labelEl) labelEl.textContent = pcComboLabel(included, totalAdds, manualTrim);
   if(totalEl) totalEl.textContent = formatFormulaTerms(combined);
-  document.querySelectorAll('#pcComboBar [data-act="pc-save-combo"], #pcComboBar [data-act="pc-combo-clear"]').forEach(b=>{ b.disabled = !hasAny; });
+  if(critEl) critEl.textContent = formatCritFormula(combined);
+  document.querySelectorAll('#pcComboBar [data-act="pc-save-combo"], #pcComboBar [data-act="pc-combo-clear"], #pcComboBar [data-act="pc-toggle-crit"]').forEach(b=>{ b.disabled = !hasAny; });
 }
 // Partial, case-insensitive match against the name OR the comma-separated
 // tags - "smite" matches an item tagged "paladin, smite, 2nd level" just as
@@ -3797,7 +3834,17 @@ function onGlobalInput(e){
 
 function onGlobalChange(e){
   const t = e.target;
-  if(t.name==='critMode'){ settings.critMode = t.value; saveSettings(); ghMaybeAutoPush(); return; }
+  if(t.name==='critMode'){
+    settings.critMode = t.value;
+    saveSettings();
+    ghMaybeAutoPush();
+    // the PC roller's own crit line reads settings.critMode directly, but
+    // isn't rebuilt by anything in the options modal's own close path - if
+    // it's sitting open behind this modal, refresh it now instead of
+    // leaving it showing the just-abandoned mode until some unrelated click
+    if(currentPage==='pc') renderPcComboBar();
+    return;
+  }
   if(t.id==='restoreFileInput'){
     if(t.files && t.files[0]) importBackupFile(t.files[0]);
     t.value = '';
@@ -4135,6 +4182,7 @@ function onGlobalClick(e){
     case 'pc-combo-clear':
       pcItems.forEach(it=>{ it.comboCount = 0; });
       pcManualBonus = '';
+      pcCritOn = false;
       savePc();
       renderPcRoller();
       break;
@@ -4148,6 +4196,10 @@ function onGlobalClick(e){
       break;
     case 'pc-toggle-breakdown':
       pcBreakdownOpen = !pcBreakdownOpen;
+      renderPcComboBar();
+      break;
+    case 'pc-toggle-crit':
+      pcCritOn = !pcCritOn;
       renderPcComboBar();
       break;
     case 'pc-save-combo': {

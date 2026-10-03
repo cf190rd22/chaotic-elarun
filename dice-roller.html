@@ -969,20 +969,24 @@ function formatFormulaTerms(terms){
 // maths (see rollDamage for the version that actually rolls dice).
 function formatCritFormula(terms){
   if(settings.critMode==='perkins'){
-    // max value of every die group, the flat bonus, and a reroll of the
-    // same dice once more on top - kept as three separate addends (not
-    // summed into one opaque number) so the modifier is visibly only
-    // being added the once, not hidden inside the maxed-dice figure.
+    // max value of every die group, a reroll of the same dice once more,
+    // then the flat modifier - always last, same as every other formula
+    // in this app - kept as its own separate addend (not summed into the
+    // maxed-dice figure) so it's visibly only being added the once.
     let maxDice = 0;
     for(const [sides,count] of Object.entries(terms.dice)){
       if(count>0) maxDice += count*(+sides);
     }
-    const fixedBits = [];
-    if(maxDice>0) fixedBits.push({ sign:'+', text:String(maxDice) });
-    if(terms.flat!==0) fixedBits.push({ sign: terms.flat<0?'-':'+', text:String(Math.abs(terms.flat)) });
-    const fixedText = fixedBits.map((b,i)=> i===0 ? (b.sign==='-'?'-':'')+b.text : ` ${b.sign} ${b.text}`).join('') || '0';
     const rerollText = formatFormulaTerms({ dice: terms.dice, flat: 0 });
-    return rerollText==='—' ? fixedText : `${fixedText} + ${rerollText}`;
+    const segments = [];
+    if(maxDice>0) segments.push(String(maxDice));
+    if(rerollText!=='—') segments.push(rerollText);
+    let out = segments.join(' + ');
+    if(terms.flat!==0){
+      const sign = terms.flat<0 ? '-' : '+';
+      out = out ? `${out} ${sign} ${Math.abs(terms.flat)}` : (sign==='-' ? `-${Math.abs(terms.flat)}` : String(terms.flat));
+    }
+    return out || '0';
   }
   // standard 5e: double every die group, flat bonus unchanged
   const doubled = { dice: {}, flat: terms.flat };

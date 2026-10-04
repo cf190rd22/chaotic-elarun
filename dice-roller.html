@@ -495,7 +495,10 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 .lib-spell-lvl{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-mute);width:56px;flex-shrink:0;}
 .lib-spell-name{flex:1;color:var(--text);}
 .lib-spell-meta{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;white-space:nowrap;}
+.lib-power-editing,.lib-spell-row-editing{background:var(--surface-2);border:1px solid var(--accent-bd);border-radius:9px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px;}
+.lib-spell-row-editing{flex-direction:row;align-items:center;flex-wrap:wrap;border-bottom:none;}
 .smallbtn.added{color:var(--green);border-color:var(--green-bd);background:var(--green-dim);}
+.pill-lib{font-size:11px;margin-left:5px;cursor:default;}
 .lib-select-wrap{display:flex;align-items:center;flex-shrink:0;}
 .lib-select-wrap input{width:15px;height:15px;cursor:pointer;accent-color:var(--accent);}
 .lib-bulk-bar{display:flex;align-items:center;gap:8px;background:var(--accent-dim);border:1px solid var(--accent-bd);border-radius:9px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--accent);font-weight:600;flex-wrap:wrap;}
@@ -832,7 +835,7 @@ function resolveDcFormula(text, cr){
 function buildFeatureEntry(power, cr){
   const dc = resolveDcFormula(power.text, cr);
   const name = power.name + (power.recharge ? ` (Recharge ${power.recharge})` : '');
-  const entry = { id: uid('e'), name, atype: power.action, dmg:[], text: power.text + (power.note ? '\n\n'+power.note : '') };
+  const entry = { id: uid('e'), name, atype: power.action, dmg:[], text: power.text + (power.note ? '\n\n'+power.note : ''), fromLibrary: true };
   if(dc!=null){ entry.kind = 'save'; entry.save = { dc, ability:'CHA', half:false }; }
   else { entry.kind = 'other'; }
   return entry;
@@ -841,7 +844,7 @@ function buildSpellEntry(spell){
   const lvlTxt = spell.level===0 ? 'Cantrip' : `Level ${spell.level}`;
   const descBits = [lvlTxt];
   if(spell.type) descBits.push(spell.type);
-  return { id: uid('e'), name: spell.name, atype: spell.action || 'action', kind:'other', dmg:[],
+  return { id: uid('e'), name: spell.name, atype: spell.action || 'action', kind:'other', dmg:[], fromLibrary: true,
     text: descBits.join(' · ') + ' spell — see your spell reference for its effect.' };
 }
 // The same "does this name match" rule used both to show "✓ Added" and to
@@ -1881,6 +1884,10 @@ let libraryTab = 'features'; // which tab the feature/spell library modal is sho
 // modal shows (no insert buttons/DC-resolution without a target creature)
 // and where its Done button goes back to.
 let libraryStandalone = false;
+// Which single library entry (if any) is expanded into an editable form
+// right now - 'f:themeIdx:powerIdx' or 's:catIdx:spellIdx'. null means
+// every entry is shown read-only. Same one-at-a-time pattern as pcEditingId.
+let libraryEditingKey = null;
 // Checkbox selection for bulk insert/remove in the library browse modal
 // (keys like 'f:0:1' for featureLibrary[0].powers[1], 's:0:3' for a spell) -
 // and for bulk delete of entries already on the creature being edited.
@@ -2617,7 +2624,7 @@ function renderCard(item){
           }
           return `<div class="entry">
             <div class="entry-main">
-              <div class="entry-name">${esc(e.name)}</div>
+              <div class="entry-name">${esc(e.name)}${e.fromLibrary ? `<span class="pill-lib" title="Added from the Feature &amp; spell library">📚</span>` : ''}</div>
               <div class="entry-tag-row">
                 ${tag?`<span class="entry-tag">${tag}</span>`:''}
                 ${descToggle}
@@ -3543,6 +3550,7 @@ function entryEditHtml(entry, allEntries){
   return `<div class="entry-edit" data-eid="${entry.id}">
     <div class="ee-row1">
       <label class="entry-select-wrap"><input type="checkbox" class="entry-select-chk" data-eid="${entry.id}" ${selectedEntryIds.has(entry.id)?'checked':''}></label>
+      ${entry.fromLibrary ? `<span class="pill-lib" title="Added from the Feature &amp; spell library">📚</span>` : ''}
       <input class="ee-name" value="${esc(entry.name)}" data-eid="${entry.id}" data-efield="name">
       <select data-eid="${entry.id}" data-efield="atype">
         ${ATYPE_ORDER.map(t=>`<option value="${t}" ${entry.atype===t?'selected':''}>${ATYPE_LABEL[t]}</option>`).join('')}
@@ -3809,18 +3817,36 @@ function renderModal(){
       return `<button class="smallbtn${added?' added':''}" data-act="${act}" ${dataAttrs}>${added?'✓ Added — remove':'+ Insert'}</button>`;
     };
     const checkbox = key => `<input type="checkbox" class="lib-select-chk" data-libkey="${key}" ${librarySelected.has(key)?'checked':''}>`;
+    const editBtn = key => `<button class="icobtn" data-act="library-edit-start" data-key="${key}" title="Edit">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+    </button>`;
     const featuresHtml = featureLibrary.map((theme,ti)=>`
       <div class="lib-theme">
         <div class="lib-theme-name">${esc(theme.theme)}</div>
         <div class="hint">${esc(theme.intro)}</div>
         ${theme.powers.map((p,pi)=>{
-          const dc = c ? resolveDcFormula(p.text, c.cr) : null;
           const key = `f:${ti}:${pi}`;
+          if(libraryEditingKey===key){
+            return `<div class="lib-power lib-power-editing">
+              <div class="ee-row1">
+                <input class="ee-name" value="${esc(p.name)}" data-libedit="${key}" data-libfield="name" placeholder="Name">
+                <input class="limport-recharge" value="${esc(p.recharge||'')}" data-libedit="${key}" data-libfield="recharge" placeholder="Recharge (optional)">
+                <select data-libedit="${key}" data-libfield="action">
+                  ${ATYPE_ORDER.filter(t=>t!=='trait').map(t=>`<option value="${t}" ${p.action===t?'selected':''}>${ATYPE_LABEL[t]}</option>`).join('')}
+                </select>
+                <button class="smallbtn" data-act="library-edit-done">Done</button>
+              </div>
+              <textarea class="ee-text" placeholder="Description" data-libedit="${key}" data-libfield="text">${esc(p.text)}</textarea>
+              <textarea class="ee-text" placeholder="DM note (optional)" data-libedit="${key}" data-libfield="note">${esc(p.note||'')}</textarea>
+            </div>`;
+          }
+          const dc = c ? resolveDcFormula(p.text, c.cr) : null;
           return `<div class="lib-power">
             <div class="lib-power-hdr">
               <label class="lib-select-wrap">${checkbox(key)}</label>
               <span class="lib-power-name">${esc(p.name)}${p.recharge?` <span class="lib-power-recharge">(Recharge ${esc(p.recharge)})</span>`:''}</span>
               <span class="lib-power-meta">${esc(ATYPE_LABEL[p.action]||p.action)}${dc!=null?` · DC ${dc}`:''}</span>
+              ${editBtn(key)}
               ${insertToggleBtn('insert-feature', `data-theme="${ti}" data-power="${pi}"`, p.name)}
             </div>
             <div class="lib-power-text">${esc(p.text)}</div>
@@ -3835,11 +3861,24 @@ function renderModal(){
         <div class="lib-spell-table">
           ${cat.spells.map((s,si)=>{
             const key = `s:${ci}:${si}`;
+            if(libraryEditingKey===key){
+              return `<div class="lib-spell-row lib-spell-row-editing">
+                <input type="number" class="limport-level" value="${s.level}" data-libedit="${key}" data-libfield="level" min="0" max="9">
+                <input class="limport-name" value="${esc(s.name)}" data-libedit="${key}" data-libfield="name" placeholder="Name">
+                <input class="limport-type" value="${esc(s.type||'')}" data-libedit="${key}" data-libfield="type" placeholder="Type">
+                <select data-libedit="${key}" data-libfield="action">
+                  <option value="">—</option>
+                  ${['action','bonus','reaction','legendary'].map(t=>`<option value="${t}" ${s.action===t?'selected':''}>${ATYPE_LABEL[t]}</option>`).join('')}
+                </select>
+                <button class="smallbtn" data-act="library-edit-done">Done</button>
+              </div>`;
+            }
             return `<div class="lib-spell-row">
               <label class="lib-select-wrap">${checkbox(key)}</label>
               <span class="lib-spell-lvl">${s.level===0?'Cantrip':'Lvl '+s.level}</span>
               <span class="lib-spell-name">${esc(s.name)}</span>
               <span class="lib-spell-meta">${s.type?esc(s.type)+' · ':''}${esc(ATYPE_LABEL[s.action]||s.action||'')}</span>
+              ${editBtn(key)}
               ${insertToggleBtn('insert-spell', `data-cat="${ci}" data-spell="${si}"`, s.name)}
             </div>`;
           }).join('') || '<div class="hint">No spells in this category yet.</div>'}
@@ -3859,7 +3898,8 @@ function renderModal(){
           <div class="lib-tabs">
             <button class="lib-tab ${libraryTab==='features'?'active':''}" data-act="library-tab" data-tab="features">Features</button>
             <button class="lib-tab ${libraryTab==='spells'?'active':''}" data-act="library-tab" data-tab="spells">Spells</button>
-            <button class="smallbtn" style="margin-left:auto" data-act="${libraryTab==='spells'?'open-spell-import':'open-feature-import'}">+ Paste to add</button>
+            <button class="smallbtn" style="margin-left:auto" data-act="library-select-all">Select all</button>
+            <button class="smallbtn" data-act="${libraryTab==='spells'?'open-spell-import':'open-feature-import'}">+ Paste to add</button>
           </div>
           ${selCount ? `<div class="lib-bulk-bar">
             <span>${selCount} selected</span>
@@ -3998,6 +4038,15 @@ function onGlobalInput(e){
   if(t.dataset.manualroll && t.dataset.key){
     const s = manualRollState.get(t.dataset.key);
     if(s) s.text = t.value;
+    return;
+  }
+  if(t.dataset.libedit && t.dataset.libfield){
+    const [kind, i1, i2] = t.dataset.libedit.split(':');
+    const target = kind==='f' ? (featureLibrary[+i1] && featureLibrary[+i1].powers[+i2])
+                               : (spellLibrary[+i1] && spellLibrary[+i1].spells[+i2]);
+    if(!target) return;
+    const f = t.dataset.libfield;
+    target[f] = f==='level' ? (+t.value||0) : t.value;
     return;
   }
   if(t.dataset.tid && t.dataset.tfield){
@@ -4292,9 +4341,10 @@ function onGlobalClick(e){
       if(libraryStandalone){ modalMode = null; document.getElementById('modalRoot').innerHTML = ''; }
       else modalMode = 'edit';
       librarySelected.clear();
+      libraryEditingKey = null;
       if(modalMode) renderModal();
       break;
-    case 'library-tab': libraryTab = el.dataset.tab; librarySelected.clear(); renderModal(); break;
+    case 'library-tab': libraryTab = el.dataset.tab; librarySelected.clear(); libraryEditingKey = null; renderModal(); break;
     case 'insert-feature': {
       const theme = featureLibrary[+el.dataset.theme];
       const power = theme && theme.powers[+el.dataset.power];
@@ -4371,6 +4421,19 @@ function onGlobalClick(e){
       break;
     }
     case 'library-bulk-clear': librarySelected.clear(); renderModal(); break;
+    case 'library-select-all': {
+      const keys = [];
+      if(libraryTab==='features') featureLibrary.forEach((theme,ti)=>theme.powers.forEach((p,pi)=>keys.push(`f:${ti}:${pi}`)));
+      else spellLibrary.forEach((cat,ci)=>cat.spells.forEach((s,si)=>keys.push(`s:${ci}:${si}`)));
+      // toggle: everything in this tab already selected -> clear instead,
+      // so the same button also serves as "deselect all"
+      const allSelected = keys.length>0 && keys.every(k=>librarySelected.has(k));
+      librarySelected = allSelected ? new Set() : new Set(keys);
+      renderModal();
+      break;
+    }
+    case 'library-edit-start': libraryEditingKey = el.dataset.key; renderModal(); break;
+    case 'library-edit-done': libraryEditingKey = null; renderModal(); break;
 
     case 'open-feature-import':
       libraryImport = { kind:'features', step:'paste', groupMode:'new', groupIndex:0, newGroupName:'', newGroupIntro:'', raw:'', parsed:[] };
@@ -4871,6 +4934,7 @@ document.addEventListener('focusout', e=>{
   }
   if(e.target.dataset.pcid && e.target.dataset.pcfield) savePc();
   if(e.target.dataset.pcscale && e.target.dataset.id) savePc();
+  if(e.target.dataset.libedit && e.target.dataset.libfield) Store.setLibrary({ features: featureLibrary, spells: spellLibrary });
   if(e.target.classList.contains('mix-input')){
     const raw = e.target.value.trim();
     if(e.target.dataset.dmgonly){
@@ -4954,8 +5018,17 @@ Store.onTargets(data=>{
   renderTargets();
 });
 Store.onLibrary(data=>{
-  featureLibrary = (data && data.features) || [];
-  spellLibrary = (data && data.spells) || [];
+  const incomingFeatures = (data && data.features) || [];
+  const incomingSpells = (data && data.spells) || [];
+  // Same hazard as Store.onBoard above: this write's own echo arriving back
+  // mid-click (e.g. a focusout-triggered setLibrary firing while a "Done"
+  // button click is still in flight) would otherwise rebuild the library
+  // modal out from under it, detaching the very button that click was
+  // headed for and silently eating it. Skipping the no-op case removes
+  // the danger rather than trying to out-time it.
+  if(JSON.stringify(incomingFeatures)===JSON.stringify(featureLibrary) && JSON.stringify(incomingSpells)===JSON.stringify(spellLibrary)) return;
+  featureLibrary = incomingFeatures;
+  spellLibrary = incomingSpells;
   // only matters while the library browse/import modal is actually open -
   // every other screen reads featureLibrary/spellLibrary fresh when it opens
   if(modalMode==='library') renderModal();

@@ -157,6 +157,8 @@ body.page-pc .dm-only{display:none!important;}
 .pill{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);white-space:nowrap;}
 .pill-crit{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
 .pill-role{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);}
+.pill-link{background:var(--accent-dim);border-color:var(--accent-bd);color:var(--accent);cursor:pointer;text-decoration:none;}
+.pill-link:hover{background:rgba(91,142,240,.2);}
 .count-stepper{display:flex;align-items:center;gap:3px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto;}
 .count-stepper button{width:24px;height:24px;border:none;background:none;color:var(--text-2);cursor:pointer;font-size:14px;line-height:1;border-radius:5px;}
 .count-stepper button:hover{background:var(--surface-3);color:var(--text);}
@@ -373,10 +375,12 @@ body.page-pc .dm-only{display:none!important;}
 .pc-combo-manual-input{flex:1;max-width:240px;background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:12.5px;font-family:'DM Mono',monospace;color:var(--text);outline:none;}
 .pc-combo-manual-input:focus{border-color:var(--accent-bd);}
 .pc-combo-manual-input::placeholder{color:var(--text-mute);font-weight:500;}
-.pc-breakdown{display:flex;flex-direction:column;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);}
-.pc-breakdown-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;}
-.pc-breakdown-name{color:var(--text-2);}
-.pc-breakdown-val{font-family:'DM Mono',monospace;font-weight:700;color:var(--accent);white-space:nowrap;}
+.pc-added-list{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);font-size:12.5px;color:var(--text-2);line-height:1.6;}
+.pc-added-entry{display:inline-flex;align-items:center;gap:4px;}
+.pc-added-plus{color:var(--text-mute);}
+.pc-added-remove{background:none;border:none;color:var(--text-mute);cursor:pointer;font-size:10px;padding:0 2px;}
+.pc-added-remove:hover{color:var(--red);}
+.pc-added-level-select{background:var(--surface-2);border:1px solid var(--border);border-radius:5px;color:var(--accent);font-family:inherit;font-size:12.5px;padding:0 2px;}
 .pc-crit-btn.active{background:var(--amber-dim);border-color:var(--amber-bd);color:var(--amber);}
 .pc-list{flex:1;overflow-y:auto;padding:14px 20px 24px;}
 .pc-list-empty{margin:0;}
@@ -411,6 +415,10 @@ body.page-pc .dm-only{display:none!important;}
 .pcitem-formula{background:var(--surface-2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);outline:none;}
 .pcitem-formula:focus{border-color:var(--accent-bd);}
 .pcitem-formula::placeholder{color:var(--text-mute);font-weight:500;}
+.pcitem-scaling-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pc-scale-field{display:flex;flex-direction:column;gap:2px;font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;}
+.pc-scale-field input{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:'DM Mono',monospace;}
+.pc-scale-field input:focus{outline:none;border-color:var(--accent-bd);}
 .pcitem-actions{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
 
 /* ---------- modal ---------- */
@@ -494,6 +502,7 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
 .limport-level{width:44px;flex-shrink:0;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:4px 5px;font-size:11.5px;color:var(--text);}
 .limport-name{flex:1;min-width:0;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:11.5px;color:var(--text);}
 .limport-type{width:90px;flex-shrink:0;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-size:11.5px;color:var(--text);}
+.limport-scaling-note{display:flex;align-items:center;color:var(--text-mute);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 @media(max-width:900px){
   .drawer-btn{display:inline-flex;}
@@ -898,17 +907,44 @@ function parseSpellRowsText(raw){
     return out;
   }).filter(Boolean);
 }
+// A 4th, optional column lets a pasted row define a level-scaling item
+// (like Divine Smite) instead of a flat formula - comma-separated
+// key=value tokens, e.g. "sides=8,base=2,perlevel=1,cap=5,min=1,max=9".
+// Unrecognised/missing keys fall back to sane defaults; sides and base are
+// the only two actually required for this to count as a scaling spec at
+// all (anything else just reads as a plain formula/garbage and is ignored).
+function parsePcScalingSpec(str){
+  if(!str) return null;
+  const out = {};
+  String(str).split(',').forEach(tok=>{
+    const m = /^(\w+)\s*=\s*(\d+)$/.exec(tok.trim());
+    if(m) out[m[1].toLowerCase()] = parseInt(m[2],10);
+  });
+  if(out.sides==null || out.base==null) return null;
+  const minLevel = out.min ?? 1;
+  return {
+    sides: out.sides, baseCount: out.base, perLevelCount: out.perlevel ?? 1,
+    capCount: out.cap ?? out.base, minLevel, maxLevel: out.max ?? 20, level: minLevel,
+  };
+}
 // One PC roller item per line, columns split on tabs, pipes, or 2+ spaces -
-// "Name  Formula" or "Name  Formula  Tags". Formula and tags are both
+// "Name  Formula  Tags", or for a level-scaling item, "Name  Tags
+// sides=8,base=2,perlevel=1,cap=5" with the scaling spec as the LAST
+// column. Checked by content rather than a fixed position - an empty
+// formula column (to "make room" for a 4th) would otherwise just vanish,
+// since blank columns are filtered out below, silently shifting every
+// column after it one slot to the left. Formula and tags are both
 // optional so a bare list of names still parses into something (empty
 // formula, fill it in afterwards on the review step or later from its chip).
 function parsePcItemRowsText(raw){
   return String(raw||'').split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
     const parts = line.split(/\t|\s{2,}|\|/).map(s=>s.trim()).filter(Boolean);
     if(!parts.length) return null;
-    const [name, formula, tags] = parts;
+    const name = parts[0];
     if(!name) return null;
-    return { name, formula: formula||'', tags: tags||'' };
+    const scaling = parts.length>1 ? parsePcScalingSpec(parts[parts.length-1]) : null;
+    const [formula, tags] = scaling ? parts.slice(1,-1) : parts.slice(1);
+    return { name, formula: scaling ? '' : (formula||''), tags: tags||'', scaling };
   }).filter(Boolean);
 }
 // PC Quick Roller formula maths - combines dice NOTATION, never rolls
@@ -1677,9 +1713,6 @@ let pcManualBonus = '';
 // tags editor right now - everything else on the page stays a compact,
 // one-tap chip. null means every item is shown collapsed.
 let pcEditingId = null;
-// Whether the combo bar's per-item breakdown is expanded - off by default
-// to keep the bar compact, there "if needed" via one click.
-let pcBreakdownOpen = false;
 // Whether the current combo should be shown crit-adjusted (per
 // settings.critMode - see formatCritFormula). A momentary per-roll
 // toggle, not a saved property of any item, so it isn't persisted and
@@ -2372,14 +2405,18 @@ function infoRowsHtml(c){
     ['Senses', c.senses], ['Skills', c.skills], ['Saving Throws', c.savingThrowsText],
     ['Languages', c.languages], ['Gear', c.gear]
   ];
-  const rows = FIELDS.filter(([,v])=>v).map(([label,v])=>`<div class="trait-row"><b>${esc(label)}.</b> ${esc(v)}</div>`).join('');
-  // only linkify http(s) - a pasted "javascript:" or "data:" value becomes
-  // inert plain text instead of an href, rather than something clickable
+  return FIELDS.filter(([,v])=>v).map(([label,v])=>`<div class="trait-row"><b>${esc(label)}.</b> ${esc(v)}</div>`).join('');
+}
+// http(s)-only on purpose - a pasted "javascript:" or "data:" value renders
+// as inert plain text instead of becoming a clickable href. Shown as its
+// own always-visible pill in the card header (see renderCard) rather than
+// buried inside the collapsed Info group, since it's a link you actually
+// want to tap mid-session, not reference text you read once and forget.
+function spellbookPillHtml(c){
   const url = (c.spellbookUrl||'').trim();
-  const spellbookRow = /^https?:\/\//i.test(url)
-    ? `<div class="trait-row"><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Spellbook</a></div>`
+  return /^https?:\/\//i.test(url)
+    ? `<a class="pill pill-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">📖 Spellbook</a>`
     : '';
-  return rows + spellbookRow;
 }
 
 function renderCard(item){
@@ -2601,6 +2638,7 @@ function renderCard(item){
         ${c.cr?`<span class="pill">CR ${esc(c.cr)}</span>`:''}
         ${c.role?`<span class="pill pill-role">${esc(c.role)}</span>`:''}
         ${c.critRange && c.critRange<20 ? `<span class="pill pill-crit" title="Attack rolls crit on ${c.critRange}-20, not just a natural 20">⚡ Crits ${c.critRange}-20</span>` : ''}
+        ${spellbookPillHtml(c)}
         <span class="count-lbl">× instances</span>
       </div>
     </div>
@@ -3079,6 +3117,23 @@ function switchPage(page){
 function pcComboCount(it){
   return typeof it.comboCount==='number' ? it.comboCount : (it.include ? 1 : 0);
 }
+// A PC item can optionally scale with level instead of carrying a single
+// fixed formula - same shape as a PC_SCALING_LIBRARY preset (see above),
+// plus the level currently picked, so diceCountAtLevel() works on either
+// one unchanged. One shared level per item - every copy you've added uses
+// whatever level is currently picked, rather than each addition tracking
+// its own (simpler to reason about, and it's what was asked for).
+function pcItemEffectiveFormula(it){
+  return it.scaling ? `${diceCountAtLevel(it.scaling, it.scaling.level)}d${it.scaling.sides}` : (it.formula||'');
+}
+// How a ticked item reads in the always-visible "what's added" list - e.g.
+// "Divine Smite (2nd Level - 3d8)" for a scaling item, "Longsword (1d8+4)"
+// for a plain one.
+function pcItemDisplayLabel(it){
+  const formula = pcItemEffectiveFormula(it) || '—';
+  const name = it.name || '(unnamed)';
+  return it.scaling ? `${name} (${ordinal(it.scaling.level)} Level - ${formula})` : `${name} (${formula})`;
+}
 // Folds every item's count (each repeat scaled into the dice total, not
 // just counted once) AND the manual scratch term into one set of dice/
 // flat totals - the single source of truth for both the full bar render
@@ -3086,7 +3141,7 @@ function pcComboCount(it){
 function computePcCombined(){
   const included = pcItems.filter(it=>pcComboCount(it)>0);
   const manualTrim = pcManualBonus.trim();
-  const terms = included.map(it=>scaleFormulaTerms(parseFormulaToTerms(it.formula), pcComboCount(it)));
+  const terms = included.map(it=>scaleFormulaTerms(parseFormulaToTerms(pcItemEffectiveFormula(it)), pcComboCount(it)));
   if(manualTrim) terms.push(parseFormulaToTerms(manualTrim));
   const totalAdds = included.reduce((sum,it)=>sum+pcComboCount(it), 0);
   return { included, totalAdds, manualTrim, combined: mergeFormulaTerms(terms) };
@@ -3100,17 +3155,36 @@ function pcComboLabel(included, totalAdds, manualTrim){
 }
 // Full rebuild - called whenever something other than the manual-bonus
 // field itself changes (a tick, an edit, a delete...).
-// Per-item lines for the optional breakdown - what EACH ticked item is
-// contributing on its own (count folded in), not just the merged total.
-// Only covers items, not the manual quick-add term - that one's own value
-// is already sitting right there in its own input below, so repeating it
-// here would just be the same number twice.
-function pcBreakdownRowsHtml(included){
+// Every level a scaling item's dropdown can offer, current one selected -
+// shared between the added-list below and anywhere else that needs it.
+function pcScalingLevelOptionsHtml(scaling){
+  const opts = [];
+  for(let lvl=scaling.minLevel; lvl<=scaling.maxLevel; lvl++){
+    opts.push(`<option value="${lvl}" ${lvl===scaling.level?'selected':''}>${ordinal(lvl)}</option>`);
+  }
+  return opts.join('');
+}
+// Always-visible "what's added" list, right above quick add - what EACH
+// ticked item is contributing (count folded in), in plain readable text
+// like "Divine Smite (2nd Level - 3d8) + Longsword (1d8+4)", not tucked
+// behind a toggle. A scaling item's level is an inline <select> right in
+// the text, so picking a new level updates it live without re-adding it.
+// The × on each entry removes one - the same "undo one at a time" the
+// chip's own minus button does, just reachable without hunting the chip
+// back down in a long list below. Only covers items, not the manual
+// quick-add term - that one's own value is already sitting right there in
+// its own input below, so repeating it here would just be the same number
+// twice.
+function pcAddedListHtml(included){
   return included.map(it=>{
     const count = pcComboCount(it);
-    const scaled = formatFormulaTerms(scaleFormulaTerms(parseFormulaToTerms(it.formula), count));
-    return `<div class="pc-breakdown-row"><span class="pc-breakdown-name">${esc(it.name)||'(unnamed)'}${count>1?` ×${count}`:''}</span><span class="pc-breakdown-val">${esc(scaled)}</span></div>`;
-  }).join('');
+    const formula = esc(pcItemEffectiveFormula(it)) || '—';
+    const name = esc(it.name)||'(unnamed)';
+    const body = it.scaling
+      ? `${name} (<select class="pc-added-level-select" data-pclevel="1" data-id="${it.id}">${pcScalingLevelOptionsHtml(it.scaling)}</select> Level - ${formula})`
+      : `${name} (${formula})`;
+    return `<span class="pc-added-entry">${body}${count>1?` ×${count}`:''}<button class="pc-added-remove" data-act="pc-chip-remove-one" data-id="${it.id}" title="Remove one">✕</button></span>`;
+  }).join('<span class="pc-added-plus">+</span>');
 }
 function renderPcComboBar(){
   const bar = document.getElementById('pcComboBar');
@@ -3130,12 +3204,11 @@ function renderPcComboBar(){
       <span class="pc-combo-label${critActive?' crit':''}" id="pcComboLabel">${esc(label)}</span>
       <span class="pc-combo-total${critActive?' crit':''}" id="pcComboTotalText">${esc(totalText)}</span>
       <button class="smallbtn pc-crit-btn${pcCritOn?' active':''}" data-act="pc-toggle-crit" ${hasAny?'':'disabled'}>⚡ Crit</button>
-      ${included.length ? `<button class="smallbtn" data-act="pc-toggle-breakdown">${pcBreakdownOpen?'Hide':'Show'} breakdown</button>` : ''}
       <button class="smallbtn" data-act="pc-save-combo" ${hasAny?'':'disabled'}>💾 Save as item</button>
       <button class="smallbtn" data-act="pc-combo-clear" ${hasAny?'':'disabled'}>Clear</button>
     </div>
     ${critActive ? `<div class="pc-combo-normal-note" id="pcComboNormalNote">Normal (no crit): ${esc(formatFormulaTerms(combined))}</div>` : ''}
-    ${pcBreakdownOpen && included.length ? `<div class="pc-breakdown">${pcBreakdownRowsHtml(included)}</div>` : ''}
+    ${included.length ? `<div class="pc-added-list">${pcAddedListHtml(included)}</div>` : ''}
     <div class="pc-combo-manual-row">
       <span class="pc-combo-manual-lbl">+ quick add</span>
       <input id="pcManualInput" class="pc-combo-manual-input" placeholder="e.g. +2, 1d4…" value="${esc(pcManualBonus)}">
@@ -3206,6 +3279,27 @@ function renderPcFilterRow(){
     ${tags.map(t=>`<button class="pc-tag-chip ${pcTagFilter===t?'active':''}" data-act="pc-tag-filter" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}
   </div>`;
 }
+// The number fields behind a scaling item's level-up rule (same shape as a
+// PC_SCALING_LIBRARY preset - see diceCountAtLevel). Replaces the plain
+// dice-builder/formula input while it.scaling is set (pc-toggle-scaling
+// switches an item between the two modes).
+function pcItemScalingFieldsHtml(it){
+  const s = it.scaling;
+  const field = (lbl,key,width)=>`<label class="pc-scale-field">${lbl}<input type="number" min="0" data-pcscale="${key}" data-id="${it.id}" value="${s[key]}" style="width:${width||44}px"></label>`;
+  return `
+    <div class="pcitem-scaling-row">
+      ${field('Dice','sides')}
+      ${field('Base','baseCount')}
+      ${field('+/level','perLevelCount')}
+      ${field('Cap','capCount')}
+      ${field('Min lvl','minLevel')}
+      ${field('Max lvl','maxLevel')}
+    </div>
+    <div class="hint" id="pcScalePreview-${it.id}" style="margin:4px 0 0;">${pcScalePreviewText(it)}</div>`;
+}
+function pcScalePreviewText(it){
+  return `Currently ${esc(pcItemEffectiveFormula(it))} at level ${it.scaling.level} - pick the level from the dropdown in the added-list above once it's ticked.`;
+}
 // The full dice-builder/name/tags/delete editor for exactly one item -
 // shown in place of its chip while pcEditingId===it.id, nowhere else.
 function pcItemEditCardHtml(it){
@@ -3216,6 +3310,7 @@ function pcItemEditCardHtml(it){
           <input class="pcitem-name" placeholder="Name (e.g. Longsword, Sneak Attack)" data-pcid="${it.id}" data-pcfield="name" value="${esc(it.name)}">
           <input class="pcitem-tags" placeholder="Tags (e.g. paladin, smite)" data-pcid="${it.id}" data-pcfield="tags" value="${esc(it.tags||'')}">
         </div>
+        ${it.scaling ? pcItemScalingFieldsHtml(it) : `
         <div class="pcitem-dice-row">
           ${[4,6,8,10,12,20,100].map(d=>`<button class="pcitem-die-btn" data-act="pc-add-die" data-id="${it.id}" data-die="${d}">d${d}</button>`).join('')}
           <button class="pcitem-die-btn" data-act="pc-add-mod" data-id="${it.id}" data-delta="1">+1</button>
@@ -3223,6 +3318,8 @@ function pcItemEditCardHtml(it){
           <button class="pcitem-clear-btn" data-act="pc-clear-formula" data-id="${it.id}">Clear</button>
         </div>
         <input class="pcitem-formula" data-pcid="${it.id}" data-pcfield="formula" value="${esc(it.formula)}" placeholder="e.g. 1d8+4 — or click dice above">
+        `}
+        <button class="smallbtn" data-act="pc-toggle-scaling" data-id="${it.id}" style="align-self:flex-start;">${it.scaling ? '✕ Remove level-scaling' : '+ Make this scale by level'}</button>
       </div>
       <div class="pcitem-actions">
         <button class="smallbtn" data-act="pc-toggle-edit" data-id="${it.id}">Done</button>
@@ -3243,7 +3340,7 @@ function pcItemChipHtml(it){
     <div class="pc-chip-wrap">
       <div class="pc-chip ${count>0?'active':''}" data-act="pc-chip-add" data-id="${it.id}">
         <span class="pc-chip-name">${esc(it.name)||'(unnamed)'}${count>1?` <span class="pc-chip-count">×${count}</span>`:''}</span>
-        <span class="pc-chip-formula">${esc(it.formula)||'—'}</span>
+        <span class="pc-chip-formula">${esc(pcItemEffectiveFormula(it))||'—'}</span>
       </div>
       ${count>0 ? `<button class="pc-chip-minus-btn" data-act="pc-chip-remove-one" data-id="${it.id}" title="Remove one">−</button>` : ''}
       <button class="pc-chip-edit-btn" data-act="pc-toggle-edit" data-id="${it.id}" title="Edit">✎</button>
@@ -3477,8 +3574,8 @@ function renderPcImport(root){
       <div class="modal">
         <div class="modal-hdr"><h2>Paste items to add</h2><button class="icobtn" data-act="close-pc-import"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
         <div class="modal-body">
-          <div class="hint">One item per line, columns separated by tabs or 2+ spaces — "Name  Formula" or "Name  Formula  Tags". Formula and tags are both optional, so even a bare list of names parses into something you can fill in on the next step. Example:<br><br>
-          <code>Dagger&#9;1d4+3&#9;weapon, offhand<br>Sneak Attack&#9;3d6&#9;rogue<br>Second Wind&#9;1d10+3</code></div>
+          <div class="hint">One item per line, columns separated by tabs or 2+ spaces — "Name  Formula  Tags". Formula and tags are both optional, so even a bare list of names parses into something you can fill in on the next step. For something that scales by level like Divine Smite, make the LAST column a scaling spec instead of a formula: <code>sides=8,base=2,perlevel=1,cap=5,min=1,max=9</code> (perlevel/cap/min/max all optional) — it's recognised by its content, so no need to leave Formula blank to make room for it. Example:<br><br>
+          <code>Dagger&#9;1d4+3&#9;weapon, offhand<br>Sneak Attack&#9;3d6&#9;rogue<br>Second Wind&#9;1d10+3<br>Divine Smite&#9;paladin, smite&#9;sides=8,base=2,perlevel=1,cap=5</code></div>
           <textarea class="paste" data-pcimport="raw" placeholder="Paste here…">${esc(imp.raw)}</textarea>
         </div>
         <div class="modal-ft">
@@ -3492,7 +3589,9 @@ function renderPcImport(root){
   const rowsHtml = imp.parsed.map((it,i)=>`
     <div class="lib-spell-row">
       <input class="limport-name" placeholder="Name" data-pcimport="row" data-lidx="${i}" data-lfield="name" value="${esc(it.name)}">
-      <input class="limport-name" placeholder="Formula, e.g. 1d8+4" data-pcimport="row" data-lidx="${i}" data-lfield="formula" value="${esc(it.formula)}">
+      ${it.scaling
+        ? `<span class="limport-name limport-scaling-note" title="Fine-tune this after adding, via the ✎ on its chip">Scales: ${it.scaling.baseCount}d${it.scaling.sides} base, +${it.scaling.perLevelCount}/lvl, cap ${it.scaling.capCount}</span>`
+        : `<input class="limport-name" placeholder="Formula, e.g. 1d8+4" data-pcimport="row" data-lidx="${i}" data-lfield="formula" value="${esc(it.formula)}">`}
       <input class="limport-name" placeholder="Tags" data-pcimport="row" data-lidx="${i}" data-lfield="tags" value="${esc(it.tags)}">
       <button class="iconx" data-act="pc-import-remove-row" data-lidx="${i}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
@@ -3695,6 +3794,13 @@ function renderModal(){
             <div class="field"><label>HP</label><input type="number" value="${c.hp??''}" data-cfield="hp"></div>
             <div class="field"><label>CR</label><input value="${esc(c.cr||'')}" data-cfield="cr"></div>
           </div>
+          <div class="sec-title">Feature &amp; spell library <button class="smallbtn" data-act="open-library">Browse →</button></div>
+          ${selectedEntryIds.size ? `<div class="entry-bulk-bar">
+            <span>${selectedEntryIds.size} selected</span>
+            <button class="smallbtn" data-act="entry-bulk-delete">✕ Delete selected</button>
+            <button class="smallbtn" data-act="entry-bulk-clear">Clear</button>
+          </div>` : ''}
+          ${groupsHtml}
           <div class="field-row">
             <div class="field"><label>Speed</label><input value="${esc(c.speed||'')}" data-cfield="speed"></div>
             <div class="field"><label>Proficiency bonus</label><input type="number" value="${c.pb??''}" data-cfield="pb"></div>
@@ -3741,13 +3847,6 @@ function renderModal(){
               <textarea class="ee-text" data-cfield="notes" placeholder='e.g. &lt;a href="https://..." target="_blank"&gt;D&amp;D Beyond&lt;/a&gt;'>${esc(c.notes||'')}</textarea>
             </div>
           </div>
-          <div class="sec-title">Feature &amp; spell library <button class="smallbtn" data-act="open-library">Browse →</button></div>
-          ${selectedEntryIds.size ? `<div class="entry-bulk-bar">
-            <span>${selectedEntryIds.size} selected</span>
-            <button class="smallbtn" data-act="entry-bulk-delete">✕ Delete selected</button>
-            <button class="smallbtn" data-act="entry-bulk-clear">Clear</button>
-          </div>` : ''}
-          ${groupsHtml}
         </div>
         <div class="modal-ft">
           <button class="btn" data-act="close-modal">Cancel</button>
@@ -3848,6 +3947,24 @@ function onGlobalInput(e){
     if(t.dataset.pcfield==='formula') renderPcComboBar();
     return;
   }
+  if(t.dataset.pcscale && t.dataset.id){
+    const it = pcItems.find(x=>x.id===t.dataset.id);
+    if(!it || !it.scaling) return;
+    const n = +t.value;
+    if(Number.isFinite(n)) it.scaling[t.dataset.pcscale] = n;
+    // keep the picked level inside whatever min/max range just got typed,
+    // same as changing the dropdown itself would
+    it.scaling.level = Math.min(Math.max(it.scaling.level, it.scaling.minLevel), it.scaling.maxLevel);
+    // the combo bar is safe to fully rebuild (the field being typed into
+    // lives in the chip-grid editor, not inside it) - but the editor's own
+    // live-preview text needs a direct textContent update instead, same
+    // "don't rebuild out from under an active edit" reasoning as the
+    // manual quick-add field uses, since it sits right next to this input.
+    renderPcComboBar();
+    const previewEl = document.getElementById('pcScalePreview-'+it.id);
+    if(previewEl) previewEl.textContent = pcScalePreviewText(it);
+    return;
+  }
   if(!editingCreature) return;
   if(t.dataset.cfield){ setCreatureField(t.dataset.cfield, t.value); return; }
   if(t.dataset.abil && t.dataset.abilfield){
@@ -3863,6 +3980,23 @@ function onGlobalInput(e){
 
 function onGlobalChange(e){
   const t = e.target;
+  // the level dropdown inline in the always-visible added-list (see
+  // pcAddedListHtml) - deliberately NOT a data-act, so opening/choosing
+  // from this native <select> can't also be misread as a click on the
+  // chip underneath it.
+  if(t.dataset.pclevel && t.dataset.id){
+    const it = pcItems.find(x=>x.id===t.dataset.id);
+    if(it && it.scaling){
+      it.scaling.level = +t.value;
+      savePc();
+      // the chip grid shows this item's computed dice too, not just the
+      // combo bar - a plain renderPcComboBar() would leave the chip
+      // showing the old level. Safe to fully rebuild here since this is a
+      // completed 'change', not a live keystroke with focus to protect.
+      renderPcRoller();
+    }
+    return;
+  }
   if(t.name==='critMode'){
     settings.critMode = t.value;
     saveSettings();
@@ -4208,6 +4342,21 @@ function onGlobalClick(e){
       renderPcRoller();
       break;
     }
+    case 'pc-toggle-scaling': {
+      const it = pcItems.find(x=>x.id===el.dataset.id);
+      if(!it) break;
+      if(it.scaling){
+        delete it.scaling;
+      } else {
+        // sane defaults in the shape of Divine Smite itself - cheapest
+        // starting point to then tweak via the number fields that appear.
+        it.scaling = { sides:8, baseCount:1, perLevelCount:1, capCount:5, minLevel:1, maxLevel:9, level:1 };
+        it.formula = '';
+      }
+      savePc();
+      renderPcRoller();
+      break;
+    }
     case 'pc-combo-clear':
       pcItems.forEach(it=>{ it.comboCount = 0; });
       pcManualBonus = '';
@@ -4222,10 +4371,6 @@ function onGlobalClick(e){
     case 'pc-sort-mode':
       pcSortMode = el.dataset.sort;
       renderPcRoller();
-      break;
-    case 'pc-toggle-breakdown':
-      pcBreakdownOpen = !pcBreakdownOpen;
-      renderPcComboBar();
       break;
     case 'pc-toggle-crit':
       pcCritOn = !pcCritOn;
@@ -4251,8 +4396,12 @@ function onGlobalClick(e){
       const levelSel = document.getElementById('pcScalingLevelSelect');
       if(!preset || !levelSel.value) break;
       const level = +levelSel.value;
-      const count = diceCountAtLevel(preset, level);
-      pcItems.push({ id: uid('p'), name: `${preset.name} (${ordinal(level)} level)`, formula: `${count}d${preset.sides}`, tags: preset.tags, comboCount:0, lastUsedAt: Date.now() });
+      // creates a genuinely live scaling item (not a frozen snapshot at
+      // this one level) - the level picked here is just its starting
+      // point, adjustable afterwards from the dropdown in the added-list
+      // once it's ticked, without needing to insert it again per level.
+      pcItems.push({ id: uid('p'), name: preset.name, formula:'', tags: preset.tags, comboCount:0, lastUsedAt: Date.now(),
+        scaling: { sides:preset.sides, baseCount:preset.baseCount, perLevelCount:preset.perLevelCount, capCount:preset.capCount, minLevel:preset.minLevel, maxLevel:preset.maxLevel, level } });
       savePc();
       renderPcRoller();
       // ready for the next insert straight away rather than leaving the
@@ -4290,7 +4439,8 @@ function onGlobalClick(e){
       if(!pcImport || !pcImport.parsed.length) break;
       const now = Date.now();
       pcImport.parsed.forEach(it=>{
-        pcItems.push({ id: uid('p'), name: it.name, formula: it.formula, tags: it.tags, comboCount:0, lastUsedAt: now });
+        pcItems.push({ id: uid('p'), name: it.name, formula: it.formula, tags: it.tags, comboCount:0, lastUsedAt: now,
+          ...(it.scaling ? { scaling: { ...it.scaling } } : {}) });
       });
       savePc();
       modalMode = null;
@@ -4561,6 +4711,7 @@ document.addEventListener('focusout', e=>{
     setTimeout(renderTargets, 0);
   }
   if(e.target.dataset.pcid && e.target.dataset.pcfield) savePc();
+  if(e.target.dataset.pcscale && e.target.dataset.id) savePc();
   if(e.target.classList.contains('mix-input')){
     const raw = e.target.value.trim();
     if(e.target.dataset.dmgonly){

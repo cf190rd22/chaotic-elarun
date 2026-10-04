@@ -417,8 +417,8 @@ body.page-pc .dm-only{display:none!important;}
 .pcitem-formula::placeholder{color:var(--text-mute);font-weight:500;}
 .pcitem-scaling-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .pc-scale-field{display:flex;flex-direction:column;gap:2px;font-size:9px;color:var(--text-mute);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;}
-.pc-scale-field input{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:'DM Mono',monospace;}
-.pc-scale-field input:focus{outline:none;border-color:var(--accent-bd);}
+.pc-scale-field input,.pc-scale-field select{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:'DM Mono',monospace;}
+.pc-scale-field input:focus,.pc-scale-field select:focus{outline:none;border-color:var(--accent-bd);}
 .pcitem-actions{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
 
 /* ---------- modal ---------- */
@@ -608,6 +608,10 @@ textarea.ee-text{width:100%;min-height:44px;background:var(--surface-3);border:1
           <button class="iconbtn primary" data-act="open-add-modal" style="justify-content:center;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add creature
+          </button>
+          <button class="iconbtn" data-act="open-library-standalone" style="justify-content:center;" title="Browse, add to, or remove from the shared feature &amp; spell library">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Feature &amp; spell library
           </button>
           <div class="search-wrap">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1851,6 +1855,12 @@ function isBoardFieldFocused(){
 let editingCreature = null;
 let modalMode = null; // 'paste' | 'edit' | 'options' | 'confirm' | 'library'
 let libraryTab = 'features'; // which tab the feature/spell library modal is showing
+// Whether the library browse modal was opened on its own from the DM
+// sidebar (manage the shared library itself) rather than from inside
+// "Edit creature" (insert straight onto that creature) - changes what the
+// modal shows (no insert buttons/DC-resolution without a target creature)
+// and where its Done button goes back to.
+let libraryStandalone = false;
 // Checkbox selection for bulk insert/remove in the library browse modal
 // (keys like 'f:0:1' for featureLibrary[0].powers[1], 's:0:3' for a spell) -
 // and for bulk delete of entries already on the creature being edited.
@@ -3286,9 +3296,16 @@ function renderPcFilterRow(){
 function pcItemScalingFieldsHtml(it){
   const s = it.scaling;
   const field = (lbl,key,width)=>`<label class="pc-scale-field">${lbl}<input type="number" min="0" data-pcscale="${key}" data-id="${it.id}" value="${s[key]}" style="width:${width||44}px"></label>`;
+  // the usual 5e set - but if a pasted/imported item came in with something
+  // else, keep it as an extra option rather than silently swapping it for
+  // the first one in the list just because it isn't one of the defaults.
+  const diceOptions = [4,6,8,10,12,20,100];
+  if(!diceOptions.includes(s.sides)) diceOptions.push(s.sides);
+  diceOptions.sort((a,b)=>a-b);
+  const diceField = `<label class="pc-scale-field">Dice<select data-pcscale="sides" data-id="${it.id}">${diceOptions.map(d=>`<option value="${d}" ${s.sides===d?'selected':''}>d${d}</option>`).join('')}</select></label>`;
   return `
     <div class="pcitem-scaling-row">
-      ${field('Dice','sides')}
+      ${diceField}
       ${field('Base','baseCount')}
       ${field('+/level','perLevelCount')}
       ${field('Cap','capCount')}
@@ -3699,13 +3716,15 @@ function renderModal(){
     return;
   }
   if(modalMode==='library'){
-    const c = editingCreature;
+    const c = editingCreature; // null when opened standalone from the DM sidebar - see libraryStandalone
     if(libraryImport) return renderLibraryImport(root, c);
     // Insert is a true toggle, not an "insert again" that piles up
     // duplicates - already-added shows a Remove button that deletes the
     // exact entry it added, right here, no trip down to the entries list.
     // Same data-act either way; the click handler checks presence itself.
+    // Not shown at all without a target creature to insert onto.
     const insertToggleBtn = (act, dataAttrs, label) => {
+      if(!c) return '';
       const added = !!findMatchingEntry(c.entries, label);
       return `<button class="smallbtn${added?' added':''}" data-act="${act}" ${dataAttrs}>${added?'✓ Added — remove':'+ Insert'}</button>`;
     };
@@ -3715,7 +3734,7 @@ function renderModal(){
         <div class="lib-theme-name">${esc(theme.theme)}</div>
         <div class="hint">${esc(theme.intro)}</div>
         ${theme.powers.map((p,pi)=>{
-          const dc = resolveDcFormula(p.text, c.cr);
+          const dc = c ? resolveDcFormula(p.text, c.cr) : null;
           const key = `f:${ti}:${pi}`;
           return `<div class="lib-power">
             <div class="lib-power-hdr">
@@ -3748,12 +3767,15 @@ function renderModal(){
       </div>
     `).join('') || '<div class="hint">No spell categories yet — use "Paste to add" below.</div>';
     const selCount = librarySelected.size;
+    const topHint = c
+      ? `Insert a ready-made power or spell straight into ${esc(c.name||'this creature')}'s actions. Save DCs that scale with CR are resolved against this creature's CR (${esc(c.cr||'—')}) the moment you insert them — edit the DC afterwards if you change the CR. Tick several to add or remove them all at once.`
+      : `Manage the shared power/spell library itself - add new ones below, or tick several to remove them. Open a creature's editor (its own "Browse →") to insert one of these straight onto it.`;
     root.innerHTML = `
     <div class="modal-overlay" data-act="overlay-close">
       <div class="modal">
         <div class="modal-hdr"><h2>Feature &amp; spell library</h2><button class="icobtn" data-act="close-library"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
         <div class="modal-body">
-          <div class="hint">Insert a ready-made power or spell straight into ${esc(c.name||'this creature')}'s actions. Save DCs that scale with CR are resolved against this creature's CR (${esc(c.cr||'—')}) the moment you insert them — edit the DC afterwards if you change the CR. Tick several to add or remove them all at once.</div>
+          <div class="hint">${topHint}</div>
           <div class="lib-tabs">
             <button class="lib-tab ${libraryTab==='features'?'active':''}" data-act="library-tab" data-tab="features">Features</button>
             <button class="lib-tab ${libraryTab==='spells'?'active':''}" data-act="library-tab" data-tab="spells">Spells</button>
@@ -3761,14 +3783,16 @@ function renderModal(){
           </div>
           ${selCount ? `<div class="lib-bulk-bar">
             <span>${selCount} selected</span>
-            <button class="smallbtn" data-act="library-bulk-insert">+ Insert selected</button>
-            <button class="smallbtn" data-act="library-bulk-remove">✕ Remove selected</button>
+            ${c
+              ? `<button class="smallbtn" data-act="library-bulk-insert">+ Insert selected</button>
+                 <button class="smallbtn" data-act="library-bulk-remove">✕ Remove selected</button>`
+              : `<button class="smallbtn" data-act="library-bulk-delete">✕ Delete from library</button>`}
             <button class="smallbtn" data-act="library-bulk-clear">Clear</button>
           </div>` : ''}
           ${libraryTab==='spells' ? spellsHtml : featuresHtml}
         </div>
         <div class="modal-ft">
-          <button class="btn primary" data-act="close-library">Done — back to editing</button>
+          <button class="btn primary" data-act="close-library">${c ? 'Done — back to editing' : 'Done'}</button>
         </div>
       </div>
     </div>`;
@@ -4177,8 +4201,14 @@ function onGlobalClick(e){
     case 'add-multipart': { const en = getEntry(el.dataset.eid); en.multi = en.multi||[]; en.multi.push({ref:'',count:1}); renderModal(); break; }
     case 'remove-multipart': { const en = getEntry(el.dataset.eid); en.multi.splice(+el.dataset.midx,1); renderModal(); break; }
 
-    case 'open-library': modalMode = 'library'; librarySelected.clear(); renderModal(); break;
-    case 'close-library': modalMode = 'edit'; librarySelected.clear(); renderModal(); break;
+    case 'open-library': modalMode = 'library'; libraryStandalone = false; librarySelected.clear(); renderModal(); break;
+    case 'open-library-standalone': modalMode = 'library'; libraryStandalone = true; librarySelected.clear(); renderModal(); break;
+    case 'close-library':
+      if(libraryStandalone){ modalMode = null; document.getElementById('modalRoot').innerHTML = ''; }
+      else modalMode = 'edit';
+      librarySelected.clear();
+      if(modalMode) renderModal();
+      break;
     case 'library-tab': libraryTab = el.dataset.tab; librarySelected.clear(); renderModal(); break;
     case 'insert-feature': {
       const theme = featureLibrary[+el.dataset.theme];
@@ -4224,6 +4254,33 @@ function onGlobalClick(e){
         const existing = findMatchingEntry(editingCreature.entries, name);
         if(existing) editingCreature.entries = editingCreature.entries.filter(e=>e!==existing);
       });
+      librarySelected.clear();
+      renderModal();
+      break;
+    }
+    // Only reachable in standalone mode (no creature to un-insert from -
+    // see library-bulk-remove above for that). Deletes the entries from
+    // the shared library itself. Indices are grouped per theme/category
+    // and spliced highest-first so removing one doesn't shift the index
+    // of another still queued in the same group.
+    case 'library-bulk-delete': {
+      const byTheme = {}, byCat = {};
+      librarySelected.forEach(key=>{
+        const [kind, i1, i2] = key.split(':');
+        const bucket = kind==='f' ? byTheme : byCat;
+        (bucket[i1] = bucket[i1]||[]).push(+i2);
+      });
+      Object.entries(byTheme).forEach(([ti, idxs])=>{
+        const theme = featureLibrary[+ti];
+        if(!theme) return;
+        idxs.sort((a,b)=>b-a).forEach(i=>theme.powers.splice(i,1));
+      });
+      Object.entries(byCat).forEach(([ci, idxs])=>{
+        const cat = spellLibrary[+ci];
+        if(!cat) return;
+        idxs.sort((a,b)=>b-a).forEach(i=>cat.spells.splice(i,1));
+      });
+      Store.setLibrary({ features: featureLibrary, spells: spellLibrary });
       librarySelected.clear();
       renderModal();
       break;

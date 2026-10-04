@@ -222,6 +222,9 @@ body.page-pc .dm-only{display:none!important;}
 .mix-stepper .mix-input{-moz-appearance:textfield;appearance:textfield;}
 .mix-panel .btn{padding:6px 12px;font-size:11px;}
 .mix-panel .btn:disabled{opacity:.5;cursor:not-allowed;}
+.manualroll-input{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11.5px;font-family:'DM Mono',monospace;color:var(--text);outline:none;}
+.manualroll-input:focus{border-color:var(--accent-bd);}
+.manualroll-input::placeholder{color:var(--text-mute);font-weight:500;}
 .mix-status{font-size:10px;color:var(--text-mute);font-family:'DM Mono',monospace;flex-basis:100%;}
 .mix-status.ok{color:var(--green);}
 .mix-status.warn{color:var(--amber);}
@@ -304,6 +307,7 @@ body.page-pc .dm-only{display:none!important;}
 .log-inst .idx{color:var(--text);font-weight:700;margin-right:1px;}
 .log-inst .idx.adv{color:var(--green);}
 .log-inst .idx.disadv{color:var(--red);}
+.log-inst .idx.manual{color:var(--amber);}
 .crit{color:var(--amber);font-weight:700;}
 .fumble{color:var(--red);font-weight:700;}
 .dmg-total{color:var(--orange);font-weight:700;}
@@ -1772,6 +1776,22 @@ function stepDmgOnlyHits(key, delta){
   commitDmgOnlyHits(key, s.hits+delta);
   renderBoard();
 }
+// "boardId::entryId" -> {open, text} for the "type in what I actually
+// rolled" panel - lets a DM substitute a physical die (or just a number
+// they fancy) for the computer's random d20 on an attack roll, while
+// everything downstream (crit/fumble, hit vs AC, damage) still runs the
+// normal way off that number. text holds several, space/comma-separated,
+// for rolling more than one instance of an attack at once.
+let manualRollState = new Map();
+function getManualRollState(key){
+  let s = manualRollState.get(key);
+  if(!s){ s = { open:false, text:'' }; manualRollState.set(key, s); }
+  return s;
+}
+function peekManualRollState(key){ return manualRollState.get(key) || null; }
+function parseManualD20List(text){
+  return String(text||'').split(/[^0-9]+/).map(s=>+s).filter(n=>Number.isInteger(n) && n>=1 && n<=20);
+}
 let cardMix = new Map(); // boardId -> {open, normal, adv, disadv}, a persistent split across the card's instances that every Roll click below respects once it's engaged
 function getCardMix(boardId, defaultTotal){
   let s = cardMix.get(boardId);
@@ -2205,6 +2225,26 @@ function rollAttackInstance(entry, modeOverride, critMin){
   return { d20rolls: rolls, chosen, mode, toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
 }
 
+// Same as rollAttackInstance, except the d20 comes from the DM instead of
+// crypto.getRandomValues - a physical die at the table, or just a number
+// they fancy. Everything downstream (crit/fumble threshold, hit vs AC,
+// damage dice) runs exactly the same way off whatever number comes in.
+function rollAttackInstanceManual(entry, manualD20, critMin){
+  const chosen = manualD20;
+  const isCrit = chosen >= (critMin||20);
+  const isFumble = chosen === 1;
+  const total = isFumble ? chosen : chosen + (entry.toHit||0);
+  const dmg = (entry.dmg||[]).map(c=>rollDamage(c, isCrit));
+  let vsTarget = null;
+  const tgt = activeTarget();
+  if(tgt){
+    const effAC = (tgt.ac||0) + (tgt.acAdj||0);
+    const hit = isFumble ? false : (isCrit ? true : total >= effAC);
+    vsTarget = { name: tgt.name || 'target', ac: effAC, hit };
+  }
+  return { d20rolls:[chosen], chosen, mode:'manual', toHit: entry.toHit, total, isCrit, isFumble, dmg, extraSave: entry.extraSave, vsTarget };
+}
+
 // Skips the attack roll entirely - for when the hit was already decided
 // some other way (rolled by hand, or just declared "these N landed") and
 // all that's left to do is roll the damage dice. chosen stays null so
@@ -2220,6 +2260,28 @@ function rollDamageOnly(creature, entry, hits, boardId){
   const instances = [];
   for(let i=1;i<=hits;i++) instances.push({ i, kind:'attack', ...rollDamageOnlyInstance(entry) });
   const logEntry = { creatureName: creature.name, entryName: entry.name+' (damage only)', atype: entry.atype, kind: entry.kind, instances };
+  pushLog(logEntry);
+  if(boardId){
+    lastResults.set(boardId+'::'+entry.id, logEntry);
+    renderBoard();
+  }
+}
+// The attack-roll equivalent of rollDamageOnly - except here the DM IS
+// supplying the d20(s), so crit/fumble and hit-vs-AC are still resolved
+// properly (unlike damage-only, which has no roll to check at all). One
+// entry per instance, same as a normal multi-instance Roll click.
+function rollEntryManual(creature, entry, d20List, boardId){
+  const critMin = creature.critRange || 20;
+  const instances = d20List.map((d20,idx)=>({ i: idx+1, kind:'attack', ...rollAttackInstanceManual(entry, d20, critMin) }));
+  const logEntry = { creatureName: creature.name, entryName: entry.name, atype: entry.atype, kind: entry.kind, instances };
+  if(boardId){
+    logEntry.srcKey = boardId+'::'+entry.id;
+    const remembered = lastApplyTarget.get(logEntry.srcKey);
+    if(remembered) forEachAttackInst(logEntry, inst=>{
+      const hit = inst.isFumble ? false : (inst.isCrit ? true : inst.total>=remembered.ac);
+      inst.vsTarget = { name: remembered.name, ac: remembered.ac, hit };
+    });
+  }
   pushLog(logEntry);
   if(boardId){
     lastResults.set(boardId+'::'+entry.id, logEntry);
@@ -2522,6 +2584,22 @@ function renderCard(item){
             </div>
             <button class="btn primary" data-act="roll-dmgonly" data-board="${item.boardId}" data-entry="${e.id}">Roll damage ×${dmgOnly.hits}</button>
           </div>` : '';
+          // for when the DM wants to substitute their own number for the
+          // attack roll - a physical die at the table, or just feeling
+          // spicy - while everything downstream (crit, hit vs AC, damage)
+          // still runs normally off it. Several, space/comma-separated,
+          // roll that many instances at once (see rollEntryManual).
+          const showManualRoll = e.kind==='attack';
+          const manualRollKey = item.boardId+'::'+e.id;
+          const manualRoll = showManualRoll ? peekManualRollState(manualRollKey) : null;
+          const manualRollBtn = showManualRoll ? `<button class="mix-toggle${manualRoll&&manualRoll.open?' open':''}" data-act="toggle-manualroll" data-key="${manualRollKey}" title="Type in the d20(s) you actually rolled instead of a random one">🎲</button>` : '';
+          const manualRollPanel = (manualRoll && manualRoll.open) ? `<div class="mix-panel">
+            <div class="mix-row" style="flex:1;min-width:150px;">
+              <span class="mix-lbl">D20s</span>
+              <input type="text" class="manualroll-input" data-manualroll="1" data-key="${manualRollKey}" value="${esc(manualRoll.text)}" placeholder="e.g. 14, 8, 19">
+            </div>
+            <button class="btn primary" data-act="roll-manualroll" data-board="${item.boardId}" data-entry="${e.id}">Roll these</button>
+          </div>` : '';
           // a card-level flat/adv/disadv split (set once for the whole
           // creature, see renderCard) takes over from the blunt all-or-
           // nothing A/D toggle whenever it's actually engaged - see
@@ -2548,6 +2626,7 @@ function renderCard(item){
             <div class="roll-btn-group">
               ${mixBtn}
               ${dmgOnlyBtn}
+              ${manualRollBtn}
               <button class="roll-btn ${rollBtnCls}" data-act="roll-entry" data-board="${item.boardId}" data-entry="${e.id}" title="${rollBtnTitle}">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7.5v9L12 22l9-5.5v-9L12 2Z"/><path d="M12 2v20M3 7.5l9 5.5 9-5.5"/></svg>
                 Roll
@@ -2557,6 +2636,7 @@ function renderCard(item){
           ${descOpen && e.text ? `<div class="entry-desc-body">${formatEntryDesc(e.text)}</div>` : ''}
           ${mixPanel}
           ${dmgOnlyPanel}
+          ${manualRollPanel}
           ${result ? renderCardResult(item.boardId+'::'+e.id, result) : ''}`;
         }).join('');
     groupHtmlByType[t] = `<div class="group g-${t} ${collapsed?'collapsed':''}">
@@ -3915,6 +3995,11 @@ function onGlobalInput(e){
   if(t.id==='searchInput'){ librarySearch = t.value; renderLibrary(); return; }
   if(t.id==='pcSearchInput'){ pcSearch = t.value; renderPcRoller(); return; }
   if(t.id==='pcManualInput'){ pcManualBonus = t.value; updatePcComboTotalOnly(); return; }
+  if(t.dataset.manualroll && t.dataset.key){
+    const s = manualRollState.get(t.dataset.key);
+    if(s) s.text = t.value;
+    return;
+  }
   if(t.dataset.tid && t.dataset.tfield){
     const tgt = targets.items.find(x=>x.id===t.dataset.tid);
     if(!tgt) return;
@@ -4601,6 +4686,23 @@ function onGlobalClick(e){
       const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
       const s = entry && dmgOnlyState.get(item.boardId+'::'+entry.id);
       if(c && entry && s) rollDamageOnly(c, entry, s.hits, item.boardId);
+      break;
+    }
+    case 'toggle-manualroll': {
+      const s = getManualRollState(el.dataset.key);
+      s.open = !s.open;
+      renderBoard();
+      break;
+    }
+    case 'roll-manualroll': {
+      const item = board.items.find(it=>it.boardId===el.dataset.board);
+      const c = item && creatures.find(cr=>cr.id===item.creatureId);
+      const entry = c && c.entries.find(en=>en.id===el.dataset.entry);
+      const s = entry && manualRollState.get(item.boardId+'::'+entry.id);
+      if(c && entry && s){
+        const d20List = parseManualD20List(s.text);
+        if(d20List.length) rollEntryManual(c, entry, d20List, item.boardId);
+      }
       break;
     }
     case 'toggle-card-mix': {

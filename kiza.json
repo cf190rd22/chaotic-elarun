@@ -37257,7 +37257,7 @@
             "adv": false,
             "dis": false,
             "bonus": 6,
-            "note": "+d4 nail file",
+            "note": "+d4",
             "_modeAdv": false,
             "_modeDis": false,
             "_itemDis": false,
@@ -37317,7 +37317,7 @@
             "_grantProfLevel": null,
             "_grantBonus": 0,
             "_grantSources": [],
-            "note": "Added a +1 due to training"
+            "note": "Should be +4 (Increased by training)"
           },
           "Performance": {
             "state": "prof",
@@ -37383,7 +37383,7 @@
             "_grantProfLevel": null,
             "_grantBonus": 0,
             "_grantSources": [],
-            "note": "+d4 from training in heavy armour"
+            "note": "+D4"
           },
           "Survival": {
             "state": "none",
@@ -37420,14 +37420,7 @@
         "notes": "",
         "overrides": {},
         "choices": {},
-        "customFeatures": [
-          {
-            "level": 0,
-            "name": "New Feature",
-            "description": "",
-            "_type": "custom"
-          }
-        ],
+        "customFeatures": [],
         "spells": [
           {
             "name": "Holy Word",
@@ -38859,7 +38852,7 @@
             "notes": "",
             "desc": "4 Charges\nArmor Class: +3\nYou gain a +1 bonus to Armor Class while wielding this shield.\nThe shield has 4 charges. While holding it, when a Large or smaller creature within 5 feet of you hits you with a melee attack roll, you can take a Reaction to expend 1 of the shield’s charges and push the attacker up to 15 feet straight away. The shield regains 1d4 expended charges daily at dawn.",
             "fav": true,
-            "used": false,
+            "used": true,
             "_actionAdj": {
               "ac": "+3",
               "acDur": "",
@@ -38874,7 +38867,23 @@
               "advSkills": [],
               "advSkillsDur": ""
             },
-            "proficient": false
+            "proficient": false,
+            "_actionAdjActive": true,
+            "_flag": true,
+            "_appliedAdj": {
+              "ac": 3,
+              "acActive": true,
+              "maxHp": 0,
+              "maxHpActive": false,
+              "tempHp": 0,
+              "tempHpActive": false,
+              "speed": 0,
+              "speedActive": false,
+              "saveDc": 0,
+              "saveDcActive": false,
+              "advSkills": [],
+              "advSkillsActive": false
+            }
           },
           {
             "name": "Heart of the Sleeveless",
@@ -38999,7 +39008,8 @@
             "notes": "Concentration, up to 10 min",
             "desc": "A shimmering field surrounds a creature of your choice within range, granting it a +2 bonus to AC for the duration.",
             "fav": false,
-            "used": false
+            "used": false,
+            "_flag": true
           },
           {
             "name": "Shining Smite",
@@ -39210,7 +39220,7 @@
             "_playerSetMode": true,
             "_modeConsumesTracker": "Chaotic Wounds",
             "_libHasMode": true,
-            "_modeActive": false
+            "_modeActive": true
           },
           {
             "name": "CD:  Channel Chaos",
@@ -39456,7 +39466,7 @@
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_deflection",
             "label": "Chaos: Deflection",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -39466,21 +39476,19 @@
             "_catId": 1784109388919
           },
           {
-            "key": "custom_repulsion_shield_1784105550080",
-            "label": "Repulsion Shield",
+            "key": "_custom_1788010997025",
+            "label": "Portent Die:",
+            "max": 20,
             "cur": 0,
-            "max": 4,
-            "reset": "long",
+            "reset": "",
             "_custom": true,
-            "_trackerType": "boxes",
-            "actionLink": "Repulsion Shield",
-            "_catId": 1784109406003
+            "_trackerType": "hp"
           },
           {
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 40,
-            "cur": 40,
+            "cur": 0,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -39508,7 +39516,7 @@
             "key": "cls_chaos_knight_chaotic_wound_die",
             "label": "Chaotic Wound Die",
             "max": 4,
-            "cur": 0,
+            "cur": 4,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -39522,7 +39530,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 20,
+            "cur": 0,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -39533,10 +39541,24 @@
             "actionLink": "Aura of Chaos"
           },
           {
+            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
+            "label": "Chaos: Size",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 398,
+            "actionLink": "Chaos: Size",
+            "_catId": 1784109388919,
+            "_origIdx": 1
+          },
+          {
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -39546,22 +39568,20 @@
             "_origIdx": 3
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
-            "label": "Chaos: Size",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
+            "key": "custom_repulsion_shield_1784105550080",
+            "label": "Repulsion Shield",
+            "cur": 4,
+            "max": 4,
             "reset": "long",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 398,
-            "actionLink": "Chaos: Size",
-            "_catId": 1784109388919,
-            "_origIdx": 1
+            "_trackerType": "boxes",
+            "actionLink": "Repulsion Shield",
+            "_catId": 1784109406003,
+            "_origIdx": 2
           }
         ],
         "_slotUsed": {
-          "157-L2": 1
+          "157-L2": 2
         },
         "_defTags": [
           {
@@ -39569,7 +39589,7 @@
             "damage": "Fire"
           }
         ],
-        "acAdjust": 0,
+        "acAdjust": 3,
         "hpAdjust": 0,
         "speedAdjust": 0,
         "hpCurrent": 84,
@@ -39580,7 +39600,7 @@
           {
             "name": "Raggy",
             "hpMax": 58,
-            "hpCur": 58,
+            "hpCur": 2,
             "text": "<div style=\"max-width:760px;background:linear-gradient(180deg,#f8f1e4 0%,#fdfbf7 100%);border:2px solid #7a200d;border-radius:12px;padding:14px 16px;color:#2b2b2b;font-family:Georgia,serif;box-shadow:0 4px 10px rgba(0,0,0,0.12);font-size:13px;line-height:1.35;\"><div style=\"display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;\"><div><div style=\"color:#7a200d;font-size:1.55rem;line-height:1;font-weight:bold;font-family:Georgia,serif;\">Raggy</div><div style=\"margin-top:3px;font-style:italic;color:#666;font-size:0.8rem;\">Medium, Lawful Doggo</div></div><div style=\"display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;\"><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.22);border-radius:8px;padding:5px 9px;min-width:58px;text-align:center;\"><div style=\"font-size:0.58rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a200d;font-weight:bold;font-family:Georgia,serif;\">AC</div><div style=\"font-size:0.9rem;font-weight:bold;color:#2b2b2b;\">15</div></div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.22);border-radius:8px;padding:5px 9px;min-width:58px;text-align:center;\"><div style=\"font-size:0.58rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a200d;font-weight:bold;font-family:Georgia,serif;\">HP</div><div style=\"font-size:0.9rem;font-weight:bold;color:#2b2b2b;\">58</div></div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.22);border-radius:8px;padding:5px 9px;min-width:58px;text-align:center;\"><div style=\"font-size:0.58rem;text-transform:uppercase;letter-spacing:0.06em;color:#7a200d;font-weight:bold;font-family:Georgia,serif;\">SPEED</div><div style=\"font-size:0.9rem;font-weight:bold;color:#2b2b2b;\">50 ft.</div></div></div></div><div style=\"border-top:2px solid #c9a46a;margin:9px 0;\"></div><div style=\"display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:12px;\"><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">STR</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">17 (+3)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">DEX</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">12 (+1)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">CON</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">14 (+2)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">INT</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">6 (-2)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">WIS</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">13 (+1)</div></div><div style=\"text-align:center;\"><div style=\"font-size:0.7rem;font-weight:bold;color:#7a200d;font-family:Georgia,serif;margin-bottom:2px;\">CHA</div><div style=\"background:rgba(122,32,13,0.08);border:1px solid rgba(122,32,13,0.15);border-radius:6px;padding:5px 3px;font-weight:bold;font-size:0.85rem;color:#2b2b2b;\">6 (-2)</div></div></div><div style=\"display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;\"><div><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Skills</strong> Perception +5</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Damage Immunities</strong> Fire</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Senses</strong> Darkvision 60 ft., Passive Perception 15</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Languages</strong> Understands Infernal but can’t speak</p><p style=\"margin:4px 0;font-size:13px;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Challenge</strong> 3</p><div style=\"margin-top:10px;\"><div style=\"font-size:0.92rem;font-weight:bold;color:#7a200d;text-transform:uppercase;border-bottom:1px solid #c9a46a;padding-bottom:2px;margin-bottom:5px;font-family:Georgia,serif;\">Traits</div><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Pack Tactics.</strong> Raggy has advantage on attack rolls against a creature if at least one ally is within 5 feet.</p></div></div><div><div style=\"margin-top:10px;\"><div style=\"font-size:0.92rem;font-weight:bold;color:#7a200d;text-transform:uppercase;border-bottom:1px solid #c9a46a;padding-bottom:2px;margin-bottom:5px;font-family:Georgia,serif;\">Actions</div><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Multiattack.</strong> Raggy makes two Bite attacks.</p><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Bite.</strong> Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage plus 3 (1d6) fire damage.</p><p style=\"margin:4px 0;font-size:13px;line-height:1.4;color:#2b2b2b;\"><strong style=\"color:#2b2b2b;\">Fire Breath (1/Long Rest).</strong> Each creature in a 15-foot cone must make a DC 12 Dexterity save, taking 17 (5d6) fire damage on a failed save.</p></div></div></div></div>",
             "isFamiliar": true,
             "hideHp": false,
@@ -39637,7 +39657,8 @@
             "size": "Medium",
             "speed": "50 ft.",
             "speedType": "",
-            "subtypes": ""
+            "subtypes": "",
+            "tempHp": 0
           }
         ],
         "items": [
@@ -39992,7 +40013,7 @@
             "itemType": "Wondrous item",
             "subtype": "Wondrous Item",
             "rarity": "uncommon",
-            "attune": "yes",
+            "attune": "attuned",
             "weight": "--",
             "source": "Dungeon Master’s Guide, pg. 240",
             "desc": "In Backpack\nWhile you wear these boots, your Speed becomes 30 feet unless your Speed is higher, and your Speed isn’t reduced by you carrying weight in excess of your carrying capacity or wearing Heavy Armor.\nOnce on each of your turns, you can jump up to 30 feet by spending only 10 feet of movement.",
@@ -40137,7 +40158,7 @@
           },
           {
             "src": "Commander's Plate",
-            "val": 6,
+            "val": 3,
             "_tab": "item",
             "_id": "itrow-157-32"
           }
@@ -40151,7 +40172,7 @@
         "_modeAdvAttackActive": false,
         "_modeAdvInitiativeActive": false,
         "_passiveItemAdj": {
-          "ac": 9,
+          "ac": 6,
           "speed": 0,
           "saveDc": 0,
           "maxHp": 0,
@@ -40159,10 +40180,10 @@
         },
         "_secCollapsed": {
           "quickStats": false,
-          "saves": true,
+          "saves": false,
           "skills": false,
           "passives": false,
-          "senses": false,
+          "senses": true,
           "defenses": false,
           "feats": false,
           "languages": true,
@@ -40218,11 +40239,13 @@
           "1": 4,
           "2": 3
         },
-        "activeModes": [],
+        "activeModes": [
+          "Chaotic Wounds"
+        ],
         "acEffective": 22,
         "hpMax": 84,
         "_slotUsedCompact": {
-          "2": 1
+          "2": 2
         },
         "deathSaves": {
           "pass": 0,
@@ -40233,7 +40256,7 @@
             "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_deflection",
             "label": "Chaos: Deflection",
             "max": 1,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -40243,21 +40266,19 @@
             "_catId": 1784109388919
           },
           {
-            "key": "custom_repulsion_shield_1784105550080",
-            "label": "Repulsion Shield",
+            "key": "_custom_1788010997025",
+            "label": "Portent Die:",
+            "max": 20,
             "cur": 0,
-            "max": 4,
-            "reset": "long",
+            "reset": "",
             "_custom": true,
-            "_trackerType": "boxes",
-            "actionLink": "Repulsion Shield",
-            "_catId": 1784109406003
+            "_trackerType": "hp"
           },
           {
             "key": "cls_chaos_knight_lay_on_hands",
             "label": "Lay on Hands",
             "max": 40,
-            "cur": 40,
+            "cur": 0,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -40285,7 +40306,7 @@
             "key": "cls_chaos_knight_chaotic_wound_die",
             "label": "Chaotic Wound Die",
             "max": 4,
-            "cur": 0,
+            "cur": 4,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -40299,7 +40320,7 @@
             "key": "cls_chaos_knight_aura_of_chaos",
             "label": "Aura of Chaos",
             "max": 20,
-            "cur": 20,
+            "cur": 0,
             "_trackerType": "hp",
             "reset": "long",
             "_custom": true,
@@ -40310,10 +40331,24 @@
             "actionLink": "Aura of Chaos"
           },
           {
+            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
+            "label": "Chaos: Size",
+            "max": 1,
+            "cur": 0,
+            "_trackerType": "boxes",
+            "reset": "long",
+            "_custom": true,
+            "_featSync": true,
+            "_syncSourceId": 398,
+            "actionLink": "Chaos: Size",
+            "_catId": 1784109388919,
+            "_origIdx": 1
+          },
+          {
             "key": "feat_blessing_of_the_elandran_cleric_blessing_of_the_e._cleric",
             "label": "Blessing of the E. Cleric",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -40323,18 +40358,16 @@
             "_origIdx": 3
           },
           {
-            "key": "feat_blades_of_chaos:_path_of_sentinel_chaos:_size",
-            "label": "Chaos: Size",
-            "max": 1,
-            "cur": 1,
-            "_trackerType": "boxes",
+            "key": "custom_repulsion_shield_1784105550080",
+            "label": "Repulsion Shield",
+            "cur": 4,
+            "max": 4,
             "reset": "long",
             "_custom": true,
-            "_featSync": true,
-            "_syncSourceId": 398,
-            "actionLink": "Chaos: Size",
-            "_catId": 1784109388919,
-            "_origIdx": 1
+            "_trackerType": "boxes",
+            "actionLink": "Repulsion Shield",
+            "_catId": 1784109406003,
+            "_origIdx": 2
           }
         ],
         "saveDcEffective": 14,
@@ -40380,6 +40413,9 @@
           6,
           6
         ],
+        "_collapsedSpLevels": {
+          "1": false
+        },
         "_appliedSuggestions": [
           {
             "srcKey": "feat_189",
@@ -40397,7 +40433,8 @@
               "value": 1
             }
           }
-        ]
+        ],
+        "statsLocked": false
       }
     ],
     "_exportedAt": 1787255886281,
@@ -40445,5 +40482,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1791635365217
+  "_updated": 1791636533868
 }

@@ -44004,7 +44004,7 @@
           "tempHp": 0
         },
         "_slotUsed": {
-          "152-L4": 0,
+          "152-L4": 1,
           "152-L1": 1,
           "152-L2": 3,
           "152-L3": 1
@@ -44031,8 +44031,8 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 59,
-        "hpTemp": 0,
+        "hpCurrent": 16,
+        "hpTemp": 5,
         "_concentratingOn": null,
         "_featAtypes": {
           "feat_258_Chaos: Anchor": "reaction",
@@ -44101,7 +44101,7 @@
           "1": 1,
           "2": 3,
           "3": 1,
-          "4": 0
+          "4": 1
         },
         "_trackersForDm": [
           {
@@ -44353,5 +44353,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1791646600224
+  "_updated": 1791647520612
 }

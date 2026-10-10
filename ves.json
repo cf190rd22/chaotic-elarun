@@ -38088,7 +38088,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44006,7 +44006,7 @@
         "_slotUsed": {
           "152-L4": 1,
           "152-L1": 1,
-          "152-L2": 1,
+          "152-L2": 3,
           "152-L3": 1
         },
         "_collapsedActSubgroups": {},
@@ -44031,7 +44031,7 @@
         "acAdjust": 0,
         "hpAdjust": 0,
         "speedAdjust": 0,
-        "hpCurrent": 41,
+        "hpCurrent": 59,
         "hpTemp": 0,
         "_concentratingOn": null,
         "_featAtypes": {
@@ -44099,7 +44099,7 @@
         "hpMax": 59,
         "_slotUsedCompact": {
           "1": 1,
-          "2": 1,
+          "2": 3,
           "3": 1,
           "4": 1
         },
@@ -44172,7 +44172,7 @@
             "key": "race_dwarf_stonecunning",
             "label": "Stonecunning",
             "max": 3,
-            "cur": 0,
+            "cur": 1,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -44353,5 +44353,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1790438780038
+  "_updated": 1791645875341
 }

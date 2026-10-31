@@ -13157,8 +13157,8 @@
             "_grantSources": []
           },
           "Athletics": {
-            "bonus": 0,
-            "state": "half",
+            "bonus": 2,
+            "state": "prof",
             "adv": false,
             "dis": false,
             "_modeAdv": false,
@@ -19012,6 +19012,5 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1793459313890,
-  "_unchanged": true
+  "_updated": 1793459336190
 }

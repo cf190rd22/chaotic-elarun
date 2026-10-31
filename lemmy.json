@@ -14242,7 +14242,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true
+            "_singleUsed": false
           },
           {
             "name": "Ghost Light",
@@ -15587,7 +15587,7 @@
             "_syncSourceName": "Mac-Fuirmidh Cittern",
             "_spellAdjActive": false,
             "_spellAdjDuration": "",
-            "_singleUsed": true
+            "_singleUsed": false
           },
           {
             "name": "Glyph of Warding",
@@ -17513,7 +17513,7 @@
             "_syncSourceName": "Blades of Chaos: Path of Storm",
             "_singleUse": true,
             "_freecasted": false,
-            "_singleUsed": true
+            "_singleUsed": false
           },
           {
             "name": "Silence",
@@ -18285,7 +18285,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 1,
+            "cur": 0,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18307,7 +18307,7 @@
             "key": "_custom_1786797585106",
             "label": "Portent dice",
             "max": 20,
-            "cur": 0,
+            "cur": 4,
             "reset": "long",
             "_custom": true,
             "_trackerType": "hp"
@@ -18316,7 +18316,7 @@
             "key": "cls_bard_bardic_inspiration_(!)",
             "label": "Bardic Inspiration (!)",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18349,7 +18349,7 @@
             "key": "feat_blades_of_chaos:_path_of_storm_chaos:_gust",
             "label": "Chaos: Gust",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18425,10 +18425,7 @@
         "_topOpen": false,
         "_autoCalcSkills": true,
         "spellcastingAbility": "CHA",
-        "_slotUsed": {
-          "399-L1": 2,
-          "399-L3": 1
-        },
+        "_slotUsed": {},
         "acAdjust": 0,
         "_panelAcAdj": 0,
         "hpAdjust": 0,
@@ -18823,7 +18820,7 @@
             "damage": "Cold"
           }
         ],
-        "heroicInspiration": false,
+        "heroicInspiration": true,
         "passivePerception": 17,
         "passiveInsight": 14,
         "_slotTotal": {
@@ -18835,10 +18832,7 @@
         "activeModes": [],
         "acEffective": 18,
         "hpMax": 51,
-        "_slotUsedCompact": {
-          "1": 2,
-          "3": 1
-        },
+        "_slotUsedCompact": {},
         "_featAtypes": {
           "feat_257_Blessing of the Elandran Cleric": "action",
           "custom_5": "feature"
@@ -18865,7 +18859,7 @@
           {
             "key": "item_charges_mac_fuirmidh_cittern",
             "label": "Mac-Fuirmidh Cittern Charges",
-            "cur": 1,
+            "cur": 0,
             "max": 7,
             "reset": "long",
             "_custom": true,
@@ -18887,7 +18881,7 @@
             "key": "_custom_1786797585106",
             "label": "Portent dice",
             "max": 20,
-            "cur": 0,
+            "cur": 4,
             "reset": "long",
             "_custom": true,
             "_trackerType": "hp"
@@ -18896,7 +18890,7 @@
             "key": "cls_bard_bardic_inspiration_(!)",
             "label": "Bardic Inspiration (!)",
             "max": 3,
-            "cur": 2,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18929,7 +18923,7 @@
             "key": "feat_blades_of_chaos:_path_of_storm_chaos:_gust",
             "label": "Chaos: Gust",
             "max": 1,
-            "cur": 1,
+            "cur": 0,
             "_trackerType": "boxes",
             "reset": "long",
             "_custom": true,
@@ -18948,9 +18942,7 @@
         "gold": 5947,
         "sp": 0,
         "pp": 50,
-        "_hitDiceUsed": {
-          "d8": 6
-        },
+        "_hitDiceUsed": {},
         "_wasDying": false,
         "_playerNotes": {
           "item:Mac-Fuirmidh Cittern": "<ul><li><br></li></ul>"
@@ -19020,6 +19012,6 @@
     "conditionDescs": {}
   },
   "nextId": 401,
-  "_updated": 1793453246092,
+  "_updated": 1793453286065,
   "_unchanged": true
 }

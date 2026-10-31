@@ -39479,7 +39479,7 @@
             "key": "_custom_1788010997025",
             "label": "Portent Die:",
             "max": 20,
-            "cur": 11,
+            "cur": 0,
             "reset": "",
             "_custom": true,
             "_trackerType": "hp"
@@ -40263,7 +40263,7 @@
             "key": "_custom_1788010997025",
             "label": "Portent Die:",
             "max": 20,
-            "cur": 11,
+            "cur": 0,
             "reset": "",
             "_custom": true,
             "_trackerType": "hp"
@@ -40479,5 +40479,5 @@
     ]
   },
   "nextId": 401,
-  "_updated": 1793465157714
+  "_updated": 1793465510517
 }

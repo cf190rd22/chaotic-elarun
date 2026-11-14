@@ -10,7 +10,7 @@
   (function () {
     var t = null;
     try { t = localStorage.getItem('dndref.theme'); } catch (e) {}
-    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    try { if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) { t = 'light'; }
     document.documentElement.dataset.theme = t;
   })();
 </script>
@@ -68,50 +68,82 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .kbd { font: 12px ui-monospace, monospace; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
 
 /* =====================================================================
-   TOP BAR
+   TOP BAR AND TABS
    ===================================================================== */
-.topbar {
-  display: flex; gap: 10px; align-items: center; padding: 8px 12px;
-  background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+.topbar { background: var(--panel); border-bottom: 1px solid var(--border); }
+.bar-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "brand search actions";
+  gap: 10px; align-items: center; padding: 8px 12px 4px;
 }
-.brand { font: 600 18px var(--serif); margin: 0; white-space: nowrap; color: var(--accent); }
-.search-wrap { flex: 1 1 320px; display: flex; gap: 6px; min-width: 0; }
-#q { flex: 1; min-width: 0; padding: 8px 10px; font-size: 16px; }
-#typeFilter { max-width: 170px; }
-.actions { display: flex; gap: 6px; flex-wrap: wrap; }
-#favBtn.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.brand { grid-area: brand; font: 600 18px var(--serif); margin: 0; white-space: nowrap; color: var(--accent); }
+.search-wrap { grid-area: search; min-width: 0; max-width: 760px; }
+#q { width: 100%; padding: 9px 12px; font-size: 16px; }
+.actions { grid-area: actions; display: flex; gap: 6px; }
+.tabs { display: flex; align-items: stretch; height: 40px; gap: 2px; overflow-x: auto; padding: 0 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto; background: none; border: 0; border-bottom: 3px solid transparent; border-radius: 0;
+  padding: 0 12px; height: 40px; display: inline-flex; align-items: center; overflow: hidden;
+  color: var(--muted); font-weight: 500; line-height: 1;
+}
+.tab:hover { background: var(--hover); color: var(--text); }
+.tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+.tab .count { font-size: 11px; margin-left: 5px; opacity: .8; }
+.tab.empty { opacity: .45; }
+.banner { background: var(--danger); color: #fff; padding: 8px 12px; font-size: 14px; }
 
 /* =====================================================================
-   THREE-PANE LAYOUT: sidebar | results | detail
+   LAYOUT: results | detail
    ===================================================================== */
-.layout { flex: 1; display: grid; grid-template-columns: 200px 340px 1fr; min-height: 0; }
-#sidebar { overflow: auto; border-right: 1px solid var(--border); padding: 8px; background: var(--panel-2); }
-#sidebar a {
-  display: flex; justify-content: space-between; gap: 6px; padding: 5px 8px; border-radius: 6px;
-  color: inherit; text-decoration: none; font-size: 14px;
-}
-#sidebar a:hover { background: var(--hover); }
-#sidebar a.on { background: var(--sel); font-weight: 600; }
-#sidebar .count { color: var(--muted); font-size: 12px; }
-#sidebar hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0; }
-
+.layout { flex: 1; display: grid; grid-template-columns: 400px minmax(0, 1fr); min-height: 0; }
+#listPane, #detail { min-width: 0; }
 #listPane { display: flex; flex-direction: column; border-right: 1px solid var(--border); min-height: 0; background: var(--panel); }
-#resultMeta { font-size: 12px; color: var(--muted); padding: 6px 10px; border-bottom: 1px solid var(--border); }
+#resultMeta {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px;
+  font-size: 13px; color: var(--muted); padding: 4px 10px; border-bottom: 1px solid var(--border);
+}
+#resultMeta b { color: var(--text); }
+#resultMeta button { font-size: 12px; padding: 2px 8px; }
+#suggest { padding: 10px 12px; margin: 8px 10px 0; border: 1px solid var(--border); border-radius: 8px; background: var(--panel-2); }
+#suggest a { color: var(--accent); }
+#home { flex: 1; overflow: auto; padding: 12px; }
+#home .hint { overflow-wrap: anywhere; }
+#home code { font-size: 12px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
+.home-h { display: flex; justify-content: space-between; align-items: baseline; font-size: 16px; margin: 18px 0 6px; }
+.home-h a { font: 13px system-ui; color: var(--accent); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 12px 0 4px; }
+.tile { text-align: left; padding: 8px 12px; border-left: 4px solid hsl(var(--h) 55% 50%); border-radius: 8px; white-space: normal; }
+.tile b { display: block; font-size: 20px; font-family: var(--serif); }
 #list { flex: 1; overflow: auto; position: relative; }
 .vspacer { width: 1px; }
-.vrows { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+.vrows { position: absolute; left: 0; right: 0; top: 0; }
+.vrows > .row, .vrows > .ghead { position: absolute; left: 0; right: 0; }
+.static { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .row {
-  height: 54px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
-  border-bottom: 1px solid var(--border); cursor: pointer;
+  height: 58px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 12px;
+  border-bottom: 1px solid var(--border); cursor: pointer; background: var(--panel);
 }
 .row:hover { background: var(--hover); }
 .row.cur { box-shadow: inset 3px 0 0 var(--accent); background: var(--hover); }
 .row.open { background: var(--sel); }
 .row .t { flex: 1; min-width: 0; }
 .row .n, .row .s { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.row .n { font-weight: 500; }
-.row .s { font-size: 12px; color: var(--muted); }
-.star { background: none; border: 0; padding: 4px; font-size: 18px; line-height: 1; color: var(--muted); }
+.row .n { font-weight: 500; font-size: 16px; }
+.row .s { font-size: 12.5px; color: var(--muted); }
+.chip {
+  flex: 0 0 62px; font: 700 12.5px system-ui; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--muted);
+}
+.chip[style] { color: hsl(var(--h) 60% var(--badge-l)); }
+.ghead {
+  height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 10px; cursor: pointer; user-select: none;
+  font: 700 12.5px system-ui; letter-spacing: .09em; text-transform: uppercase; color: var(--text);
+  background: var(--panel-2); border-bottom: 1px solid var(--border);
+}
+.ghead .gi { color: var(--muted); font-size: 13px; width: 14px; }
+.ghead .gc { color: var(--muted); font-weight: 400; letter-spacing: 0; }
+.ghead .go { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 12px; padding: 2px 8px; }
+.star { background: none; border: 0; padding: 6px; font-size: 19px; line-height: 1; color: var(--muted); }
 .star.on { color: #d4a017; }
 .star:hover { background: none; transform: scale(1.15); }
 .badge {
@@ -120,16 +152,32 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 }
 .badge.grey { --h: 0; background: hsl(0 0% 50% / var(--badge-bg-a)); color: var(--muted); }
 .empty { padding: 30px 20px; color: var(--muted); text-align: center; }
+.empty button { margin-top: 10px; }
 
 /* =====================================================================
    DETAIL VIEW
    ===================================================================== */
 #detail { overflow: auto; padding: 18px 28px 60px; min-width: 0; }
-.d-head { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
-.d-head h2 { margin: 0; font-size: 28px; flex: 1 1 260px; }
-.d-sub { color: var(--muted); font-style: italic; margin: 2px 0 12px; }
-.d-tools { display: flex; gap: 6px; flex-wrap: wrap; }
-.d-body { max-width: 860px; }
+.d-top:empty { display: none; }
+.d-head { display: flex; align-items: flex-start; gap: 8px; }
+.d-head h2 { margin: 0; font-size: 30px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.d-sub { color: hsl(var(--h) 55% var(--badge-l)); font-size: 17px; margin: 4px 0 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+.chipb {
+  border: 1px solid hsl(var(--h) 50% 55% / .5); background: hsl(var(--h) 60% 50% / .12);
+  color: hsl(var(--h) 55% var(--badge-l)); border-radius: 7px; padding: 3px 11px; font-weight: 600; font-size: 14px;
+}
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 0 0 12px; }
+.cards.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cards.fit { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; min-width: 0; }
+.card.wide { grid-column: 1 / -1; }
+.card-l { font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.card-v { overflow-wrap: anywhere; }
+.higher { border-left: 3px solid var(--accent); padding: 8px 12px; background: var(--panel-2); border-radius: 0 8px 8px 0; margin: 4px 0 12px; }
+.d-tools { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--border); }
+.d-tools button { font-size: 13px; padding: 4px 10px; }
+.d-body { max-width: 900px; }
 .d-body p { margin: 0 0 .7em; }
 .d-body h3 { margin: 1.3em 0 .4em; padding-bottom: 3px; border-bottom: 1px solid var(--accent); color: var(--accent); font-size: 19px; }
 .d-body h4 { margin: 1em 0 .3em; font-size: 16px; }
@@ -142,7 +190,6 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 table.data { border-collapse: collapse; font-size: 14px; min-width: 50%; }
 table.data th, table.data td { border-bottom: 1px solid var(--border); padding: 4px 8px; text-align: left; vertical-align: top; }
 table.data th { background: var(--panel-2); font-weight: 600; }
-table.data tr:nth-child(even) td { background: color-mix(in srgb, var(--panel-2) 60%, transparent); }
 .statblock { background: var(--panel); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-bottom: 4px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
 table.abil { border-collapse: collapse; margin: 8px 0 12px; text-align: center; }
 table.abil th { font-size: 12px; padding: 2px 10px; color: var(--accent); }
@@ -150,7 +197,7 @@ table.abil td { padding: 2px 10px; }
 table.abil .sv { font-size: 12px; color: var(--muted); }
 .lvl { display: inline-block; min-width: 26px; text-align: center; font: 600 12px system-ui; background: var(--accent); color: var(--accent-text); border-radius: 4px; padding: 1px 5px; margin-right: 6px; vertical-align: 2px; }
 .back-btn { display: none; }
-.raw-box { white-space: pre-wrap; font: 12px ui-monospace, monospace; background: var(--panel-2); border: 1px solid var(--border); padding: 8px; border-radius: 6px; max-height: 300px; overflow: auto; }
+.raw-box { white-space: pre-wrap; font: 12px ui-monospace, monospace; background: var(--panel-2); border: 1px solid var(--border); padding: 8px; border-radius: 6px; max-height: 300px; overflow: auto; margin-top: 10px; }
 
 /* =====================================================================
    DIALOGS
@@ -204,24 +251,20 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
 /* =====================================================================
    RESPONSIVE
    ===================================================================== */
-.only-narrow { display: none; }
-@media (max-width: 1050px) {
-  .layout { grid-template-columns: 320px 1fr; }
-  #sidebar {
-    position: fixed; z-index: 20; top: 0; bottom: 0; left: 0; width: 240px;
-    transform: translateX(-100%); transition: transform .18s; box-shadow: var(--shadow);
-  }
-  body.side-open #sidebar { transform: none; }
-  .only-narrow { display: inline-block; }
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 330px minmax(0, 1fr); }
+  .actions .lbl { display: none; }
 }
 @media (max-width: 720px) {
-  .layout { grid-template-columns: 1fr; }
-  #detail { display: none; padding: 14px 16px 60px; }
+  .bar-row { grid-template-columns: 1fr auto; grid-template-areas: "brand actions" "search search"; gap: 6px 8px; padding: 6px 10px 2px; }
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  #listPane { border-right: 0; }
+  #detail { display: none; padding: 10px 16px 60px; }
   body.show-detail #detail { display: block; }
-  body.show-detail #listPane { display: none; }
-  .back-btn { display: inline-block; }
-  .brand span { display: none; }
-  .actions .lbl { display: none; }
+  body.show-detail #listPane, body.show-detail .tabs { display: none; }
+  .back-btn { display: inline-block; margin-bottom: 8px; }
+  .d-head h2 { font-size: 27px; }
+  .cards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .import-grid { grid-template-columns: 1fr; }
   #pasteBox { height: 30vh; }
   .field-row { grid-template-columns: 1fr; }
@@ -230,6 +273,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
   .kv dd { margin-bottom: 6px; }
 }
 </style>
+
 </head>
 <body>
 
@@ -237,29 +281,32 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
      MARKUP
      ===================================================================== -->
 <header class="topbar">
-  <button id="menuBtn" class="icon-btn only-narrow" title="Categories" aria-label="Categories">☰</button>
-  <h1 class="brand">⚔ <span>D&amp;D Reference</span></h1>
-  <div class="search-wrap">
-    <input id="q" type="search" placeholder="Search everything…  ( / or Ctrl+K )" autocomplete="off" spellcheck="false" aria-label="Search">
-    <select id="typeFilter" aria-label="Filter by category"></select>
+  <div class="bar-row">
+    <h1 class="brand">⚔ D&amp;D Reference</h1>
+    <div class="search-wrap">
+      <input id="q" type="search" placeholder="Search everything…" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search" enterkeyhint="search">
+    </div>
+    <div class="actions">
+      <button id="importBtn" title="Paste text from D&amp;D Beyond or import JSON" aria-label="Import">⇩ <span class="lbl">Import</span></button>
+      <button id="newBtn" title="Create a new entry" aria-label="New entry">＋ <span class="lbl">New</span></button>
+      <button id="settingsBtn" class="icon-btn" title="Settings, export &amp; GitHub backup" aria-label="Settings">⚙</button>
+      <button id="themeBtn" class="icon-btn" title="Toggle dark / light" aria-label="Toggle theme">◐</button>
+    </div>
   </div>
-  <div class="actions">
-    <button id="favBtn" title="Show favourites only">★ <span class="lbl">Favourites</span></button>
-    <button id="importBtn" title="Paste text from D&amp;D Beyond or import JSON">⇩ <span class="lbl">Paste / Import</span></button>
-    <button id="newBtn" title="Create a new entry">＋ <span class="lbl">New</span></button>
-    <button id="settingsBtn" class="icon-btn" title="Settings, export &amp; GitHub backup" aria-label="Settings">⚙</button>
-    <button id="themeBtn" class="icon-btn" title="Toggle dark / light" aria-label="Toggle theme">◐</button>
-  </div>
+  <nav id="tabs" class="tabs" role="tablist" aria-label="Categories"></nav>
 </header>
+<div id="banner" class="banner" hidden></div>
 
 <main class="layout">
-  <nav id="sidebar" aria-label="Categories"></nav>
   <section id="listPane" aria-label="Results">
     <div id="resultMeta"></div>
+    <div id="suggest" hidden></div>
+    <div id="home" hidden></div>
     <div id="list" tabindex="-1"><div class="vspacer"></div><div class="vrows"></div></div>
   </section>
   <article id="detail" aria-live="polite"></article>
 </main>
+
 
 <!-- Import / paste dialog -->
 <dialog id="importDlg" class="wide">
@@ -467,6 +514,54 @@ function toast(msg, kind = 'info', ms = 4000) {
   setTimeout(() => el.remove(), ms);
 }
 
+/* Sandboxed viewers (in-app HTML previews, some iframes) throw SecurityError from
+   localStorage, history and similar APIs. Every such call goes through these guards. */
+const safeLocal = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage blocked */ } },
+  remove(k) { try { localStorage.removeItem(k); } catch { /* storage blocked */ } },
+};
+function setUrlHash(hash) {
+  try { history.replaceState(null, '', hash || location.pathname + location.search); } catch { /* URL changes blocked */ }
+}
+function onMediaChange(query, fn) {
+  try {
+    const m = matchMedia(query);
+    if (m.addEventListener) m.addEventListener('change', fn); else if (m.addListener) m.addListener(fn);
+  } catch { /* ignore */ }
+}
+// Surface unexpected errors in the UI instead of failing silently.
+window.addEventListener('error', (e) => {
+  const msg = (e.error && e.error.message) || e.message || 'Unknown error';
+  toast('Error: ' + msg + (msg === 'Script error.' ? ' (details hidden by the viewer; try a normal browser)' : ''), 'err', 9000);
+});
+window.addEventListener('unhandledrejection', (e) => toast('Error: ' + ((e.reason && e.reason.message) || e.reason), 'err', 9000));
+
+/** Levenshtein distance with an early exit once it exceeds `max`. */
+function editDistance(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let rowMin = i;
+    for (let j = 1; j <= b.length; j++) {
+      const v = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      cur.push(v);
+      if (v < rowMin) rowMin = v;
+    }
+    if (rowMin > max) return max + 1;
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** True for D&D-style lead-in names: every word capitalised except short joining words. */
+const LEAD_SMALL = new Set('a an and as at by for from in into of on or the to vs with'.split(' '));
+function isTitleCaseName(name) {
+  const words = name.replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(Boolean);
+  return words.length > 0 && words.every((w, i) => /^[A-Z0-9'’"]/.test(w) || (i > 0 && LEAD_SMALL.has(w.toLowerCase())));
+}
+
 /** UTF-8 safe base64 of a (possibly large) string, via FileReader to avoid call-stack limits. */
 function toBase64(str) {
   return new Promise((resolve, reject) => {
@@ -587,7 +682,6 @@ const Store = {
     } catch (err) {
       console.warn('IndexedDB unavailable, using memory only:', err);
       this.mem = { entries: new Map(), meta: new Map() };
-      toast('Browser storage is unavailable here, so changes will NOT persist. Try serving the file over http(s).', 'err', 10000);
     }
   },
 
@@ -823,13 +917,46 @@ class SearchIndex {
     return d.alive && (!filter.type || d.type === filter.type) && (!filter.fav || d.fav);
   }
 
-  /** Returns entry ids, best first. */
+  /**
+   * Split a query into plain terms, wildcard patterns and "quoted phrases".
+   *   fire wall      -> both terms must match (AND)
+   *   "bonus action" -> exact phrase (also works while the quote is still open)
+   *   fire*  f?re    -> * any run of letters, ? exactly one
+   */
+  static parseQuery(query) {
+    const phrases = [];
+    const rest = String(query).replace(/"([^"]*)"?/g, (_, p) => {
+      const ph = SearchIndex.phraseNorm(p);
+      if (ph) phrases.push(ph);
+      return ' ' + p.replace(/[*?]/g, '') + ' ';
+    });
+    const terms = [], wild = [];
+    for (const piece of rest.split(/\s+/)) {
+      if (!piece) continue;
+      if (/[*?]/.test(piece)) {
+        const pat = fold(piece).replace(/[^a-z0-9*?]/g, '');
+        if (/[a-z0-9]/.test(pat)) wild.push(pat);
+      } else terms.push(...SearchIndex.tokenize(piece));
+    }
+    return { terms: [...new Set(terms)], wild: [...new Set(wild)], phrases };
+  }
+  static phraseNorm(s) { return fold(s).replace(/[^a-z0-9]+/g, ' ').trim(); }
+
+  /** Vocabulary tokens matching a wildcard pattern (whole-token match). */
+  matchWild(pat) {
+    if (!this.vocabList) this.vocabList = [...this.vocab.keys()];
+    const re = new RegExp('^' + pat.replace(/\*/g, '[a-z0-9]*').replace(/\?/g, '[a-z0-9]') + '$');
+    const out = [];
+    for (const tok of this.vocabList) if (re.test(tok)) out.push(tok, 0.9);
+    return out;
+  }
+
+  /** Returns entry ids, best first. `this.textOf(id)` (set by the app) supplies text for phrase checks. */
   search(query, filter = {}) {
-    const qName = SearchIndex.foldName(query);
-    const terms = [...new Set(SearchIndex.tokenize(query))];
+    const { terms, wild, phrases } = SearchIndex.parseQuery(query);
 
     // Empty query: everything (filtered), alphabetical.
-    if (!terms.length) {
+    if (!terms.length && !wild.length) {
       if (!this.sortedByName) {
         this.sortedByName = this.docs.map((d, i) => i).filter((i) => this.docs[i].alive)
           .sort((a, b) => this.docs[a].name.localeCompare(this.docs[b].name));
@@ -841,15 +968,15 @@ class SearchIndex {
 
     // Stopwords only filter if the query has nothing else ("the" alone still works).
     let required = terms.filter((t) => !STOPWORDS.has(t));
-    if (!required.length) required = terms;
+    if (!required.length && !wild.length) required = terms;
+    const matchers = [...required.map((t) => this.matchTokens(t)), ...wild.map((w) => this.matchWild(w))];
 
     // Score each term separately (best matching token per doc), AND across terms.
     // Dense typed arrays indexed by slot are far cheaper than Maps when a
     // common term matches most of the database.
     const n = this.docs.length;
     let acc = null;
-    for (const term of required) {
-      const m = this.matchTokens(term);
+    for (const m of matchers) {
       const ts = new Float32Array(n);
       for (let i = 0; i < m.length; i += 2) {
         const post = this.vocab.get(m[i]), q = m[i + 1];
@@ -861,14 +988,20 @@ class SearchIndex {
       if (!acc) acc = ts;
       else for (let s = 0; s < n; s++) acc[s] = ts[s] > 0 && acc[s] > 0 ? acc[s] + ts[s] : 0;
     }
+    if (!acc) return [];
 
     // Name bonuses dominate the ranking: the thing you typed the name of comes first.
+    const qName = phrases[0] || SearchIndex.foldName(String(query).replace(/["*?]/g, ''));
     const slots = [];
     const score = new Float64Array(n);
     for (let s = 0; s < n; s++) {
       if (!(acc[s] > 0)) continue;
       const d = this.docs[s];
       if (!this._passes(d, filter)) continue;
+      if (phrases.length && this.textOf) {
+        const hay = ' ' + SearchIndex.phraseNorm(this.textOf(d.id)) + ' ';
+        if (!phrases.every((p) => hay.includes(p))) continue;
+      }
       const nm = d.name;
       let sc = acc[s];
       if (nm === qName) sc += 1000;
@@ -881,6 +1014,32 @@ class SearchIndex {
     slots.sort((a, b) => score[b] - score[a] || (this.docs[a].name < this.docs[b].name ? -1 : 1));
     return slots.map((s) => this.docs[s].id);
   }
+
+  /**
+   * "Did you mean": replace each term that matches nothing with the closest
+   * indexed words (edit distance 1 for short words, 2 otherwise), preferring
+   * common words. Only called when a search returns nothing.
+   */
+  suggest(query) {
+    const { terms } = SearchIndex.parseQuery(query);
+    if (!this.vocabList) this.vocabList = [...this.vocab.keys()];
+    const fixes = terms.map((t) => {
+      if (STOPWORDS.has(t) || this.matchTokens(t).length) return [t];
+      const max = t.length <= 4 ? 1 : 2;
+      const cands = [];
+      for (const tok of this.vocabList) {
+        const d = editDistance(t, tok, max);
+        if (d <= max) cands.push([d, -this.vocab.get(tok).length, tok]);
+      }
+      cands.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      return cands.length ? cands.slice(0, 3).map((c) => c[2]) : [t];
+    });
+    const vi = fixes.findIndex((f, i) => f[0] !== terms[i]);
+    if (vi < 0) return [];
+    // Offer alternatives for the first misspelt word; best guess for the rest.
+    return fixes[vi].map((alt) => fixes.map((f, i) => (i === vi ? alt : f[0])).join(' '));
+  }
+
 }
 
 
@@ -964,7 +1123,7 @@ const Parsers = (() => {
     const m = reLead.exec(line);
     if (!m) return null;
     const name = m[1].trim();
-    if (name.split(/\s+/).length > 8) return null;
+    if (name.split(/\s+/).length > 8 || !isTitleCaseName(name)) return null;
     return { name, text: m[2] };
   }
 
@@ -1601,7 +1760,88 @@ const Parsers = (() => {
    6. RENDERING
    ===================================================================== */
 
-/** One-line summary shown under the name in the results list. */
+/* ---------- per-category helpers used by rows, sorting and detail views ---------- */
+const lvlNum = (e) => {
+  const l = e.fields.Level;
+  if (!l) return 99;
+  return /cantrip/i.test(l) ? 0 : (parseInt(l, 10) || 99);
+};
+function crNum(cr) {
+  const t = String(cr || '').trim().split(/[\s(]/)[0];
+  if (!t) return 999;
+  if (t.includes('/')) { const [a, b] = t.split('/'); return +a / +b || 0; }
+  const n = parseFloat(t);
+  return isNaN(n) ? 999 : n;
+}
+const RARITIES = ['common', 'uncommon', 'rare', 'very rare', 'legendary', 'artifact'];
+const rarityRank = (r) => { const i = RARITIES.indexOf(fold(r || '').trim()); return i < 0 ? 9 : i; };
+const LEVEL_HUE = [null, 215, 185, 28, 275, 330, 150, 18, 0, 45];
+const RARITY_HUE = [null, 130, 215, 275, 30, 0];
+const CAST_ABBR = { a: '1 Action', ba: '1 Bonus Action', b: '1 Bonus Action', r: '1 Reaction' };
+
+/** Short coloured label at the left of a result row: spell level, CR, rarity, hit die... */
+function rowChip(e) {
+  const f = e.fields;
+  switch (e.type) {
+    case 'spell': {
+      const n = lvlNum(e);
+      if (n === 99) return null;
+      return n === 0 ? { t: 'Cantrip', h: null } : { t: 'Lvl ' + n, h: LEVEL_HUE[n] };
+    }
+    case 'monster': {
+      if (!f.CR) return null;
+      const c = crNum(f.CR);
+      return { t: 'CR ' + String(f.CR).trim().split(/[\s(]/)[0], h: c < 1 ? null : c < 5 ? 130 : c < 11 ? 215 : c < 17 ? 275 : 18 };
+    }
+    case 'item': {
+      const r = rarityRank(f.Rarity);
+      return r < 9 ? { t: ['Common', 'Uncommon', 'Rare', 'V. Rare', 'Legend.', 'Artifact'][r], h: RARITY_HUE[r] } : null;
+    }
+    case 'class': { const m = /d\d+/i.exec(f['Hit Point Die'] || f['Hit Dice'] || ''); return m ? { t: m[0].toLowerCase(), h: null } : null; }
+    case 'subclass': return f.Class ? { t: f.Class, h: null } : null;
+    case 'feat': return f.Category ? { t: f.Category.replace(/\s*feat$/i, ''), h: null } : null;
+    default: return null;
+  }
+}
+
+/** Secondary line of a result row. */
+function rowMeta(e) {
+  const f = e.fields;
+  switch (e.type) {
+    case 'spell': return [f.School, f.Classes, f.Concentration ? 'Concentration' : '', f.Ritual ? 'Ritual' : ''].filter(Boolean).join(' · ');
+    case 'monster': return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(' · ');
+    case 'item': return [f.Type, f.Attunement ? 'requires attunement' : ''].filter(Boolean).join(' · ');
+    case 'feat': return f.Prerequisite ? 'Prerequisite: ' + f.Prerequisite : (f.Category || '');
+    case 'subclass': return (f.Class ? f.Class + ' subclass' : 'Subclass') + (e.source ? ' · ' + e.source : '');
+    case 'class': return [f['Primary Ability'], f['Hit Point Die'] || f['Hit Dice']].filter(Boolean).join(' · ');
+    default: return summaryOf(e);
+  }
+}
+
+/** Default ordering when browsing a category tab without a query. */
+const TAB_SORT = {
+  spell: (a, b) => lvlNum(a) - lvlNum(b),
+  monster: (a, b) => crNum(a.fields.CR) - crNum(b.fields.CR),
+  item: (a, b) => rarityRank(a.fields.Rarity) - rarityRank(b.fields.Rarity),
+  subclass: (a, b) => (a.fields.Class || '').localeCompare(b.fields.Class || ''),
+};
+
+/** All searchable text of an entry, used to verify "quoted phrases". */
+function entrySearchText(e) {
+  if (!e) return '';
+  return [e.name, e.tags.join(' '), Object.values(e.fields).join(' '),
+    e.sections.map((s) => s.heading + ' ' + s.intro + ' ' + s.items.map((i) => i.name + ' ' + i.text).join(' ')).join(' '),
+    e.table ? e.table.rows.map((r) => r.join(' ')).join(' ') : '', e.text].join(' ');
+}
+
+/** "4th-Level Evocation" / "Evocation Cantrip" (+ ritual) */
+function spellLine(e) {
+  const f = e.fields, n = lvlNum(e), school = cap((f.School || '').toLowerCase());
+  const base = n === 0 ? `${school} Cantrip` : n === 99 ? school : `${ordinal(n)}-Level ${school}`;
+  return (base + (f.Ritual ? ' (Ritual)' : '')).trim();
+}
+
+/** One-line summary (import preview cards and generic rows) shown under the name in the results list. */
 function summaryOf(e) {
   const f = e.fields;
   switch (e.type) {
@@ -1655,7 +1895,7 @@ function formatText(text, { plainFirst = false } = {}) {
 }
 function inline(L) {
   const m = /^([A-Z0-9][^.!?]{0,60}?(?:\([^)]{0,60}\))?)\.\s+(\S.*)$/.exec(L);
-  if (m && m[1].split(/\s+/).length <= 7) return `<b><i>${esc(m[1])}.</i></b> ${esc(m[2])}`;
+  if (m && m[1].split(/\s+/).length <= 7 && isTitleCaseName(m[1])) return `<b><i>${esc(m[1])}.</i></b> ${esc(m[2])}`;
   return esc(L);
 }
 
@@ -1686,12 +1926,40 @@ function renderSections(sections) {
     }).join('')).join('');
 }
 
+function card(label, value, wide = false) {
+  if (!value) return '';
+  return `<div class="card${wide ? ' wide' : ''}"><div class="card-l">${esc(label)}</div><div class="card-v">${esc(value).replace(/\n/g, '<br>')}</div></div>`;
+}
+/** Fields as a grid of cards; long values span the full width. */
+function renderCards(fields, skip = []) {
+  const items = Object.entries(fields).filter(([k, v]) => v && !skip.includes(k));
+  if (!items.length) return '';
+  return '<div class="cards">' + items.map(([k, v]) => card(k, v, v.length > 60)).join('') + '</div>';
+}
+
+/** Fields already shown in the subtitle, so not repeated as cards. */
+const SUBTITLE_FIELDS = {
+  item: ['Type', 'Rarity'],
+  feat: ['Category'],
+  subclass: ['Class'],
+};
+
 /** Type-specific body renderers. Anything not listed uses `default`. */
 const Renderers = {
   spell(e) {
     const f = e.fields;
-    return renderKV(f, ['Level', 'School', 'At Higher Levels']) + formatText(e.text)
-      + (f['At Higher Levels'] ? `<p><b><i>${e.fields.Level === 'Cantrip' ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${esc(f['At Higher Levels'])}</p>` : '');
+    const cast = CAST_ABBR[fold(f['Casting Time'] || '').trim()] || f['Casting Time'];
+    let html = '<div class="cards four">' + card('Casting Time', cast || '-') + card('Range', f.Range || '-')
+      + card('Components', f.Components || '-') + card('Duration', f.Duration || '-') + '</div>';
+    const fx = card('Attack / Save', f['Attack/Save']) + card('Effect', f['Damage/Effect']);
+    if (fx) html += `<div class="cards fit">${fx}</div>`;
+    html += renderCards(f, ['Casting Time', 'Range', 'Components', 'Duration', 'Attack/Save', 'Damage/Effect',
+      'Level', 'School', 'Classes', 'Concentration', 'Ritual', 'At Higher Levels']);
+    html += formatText(e.text) + renderSections(e.sections);
+    if (f['At Higher Levels']) {
+      html += `<div class="higher"><b><i>${lvlNum(e) === 0 ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${esc(f['At Higher Levels']).replace(/\n/g, '<br>')}</div>`;
+    }
+    return html;
   },
   monster(e) {
     const f = e.fields;
@@ -1703,21 +1971,34 @@ const Renderers = {
       + formatText(e.text) + renderSections(e.sections) + '</div>';
   },
   class(e) {
-    return renderKV(e.fields) + formatText(e.text) + renderTable(e.table) + renderSections(e.sections);
+    return renderCards(e.fields) + formatText(e.text) + renderTable(e.table) + renderSections(e.sections);
   },
   default(e) {
-    return renderKV(e.fields) + renderAbilities(e.abilities) + renderTable(e.table) + formatText(e.text) + renderSections(e.sections);
+    return renderCards(e.fields, SUBTITLE_FIELDS[e.type] || []) + renderAbilities(e.abilities) + renderTable(e.table)
+      + formatText(e.text) + renderSections(e.sections);
   },
 };
 
 function subtitleOf(e) {
   const f = e.fields;
-  if (e.type === 'spell') {
-    const base = f.Level === 'Cantrip' ? `${f.School || ''} cantrip` : f.Level ? `${ordinal(+f.Level || 0)}-level ${(f.School || '').toLowerCase()}` : '';
-    return [base, f.Ritual ? '(ritual)' : ''].filter(Boolean).join(' ');
-  }
+  if (e.type === 'spell') return spellLine(e);
   if (e.type === 'monster') return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(', ');
-  return summaryOf(e);
+  if (e.type === 'item') return [f.Type, f.Rarity ? f.Rarity.toLowerCase() : '', f.Attunement ? `(requires attunement${f.Attunement !== 'Required' ? ' ' + f.Attunement : ''})` : ''].filter(Boolean).join(', ').replace(/, \(/, ' (');
+  if (e.type === 'subclass') return f.Class ? `${f.Class} Subclass` : 'Subclass';
+  if (e.type === 'feat') return [f.Category, f.Prerequisite ? `(Prerequisite: ${f.Prerequisite})` : ''].filter(Boolean).join(' ');
+  return '';
+}
+
+/** Chips under the subtitle: classes for spells, flags like Concentration/Ritual. */
+function headChips(e, hue) {
+  const chips = [];
+  if (e.type === 'spell') {
+    for (const c of (e.fields.Classes || '').split(/,\s*/)) if (c.trim()) chips.push([c.trim(), hue]);
+    if (e.fields.Concentration) chips.push(['Concentration', 40]);
+    if (e.fields.Ritual) chips.push(['Ritual', 160]);
+  }
+  if (!chips.length) return '';
+  return '<div class="chips">' + chips.map(([t, h]) => `<span class="chipb" style="--h:${h}">${esc(t)}</span>`).join('') + '</div>';
 }
 
 function renderEntryBody(e) {
@@ -1861,12 +2142,15 @@ const GitHub = {
 const App = {
   entries: new Map(),       // id -> entry (source of truth in memory)
   index: new SearchIndex(),
-  filter: { type: '', fav: false },
+  tab: '',                  // '' = Search (everything), 'fav' = favourites, otherwise a category key
   query: '',
-  results: [],              // ids in display order
-  cursor: 0,                // keyboard-highlighted row
+  ids: [],                  // matching entry ids in display order
+  rows: [],                 // list rows: { k: 'h', type, count } group headers and { k: 'e', id } entries
+  collapsed: new Set(),     // collapsed group types in grouped views
+  cursor: -1,               // index into rows of the keyboard-highlighted entry
   currentId: null,          // entry shown in the detail pane
-  isWide: () => matchMedia('(min-width: 721px)').matches,
+  lastMs: 0,
+  isWide: () => { try { return matchMedia('(min-width: 721px)').matches; } catch { return true; } },
 
   /* ---------- data mutations (single place that touches store + index) ---------- */
   async upsert(list, { quiet = false } = {}) {
@@ -1921,72 +2205,184 @@ const App = {
     e.updated = nowIso();
     await Store.putEntries([e]);
     this.index.setFav(id, e.fav);
-    if (this.filter.fav) this.runSearch(); else VList.paint(true);
-    this.renderSidebar();
-    if (this.currentId === id) this.showDetail(id);
+    this.renderTabs();
+    if (this.tab === 'fav' || this.isHome()) this.runSearch({ keepCursor: true }); else VList.paint(true);
+    if (this.currentId === id) this.showDetail(id, { fromSearch: true });
+  },
+
+  /* ---------- view state ---------- */
+  filter() { return { type: this.tab && this.tab !== 'fav' ? this.tab : '', fav: this.tab === 'fav' }; },
+  grouped() { return this.tab === '' || this.tab === 'fav'; },
+  isHome() { return this.tab === '' && !this.query.trim(); },
+  typeOrder(key) { const i = Types.list.findIndex((t) => t.key === key); return i < 0 ? 999 : i; },
+
+  counts() {
+    const m = new Map();
+    let fav = 0;
+    for (const e of this.entries.values()) { m.set(e.type, (m.get(e.type) || 0) + 1); if (e.fav) fav++; }
+    m.fav = fav;
+    return m;
+  },
+
+  setTab(tab) {
+    this.tab = tab;
+    $('#q').placeholder = tab === '' ? 'Search everything…' : tab === 'fav' ? 'Search favourites…' : `Search ${Types.get(tab).label.toLowerCase()}…`;
+    document.body.classList.remove('show-detail');
+    this.renderTabs();
+    this.runSearch();
+    const on = $('#tabs .tab.on');
+    if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  },
+
+  cycleTab(delta) {
+    const keys = ['', 'fav', ...Types.list.map((t) => t.key)];
+    const i = keys.indexOf(this.tab);
+    this.setTab(keys[(i + delta + keys.length) % keys.length]);
   },
 
   /* ---------- search / list ---------- */
-  refresh() { this.renderSidebar(); this.runSearch({ keepCursor: true }); if (this.currentId) this.showDetail(this.currentId); },
+  refresh() { this.renderTabs(); this.runSearch({ keepCursor: true }); if (this.currentId) this.showDetail(this.currentId, { fromSearch: true }); },
 
   runSearch({ keepCursor = false } = {}) {
+    const home = this.isHome();
+    $('#home').hidden = !home;
+    $('#list').hidden = home;
+    if (home) {
+      this.ids = []; this.rows = []; this.cursor = -1;
+      this.renderHome();
+      this.renderMeta();
+      return;
+    }
     const t0 = performance.now();
-    this.results = this.index.search(this.query, this.filter);
-    const ms = performance.now() - t0;
-    if (!keepCursor) this.cursor = 0;
-    this.cursor = Math.min(this.cursor, Math.max(0, this.results.length - 1));
-    VList.setData(this.results);
+    let ids = this.index.search(this.query, this.filter());
+    const sorter = !this.query.trim() && TAB_SORT[this.tab];
+    if (sorter) {
+      ids = ids.map((id) => this.entries.get(id)).sort((a, b) => sorter(a, b) || a.name.localeCompare(b.name)).map((e) => e.id);
+    }
+    this.lastMs = performance.now() - t0;
+    this.ids = ids;
+    const keepId = keepCursor && this.rows[this.cursor] ? this.rows[this.cursor].id : null;
+    this.buildRows();
+    const kept = keepId ? this.rows.findIndex((r) => r.id === keepId) : -1;
+    this.cursor = kept >= 0 ? kept : this.rows.findIndex((r) => r.k === 'e');
+    VList.setData(this.rows);
     if (!keepCursor) $('#list').scrollTop = 0;
-    const scope = [this.filter.fav ? 'favourites' : '', this.filter.type ? Types.get(this.filter.type).label : ''].filter(Boolean).join(', ');
-    $('#resultMeta').textContent = `${this.results.length.toLocaleString()} result${this.results.length === 1 ? '' : 's'}${scope ? ' in ' + scope : ''} · ${ms.toFixed(1)} ms · ${this.entries.size.toLocaleString()} entries`;
+    this.renderMeta();
     // On wide screens, typing previews the top hit immediately.
-    if (!keepCursor && this.query && this.results.length && this.isWide()) this.showDetail(this.results[0], { fromSearch: true });
-    if (!this.results.length && !keepCursor && this.isWide() && this.query) $('#detail').innerHTML = '';
+    if (!keepCursor && this.query.trim() && this.cursor >= 0 && this.isWide()) this.showDetail(this.rows[this.cursor].id, { fromSearch: true });
   },
 
-  setFilter(patch) {
-    Object.assign(this.filter, patch);
-    $('#typeFilter').value = this.filter.type;
-    $('#favBtn').classList.toggle('on', this.filter.fav);
-    document.body.classList.remove('side-open');
-    this.renderSidebar();
-    this.runSearch();
+  /** Flatten results into rows; grouped views get a header per category, ordered by best hit. */
+  buildRows() {
+    if (!this.grouped()) { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
+    const groups = new Map();
+    for (const id of this.ids) {
+      const t = this.entries.get(id).type;
+      let g = groups.get(t);
+      if (!g) groups.set(t, (g = []));
+      g.push(id);
+    }
+    const order = [...groups.keys()];
+    if (!this.query.trim()) order.sort((a, b) => this.typeOrder(a) - this.typeOrder(b));
+    const rows = [];
+    for (const t of order) {
+      const g = groups.get(t);
+      rows.push({ k: 'h', type: t, count: g.length });
+      if (!this.collapsed.has(t)) for (const id of g) rows.push({ k: 'e', id });
+    }
+    this.rows = rows;
   },
 
+  toggleGroup(type) {
+    if (this.collapsed.has(type)) this.collapsed.delete(type); else this.collapsed.add(type);
+    this.runSearch({ keepCursor: true });
+  },
+
+  toggleAllGroups() {
+    const types = this.rows.filter((r) => r.k === 'h').map((r) => r.type);
+    const allCollapsed = types.every((t) => this.collapsed.has(t));
+    if (allCollapsed) this.collapsed.clear(); else types.forEach((t) => this.collapsed.add(t));
+    this.runSearch({ keepCursor: true });
+  },
+
+  renderMeta() {
+    const el = $('#resultMeta'), sg = $('#suggest');
+    sg.hidden = true;
+    if (this.isHome()) { el.innerHTML = `<span>${this.entries.size.toLocaleString()} entries</span>`; return; }
+    const n = this.ids.length, q = this.query.trim();
+    let html = `<span>${n.toLocaleString()} result${n === 1 ? '' : 's'}${q ? ` for “<b>${esc(q)}</b>”` : ''} · ${this.lastMs.toFixed(1)} ms</span>`;
+    const heads = this.rows.filter((r) => r.k === 'h');
+    if (heads.length > 1) {
+      const allCollapsed = heads.every((r) => this.collapsed.has(r.type));
+      html += `<button data-act="toggle-all">${allCollapsed ? '⊞ Expand all' : '⊟ Collapse all'}</button>`;
+    }
+    el.innerHTML = html;
+    // "Did you mean" only when nothing matched: beside real hits it is just noise.
+    if (!n && q) {
+      const sugg = this.index.suggest(q).filter((s) => this.index.search(s, this.filter()).length);
+      if (sugg.length) {
+        sg.innerHTML = '🔎 Did you mean: ' + sugg.map((s) => `<a href="#" data-q="${esc(s)}">${esc(s)}</a>`).join(', ') + '?';
+        sg.hidden = false;
+      }
+    }
+  },
+
+  emptyHtml() {
+    if (!this.entries.size) return 'No entries yet. Use “Import” to add some.';
+    if (this.tab === 'fav' && !this.query.trim()) return 'No favourites yet. Tap ☆ on any entry to add it here.';
+    if (!this.grouped() && this.query.trim()) return `No matches in ${esc(Types.get(this.tab).label)}.<br><button data-tab="">Search everything</button>`;
+    return this.query.trim() ? 'No matches.' : 'Nothing in this category yet.';
+  },
+
+  /* ---------- tabs and home page ---------- */
+  renderTabs() {
+    const counts = this.counts();
+    const tab = (key, label, n) => `<button class="tab ${this.tab === key ? 'on' : ''} ${n === 0 ? 'empty' : ''}" role="tab" aria-selected="${this.tab === key}" data-tab="${esc(key)}">${label}${n !== null ? `<span class="count">${n}</span>` : ''}</button>`;
+    let html = tab('', 'Search', null) + tab('fav', '★\uFE0E Favourites', counts.fav);
+    for (const t of Types.list) html += tab(t.key, esc(t.label), counts.get(t.key) || 0);
+    $('#tabs').innerHTML = html;
+    $('#typeList').innerHTML = Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+  },
+
+  renderHome() {
+    const counts = this.counts();
+    const all = [...this.entries.values()];
+    const favs = all.filter((e) => e.fav).sort((a, b) => a.name.localeCompare(b.name));
+    const recent = all.sort((a, b) => (b.updated > a.updated ? 1 : b.updated < a.updated ? -1 : 0)).slice(0, 8);
+    const tiles = Types.list.filter((t) => counts.get(t.key));
+    $('#home').innerHTML = `
+      <p class="hint">Type to search everything. Multiple words = AND · <code>"exact phrase"</code> · <code>*</code> wildcard · <code>?</code> single character</p>
+      ${tiles.length ? `<div class="tiles">${tiles.map((t) => `<button class="tile" data-tab="${esc(t.key)}" style="--h:${t.hue}"><b>${counts.get(t.key)}</b>${esc(t.label)}</button>`).join('')}</div>`
+        : '<p class="empty">No entries yet. Use “Import” to paste from D&amp;D Beyond.</p>'}
+      <h3 class="home-h"><span>★ Favourites</span>${favs.length > 12 ? `<a href="#" data-tab="fav">all ${favs.length} →</a>` : ''}</h3>
+      ${favs.length ? `<div class="static">${favs.slice(0, 12).map((e) => rowHtml(e, -1, '', true)).join('')}</div>` : '<p class="hint">Tap ☆ on any entry to pin it here.</p>'}
+      ${recent.length ? `<h3 class="home-h"><span>Recently added or edited</span></h3><div class="static">${recent.map((e) => rowHtml(e, -1, '', true)).join('')}</div>` : ''}`;
+  },
+
+  /* ---------- navigation ---------- */
   moveCursor(delta) {
-    if (!this.results.length) return;
-    this.cursor = Math.max(0, Math.min(this.results.length - 1, this.cursor + delta));
-    VList.scrollToIndex(this.cursor);
+    if (!this.rows.length) return;
+    const step = Math.sign(delta);
+    let j = this.cursor, left = Math.abs(delta);
+    while (left > 0) {
+      let k = j + step;
+      while (k >= 0 && k < this.rows.length && this.rows[k].k !== 'e') k += step;
+      if (k < 0 || k >= this.rows.length) break;
+      j = k; left--;
+    }
+    if (j === this.cursor || j < 0) return;
+    this.cursor = j;
+    VList.scrollToIndex(j);
     VList.paint(true);
-    if (this.isWide()) this.showDetail(this.results[this.cursor], { fromSearch: true });
+    if (this.isWide()) this.showDetail(this.rows[j].id, { fromSearch: true });
   },
 
   open(id) {
-    const idx = this.results.indexOf(id);
+    const idx = this.rows.findIndex((r) => r.id === id);
     if (idx >= 0) this.cursor = idx;
     this.showDetail(id);
     document.body.classList.add('show-detail');
-    history.replaceState(null, '', '#/e/' + encodeURIComponent(id));
-  },
-
-  /* ---------- sidebar ---------- */
-  renderSidebar() {
-    const counts = new Map();
-    let favs = 0;
-    for (const e of this.entries.values()) { counts.set(e.type, (counts.get(e.type) || 0) + 1); if (e.fav) favs++; }
-    const link = (label, count, attrs, on) => `<a href="#" ${attrs} class="${on ? 'on' : ''}"><span>${label}</span><span class="count">${count}</span></a>`;
-    let html = link('All entries', this.entries.size, 'data-type=""', !this.filter.type && !this.filter.fav)
-      + link('★ Favourites', favs, 'data-fav="1"', this.filter.fav && !this.filter.type) + '<hr>';
-    for (const t of Types.list) {
-      html += link(esc(t.label), counts.get(t.key) || 0, `data-type="${esc(t.key)}"`, this.filter.type === t.key);
-    }
-    $('#sidebar').innerHTML = html;
-
-    // Keep the dropdown filter in sync with the category list.
-    const sel = $('#typeFilter');
-    sel.innerHTML = '<option value="">All categories</option>' + Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
-    sel.value = this.filter.type;
-    $('#typeList').innerHTML = Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+    setUrlHash('#/e/' + encodeURIComponent(id));
   },
 
   /* ---------- detail ---------- */
@@ -1995,70 +2391,93 @@ const App = {
     const el = $('#detail');
     if (!e) { el.innerHTML = '<div class="empty">Select an entry, or press <span class="kbd">/</span> to search.</div>'; return; }
     this.currentId = id;
+    const t = Types.get(e.type);
     el.innerHTML = `
+      <div class="d-top"><button class="back-btn" data-act="back">← Back</button></div>
       <div class="d-head">
-        <button class="back-btn" data-act="back">← Back</button>
         <h2>${esc(e.name)}</h2>
         <button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
       </div>
-      <div class="d-sub">${Types.badge(e.type)} ${esc(subtitleOf(e))}</div>
+      <div class="d-sub" style="--h:${t.hue}">${esc(subtitleOf(e) || t.label)}</div>
+      ${headChips(e, t.hue)}
+      <div class="d-body">${renderEntryBody(e)}</div>
       <div class="d-tools">
+        <span class="badge" style="--h:${t.hue}">${esc(t.label)}</span>
         <button data-act="edit" title="Edit (e)">Edit</button>
         <button data-act="export">Export JSON</button>
         <button data-act="copy">Copy text</button>
-        ${e.raw ? '<button data-act="raw">Show original paste</button>' : ''}
+        ${e.raw ? '<button data-act="raw">Original paste</button>' : ''}
         <button data-act="delete" class="danger">Delete</button>
       </div>
-      <div class="d-body">${renderEntryBody(e)}</div>
       ${e.raw ? `<div class="raw-box" hidden>${esc(e.raw)}</div>` : ''}`;
     if (!fromSearch) el.scrollTop = 0;
     VList.paint(true);
   },
 };
 
-/* ---------- Virtual list: renders only visible rows, so 50k results cost the same as 50 ---------- */
+/** One result row. `i` is its row index (for the keyboard cursor); showType adds a category badge. */
+function rowHtml(e, i, style = '', showType = false) {
+  const chip = rowChip(e);
+  const cls = 'row' + (i >= 0 && i === App.cursor ? ' cur' : '') + (e.id === App.currentId ? ' open' : '');
+  const chipHtml = chip ? `<span class="chip"${chip.h != null ? ` style="--h:${chip.h}"` : ''}>${esc(chip.t)}</span>` : '';
+  return `<div class="${cls}" data-id="${esc(e.id)}"${style ? ` style="${style}"` : ''}>
+    ${chipHtml}<div class="t"><div class="n">${highlight(e.name, App.query)}</div><div class="s">${esc(rowMeta(e))}</div></div>
+    ${showType ? Types.badge(e.type) : ''}
+    <button class="star ${e.fav ? 'on' : ''}" data-act="fav" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></div>`;
+}
+
+function groupHeadHtml(r, style) {
+  const t = Types.get(r.type), closed = App.collapsed.has(r.type);
+  return `<div class="ghead" data-group="${esc(r.type)}" style="${style}" role="button" aria-expanded="${!closed}">
+    <span class="gi">${closed ? '⊞' : '⊟'}</span>${esc(t.label)} <span class="gc">${r.count}</span>
+    ${App.tab === '' ? `<button class="go" data-tab="${esc(r.type)}">Open tab →</button>` : ''}</div>`;
+}
+
+/* ---------- Virtual list: renders only visible rows, so 50k results cost the same as 50.
+   Rows have two heights (group header / entry); prefix offsets + binary search find the window. ---------- */
 const VList = {
-  ROW_H: 54,
-  ids: [],
+  H: { h: 40, e: 58 },
+  rows: [],
+  offs: new Float64Array(1),
   range: [-1, -1],
   init() {
     this.el = $('#list');
     this.spacer = $('.vspacer', this.el);
-    this.rows = $('.vrows', this.el);
+    this.box = $('.vrows', this.el);
     this.el.addEventListener('scroll', () => this.paint(), { passive: true });
     if ('ResizeObserver' in window) new ResizeObserver(() => this.paint(true)).observe(this.el);
   },
-  setData(ids) {
-    this.ids = ids;
-    this.spacer.style.height = ids.length * this.ROW_H + 'px';
+  setData(rows) {
+    this.rows = rows;
+    const o = new Float64Array(rows.length + 1);
+    for (let i = 0; i < rows.length; i++) o[i + 1] = o[i] + this.H[rows[i].k];
+    this.offs = o;
+    this.spacer.style.height = o[rows.length] + 'px';
     this.paint(true);
   },
+  indexAt(y) {
+    let lo = 0, hi = this.rows.length;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (this.offs[mid + 1] <= y) lo = mid + 1; else hi = mid; }
+    return lo;
+  },
   paint(force = false) {
+    if (!this.box) return;
+    if (!this.rows.length) { this.range = [-1, -1]; this.box.innerHTML = `<div class="empty">${App.emptyHtml()}</div>`; return; }
     const top = this.el.scrollTop, h = this.el.clientHeight || 600;
-    const start = Math.max(0, Math.floor(top / this.ROW_H) - 8);
-    const end = Math.min(this.ids.length, Math.ceil((top + h) / this.ROW_H) + 8);
+    const start = Math.max(0, this.indexAt(top) - 6);
+    const end = Math.min(this.rows.length, this.indexAt(top + h) + 7);
     if (!force && start === this.range[0] && end === this.range[1]) return;
     this.range = [start, end];
-    if (!this.ids.length) {
-      this.rows.style.transform = 'none';
-      this.rows.innerHTML = `<div class="empty">${App.entries.size ? 'No matches.' : 'No entries yet. Use “Paste / Import” to add some.'}</div>`;
-      return;
-    }
     let html = '';
     for (let i = start; i < end; i++) {
-      const e = App.entries.get(this.ids[i]);
-      if (!e) continue;
-      const cls = ['row', i === App.cursor ? 'cur' : '', e.id === App.currentId ? 'open' : ''].join(' ');
-      html += `<div class="${cls}" data-id="${esc(e.id)}" data-i="${i}">
-        <button class="star ${e.fav ? 'on' : ''}" data-act="fav" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
-        <div class="t"><div class="n">${highlight(e.name, App.query)}</div><div class="s">${esc(summaryOf(e))}</div></div>
-        ${Types.badge(e.type)}</div>`;
+      const r = this.rows[i], style = `top:${this.offs[i]}px`;
+      if (r.k === 'h') html += groupHeadHtml(r, style);
+      else { const e = App.entries.get(r.id); if (e) html += rowHtml(e, i, style); }
     }
-    this.rows.style.transform = `translateY(${start * this.ROW_H}px)`;
-    this.rows.innerHTML = html;
+    this.box.innerHTML = html;
   },
   scrollToIndex(i) {
-    const top = i * this.ROW_H, bottom = top + this.ROW_H;
+    const top = this.offs[i], bottom = this.offs[i + 1];
     if (top < this.el.scrollTop) this.el.scrollTop = top;
     else if (bottom > this.el.scrollTop + this.el.clientHeight) this.el.scrollTop = bottom - this.el.clientHeight;
   },
@@ -2335,7 +2754,7 @@ const Settings = {
     $('#ghPath').value = c.path || 'dnd-reference-db.json';
     const sync = await Store.getMeta('githubSync');
     $('#ghStatus').textContent = sync ? `Last synced ${new Date(sync.at).toLocaleString()} (blob ${sync.sha.slice(0, 7)}).` : 'Not synced yet.';
-    const pref = localStorage.getItem('dndref.theme') || 'system';
+    const pref = safeLocal.get('dndref.theme') || 'system';
     for (const r of $$('input[name="theme"]')) r.checked = r.value === pref;
     this.renderTypes();
     this.storageInfo();
@@ -2398,13 +2817,14 @@ const Settings = {
 /* ---------- Theme ---------- */
 const Theme = {
   apply() {
-    const stored = localStorage.getItem('dndref.theme');
-    document.documentElement.dataset.theme = stored === 'light' || stored === 'dark'
-      ? stored : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const stored = safeLocal.get('dndref.theme');
+    let sysDark = false;
+    try { sysDark = matchMedia('(prefers-color-scheme: dark)').matches; } catch { /* ignore */ }
+    document.documentElement.dataset.theme = stored === 'light' || stored === 'dark' ? stored : (sysDark ? 'dark' : 'light');
   },
   set(pref) {
-    if (pref === 'system') localStorage.removeItem('dndref.theme');
-    else localStorage.setItem('dndref.theme', pref);
+    if (pref === 'system') safeLocal.remove('dndref.theme');
+    else safeLocal.set('dndref.theme', pref);
     this.apply();
   },
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
@@ -2421,37 +2841,49 @@ function wireEvents() {
     if (!pending) { pending = true; requestAnimationFrame(flushSearch); }
   });
 
-  $('#typeFilter').addEventListener('change', (e) => App.setFilter({ type: e.target.value }));
-  $('#favBtn').addEventListener('click', () => App.setFilter({ fav: !App.filter.fav }));
-  $('#menuBtn').addEventListener('click', () => document.body.classList.toggle('side-open'));
   $('#themeBtn').addEventListener('click', () => Theme.toggle());
   $('#importBtn').addEventListener('click', () => Importer.open());
   $('#settingsBtn').addEventListener('click', () => Settings.open());
   $('#newBtn').addEventListener('click', async () => {
-    const e = await Editor.open(makeEntry({ type: App.filter.type || 'other', name: '' }), 'New entry');
+    const e = await Editor.open(makeEntry({ type: App.filter().type || 'other', name: '' }), 'New entry');
     if (e) { await App.upsert([e]); App.open(e.id); }
   });
 
-  $('#sidebar').addEventListener('click', (e) => {
-    const a = e.target.closest('a');
+  // Tabs, home tiles, "Open tab" buttons: anything outside dialogs with data-tab switches tab.
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-tab]');
+    if (!t || t.closest('dialog')) return;
+    e.preventDefault();
+    App.setTab(t.dataset.tab);
+  });
+  // "Did you mean" links
+  $('#suggest').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-q]');
     if (!a) return;
     e.preventDefault();
-    if (a.dataset.fav) App.setFilter({ fav: true, type: '' });
-    else App.setFilter({ type: a.dataset.type, fav: false });
+    q.value = App.query = a.dataset.q;
+    App.runSearch();
   });
+  $('#resultMeta').addEventListener('click', (e) => { if (e.target.closest('[data-act="toggle-all"]')) App.toggleAllGroups(); });
 
-  $('#list').addEventListener('click', (e) => {
+  // Result rows (virtual list and the static lists on the home page)
+  const onRowClick = (e) => {
+    if (e.target.closest('[data-tab]')) return;
+    const head = e.target.closest('.ghead');
+    if (head) { App.toggleGroup(head.dataset.group); return; }
     const row = e.target.closest('.row');
     if (!row) return;
     if (e.target.closest('[data-act="fav"]')) { App.toggleFav(row.dataset.id); return; }
     App.open(row.dataset.id);
-  });
+  };
+  $('#list').addEventListener('click', onRowClick);
+  $('#home').addEventListener('click', onRowClick);
 
   $('#detail').addEventListener('click', async (ev) => {
     const act = ev.target.closest('[data-act]')?.dataset.act;
     const e = App.entries.get(App.currentId);
     if (!act) return;
-    if (act === 'back') { document.body.classList.remove('show-detail'); history.replaceState(null, '', '#'); return; }
+    if (act === 'back') { document.body.classList.remove('show-detail'); setUrlHash(''); return; }
     if (!e) return;
     if (act === 'fav') App.toggleFav(e.id);
     else if (act === 'edit') {
@@ -2519,7 +2951,7 @@ function wireEvents() {
     if (ok) { await App.replaceAll([]); toast('Database cleared', 'ok'); Settings.storageInfo(); }
   });
   $('#themeRadios').addEventListener('change', (e) => Theme.set(e.target.value));
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => Theme.apply());
+  onMediaChange('(prefers-color-scheme: dark)', () => Theme.apply());
 
   // Settings: categories
   $('#addTypeBtn').addEventListener('click', () => {
@@ -2529,13 +2961,13 @@ function wireEvents() {
     if (!Types.ensure(key, label)) { toast('That category already exists', 'warn'); return; }
     $('#newTypeLabel').value = '';
     Settings.renderTypes();
-    App.renderSidebar();
+    App.renderTabs();
   });
   $('#typeAdmin').addEventListener('change', (e) => {
     const key = e.target.dataset.typeLabel;
     if (!key) return;
     const t = Types.list.find((x) => x.key === key);
-    if (t) { t.label = e.target.value.trim() || t.label; Types.save(); App.renderSidebar(); }
+    if (t) { t.label = e.target.value.trim() || t.label; Types.save(); App.renderTabs(); }
   });
   $('#typeAdmin').addEventListener('click', (e) => {
     const key = e.target.dataset.typeDel;
@@ -2543,7 +2975,7 @@ function wireEvents() {
     Types.list = Types.list.filter((t) => t.key !== key);
     Types.save();
     Settings.renderTypes();
-    App.renderSidebar();
+    App.renderTabs();
   });
 
   // Settings: GitHub
@@ -2595,7 +3027,10 @@ function wireEvents() {
       else if (e.key === 'ArrowUp') { e.preventDefault(); App.moveCursor(-1); }
       else if (e.key === 'PageDown') { e.preventDefault(); App.moveCursor(10); }
       else if (e.key === 'PageUp') { e.preventDefault(); App.moveCursor(-10); }
-      else if (e.key === 'Enter') { if (App.results[App.cursor]) { App.open(App.results[App.cursor]); if (!App.isWide()) q.blur(); } }
+      else if (e.key === 'Enter') {
+        const r = App.rows[App.cursor];
+        if (r && r.k === 'e') { App.open(r.id); if (!App.isWide()) q.blur(); } else q.blur(); // blur hides the phone keyboard
+      }
       else if (e.key === 'Escape') { if (q.value) { q.value = ''; App.query = ''; App.runSearch(); } else q.blur(); }
       return;
     }
@@ -2604,7 +3039,9 @@ function wireEvents() {
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
     else if (e.key === 'j' || e.key === 'ArrowDown') { e.preventDefault(); App.moveCursor(1); }
     else if (e.key === 'k' || e.key === 'ArrowUp') { e.preventDefault(); App.moveCursor(-1); }
-    else if (e.key === 'Escape') document.body.classList.remove('show-detail', 'side-open');
+    else if (e.key === '[') App.cycleTab(-1);
+    else if (e.key === ']') App.cycleTab(1);
+    else if (e.key === 'Escape') document.body.classList.remove('show-detail');
   });
 }
 
@@ -2834,10 +3271,15 @@ async function boot() {
   console.info(`Loaded and indexed ${all.length} entries in ${(performance.now() - t0).toFixed(0)} ms`);
 
   $('#exampleSel').innerHTML += EXAMPLE_PASTES.map((x, i) => `<option value="${i + 1}">${esc(x.label)}</option>`).join('');
+  App.index.textOf = (id) => entrySearchText(App.entries.get(id));
+  if (Store.mem) {
+    const b = $('#banner');
+    b.textContent = 'This viewer blocks browser storage, so nothing you add will be saved. Open the file in Safari/Chrome or host it on GitHub Pages.';
+    b.hidden = false;
+  }
   VList.init();
   wireEvents();
-  App.renderSidebar();
-  App.runSearch();
+  App.setTab('');
 
   const m = /^#\/e\/(.+)$/.exec(location.hash);
   const initial = m && decodeURIComponent(m[1]);

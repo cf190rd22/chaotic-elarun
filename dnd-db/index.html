@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D&amp;D Reference</title>
+<script>
+  /* Theme bootstrap: runs before first paint so there is no flash of the wrong theme.
+     Stored choice wins; otherwise follow the OS preference. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('dndref.theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
+<style>
+/* =====================================================================
+   THEME TOKENS
+   ===================================================================== */
+:root {
+  --bg: #f6f4ef; --panel: #ffffff; --panel-2: #faf8f4; --text: #1f1d1a; --muted: #6b665e;
+  --border: #e2ddd3; --accent: #9b2c2c; --accent-text: #fff; --hover: #f1ece2; --sel: #f5e1d9;
+  --mark: #ffe08a; --warn: #9a6700; --ok: #1a7f37; --danger: #b42318;
+  --shadow: 0 10px 30px rgba(0,0,0,.15); --radius: 8px;
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --badge-l: 38%; --badge-bg-a: .14;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --bg: #121212; --panel: #1c1c1e; --panel-2: #232326; --text: #e9e6e1; --muted: #a29d95;
+  --border: #34332f; --accent: #e07a68; --accent-text: #1a0d0b; --hover: #2a2a2d; --sel: #3a2925;
+  --mark: #6d5813; --warn: #e3b341; --ok: #3fb950; --danger: #f85149;
+  --shadow: 0 10px 30px rgba(0,0,0,.55); --badge-l: 72%; --badge-bg-a: .22;
+  color-scheme: dark;
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+input, select, textarea {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px;
+}
+textarea { width: 100%; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 10px; cursor: pointer; white-space: nowrap;
+}
+button:hover { background: var(--hover); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+button.primary:hover { filter: brightness(1.08); }
+button.danger { color: var(--danger); }
+button:disabled { opacity: .5; cursor: default; }
+.icon-btn { padding: 6px 9px; line-height: 1; }
+mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
+.muted { color: var(--muted); }
+.hint { color: var(--muted); font-size: 13px; }
+.kbd { font: 12px ui-monospace, monospace; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
+
+/* =====================================================================
+   TOP BAR
+   ===================================================================== */
+.topbar {
+  display: flex; gap: 10px; align-items: center; padding: 8px 12px;
+  background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.brand { font: 600 18px var(--serif); margin: 0; white-space: nowrap; color: var(--accent); }
+.search-wrap { flex: 1 1 320px; display: flex; gap: 6px; min-width: 0; }
+#q { flex: 1; min-width: 0; padding: 8px 10px; font-size: 16px; }
+#typeFilter { max-width: 170px; }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+#favBtn.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+
+/* =====================================================================
+   THREE-PANE LAYOUT: sidebar | results | detail
+   ===================================================================== */
+.layout { flex: 1; display: grid; grid-template-columns: 200px 340px 1fr; min-height: 0; }
+#sidebar { overflow: auto; border-right: 1px solid var(--border); padding: 8px; background: var(--panel-2); }
+#sidebar a {
+  display: flex; justify-content: space-between; gap: 6px; padding: 5px 8px; border-radius: 6px;
+  color: inherit; text-decoration: none; font-size: 14px;
+}
+#sidebar a:hover { background: var(--hover); }
+#sidebar a.on { background: var(--sel); font-weight: 600; }
+#sidebar .count { color: var(--muted); font-size: 12px; }
+#sidebar hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0; }
+
+#listPane { display: flex; flex-direction: column; border-right: 1px solid var(--border); min-height: 0; background: var(--panel); }
+#resultMeta { font-size: 12px; color: var(--muted); padding: 6px 10px; border-bottom: 1px solid var(--border); }
+#list { flex: 1; overflow: auto; position: relative; }
+.vspacer { width: 1px; }
+.vrows { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+.row {
+  height: 54px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
+  border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.row:hover { background: var(--hover); }
+.row.cur { box-shadow: inset 3px 0 0 var(--accent); background: var(--hover); }
+.row.open { background: var(--sel); }
+.row .t { flex: 1; min-width: 0; }
+.row .n, .row .s { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .n { font-weight: 500; }
+.row .s { font-size: 12px; color: var(--muted); }
+.star { background: none; border: 0; padding: 4px; font-size: 18px; line-height: 1; color: var(--muted); }
+.star.on { color: #d4a017; }
+.star:hover { background: none; transform: scale(1.15); }
+.badge {
+  display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px; white-space: nowrap;
+  background: hsl(var(--h) 60% 50% / var(--badge-bg-a)); color: hsl(var(--h) 55% var(--badge-l));
+}
+.badge.grey { --h: 0; background: hsl(0 0% 50% / var(--badge-bg-a)); color: var(--muted); }
+.empty { padding: 30px 20px; color: var(--muted); text-align: center; }
+
+/* =====================================================================
+   DETAIL VIEW
+   ===================================================================== */
+#detail { overflow: auto; padding: 18px 28px 60px; min-width: 0; }
+.d-head { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.d-head h2 { margin: 0; font-size: 28px; flex: 1 1 260px; }
+.d-sub { color: var(--muted); font-style: italic; margin: 2px 0 12px; }
+.d-tools { display: flex; gap: 6px; flex-wrap: wrap; }
+.d-body { max-width: 860px; }
+.d-body p { margin: 0 0 .7em; }
+.d-body h3 { margin: 1.3em 0 .4em; padding-bottom: 3px; border-bottom: 1px solid var(--accent); color: var(--accent); font-size: 19px; }
+.d-body h4 { margin: 1em 0 .3em; font-size: 16px; }
+.d-body ul { margin: 0 0 .7em; padding-left: 1.3em; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; margin: 0 0 12px; }
+.kv dt { font-weight: 600; }
+.kv dd { margin: 0; }
+.tags { margin: 10px 0; display: flex; gap: 5px; flex-wrap: wrap; }
+.tbl-wrap { overflow-x: auto; margin: 0 0 12px; }
+table.data { border-collapse: collapse; font-size: 14px; min-width: 50%; }
+table.data th, table.data td { border-bottom: 1px solid var(--border); padding: 4px 8px; text-align: left; vertical-align: top; }
+table.data th { background: var(--panel-2); font-weight: 600; }
+table.data tr:nth-child(even) td { background: color-mix(in srgb, var(--panel-2) 60%, transparent); }
+.statblock { background: var(--panel); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-bottom: 4px solid var(--accent); padding: 12px 16px; border-radius: 4px; }
+table.abil { border-collapse: collapse; margin: 8px 0 12px; text-align: center; }
+table.abil th { font-size: 12px; padding: 2px 10px; color: var(--accent); }
+table.abil td { padding: 2px 10px; }
+table.abil .sv { font-size: 12px; color: var(--muted); }
+.lvl { display: inline-block; min-width: 26px; text-align: center; font: 600 12px system-ui; background: var(--accent); color: var(--accent-text); border-radius: 4px; padding: 1px 5px; margin-right: 6px; vertical-align: 2px; }
+.back-btn { display: none; }
+.raw-box { white-space: pre-wrap; font: 12px ui-monospace, monospace; background: var(--panel-2); border: 1px solid var(--border); padding: 8px; border-radius: 6px; max-height: 300px; overflow: auto; }
+
+/* =====================================================================
+   DIALOGS
+   ===================================================================== */
+dialog {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text);
+  box-shadow: var(--shadow); padding: 0; width: min(640px, 96vw); max-height: 92vh;
+}
+dialog.wide { width: min(1200px, 97vw); }
+dialog::backdrop { background: rgba(0,0,0,.45); }
+.dlg-inner { display: flex; flex-direction: column; max-height: 92vh; }
+.dlg-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.dlg-head h2 { margin: 0; font-size: 20px; }
+.dlg-body { padding: 14px 16px; overflow: auto; }
+.dlg-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.ctl-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.form-grid label, .stack label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; font-weight: 600; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 0 0 14px; padding: 10px 14px; }
+legend { font-weight: 700; font-family: var(--serif); padding: 0 6px; }
+.field-row { display: grid; grid-template-columns: 180px 1fr auto; gap: 6px; margin-bottom: 6px; }
+.abil-inputs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.abil-inputs label { font-size: 12px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.abil-inputs input { width: 100%; text-align: center; }
+details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
+
+/* Import dialog */
+.import-grid { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.2fr); gap: 14px; min-height: 0; }
+#pasteBox { height: 52vh; }
+#previewList { display: flex; flex-direction: column; gap: 10px; max-height: 58vh; overflow: auto; padding-right: 4px; }
+.pcard { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--panel-2); }
+.pcard.off { opacity: .55; }
+.pc-top { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.pc-top input[data-act="name"] { flex: 1 1 160px; min-width: 0; font-weight: 600; }
+.pc-sum { font-size: 13px; color: var(--muted); margin: 4px 0; }
+.pc-warn { font-size: 13px; color: var(--warn); }
+.pc-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.pc-btns button { font-size: 13px; padding: 3px 8px; }
+.pc-preview { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 8px; }
+.conf { font-size: 12px; color: var(--muted); }
+.conf.low { color: var(--warn); }
+
+/* Toasts */
+#toasts { position: fixed; bottom: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; max-width: min(420px, 92vw); }
+.toast { background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--accent); box-shadow: var(--shadow); padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+.toast.ok { border-left-color: var(--ok); }
+.toast.warn { border-left-color: var(--warn); }
+.toast.err { border-left-color: var(--danger); }
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+.only-narrow { display: none; }
+@media (max-width: 1050px) {
+  .layout { grid-template-columns: 320px 1fr; }
+  #sidebar {
+    position: fixed; z-index: 20; top: 0; bottom: 0; left: 0; width: 240px;
+    transform: translateX(-100%); transition: transform .18s; box-shadow: var(--shadow);
+  }
+  body.side-open #sidebar { transform: none; }
+  .only-narrow { display: inline-block; }
+}
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+  #detail { display: none; padding: 14px 16px 60px; }
+  body.show-detail #detail { display: block; }
+  body.show-detail #listPane { display: none; }
+  .back-btn { display: inline-block; }
+  .brand span { display: none; }
+  .actions .lbl { display: none; }
+  .import-grid { grid-template-columns: 1fr; }
+  #pasteBox { height: 30vh; }
+  .field-row { grid-template-columns: 1fr; }
+  .abil-inputs { grid-template-columns: repeat(3, 1fr); }
+  .kv { grid-template-columns: 1fr; }
+  .kv dd { margin-bottom: 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     MARKUP
+     ===================================================================== -->
+<header class="topbar">
+  <button id="menuBtn" class="icon-btn only-narrow" title="Categories" aria-label="Categories">☰</button>
+  <h1 class="brand">⚔ <span>D&amp;D Reference</span></h1>
+  <div class="search-wrap">
+    <input id="q" type="search" placeholder="Search everything…  ( / or Ctrl+K )" autocomplete="off" spellcheck="false" aria-label="Search">
+    <select id="typeFilter" aria-label="Filter by category"></select>
+  </div>
+  <div class="actions">
+    <button id="favBtn" title="Show favourites only">★ <span class="lbl">Favourites</span></button>
+    <button id="importBtn" title="Paste text from D&amp;D Beyond or import JSON">⇩ <span class="lbl">Paste / Import</span></button>
+    <button id="newBtn" title="Create a new entry">＋ <span class="lbl">New</span></button>
+    <button id="settingsBtn" class="icon-btn" title="Settings, export &amp; GitHub backup" aria-label="Settings">⚙</button>
+    <button id="themeBtn" class="icon-btn" title="Toggle dark / light" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+
+<main class="layout">
+  <nav id="sidebar" aria-label="Categories"></nav>
+  <section id="listPane" aria-label="Results">
+    <div id="resultMeta"></div>
+    <div id="list" tabindex="-1"><div class="vspacer"></div><div class="vrows"></div></div>
+  </section>
+  <article id="detail" aria-live="polite"></article>
+</main>
+
+<!-- Import / paste dialog -->
+<dialog id="importDlg" class="wide">
+  <div class="dlg-inner">
+    <div class="dlg-head"><h2>Paste &amp; import</h2><button class="icon-btn" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body">
+      <div class="import-grid">
+        <div>
+          <div class="ctl-row">
+            <select id="exampleSel"><option value="">Try an example paste…</option></select>
+            <label class="hint"><input type="checkbox" id="forceSingle"> Treat as one entry</label>
+          </div>
+          <textarea id="pasteBox" spellcheck="false" placeholder="Paste text copied from D&amp;D Beyond (spells, stat blocks, classes, subclasses, items, feats, species, backgrounds, rules)…&#10;&#10;Multiple entries are detected automatically. To force a split, put a line containing only --- between entries."></textarea>
+          <div class="ctl-row">
+            <button id="parseBtn" class="primary">Parse</button>
+            <button id="importFileBtn">Import JSON file…</button>
+            <input type="file" id="importFile" accept=".json,application/json" hidden>
+          </div>
+        </div>
+        <div>
+          <div id="previewHead" class="hint">Parsed entries will appear here for review before anything is saved.</div>
+          <div id="previewList"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <button data-close>Close</button>
+      <button id="saveParsedBtn" class="primary" disabled>Save selected</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Entry editor dialog (used for New, Edit and correcting parsed entries) -->
+<dialog id="editDlg" class="wide">
+  <div class="dlg-inner">
+    <div class="dlg-head"><h2 id="edTitle">Edit entry</h2><button class="icon-btn" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body">
+      <div class="form-grid">
+        <label>Name <input id="edName" required></label>
+        <label>Category <input id="edType" list="typeList" placeholder="spell, monster… or a new one"></label>
+        <label>Source <input id="edSource" placeholder="e.g. Player's Handbook (2024)"></label>
+        <label>Tags <input id="edTags" placeholder="comma, separated"></label>
+      </div>
+      <datalist id="typeList"></datalist>
+      <h3>Fields</h3>
+      <div id="edFields"></div>
+      <button id="edAddField" type="button">＋ Add field</button>
+      <div id="edAbilWrap">
+        <h3>Ability scores</h3>
+        <div class="abil-inputs" id="edAbil"></div>
+        <p class="hint">Score, plus an optional saving-throw bonus (e.g. +6). Leave blank if not applicable.</p>
+      </div>
+      <h3>Description</h3>
+      <textarea id="edText" rows="9" placeholder="Paragraphs on separate lines. Lines like &quot;Name. text&quot; get a bold lead-in. Tab-separated lines render as a table."></textarea>
+      <details id="edSecWrap">
+        <summary>Sections (actions, traits, class features…)</summary>
+        <p class="hint">"## Heading" starts a section, "### Name" starts an item, "### [3] Name" gives the item a level. Text underneath belongs to the item.</p>
+        <textarea id="edSections" rows="12"></textarea>
+      </details>
+      <details id="edTblWrap">
+        <summary>Table (tab-separated, first row is the header)</summary>
+        <textarea id="edTable" rows="8"></textarea>
+      </details>
+    </div>
+    <div class="dlg-foot">
+      <button data-close>Cancel</button>
+      <button id="edSave" class="primary">Save</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Settings dialog -->
+<dialog id="settingsDlg" class="wide">
+  <div class="dlg-inner">
+    <div class="dlg-head"><h2>Settings</h2><button class="icon-btn" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body">
+      <fieldset>
+        <legend>Appearance</legend>
+        <div class="ctl-row" id="themeRadios">
+          <label><input type="radio" name="theme" value="system"> Follow system</label>
+          <label><input type="radio" name="theme" value="light"> Light</label>
+          <label><input type="radio" name="theme" value="dark"> Dark</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Data</legend>
+        <div class="ctl-row">
+          <button id="exportAllBtn">Export whole database (JSON)</button>
+          <button id="importJsonBtn2">Import JSON…</button>
+          <button id="loadSamplesBtn">Re-add sample entries</button>
+          <button id="clearDbBtn" class="danger">Delete all entries…</button>
+        </div>
+        <p class="hint" id="storageInfo"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Categories</legend>
+        <p class="hint">Categories are data, not code: add one here, or just type a new category name in the entry editor.</p>
+        <div id="typeAdmin"></div>
+        <div class="ctl-row">
+          <input id="newTypeLabel" placeholder="New category name, e.g. Vehicles">
+          <button id="addTypeBtn">Add category</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>GitHub backup</legend>
+        <div class="form-grid">
+          <label>Personal access token <input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…"></label>
+          <label>Owner (user or org) <input id="ghOwner" placeholder="your-username"></label>
+          <label>Repository <input id="ghRepo" placeholder="dnd-backup"></label>
+          <label>Branch <input id="ghBranch" placeholder="main"></label>
+          <label>File path <input id="ghPath" placeholder="dnd-reference-db.json"></label>
+        </div>
+        <div class="ctl-row">
+          <button id="ghSaveBtn">Save settings</button>
+          <button id="ghTestBtn">Test connection</button>
+          <button id="ghPushBtn" class="primary">Push backup ⇧</button>
+          <button id="ghRestoreBtn">Restore from GitHub ⇩</button>
+        </div>
+        <p class="hint" id="ghStatus"></p>
+        <details>
+          <summary>Which token scopes do I need?</summary>
+          <div class="hint">
+            <p><b>Recommended: fine-grained token.</b> GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate.
+              Set <i>Repository access</i> to <i>Only select repositories</i> and pick just your backup repo.
+              Under <i>Repository permissions</i> set <b>Contents: Read and write</b>. <i>Metadata: Read-only</i> is added automatically. Nothing else is needed. Give it an expiry date.</p>
+            <p><b>Classic token:</b> needs the <code>repo</code> scope for a private repo (<code>public_repo</code> only covers public repos, and a public backup repo would publish your data). Classic tokens grant access to every repo you own, so prefer fine-grained.</p>
+            <p><b>Where the token lives:</b> only in this browser's IndexedDB, never in exports or backups. It is sent only to api.github.com. Note that every page on the same origin can read it: on GitHub Pages all your project sites share <code>username.github.io</code>, which is another reason to scope the token to one repo.</p>
+            <p>Use a <b>private</b> repo. Org repos with SAML SSO need the token authorised for that org.</p>
+          </div>
+        </details>
+      </fieldset>
+    </div>
+    <div class="dlg-foot"><button data-close>Close</button></div>
+  </div>
+</dialog>
+
+<!-- Generic confirm / choice dialog -->
+<dialog id="askDlg">
+  <div class="dlg-inner">
+    <div class="dlg-head"><h2 id="askTitle">Confirm</h2></div>
+    <div class="dlg-body" id="askBody"></div>
+    <div class="dlg-foot" id="askBtns"></div>
+  </div>
+</dialog>
+
+<div id="toasts" role="status"></div>
+
+<script>
+'use strict';
+/* #####################################################################
+   D&D REFERENCE DATABASE
+   Single-file app. Sections, in dependency order:
+     1. Utilities
+     2. Category registry (Types)
+     3. Storage (IndexedDB wrapper + entry schema)
+     4. Search index
+     5. Parsers (one module per D&D Beyond layout, plus a registry)
+     6. Rendering (list rows, detail views, text formatting)
+     7. GitHub sync
+     8. UI controllers (app state, list, dialogs, keyboard)
+     9. Sample data and example pastes
+    10. Boot
+   ##################################################################### */
+
+
+/* =====================================================================
+   1. UTILITIES
+   ===================================================================== */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ESC_MAP[c]);
+const nowIso = () => new Date().toISOString();
+const uid = () => (window.crypto && crypto.randomUUID)
+  ? crypto.randomUUID()
+  : 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+
+/** Fold text for matching: lower-case, strip accents and apostrophes ("Tasha's" -> "tashas"). */
+function fold(s) {
+  return String(s ?? '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/['’‘`]/g, '');
+}
+const slugify = (s) => fold(s).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'entry';
+const cap = (s) => String(s || '').replace(/\b([a-z])/g, (m) => m.toUpperCase());
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+const ordinal = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+const hashHue = (s) => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
+
+function download(filename, text) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+function toast(msg, kind = 'info', ms = 4000) {
+  const el = document.createElement('div');
+  el.className = 'toast ' + kind;
+  el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => el.remove(), ms);
+}
+
+/** UTF-8 safe base64 of a (possibly large) string, via FileReader to avoid call-stack limits. */
+function toBase64(str) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(',')[1] || '');
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(new Blob([str], { type: 'application/json' }));
+  });
+}
+
+/** Promise-based modal choice. buttons: [{label, value, kind}] -> resolves with value (or null on Esc). */
+function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }]) {
+  const dlg = $('#askDlg');
+  $('#askTitle').textContent = title;
+  $('#askBody').innerHTML = html;
+  const box = $('#askBtns');
+  box.innerHTML = '';
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => { if (done) return; done = true; dlg.close(); resolve(v); };
+    for (const b of buttons) {
+      const el = document.createElement('button');
+      el.textContent = b.label;
+      if (b.kind) el.className = b.kind;
+      el.onclick = () => finish(b.value);
+      box.appendChild(el);
+    }
+    dlg.onclose = () => finish(null);
+    dlg.showModal();
+    const primary = box.querySelector('.primary') || box.lastElementChild;
+    if (primary) primary.focus();
+  });
+}
+
+
+/* =====================================================================
+   2. CATEGORY REGISTRY
+   Categories are stored data, so adding one never needs a code change.
+   Parsers and renderers are keyed by category but every category falls
+   back to the generic parser/renderer.
+   ===================================================================== */
+const Types = {
+  DEFAULTS: [
+    { key: 'rule', label: 'Rules', hue: 210 },
+    { key: 'class', label: 'Classes', hue: 5 },
+    { key: 'subclass', label: 'Subclasses', hue: 25 },
+    { key: 'spell', label: 'Spells', hue: 265 },
+    { key: 'feat', label: 'Feats', hue: 45 },
+    { key: 'species', label: 'Species / Races', hue: 140 },
+    { key: 'background', label: 'Backgrounds', hue: 180 },
+    { key: 'item', label: 'Items', hue: 32 },
+    { key: 'monster', label: 'Monsters', hue: 345 },
+    { key: 'condition', label: 'Conditions', hue: 300 },
+    { key: 'other', label: 'Other', hue: 220 },
+  ],
+  list: [],
+
+  async load() {
+    const saved = await Store.getMeta('types');
+    this.list = Array.isArray(saved) ? saved : this.DEFAULTS.map((t) => ({ ...t }));
+    for (const d of this.DEFAULTS) if (!this.list.some((t) => t.key === d.key)) this.list.push({ ...d });
+  },
+  save() { return Store.setMeta('types', this.list); },
+
+  /** Normalise free text ("Magic Vehicles") into a category key ("magic-vehicles"). */
+  keyOf(text) { return slugify(text); },
+
+  get(key) {
+    return this.list.find((t) => t.key === key)
+      || { key, label: cap(String(key).replace(/-/g, ' ')), hue: hashHue(key) };
+  },
+
+  /** Make sure a category exists (used when entries arrive with unknown types). */
+  ensure(key, label) {
+    if (!key || this.list.some((t) => t.key === key)) return false;
+    this.list.push({ key, label: label || cap(key.replace(/-/g, ' ')), hue: hashHue(key), custom: true });
+    this.save();
+    return true;
+  },
+
+  badge(key) {
+    const t = this.get(key);
+    return `<span class="badge" style="--h:${t.hue}">${esc(t.label)}</span>`;
+  },
+};
+
+
+/* =====================================================================
+   3. STORAGE
+   IndexedDB with two object stores:
+     entries : keyPath "id", index on "type"
+     meta    : arbitrary key/value (settings, categories, sync state)
+   Falls back to an in-memory store if IndexedDB is unavailable (some
+   browsers block it for file:// or private windows); the UI warns.
+   ===================================================================== */
+const Store = {
+  db: null,
+  mem: null, // { entries: Map, meta: Map } when IndexedDB is unavailable
+
+  async open() {
+    try {
+      if (!('indexedDB' in window)) throw new Error('IndexedDB not supported');
+      this.db = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('dnd-reference', 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains('entries')) {
+            db.createObjectStore('entries', { keyPath: 'id' }).createIndex('type', 'type');
+          }
+          if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta');
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+        req.onblocked = () => reject(new Error('Database upgrade blocked by another open tab'));
+      });
+      // Ask the browser not to evict our data under storage pressure (best effort).
+      if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    } catch (err) {
+      console.warn('IndexedDB unavailable, using memory only:', err);
+      this.mem = { entries: new Map(), meta: new Map() };
+      toast('Browser storage is unavailable here, so changes will NOT persist. Try serving the file over http(s).', 'err', 10000);
+    }
+  },
+
+  /** Run fn inside a transaction; resolves when the transaction commits. */
+  _tx(names, mode, fn) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction(names, mode);
+      let result;
+      const req = fn(tx);
+      if (req) req.onsuccess = () => { result = req.result; };
+      tx.oncomplete = () => resolve(result);
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error || new Error('Transaction aborted'));
+    });
+  },
+
+  async getAllEntries() {
+    if (this.mem) return [...this.mem.entries.values()];
+    return this._tx(['entries'], 'readonly', (tx) => tx.objectStore('entries').getAll());
+  },
+  async putEntries(list) {
+    if (this.mem) { for (const e of list) this.mem.entries.set(e.id, e); return; }
+    return this._tx(['entries'], 'readwrite', (tx) => {
+      const s = tx.objectStore('entries');
+      for (const e of list) s.put(e);
+    });
+  },
+  async deleteEntries(ids) {
+    if (this.mem) { for (const id of ids) this.mem.entries.delete(id); return; }
+    return this._tx(['entries'], 'readwrite', (tx) => {
+      const s = tx.objectStore('entries');
+      for (const id of ids) s.delete(id);
+    });
+  },
+  async clearEntries() {
+    if (this.mem) { this.mem.entries.clear(); return; }
+    return this._tx(['entries'], 'readwrite', (tx) => tx.objectStore('entries').clear());
+  },
+  async getMeta(key) {
+    if (this.mem) return this.mem.meta.get(key);
+    return this._tx(['meta'], 'readonly', (tx) => tx.objectStore('meta').get(key));
+  },
+  async setMeta(key, value) {
+    if (this.mem) { this.mem.meta.set(key, value); return; }
+    return this._tx(['meta'], 'readwrite', (tx) => tx.objectStore('meta').put(value, key));
+  },
+};
+
+/* ---- Entry schema ------------------------------------------------------
+   {
+     id, type, name, source, tags: [string],
+     fields:    { "Casting Time": "1 action", ... }   flat key/value, ordered
+     abilities: { STR: {score, mod, save}, ... } | null
+     table:     { headers: [..], rows: [[..]] } | null
+     sections:  [{ heading, intro, items: [{ name, level, text }] }]
+     text:      main description (plain text, newline-separated paragraphs)
+     raw:       original pasted text (kept for re-parsing; not indexed)
+     fav, created, updated
+   }
+   Every part except id/type/name is optional, so any category fits. */
+const ABILS = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
+
+function makeEntry(p = {}) {
+  const fields = {};
+  if (p.fields && typeof p.fields === 'object') {
+    for (const [k, v] of Object.entries(p.fields)) if (k && v !== undefined && v !== null && v !== '') fields[k] = String(v);
+  }
+  let abilities = null;
+  if (p.abilities && typeof p.abilities === 'object') {
+    abilities = {};
+    for (const k of ABILS) {
+      const a = p.abilities[k];
+      if (a && a.score !== undefined && a.score !== '' && !isNaN(+a.score)) {
+        abilities[k] = { score: +a.score, mod: a.mod ?? '', save: a.save ?? '' };
+      }
+    }
+    if (!Object.keys(abilities).length) abilities = null;
+  }
+  let table = null;
+  if (p.table && Array.isArray(p.table.headers) && Array.isArray(p.table.rows)) {
+    table = { headers: p.table.headers.map(String), rows: p.table.rows.map((r) => (Array.isArray(r) ? r.map(String) : [])) };
+  }
+  const sections = Array.isArray(p.sections) ? p.sections
+    .filter((s) => s && (s.heading || (s.items && s.items.length)))
+    .map((s) => ({
+      heading: String(s.heading || ''),
+      intro: String(s.intro || ''),
+      items: (Array.isArray(s.items) ? s.items : []).map((it) => ({
+        name: String(it.name || ''),
+        level: it.level ? +it.level || null : null,
+        text: String(it.text || ''),
+      })),
+    })) : [];
+  return {
+    id: p.id || uid(),
+    type: p.type ? String(p.type) : 'other',
+    name: String(p.name || 'Untitled').trim() || 'Untitled',
+    source: String(p.source || ''),
+    tags: Array.isArray(p.tags) ? p.tags.map(String).filter(Boolean) : [],
+    fields, abilities, table, sections,
+    text: String(p.text || ''),
+    raw: String(p.raw || ''),
+    fav: !!p.fav,
+    created: p.created || nowIso(),
+    updated: p.updated || nowIso(),
+  };
+}
+
+/** Accepts our export format, a bare array, or a single entry. Returns { entries, types }. */
+function readImportPayload(json) {
+  let list = [], types = [];
+  if (Array.isArray(json)) list = json;
+  else if (json && Array.isArray(json.entries)) { list = json.entries; types = Array.isArray(json.types) ? json.types : []; }
+  else if (json && typeof json === 'object' && json.name) list = [json];
+  else throw new Error('Unrecognised JSON: expected { entries: [...] }, an array of entries, or a single entry.');
+  const entries = list.filter((o) => o && typeof o === 'object' && typeof o.name === 'string').map(makeEntry);
+  return { entries, types };
+}
+
+function exportPayload(entries) {
+  return {
+    format: 'dnd-reference-db',
+    version: 1,
+    exportedAt: nowIso(),
+    types: Types.list,
+    entries,
+  };
+}
+
+
+/* =====================================================================
+   4. SEARCH INDEX
+   An inverted index: token -> flat posting list [slot, weight, slot, weight...]
+   where weight sums per-field weights (name >> tags > fields > body).
+   A query term matches vocabulary tokens exactly, by prefix, or by
+   substring ("fire" hits fire / fireball / wildfire), so the per-keystroke
+   cost is a scan of the unique-token vocabulary (tens of thousands of short
+   strings: ~1-3 ms) plus the posting lists of the tokens that matched,
+   never a scan of the full text of every entry. Multi-word queries are
+   AND-ed, then ranked with name bonuses (exact > prefix > word-start >
+   substring). Deletes are tombstoned and the index compacts itself.
+   ===================================================================== */
+const STOPWORDS = new Set('a an and are as at be by for from in into is it its of on or that the their them then they this to was were when which while with you your'.split(' '));
+const W = { name: 12, tags: 6, field: 3, section: 3, body: 1 };
+
+class SearchIndex {
+  constructor() { this.reset(); }
+
+  reset() {
+    this.docs = [];             // slot -> { id, name (folded), type, fav, alive }
+    this.slotOf = new Map();    // id -> slot
+    this.vocab = new Map();     // token -> number[] (interleaved slot/weight)
+    this.vocabList = null;      // cached Array of tokens for scanning
+    this.sortedByName = null;   // cached slots sorted by name for empty queries
+    this.dead = 0;
+  }
+
+  static tokenize(text) {
+    return fold(text).split(/[^a-z0-9]+/).filter(Boolean);
+  }
+  static foldName(s) { return fold(s).replace(/\s+/g, ' ').trim(); }
+
+  build(entries) {
+    this.reset();
+    for (const e of entries) this.add(e);
+  }
+
+  add(e) {
+    if (this.slotOf.has(e.id)) this.remove(e.id);
+    const slot = this.docs.length;
+    this.docs.push({ id: e.id, name: SearchIndex.foldName(e.name), type: e.type, fav: !!e.fav, alive: true });
+    this.slotOf.set(e.id, slot);
+
+    // Collect unique tokens per field, then sum field weights per token.
+    const weights = new Map();
+    const feed = (text, w) => {
+      if (!text) return;
+      const seen = new Set(SearchIndex.tokenize(text));
+      for (const t of seen) weights.set(t, (weights.get(t) || 0) + w);
+    };
+    feed(e.name, W.name);
+    feed(e.tags.join(' '), W.tags);
+    feed(e.source, W.body);
+    feed(Object.values(e.fields).join(' '), W.field);
+    for (const s of e.sections) {
+      feed(s.heading + ' ' + s.items.map((i) => i.name).join(' '), W.section);
+      feed(s.intro + ' ' + s.items.map((i) => i.text).join(' '), W.body);
+    }
+    if (e.table) feed(e.table.rows.map((r) => r.join(' ')).join(' '), W.body);
+    feed(e.text, W.body);
+
+    for (const [tok, w] of weights) {
+      let p = this.vocab.get(tok);
+      if (!p) { p = []; this.vocab.set(tok, p); this.vocabList = null; }
+      p.push(slot, w);
+    }
+    this.sortedByName = null;
+  }
+
+  remove(id) {
+    const slot = this.slotOf.get(id);
+    if (slot === undefined) return;
+    this.docs[slot].alive = false;
+    this.slotOf.delete(id);
+    this.dead++;
+    this.sortedByName = null;
+  }
+
+  setFav(id, fav) {
+    const slot = this.slotOf.get(id);
+    if (slot !== undefined) this.docs[slot].fav = fav;
+  }
+
+  /** Rebuild when tombstones exceed a quarter of the slots. */
+  maybeCompact(allEntries) {
+    if (this.dead > 500 && this.dead > this.docs.length / 4) this.build(allEntries);
+  }
+
+  /** Vocabulary tokens matching a term, with a match-quality multiplier. */
+  matchTokens(term) {
+    if (!this.vocabList) this.vocabList = [...this.vocab.keys()];
+    const out = [];
+    const allowSubstring = term.length >= 3; // 1-2 char substrings match too much to be useful
+    for (const tok of this.vocabList) {
+      if (tok === term) out.push(tok, 1);
+      else if (tok.startsWith(term)) out.push(tok, 0.75);
+      else if (allowSubstring && tok.includes(term)) out.push(tok, 0.4);
+    }
+    return out;
+  }
+
+  _passes(d, filter) {
+    return d.alive && (!filter.type || d.type === filter.type) && (!filter.fav || d.fav);
+  }
+
+  /** Returns entry ids, best first. */
+  search(query, filter = {}) {
+    const qName = SearchIndex.foldName(query);
+    const terms = [...new Set(SearchIndex.tokenize(query))];
+
+    // Empty query: everything (filtered), alphabetical.
+    if (!terms.length) {
+      if (!this.sortedByName) {
+        this.sortedByName = this.docs.map((d, i) => i).filter((i) => this.docs[i].alive)
+          .sort((a, b) => this.docs[a].name.localeCompare(this.docs[b].name));
+      }
+      const out = [];
+      for (const s of this.sortedByName) if (this._passes(this.docs[s], filter)) out.push(this.docs[s].id);
+      return out;
+    }
+
+    // Stopwords only filter if the query has nothing else ("the" alone still works).
+    let required = terms.filter((t) => !STOPWORDS.has(t));
+    if (!required.length) required = terms;
+
+    // Score each term separately (best matching token per doc), AND across terms.
+    // Dense typed arrays indexed by slot are far cheaper than Maps when a
+    // common term matches most of the database.
+    const n = this.docs.length;
+    let acc = null;
+    for (const term of required) {
+      const m = this.matchTokens(term);
+      const ts = new Float32Array(n);
+      for (let i = 0; i < m.length; i += 2) {
+        const post = this.vocab.get(m[i]), q = m[i + 1];
+        for (let j = 0; j < post.length; j += 2) {
+          const v = post[j + 1] * q;
+          if (v > ts[post[j]]) ts[post[j]] = v;
+        }
+      }
+      if (!acc) acc = ts;
+      else for (let s = 0; s < n; s++) acc[s] = ts[s] > 0 && acc[s] > 0 ? acc[s] + ts[s] : 0;
+    }
+
+    // Name bonuses dominate the ranking: the thing you typed the name of comes first.
+    const slots = [];
+    const score = new Float64Array(n);
+    for (let s = 0; s < n; s++) {
+      if (!(acc[s] > 0)) continue;
+      const d = this.docs[s];
+      if (!this._passes(d, filter)) continue;
+      const nm = d.name;
+      let sc = acc[s];
+      if (nm === qName) sc += 1000;
+      else if (nm.startsWith(qName)) sc += 600;
+      else if ((' ' + nm).includes(' ' + qName) || nm.includes('-' + qName) || nm.includes('(' + qName)) sc += 400;
+      else if (nm.includes(qName)) sc += 250;
+      score[s] = sc - nm.length * 0.05; // shorter names win ties
+      slots.push(s);
+    }
+    slots.sort((a, b) => score[b] - score[a] || (this.docs[a].name < this.docs[b].name ? -1 : 1));
+    return slots.map((s) => this.docs[s].id);
+  }
+}
+
+
+/* =====================================================================
+   5. PARSERS
+   Each parser is a self-contained module registered with Parsers:
+     {
+       type:      category key it produces
+       label:     human name
+       detect(lines)      -> confidence 0..1 that `lines` is this layout
+       startsAt(lines, i) -> (optional) true if a NEW entry of this layout
+                             starts at line i; used to split multi-entry pastes
+       noSplit:   (optional) don't auto-split chunks detected as this type
+       parse(lines)       -> partial entry ({ name, fields, sections, ... })
+     }
+   `lines` are trimmed, non-empty lines. Parsers must not throw; if they
+   do, the pipeline falls back to a raw-text entry. To support a new
+   layout, write one object and call Parsers.register(obj).
+   ===================================================================== */
+const Parsers = (() => {
+  const registry = [];
+
+  /* ---------- shared helpers ---------- */
+
+  /** Normalise pasted text: newlines, odd spaces, Unicode minus and en-dash numerics. */
+  function normalise(text) {
+    return String(text)
+      .replace(/\r\n?/g, '\n')
+      .replace(/[   ]/g, ' ')
+      .replace(/[​﻿]/g, '')
+      .replace(/−/g, '-')
+      .replace(/(\d)\s*–\s*(\d)/g, '$1-$2')
+      .replace(/–(?=\d)/g, '-');
+  }
+  const toLines = (text) => text.split('\n').map((l) => l.trim()).filter(Boolean);
+
+  /** Build label definitions: [['Key', 'Alias', ...], ...] */
+  function labels(defs) {
+    return defs.map(([key, ...aliases]) => ({
+      key,
+      re: new RegExp('^(?:' + [key, ...aliases].map(reEsc).join('|') + ')(?=$|[\\s:.\\t])', 'i'),
+    }));
+  }
+
+  /**
+   * Match "Label value", "Label: value", "Label<TAB>value" or a bare "Label".
+   * strict=true requires a colon/tab separator (or a bare label), which stops
+   * prose like "Armor Class equals..." being mistaken for a field.
+   */
+  function matchLabel(line, defs, strict = false) {
+    for (const d of defs) {
+      const m = d.re.exec(line);
+      if (!m) continue;
+      const after = line.slice(m[0].length);
+      if (strict && after.trim() && !/^\s*[:\t]/.test(after)) continue;
+      return { key: d.key, rest: after.replace(/^[\s:.]+/, '').trim() };
+    }
+    return null;
+  }
+
+  /**
+   * Read consecutive labelled lines from index i into `fields`.
+   * D&D Beyond pages often copy as "Label\nValue", so a bare label takes
+   * the next line as its value. Returns the index of the first unread line.
+   */
+  function readLabelled(lines, i, defs, fields, { strict = false } = {}) {
+    while (i < lines.length) {
+      const m = matchLabel(lines[i], defs, strict);
+      if (!m) break;
+      let val = m.rest;
+      if (!val && i + 1 < lines.length && !matchLabel(lines[i + 1], defs, strict)) val = lines[++i];
+      if (val) fields[m.key] = fields[m.key] ? fields[m.key] + '; ' + val : val;
+      i++;
+    }
+    return i;
+  }
+
+  /** "Name. Text" lead-in, as used by monster traits/actions and feat benefits. */
+  const reLead = /^([A-Z0-9][^.!?]{0,60}?(?:\([^)]{0,60}\))?)\.\s+(\S.*)$/;
+  function leadIn(line) {
+    const m = reLead.exec(line);
+    if (!m) return null;
+    const name = m[1].trim();
+    if (name.split(/\s+/).length > 8) return null;
+    return { name, text: m[2] };
+  }
+
+  /** Strip D&D Beyond chrome (source/page lines, tag lines) and capture it. */
+  const reSourcePg = /^(?:source:\s*)?([A-Z][\w'’&:\- ]{2,80}?(?:\(\d{4}\))?)\s*,\s*(?:pg|page|p)\.?\s*\d+\s*$/;
+  const reSourceOnly = /^source:\s*(.+)$/i;
+  const reTags = /^(?:spell|monster|item|feat)?\s*tags?\s*:\s*(.+)$/i;
+  function cleanCommon(lines) {
+    const out = [];
+    let source = '';
+    const tags = [];
+    for (const l of lines) {
+      let m;
+      if ((m = reSourcePg.exec(l)) || (m = reSourceOnly.exec(l))) { source = source || m[1].trim(); continue; }
+      if ((m = reTags.exec(l))) { tags.push(...m[1].split(/,\s*/).map((t) => t.trim()).filter(Boolean)); continue; }
+      out.push(l);
+    }
+    return { lines: out, source, tags };
+  }
+
+  function orderFields(f, order) {
+    const out = {};
+    for (const k of order) if (f[k]) out[k] = f[k];
+    for (const k of Object.keys(f)) if (!(k in out) && f[k]) out[k] = f[k];
+    return out;
+  }
+
+  const reLevelHead = /^level\s+(\d{1,2})\s*:\s*(.+)$/i;           // 2024: "Level 3: Frenzy"
+  const levelFromText = (t) => {
+    const m = /\b(\d{1,2})(?:st|nd|rd|th)[- ]level\b/i.exec(t) || /\blevel (\d{1,2})\b/i.exec(t);
+    return m ? +m[1] : null;
+  };
+
+  /* ---------- SPELL ----------
+     Book 2014:  "3rd-level evocation" / "Evocation cantrip", then "Casting Time: ..."
+     Book 2024:  "Level 3 Evocation (Sorcerer, Wizard)" / "Evocation Cantrip (...)"
+     D&D Beyond spell page: label on one line, value on the next
+       (Level / Casting Time / Range/Area / Components / Duration / School /
+        Attack/Save / Damage/Effect), then description, "* - (material)",
+        "Spell Tags:", "Available For:". */
+  const SCHOOLS = 'abjuration|conjuration|divination|enchantment|evocation|illusion|necromancy|transmutation';
+  const reSchool14 = new RegExp(`^(\\d)(?:st|nd|rd|th)[- ]level\\s+(${SCHOOLS})(\\s*\\(ritual\\))?`, 'i');
+  const reSchool24 = new RegExp(`^level\\s+(\\d)\\s+(${SCHOOLS})(?:\\s*\\(([^)]*)\\))?`, 'i');
+  const reCantrip = new RegExp(`^(${SCHOOLS})\\s+cantrip(?:\\s*\\(([^)]*)\\))?`, 'i');
+  const SPELL_LABELS = labels([
+    ['Level'], ['Casting Time'], ['Range', 'Range/Area', 'Range / Area'], ['Components'], ['Duration'],
+    ['School'], ['Attack/Save', 'Attack / Save'], ['Damage/Effect', 'Damage / Effect'], ['Classes'],
+  ]);
+  const isSchoolLine = (l) => reSchool14.test(l) || reSchool24.test(l) || reCantrip.test(l);
+
+  const spell = {
+    type: 'spell', label: 'Spell',
+    detect(lines) {
+      if (isSchoolLine(lines[1] || '')) return 0.95;
+      const head = lines.slice(0, 16);
+      const n = [/^casting time\b/i, /^components\b/i, /^duration\b/i, /^range\b/i].filter((re) => head.some((l) => re.test(l))).length;
+      return n >= 3 ? 0.9 : n === 2 ? 0.45 : 0;
+    },
+    startsAt(lines, i) {
+      if (lines[i].length > 60) return false;
+      const nx = lines[i + 1] || '';
+      return isSchoolLine(nx) || (/^level$/i.test(nx) && /^(cantrip|\d(st|nd|rd|th)?)$/i.test(lines[i + 2] || ''));
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      let i = 1, m;
+      const l1 = lines[1] || '';
+      if ((m = reSchool14.exec(l1))) { f.Level = m[1]; f.School = m[2]; if (m[3]) f.Ritual = 'Yes'; i = 2; }
+      else if ((m = reSchool24.exec(l1))) { f.Level = m[1]; f.School = m[2]; if (m[3]) f.Classes = m[3]; i = 2; }
+      else if ((m = reCantrip.exec(l1))) { f.Level = 'Cantrip'; f.School = m[1]; if (m[2]) f.Classes = m[2]; i = 2; }
+      i = readLabelled(lines, i, SPELL_LABELS, f);
+
+      const body = [], higher = [];
+      let inHigher = false, footnote = '';
+      for (; i < lines.length; i++) {
+        const L = lines[i];
+        if ((m = /^\*\s*-?\s*\((.+)\)\s*$/.exec(L))) { footnote = m[1]; continue; }
+        if ((m = /^(?:available for|classes)\s*:\s*(.+)$/i.exec(L))) { f.Classes = m[1]; continue; }
+        if ((m = /^(at higher levels|using a higher-level spell slot|cantrip upgrade)\s*[.:]\s*(.*)$/i.exec(L))) {
+          inHigher = true; if (m[2]) higher.push(m[2]); continue;
+        }
+        (inHigher ? higher : body).push(L);
+      }
+
+      // Tidy values into a consistent shape.
+      if (f.Level) f.Level = /cantrip|^0/i.test(f.Level) ? 'Cantrip' : (f.Level.match(/\d/) || [f.Level])[0];
+      if (f.School) f.School = cap(f.School.toLowerCase());
+      if (footnote && f.Components) f.Components = f.Components.replace(/\s*\*\s*$/, '') + ` (${footnote})`;
+      if (f.Duration && /concentration/i.test(f.Duration)) f.Concentration = 'Yes';
+      if (/ritual/i.test(f['Casting Time'] || '')) f.Ritual = 'Yes';
+      if (higher.length) f['At Higher Levels'] = higher.join('\n');
+
+      const warnings = [];
+      if (!f['Casting Time']) warnings.push('No casting time found');
+      if (!f.Level) warnings.push('No spell level found');
+      return {
+        type: 'spell', name: lines[0], source, tags,
+        fields: orderFields(f, ['Level', 'School', 'Casting Time', 'Range', 'Components', 'Duration', 'Concentration', 'Ritual', 'Attack/Save', 'Damage/Effect', 'Classes', 'At Higher Levels']),
+        text: body.join('\n'), warnings,
+      };
+    },
+  };
+
+  /* ---------- MONSTER ----------
+     2014: "Armor Class 19 (Natural Armor)", "Hit Points ...", abilities as
+           "STR\n27 (+8)" or a row, "Saving Throws", "Damage Immunities",
+           "Challenge 17 (18,000 XP)", traits (no heading), "Actions", ...
+     2024: "AC 19", "Initiative +4 (14)", "HP ...", ability table rows
+           "Str 27 +8 +8" with MOD/SAVE headers, "Immunities", "CR 17 (...)",
+           "Traits", "Actions", "Bonus Actions", "Reactions", "Legendary Actions". */
+  const SIZES = 'tiny|small|medium|large|huge|gargantuan';
+  const reMeta = new RegExp(`^((?:${SIZES})(?:\\s*(?:or|,)\\s*(?:${SIZES}))*)\\s+([^,]+?)\\s*,\\s*(.+)$`, 'i');
+  const MON_LABELS = labels([
+    ['AC', 'Armor Class', 'Armour Class'], ['HP', 'Hit Points'], ['Speed'], ['Initiative'],
+    ['Saving Throws', 'Saves'], ['Skills'], ['Vulnerabilities', 'Damage Vulnerabilities'],
+    ['Resistances', 'Damage Resistances'], ['Immunities', 'Damage Immunities'], ['Condition Immunities'],
+    ['Gear'], ['Senses'], ['Languages'], ['CR', 'Challenge'], ['Proficiency Bonus', 'PB'],
+  ]);
+  const reMonSection = /^(traits|special traits|actions|bonus actions|reactions|legendary actions|mythic actions|lair actions|regional effects|villain actions)$/i;
+  // Lines that belong to the ability-score grid in any of its copy-paste shapes.
+  const reAbilityish = /^(?:(?:str|dex|con|int|wis|cha)\b|mod\b|save\b|score\b|\d{1,2}\s*(?:\(\s*[+-]?\d+\s*\))?(?:\s+[+-]\d+){0,2}\s*$|[+-]\d+(?:\s+[+-]\d+)?\s*$|\(\s*[+-]\d+\s*\)\s*$)/i;
+
+  function extractAbilities(text) {
+    const out = {};
+    const re = /\b(STR|DEX|CON|INT|WIS|CHA)\b[ \t:]*\n?[ \t]*(\d{1,2})(?!\d)[ \t]*\n?[ \t]*(?:\(\s*([+-]\s?\d+)\s*\)|([+-]\d+))?(?:[ \t]*\n?[ \t]*([+-]\d+)(?=\s|$))?/gi;
+    let m;
+    while ((m = re.exec(text))) {
+      const k = m[1].toUpperCase();
+      if (!out[k]) out[k] = { score: +m[2], mod: (m[3] || m[4] || '').replace(/\s/g, ''), save: m[5] || '' };
+    }
+    if (Object.keys(out).length < 6) {
+      // Header-row layouts: "STR DEX CON INT WIS CHA" then "27 (+8) 10 (+0) ..."
+      const pairs = [...text.matchAll(/(\d{1,2})\s*\(\s*([+-]\d+)\s*\)/g)];
+      if (pairs.length >= 6) ABILS.forEach((k, idx) => { out[k] = { score: +pairs[idx][1], mod: pairs[idx][2], save: '' }; });
+    }
+    return Object.keys(out).length >= 3 ? out : null;
+  }
+
+  const monster = {
+    type: 'monster', label: 'Monster stat block',
+    detect(lines) {
+      const head = lines.slice(0, 45);
+      const has = (re) => head.some((l) => re.test(l));
+      let s = 0;
+      if (reMeta.test(lines[1] || '')) s += 0.4;
+      if (has(/^(ac|armou?r class)\b/i)) s += 0.25;
+      if (has(/^(hp|hit points)\b/i)) s += 0.25;
+      if (has(/^(cr|challenge)\b/i)) s += 0.1;
+      return Math.min(s, 0.97);
+    },
+    startsAt(lines, i) {
+      if (lines[i].length > 60 || !reMeta.test(lines[i + 1] || '')) return false;
+      return lines.slice(i + 2, i + 8).some((l) => /^(ac|armou?r class)\b/i.test(l));
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      const intro = [];
+      let i = 1;
+      const meta = reMeta.exec(lines[1] || '');
+      if (meta) { f.Size = cap(meta[1].toLowerCase()); f['Creature Type'] = meta[2]; f.Alignment = meta[3]; i = 2; }
+
+      const crIdx = lines.findIndex((l) => /^(cr|challenge)\b/i.test(l));
+      const abilities = extractAbilities(lines.slice(0, crIdx >= 0 ? crIdx + 1 : Math.min(lines.length, 40)).join('\n'));
+
+      const sections = [];
+      let sec = null, item = null, mode = 'header';
+      const openSection = (h) => { sec = { heading: h, intro: '', items: [] }; sections.push(sec); item = null; };
+
+      for (; i < lines.length; i++) {
+        const L = lines[i];
+        if (reMonSection.test(L)) { openSection(cap(L.toLowerCase())); mode = 'body'; continue; }
+        if (mode === 'header') {
+          const m = matchLabel(L, MON_LABELS);
+          if (m) {
+            let val = m.rest;
+            if (!val && i + 1 < lines.length && !matchLabel(lines[i + 1], MON_LABELS) && !reMonSection.test(lines[i + 1])) val = lines[++i];
+            if (val) f[m.key] = f[m.key] ? f[m.key] + ', ' + val : val;
+            continue;
+          }
+          if (L.length < 80 && reAbilityish.test(L)) continue;
+          if (!('AC' in f) && !('HP' in f)) { intro.push(L); continue; }
+          mode = 'body';
+          openSection('Traits'); // 2014 blocks have no "Traits" heading
+        }
+        if (!sec) openSection('Traits');
+        const li = leadIn(L);
+        if (li) { item = { name: li.name, level: null, text: li.text }; sec.items.push(item); }
+        else if (item) item.text += '\n' + L;
+        else sec.intro = sec.intro ? sec.intro + '\n' + L : L;
+      }
+
+      const warnings = [];
+      if (!abilities) warnings.push('Ability scores not found');
+      if (!f.HP) warnings.push('No hit points found');
+      return {
+        type: 'monster', name: lines[0], source, tags, abilities,
+        fields: orderFields(f, ['Size', 'Creature Type', 'Alignment', 'AC', 'Initiative', 'HP', 'Speed', 'Saving Throws', 'Skills', 'Vulnerabilities', 'Resistances', 'Immunities', 'Condition Immunities', 'Gear', 'Senses', 'Languages', 'CR', 'Proficiency Bonus']),
+        sections: sections.filter((s) => s.items.length || s.intro),
+        text: intro.join('\n'), warnings,
+      };
+    },
+  };
+
+  /* ---------- CLASS ----------
+     A progression table ("Level | Proficiency Bonus | [Class] Features | ...")
+     copied either tab-separated or one cell per line, core traits
+     ("Primary Ability<TAB>Strength" in 2024, "Hit Dice: 1d12 ..." in 2014),
+     then features headed "Level N: Name" (2024) or by the bare feature
+     name as listed in the table (2014). */
+  const CLASS_LABELS = labels([
+    ['Primary Ability'], ['Hit Point Die'], ['Hit Dice'], ['Hit Points at 1st Level'], ['Hit Points at Higher Levels'],
+    ['Saving Throw Proficiencies'], ['Saving Throws'], ['Skill Proficiencies'], ['Skills'],
+    ['Weapon Proficiencies'], ['Weapons'], ['Tool Proficiencies'], ['Tools'], ['Armor Training', 'Armour Training'],
+    ['Armor', 'Armour'], ['Starting Equipment'], ['Equipment'],
+  ]);
+
+  function findClassTable(lines) {
+    for (let i = 0; i < lines.length; i++) {
+      if (!/^level\b/i.test(lines[i]) || reLevelHead.test(lines[i])) continue;
+      const look = lines.slice(i, i + 12).join('\t');
+      if (/proficiency bonus/i.test(look) && /features/i.test(look)) return i;
+    }
+    return -1;
+  }
+
+  /** Parses the table at line i. Returns { table, end }. */
+  function parseProgressionTable(lines, i) {
+    if (lines[i].includes('\t')) {
+      const headers = lines[i].split('\t').map((s) => s.trim());
+      const rows = [];
+      let j = i + 1;
+      while (j < lines.length && /^\d{1,2}(st|nd|rd|th)?\t/i.test(lines[j])) {
+        const cells = lines[j].split('\t').map((s) => s.trim());
+        while (cells.length < headers.length) cells.push('');
+        rows.push(cells.slice(0, headers.length));
+        j++;
+      }
+      return { table: { headers, rows }, end: j };
+    }
+    // One cell per line. Rows are anchored on "<level>" followed by "+<PB>",
+    // which survives empty cells being dropped by the browser's copy.
+    const headers = [];
+    let j = i;
+    while (j < lines.length && !/^1(st)?$/i.test(lines[j]) && headers.length < 16) headers.push(lines[j++]);
+    const isRowStart = (k) => /^\d{1,2}(st|nd|rd|th)?$/i.test(lines[k] || '') && /^\+\d+$/.test(lines[k + 1] || '');
+    const rows = [];
+    while (j < lines.length && isRowStart(j)) {
+      let k = j + 1;
+      while (k < j + headers.length && k < lines.length && !isRowStart(k)) k++;
+      const cells = lines.slice(j, k);
+      while (cells.length < headers.length) cells.push('');
+      rows.push(cells);
+      j = k;
+    }
+    return { table: { headers, rows }, end: j };
+  }
+
+  const klass = {
+    type: 'class', label: 'Class', noSplit: true,
+    detect(lines) { return findClassTable(lines) >= 0 ? 0.9 : 0; },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const name = lines[0].replace(/^the\s+/i, '').replace(/\s+class$/i, '');
+      const f = {};
+      const intro = [];
+      const tIdx = findClassTable(lines);
+      let table = null, tEnd = tIdx;
+      if (tIdx >= 0) ({ table, end: tEnd } = parseProgressionTable(lines, tIdx));
+
+      // Feature names (and the level they first appear) from the table.
+      const featNames = new Map();
+      if (table) {
+        const fc = table.headers.findIndex((h) => /features/i.test(h));
+        if (fc >= 0) for (const row of table.rows) {
+          const lvl = parseInt(row[0], 10);
+          for (const fn of String(row[fc] || '').split(/,\s*/)) {
+            const k = fold(fn.replace(/\s*\([^)]*\)\s*$/, '')).trim();
+            if (k && !/^[-—]+$/.test(k) && !featNames.has(k)) featNames.set(k, lvl);
+          }
+        }
+      }
+      const has2024 = lines.some((l) => reLevelHead.test(l));
+      const items = [];
+      let cur = null;
+
+      const scan = (from, to) => {
+        for (let i = from; i < to; i++) {
+          const L = lines[i];
+          if (L.length < 45 && /^(core .+ traits|.+ features|class features)$/i.test(L)) continue;
+          if (!cur) {
+            const lab = matchLabel(L, CLASS_LABELS, true);
+            if (lab) {
+              let v = lab.rest;
+              if (!v && i + 1 < to && !matchLabel(lines[i + 1], CLASS_LABELS, true)) v = lines[++i];
+              if (v) f[lab.key] = v;
+              continue;
+            }
+          }
+          let m;
+          if ((m = reLevelHead.exec(L))) { cur = { name: m[2].trim(), level: +m[1], text: '' }; items.push(cur); continue; }
+          const k = fold(L).trim();
+          if (!has2024 && L.length < 60 && featNames.has(k)) {
+            cur = { name: L, level: featNames.get(k), text: '' }; items.push(cur); featNames.delete(k); continue;
+          }
+          if (cur) cur.text += (cur.text ? '\n' : '') + L;
+          else intro.push(L);
+        }
+      };
+      scan(1, tIdx >= 0 ? tIdx : lines.length);
+      if (tIdx >= 0) scan(tEnd, lines.length);
+
+      const warnings = [];
+      if (!items.length) warnings.push('No feature headings recognised; descriptions are in the main text');
+      return {
+        type: 'class', name, source, tags, table, fields: f,
+        sections: items.length ? [{ heading: 'Class Features', intro: '', items }] : [],
+        text: intro.join('\n'), warnings,
+      };
+    },
+  };
+
+  /* ---------- SUBCLASS ----------
+     2024: "Path of the Berserker" + "Barbarian Subclass: ..." tagline, then
+           "Level 3: Frenzy" headings.
+     2014: short heading lines, level inferred from "Starting at 6th level". */
+  const reSubLine = /^(.+?)\s+subclass\b\s*:?\s*(.*)$/i;
+  const SUBCLASS_HINTS = [
+    [/^path of\b/i, 'Barbarian'], [/^college of\b/i, 'Bard'], [/\bdomain$/i, 'Cleric'], [/^circle of\b/i, 'Druid'],
+    [/^oath of\b|^oath of the\b/i, 'Paladin'], [/^(way|warrior) of\b/i, 'Monk'], [/^school of\b/i, 'Wizard'],
+    [/\bpatron$/i, 'Warlock'], [/\b(sorcery|bloodline)$/i, 'Sorcerer'], [/\bconclave$/i, 'Ranger'],
+    [/\barchetype$/i, 'Fighter'],
+  ];
+  const guessClass = (name) => (SUBCLASS_HINTS.find(([re]) => re.test(name)) || [])[1] || '';
+  const looksLikeHeading = (lines, i) => {
+    const L = lines[i];
+    return L.length <= 40 && /^[A-Z]/.test(L) && !/[.:;,!?]$/.test(L) && L.split(/\s+/).length <= 6 && (lines[i + 1] || '').length > 50;
+  };
+
+  const subclass = {
+    type: 'subclass', label: 'Subclass', noSplit: true,
+    detect(lines) {
+      if (findClassTable(lines) >= 0) return 0;
+      if (reSubLine.test(lines[0]) || reSubLine.test(lines[1] || '')) return 0.9;
+      const lv = lines.filter((l) => reLevelHead.test(l)).length;
+      if (guessClass(lines[0]) && lines.length > 2) return 0.65;
+      return lv >= 2 ? 0.6 : 0;
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      let name = lines[0];
+      const f = {};
+      const intro = [];
+      let i = 1, m;
+      if ((m = reSubLine.exec(lines[0]))) { f.Class = m[1]; if (m[2]) name = m[2]; }
+      else if (lines[1] && (m = reSubLine.exec(lines[1]))) { f.Class = m[1]; if (m[2]) intro.push(m[2]); i = 2; }
+      if (!f.Class) f.Class = guessClass(name);
+
+      const has2024 = lines.some((l) => reLevelHead.test(l));
+      const items = [];
+      let cur = null;
+      for (; i < lines.length; i++) {
+        const L = lines[i];
+        if ((m = reLevelHead.exec(L))) { cur = { name: m[2].trim(), level: +m[1], text: '' }; items.push(cur); continue; }
+        if (!has2024 && looksLikeHeading(lines, i)) { cur = { name: L, level: null, text: '' }; items.push(cur); continue; }
+        if (cur) cur.text += (cur.text ? '\n' : '') + L;
+        else intro.push(L);
+      }
+      for (const it of items) if (!it.level) it.level = levelFromText(it.text);
+      items.sort((a, b) => (a.level || 0) - (b.level || 0));
+
+      const warnings = [];
+      if (!f.Class) warnings.push('Parent class not detected; set the "Class" field');
+      if (!items.length) warnings.push('No features recognised');
+      return {
+        type: 'subclass', name, source, tags, fields: f,
+        sections: items.length ? [{ heading: 'Subclass Features', intro: '', items }] : [],
+        text: intro.join('\n'), warnings,
+      };
+    },
+  };
+
+  /* ---------- ITEM ----------
+     "Bag of Holding" / "Wondrous Item, Uncommon"
+     "Flame Tongue"   / "Weapon (Any Sword), Rare (Requires Attunement)"
+     Mundane gear pages: "Cost 15 GP", "Weight 3 lb.", "Damage", "Properties", "Mastery". */
+  const reItemLine = /^((?:wondrous item|weapon|armou?r|shield|ring|rod|staff|wand|potion|scroll|ammunition|adventuring gear|tools?|instrument|vehicle|mount|trinket|poison|spellcasting focus)\b[^,]*),\s*(.+)$/i;
+  const reRarity = /\b(very rare|uncommon|common|rare|legendary|artifact|rarity varies|varies)\b/i;
+  const ITEM_LABELS = labels([
+    ['Type', 'Item Type'], ['Rarity'], ['Attunement'], ['Cost'], ['Weight'], ['Damage'], ['Properties'],
+    ['Mastery'], ['Armor Class', 'AC'], ['Strength'], ['Stealth'], ['Category'],
+  ]);
+  const isItemLine = (l) => { const m = reItemLine.exec(l || ''); return !!(m && reRarity.test(m[2])); };
+
+  const item = {
+    type: 'item', label: 'Item',
+    detect(lines) {
+      if (isItemLine(lines[1])) return 0.85;
+      const head = lines.slice(1, 14);
+      const n = [/^cost\b/i, /^weight\b/i, /^damage\b/i, /^properties\b/i, /^rarity\b/i].filter((re) => head.some((l) => re.test(l))).length;
+      return n >= 2 ? 0.6 : 0;
+    },
+    startsAt(lines, i) { return lines[i].length < 60 && isItemLine(lines[i + 1]); },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      let i = 1;
+      const m = reItemLine.exec(lines[1] || '');
+      if (m && reRarity.test(m[2])) {
+        f.Type = m[1].trim();
+        f.Rarity = cap(reRarity.exec(m[2])[1].toLowerCase());
+        const att = /\(\s*(requires attunement[^)]*)\)/i.exec(m[2]);
+        if (att) f.Attunement = att[1].replace(/^requires attunement\s*/i, '').trim() || 'Required';
+        i = 2;
+      }
+      i = readLabelled(lines, i, ITEM_LABELS, f);
+      return {
+        type: 'item', name: lines[0], source, tags,
+        fields: orderFields(f, ['Type', 'Rarity', 'Attunement', 'Cost', 'Weight', 'Damage', 'Properties', 'Mastery', 'Armor Class']),
+        text: lines.slice(i).join('\n'), warnings: [],
+      };
+    },
+  };
+
+  /* ---------- FEAT ----------
+     2024: "Alert" / "Origin Feat" or "General Feat (Prerequisite: Level 4+)"
+     2014: "Grappler" / "Prerequisite: Strength 13 or higher" */
+  const reFeatCat = /^((?:origin|general|fighting style|epic boon|dragonmark|racial|heroic)\s+feat)\b\s*(?:\((.*)\))?\s*$/i;
+  const rePrereq = /^prerequisites?\s*:\s*(.+)$/i;
+  const feat = {
+    type: 'feat', label: 'Feat',
+    detect(lines) {
+      if (reFeatCat.test(lines[1] || '')) return 0.85;
+      if (rePrereq.test(lines[1] || '') && lines.length > 2) return 0.6;
+      return 0;
+    },
+    startsAt(lines, i) {
+      return lines[i].length < 50 && !/[.:]$/.test(lines[i]) && (reFeatCat.test(lines[i + 1] || '') || rePrereq.test(lines[i + 1] || ''));
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      let i = 1, m;
+      if ((m = reFeatCat.exec(lines[1] || ''))) {
+        f.Category = cap(m[1].toLowerCase());
+        if (m[2]) f.Prerequisite = m[2].replace(/^prerequisites?\s*:\s*/i, '');
+        i = 2;
+      }
+      if ((m = rePrereq.exec(lines[i] || ''))) { f.Prerequisite = m[1]; i++; }
+      if (/^repeatable\b/i.test(lines[lines.length - 1] || '')) f.Repeatable = 'Yes';
+      return { type: 'feat', name: lines[0], source, tags, fields: f, text: lines.slice(i).join('\n'), warnings: [] };
+    },
+  };
+
+  /* ---------- SPECIES / RACE ----------
+     2024: "Creature Type: Humanoid", "Size: Medium ...", "Speed: 30 feet", traits.
+     2014: "Ability Score Increase. ...", "Age. ...", "Speed. ..." lead-ins. */
+  const SPECIES_LABELS = labels([['Creature Type'], ['Size'], ['Speed']]);
+  const species = {
+    type: 'species', label: 'Species / Race',
+    detect(lines) {
+      const head = lines.slice(0, 25);
+      const has = (re) => head.some((l) => re.test(l));
+      if (has(/^creature type\s*:/i) && has(/^size\s*:/i)) return 0.85;
+      if (has(/^ability score increase\./i) && (has(/^age\./i) || has(/^speed\./i))) return 0.8;
+      return 0;
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      const body = [];
+      for (let i = 1; i < lines.length; i++) {
+        const lab = matchLabel(lines[i], SPECIES_LABELS, true);
+        if (lab && lab.rest && !f[lab.key]) { f[lab.key] = lab.rest; continue; }
+        body.push(lines[i]);
+      }
+      return { type: 'species', name: lines[0].replace(/\s+(race|species)$/i, ''), source, tags, fields: f, text: body.join('\n'), warnings: [] };
+    },
+  };
+
+  /* ---------- BACKGROUND ----------
+     2024: "Ability Scores:", "Feat:", "Skill Proficiencies:", "Tool Proficiency:", "Equipment:"
+     2014: "Skill Proficiencies:", "Tool Proficiencies:", "Languages:", "Equipment:", "Feature: ..." */
+  const BG_LABELS = labels([
+    ['Ability Scores'], ['Feat'], ['Skill Proficiencies'], ['Tool Proficiencies', 'Tool Proficiency'],
+    ['Languages'], ['Equipment'], ['Feature'],
+  ]);
+  const background = {
+    type: 'background', label: 'Background',
+    detect(lines) {
+      const head = lines.slice(0, 25);
+      const has = (re) => head.some((l) => re.test(l));
+      if (has(/^skill proficiencies\s*:/i) && (has(/^equipment\s*:/i) || has(/^feat\s*:/i) || has(/^tool proficienc/i))) return 0.85;
+      return 0;
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      const body = [];
+      for (let i = 1; i < lines.length; i++) {
+        const lab = matchLabel(lines[i], BG_LABELS, true);
+        if (lab && lab.rest && !f[lab.key]) { f[lab.key] = lab.rest; continue; }
+        body.push(lines[i]);
+      }
+      return { type: 'background', name: lines[0].replace(/\s+background$/i, ''), source, tags, fields: f, text: body.join('\n'), warnings: [] };
+    },
+  };
+
+  /* ---------- CONDITION and RULES GLOSSARY ----------
+     2024 Rules Glossary headings look like "Blinded [Condition]" or "Attack [Action]". */
+  const CONDITIONS = new Set('blinded charmed deafened exhaustion frightened grappled incapacitated invisible paralyzed paralysed petrified poisoned prone restrained stunned unconscious'.split(' '));
+  const reGlossary = /^([A-Z][^[\]]{1,50}?)\s*\[([A-Za-z ]{3,25})\]$/;
+  const condition = {
+    type: 'condition', label: 'Condition',
+    detect(lines) {
+      const g = reGlossary.exec(lines[0]);
+      if (g && /condition/i.test(g[2])) return 0.95;
+      return CONDITIONS.has(fold(lines[0]).trim()) && lines.length <= 25 ? 0.85 : 0;
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const name = lines[0].replace(/\s*\[[^\]]*\]\s*$/, '');
+      return { type: 'condition', name, source, tags, fields: {}, text: lines.slice(1).join('\n'), warnings: [] };
+    },
+  };
+  const rule = {
+    type: 'rule', label: 'Rule (glossary entry)',
+    detect(lines) { return reGlossary.test(lines[0]) ? 0.6 : 0; },
+    startsAt(lines, i) { return reGlossary.test(lines[i]); },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const g = reGlossary.exec(lines[0]);
+      const f = g ? { Category: g[2].trim() } : {};
+      return { type: 'rule', name: g ? g[1].trim() : lines[0], source, tags, fields: f, text: lines.slice(1).join('\n'), warnings: [] };
+    },
+  };
+
+  /* ---------- GENERIC (fallback, raw text) ---------- */
+  const generic = {
+    type: 'other', label: 'Raw text',
+    detect() { return 0; },
+    parse(input, forcedType) {
+      const { lines, source, tags } = cleanCommon(input);
+      const first = lines[0] || '';
+      const useFirst = first.length <= 80 && lines.length > 1;
+      const name = useFirst ? first : (first.slice(0, 60) + (first.length > 60 ? '…' : '')) || 'Untitled paste';
+      return { type: forcedType || 'other', name, source, tags, fields: {}, text: (useFirst ? lines.slice(1) : lines).join('\n'), warnings: [] };
+    },
+  };
+
+  /* ---------- registry + pipeline ---------- */
+  function register(p) { registry.push(p); }
+  [spell, monster, klass, subclass, item, feat, species, background, condition, rule].forEach(register);
+
+  /** Pick the best parser for a chunk. */
+  function detect(lines) {
+    let best = { parser: generic, score: 0 };
+    for (const p of registry) {
+      let s = 0;
+      try { s = p.detect(lines) || 0; } catch (e) { console.warn(p.type, 'detect failed', e); }
+      if (s > best.score) best = { parser: p, score: s };
+    }
+    return best.score >= 0.4 ? best : { parser: generic, score: best.score };
+  }
+
+  /** Run one parser safely; any exception becomes a raw-text entry with a warning. */
+  function runParser(parser, lines, score, forcedType) {
+    const raw = lines.join('\n');
+    try {
+      const r = parser.parse(lines, forcedType);
+      const warnings = r.warnings || [];
+      delete r.warnings;
+      return { entry: makeEntry({ ...r, raw }), parser: parser.label, confidence: score, warnings };
+    } catch (err) {
+      console.error('Parser failed:', parser.type, err);
+      const r = generic.parse(lines, forcedType);
+      delete r.warnings;
+      return { entry: makeEntry({ ...r, raw }), parser: 'Raw text', confidence: 0, warnings: [`${parser.label} parser failed (${err.message}); saved as raw text`] };
+    }
+  }
+
+  /** Split a paste into chunks: explicit separators first, then layout start markers. */
+  function split(text, forceSingle) {
+    const norm = normalise(text);
+    if (forceSingle) { const l = toLines(norm); return l.length ? [l] : []; }
+    const blocks = ('\n' + norm + '\n').split(/\n[ \t]*(?:-{3,}|={3,}|\*{3,}|_{3,})[ \t]*(?=\n)|\n(?:[ \t]*\n){3,}/);
+    const chunks = [];
+    for (const b of blocks) {
+      const lines = toLines(b);
+      if (!lines.length) continue;
+      const primary = detect(lines).parser;
+      if (primary.noSplit) { chunks.push(lines); continue; }
+      const starts = [0];
+      for (let i = 1; i < lines.length - 1; i++) {
+        if (registry.some((p) => p.startsAt && !p.noSplit && safe(() => p.startsAt(lines, i)))) starts.push(i);
+      }
+      starts.push(lines.length);
+      for (let k = 0; k < starts.length - 1; k++) {
+        const part = lines.slice(starts[k], starts[k + 1]);
+        // A tiny fragment before the first detected entry is page chrome (breadcrumbs, a heading): drop it.
+        if (k === 0 && starts.length > 2 && part.join(' ').length < 25) continue;
+        chunks.push(part);
+      }
+    }
+    return chunks;
+  }
+  const safe = (fn) => { try { return fn(); } catch { return false; } };
+
+  /** Full pipeline: text -> [{ entry, parser, confidence, warnings, rawLines }] */
+  function parseText(text, { forceSingle = false } = {}) {
+    return split(text, forceSingle).map((lines) => {
+      const { parser, score } = detect(lines);
+      return { ...runParser(parser, lines, score), rawLines: lines };
+    });
+  }
+
+  /** Re-parse a chunk as a specific category (used when the user corrects the type). */
+  function reparseAs(type, lines) {
+    const p = registry.find((x) => x.type === type);
+    if (p) return { ...runParser(p, lines, 1), rawLines: lines };
+    return { ...runParser(generic, lines, 1, type), rawLines: lines };
+  }
+
+  function asRaw(lines, type = 'other') {
+    return { ...runParser(generic, lines, 0, type), rawLines: lines };
+  }
+
+  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry };
+})();
+
+
+/* =====================================================================
+   6. RENDERING
+   ===================================================================== */
+
+/** One-line summary shown under the name in the results list. */
+function summaryOf(e) {
+  const f = e.fields;
+  switch (e.type) {
+    case 'spell': {
+      const lvl = f.Level === 'Cantrip' ? `${f.School || ''} cantrip` : f.Level ? `Level ${f.Level} ${f.School || ''}` : f.School || '';
+      return [lvl.trim(), f.Concentration ? 'Concentration' : '', f.Ritual ? 'Ritual' : ''].filter(Boolean).join(' · ');
+    }
+    case 'monster': return [f.Size, f['Creature Type'], f.CR ? 'CR ' + f.CR.split(/\s/)[0] : ''].filter(Boolean).join(' · ');
+    case 'item': return [f.Type, f.Rarity, f.Attunement ? 'attunement' : ''].filter(Boolean).join(' · ');
+    case 'feat': return [f.Category, f.Prerequisite ? 'Prereq: ' + f.Prerequisite : ''].filter(Boolean).join(' · ');
+    case 'subclass': return f.Class ? f.Class + ' subclass' : '';
+    case 'class': return f['Hit Point Die'] || f['Hit Dice'] || f['Primary Ability'] || '';
+    default: return e.source || e.text.slice(0, 90);
+  }
+}
+
+/**
+ * Lightweight text formatter for descriptions:
+ *  - one paragraph per line, "Name. text" lead-ins in bold
+ *  - consecutive tab-separated lines become a table
+ *  - lines starting with bullets become a list
+ */
+function formatText(text, { plainFirst = false } = {}) {
+  if (!text) return '';
+  let first = plainFirst;
+  const out = [];
+  let tbl = [], list = [];
+  const flush = () => {
+    if (tbl.length) {
+      const [head, ...rows] = tbl;
+      out.push('<div class="tbl-wrap"><table class="data"><thead><tr>' + head.map((c) => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>'
+        + rows.map((r) => '<tr>' + r.map((c) => `<td>${esc(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
+      tbl = [];
+    }
+    if (list.length) { out.push('<ul>' + list.map((l) => `<li>${inline(l)}</li>`).join('') + '</ul>'); list = []; }
+  };
+  for (const line of String(text).split('\n')) {
+    const L = line.trim();
+    if (!L) { flush(); continue; }
+    if (L.includes('\t')) { if (list.length) flush(); tbl.push(L.split('\t')); continue; }
+    if (tbl.length) flush();
+    const b = /^(?:[•●▪◦*]|-)\s+(.*)$/.exec(L);
+    if (b) { list.push(b[1]); continue; }
+    flush();
+    // Item bodies ("Melee Attack Roll: +4, reach 5 ft. Hit: ...") must not get a fake bold lead-in.
+    out.push(`<p>${first ? esc(L) : inline(L)}</p>`);
+    first = false;
+  }
+  flush();
+  return out.join('');
+}
+function inline(L) {
+  const m = /^([A-Z0-9][^.!?]{0,60}?(?:\([^)]{0,60}\))?)\.\s+(\S.*)$/.exec(L);
+  if (m && m[1].split(/\s+/).length <= 7) return `<b><i>${esc(m[1])}.</i></b> ${esc(m[2])}`;
+  return esc(L);
+}
+
+function renderKV(fields, skip = []) {
+  const rows = Object.entries(fields).filter(([k]) => !skip.includes(k));
+  if (!rows.length) return '';
+  return '<dl class="kv">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+}
+function renderTable(t) {
+  if (!t || !t.headers.length) return '';
+  return '<div class="tbl-wrap"><table class="data"><thead><tr>' + t.headers.map((h) => `<th>${esc(h)}</th>`).join('') + '</tr></thead><tbody>'
+    + t.rows.map((r) => '<tr>' + r.map((c) => `<td>${esc(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+}
+function renderAbilities(a) {
+  if (!a) return '';
+  const modOf = (s) => { const m = Math.floor((s - 10) / 2); return (m >= 0 ? '+' : '') + m; };
+  const anySave = ABILS.some((k) => a[k] && a[k].save);
+  return '<table class="abil"><tr>' + ABILS.map((k) => `<th>${k}</th>`).join('') + '</tr><tr>'
+    + ABILS.map((k) => a[k] ? `<td>${a[k].score} (${esc(a[k].mod || modOf(a[k].score))})</td>` : '<td>-</td>').join('') + '</tr>'
+    + (anySave ? '<tr>' + ABILS.map((k) => `<td class="sv">${a[k] && a[k].save ? 'save ' + esc(a[k].save) : ''}</td>`).join('') + '</tr>' : '')
+    + '</table>';
+}
+function renderSections(sections) {
+  return sections.map((s) => `<h3>${esc(s.heading)}</h3>` + formatText(s.intro)
+    + s.items.map((it) => {
+      const lvl = it.level ? `<span class="lvl" title="Level ${it.level}">${it.level}</span>` : '';
+      return `<h4>${lvl}${esc(it.name)}</h4>` + formatText(it.text, { plainFirst: true });
+    }).join('')).join('');
+}
+
+/** Type-specific body renderers. Anything not listed uses `default`. */
+const Renderers = {
+  spell(e) {
+    const f = e.fields;
+    return renderKV(f, ['Level', 'School', 'At Higher Levels']) + formatText(e.text)
+      + (f['At Higher Levels'] ? `<p><b><i>${e.fields.Level === 'Cantrip' ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${esc(f['At Higher Levels'])}</p>` : '');
+  },
+  monster(e) {
+    const f = e.fields;
+    const top = ['AC', 'Initiative', 'HP', 'Speed'];
+    const topFields = Object.fromEntries(top.filter((k) => f[k]).map((k) => [k, f[k]]));
+    return '<div class="statblock">'
+      + renderKV(topFields) + renderAbilities(e.abilities)
+      + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment'])
+      + formatText(e.text) + renderSections(e.sections) + '</div>';
+  },
+  class(e) {
+    return renderKV(e.fields) + formatText(e.text) + renderTable(e.table) + renderSections(e.sections);
+  },
+  default(e) {
+    return renderKV(e.fields) + renderAbilities(e.abilities) + renderTable(e.table) + formatText(e.text) + renderSections(e.sections);
+  },
+};
+
+function subtitleOf(e) {
+  const f = e.fields;
+  if (e.type === 'spell') {
+    const base = f.Level === 'Cantrip' ? `${f.School || ''} cantrip` : f.Level ? `${ordinal(+f.Level || 0)}-level ${(f.School || '').toLowerCase()}` : '';
+    return [base, f.Ritual ? '(ritual)' : ''].filter(Boolean).join(' ');
+  }
+  if (e.type === 'monster') return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(', ');
+  return summaryOf(e);
+}
+
+function renderEntryBody(e) {
+  const r = Renderers[e.type] || Renderers.default;
+  const tags = e.tags.length ? '<div class="tags">' + e.tags.map((t) => `<span class="badge grey">${esc(t)}</span>`).join('') + '</div>' : '';
+  const src = e.source ? `<p class="hint">Source: ${esc(e.source)}</p>` : '';
+  return r(e) + tags + src;
+}
+
+
+/* =====================================================================
+   7. GITHUB SYNC
+   Single JSON file via the Contents API.
+   Conflict model: we remember the blob SHA of the file as of our last
+   push/restore. If the remote SHA differs at push time, someone (another
+   device) changed it, so we ask before overwriting. PUT also sends the
+   SHA, so a race between our check and the write returns 409 instead of
+   clobbering.
+   ===================================================================== */
+const GitHub = {
+  API: 'https://api.github.com',
+
+  async config() {
+    return { branch: 'main', path: 'dnd-reference-db.json', ...(await Store.getMeta('github') || {}) };
+  },
+
+  contentsPath(c) {
+    const path = c.path.replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/');
+    return `/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}/contents/${path}`;
+  },
+
+  async request(c, method, url, { body, accept } = {}) {
+    if (!c.token || !c.owner || !c.repo) throw new Error('Fill in token, owner and repository first.');
+    let res;
+    try {
+      res = await fetch(this.API + url, {
+        method,
+        cache: 'no-store',
+        headers: {
+          Authorization: `Bearer ${c.token}`,
+          Accept: accept || 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          ...(body ? { 'Content-Type': 'application/json' } : {}),
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+    } catch (err) {
+      throw new Error('Network error reaching api.github.com (offline, or blocked by an extension/firewall).');
+    }
+    return res;
+  },
+
+  /** Convert a failed response into a helpful message. */
+  async explain(res, context) {
+    let msg = '';
+    try { msg = (await res.clone().json()).message || ''; } catch { /* not JSON */ }
+    const gh = msg ? ` GitHub says: "${msg}".` : '';
+    switch (res.status) {
+      case 401: return new Error(`Token rejected (expired, revoked or mistyped).${gh}`);
+      case 403:
+        if (res.headers.get('x-ratelimit-remaining') === '0') {
+          const reset = new Date(+res.headers.get('x-ratelimit-reset') * 1000);
+          return new Error(`GitHub rate limit reached; try again after ${reset.toLocaleTimeString()}.`);
+        }
+        return new Error(`Permission denied${context ? ' while ' + context : ''}. The token needs "Contents: Read and write" on this repo (or SSO authorisation for an org).${gh}`);
+      case 404: return new Error(`Not found${context ? ' while ' + context : ''}. Check owner, repo and branch. GitHub also returns 404 when the token cannot see a private repo.${gh}`);
+      case 409: return new Error(`Conflict: the file changed on GitHub during this operation. Restore (merge) first, then push again.${gh}`);
+      case 422: return new Error(`GitHub rejected the request (often a missing branch or a stale file SHA).${gh}`);
+      default: return new Error(`GitHub error ${res.status}${context ? ' while ' + context : ''}.${gh}`);
+    }
+  },
+
+  /** Returns { sha } for the remote file, or null if it doesn't exist yet. */
+  async remoteMeta(c) {
+    const res = await this.request(c, 'GET', `${this.contentsPath(c)}?ref=${encodeURIComponent(c.branch)}`);
+    if (res.status === 404) {
+      // Distinguish "file not created yet" from "repo/branch missing".
+      const b = await this.request(c, 'GET', `/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}/branches/${encodeURIComponent(c.branch)}`);
+      if (!b.ok) throw await this.explain(b, `looking up branch "${c.branch}"`);
+      return null;
+    }
+    if (!res.ok) throw await this.explain(res, 'reading the backup file');
+    const j = await res.json();
+    if (Array.isArray(j)) throw new Error('That path is a folder; set a file path such as dnd-reference-db.json.');
+    return { sha: j.sha, size: j.size };
+  },
+
+  async test() {
+    const c = await this.config();
+    const r = await this.request(c, 'GET', `/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}`);
+    if (!r.ok) throw await this.explain(r, 'opening the repository');
+    const repo = await r.json();
+    const meta = await this.remoteMeta(c);
+    return `Connected to ${repo.full_name} (${repo.private ? 'private' : 'PUBLIC, consider a private repo'}). `
+      + (meta ? `Backup file exists (${(meta.size / 1024).toFixed(0)} KB).` : 'No backup file yet; Push will create it.');
+  },
+
+  async push(entries) {
+    const c = await this.config();
+    const sync = (await Store.getMeta('githubSync')) || {};
+    const remote = await this.remoteMeta(c);
+    if (remote && remote.sha !== sync.sha) {
+      const why = sync.sha
+        ? 'The backup on GitHub has changed since this browser last synced (probably pushed from another device).'
+        : 'A backup file already exists on GitHub and this browser has never synced with it.';
+      const choice = await ask('Overwrite remote backup?', `<p>${why}</p><p>Overwriting replaces it with this browser's ${entries.length} entries. To combine them instead, choose <b>Restore → Merge</b> first, then push.</p>`,
+        [{ label: 'Cancel', value: null }, { label: 'Overwrite', value: 'overwrite', kind: 'primary danger' }]);
+      if (choice !== 'overwrite') return null;
+    }
+    const json = JSON.stringify(exportPayload(entries));
+    const body = {
+      message: `D&D reference backup: ${entries.length} entries (${nowIso()})`,
+      content: await toBase64(json),
+      branch: c.branch,
+      ...(remote ? { sha: remote.sha } : {}),
+    };
+    const res = await this.request(c, 'PUT', this.contentsPath(c), { body });
+    if (!res.ok) throw await this.explain(res, 'writing the backup');
+    const out = await res.json();
+    await Store.setMeta('githubSync', { sha: out.content.sha, at: nowIso() });
+    return { bytes: json.length, sha: out.content.sha };
+  },
+
+  async pull() {
+    const c = await this.config();
+    const meta = await this.remoteMeta(c);
+    if (!meta) throw new Error('No backup file found on that branch/path yet.');
+    // The raw media type works for files up to 100 MB (the JSON form inlines only up to 1 MB).
+    const res = await this.request(c, 'GET', `${this.contentsPath(c)}?ref=${encodeURIComponent(c.branch)}`, { accept: 'application/vnd.github.raw+json' });
+    if (!res.ok) throw await this.explain(res, 'downloading the backup');
+    let json;
+    try { json = JSON.parse(await res.text()); } catch { throw new Error('The backup file is not valid JSON.'); }
+    return { payload: readImportPayload(json), sha: meta.sha };
+  },
+};
+
+
+/* =====================================================================
+   8. UI CONTROLLERS
+   ===================================================================== */
+const App = {
+  entries: new Map(),       // id -> entry (source of truth in memory)
+  index: new SearchIndex(),
+  filter: { type: '', fav: false },
+  query: '',
+  results: [],              // ids in display order
+  cursor: 0,                // keyboard-highlighted row
+  currentId: null,          // entry shown in the detail pane
+  isWide: () => matchMedia('(min-width: 721px)').matches,
+
+  /* ---------- data mutations (single place that touches store + index) ---------- */
+  async upsert(list, { quiet = false } = {}) {
+    if (!list.length) return;
+    for (const e of list) Types.ensure(e.type);
+    try {
+      await Store.putEntries(list);
+    } catch (err) {
+      toast(`Save failed: ${err.name === 'QuotaExceededError' ? 'browser storage is full' : err.message}`, 'err', 8000);
+      throw err;
+    }
+    for (const e of list) { this.entries.set(e.id, e); this.index.add(e); }
+    this.index.maybeCompact([...this.entries.values()]);
+    this.refresh();
+    if (!quiet) toast(`Saved ${list.length} entr${list.length === 1 ? 'y' : 'ies'}`, 'ok');
+  },
+
+  async remove(ids) {
+    await Store.deleteEntries(ids);
+    for (const id of ids) { this.entries.delete(id); this.index.remove(id); }
+    if (ids.includes(this.currentId)) this.currentId = null;
+    this.refresh();
+  },
+
+  async replaceAll(list) {
+    await Store.clearEntries();
+    this.entries.clear();
+    this.index.reset();
+    this.currentId = null;
+    if (list.length) await this.upsert(list, { quiet: true });
+    else this.refresh();
+  },
+
+  /** Merge by id: newer `updated` wins. Returns counts. */
+  async merge(list) {
+    const toSave = [];
+    let added = 0, updated = 0, kept = 0;
+    for (const e of list) {
+      const cur = this.entries.get(e.id);
+      if (!cur) { toSave.push(e); added++; }
+      else if ((e.updated || '') > (cur.updated || '')) { toSave.push(e); updated++; }
+      else kept++;
+    }
+    await this.upsert(toSave, { quiet: true });
+    return { added, updated, kept };
+  },
+
+  async toggleFav(id) {
+    const e = this.entries.get(id);
+    if (!e) return;
+    e.fav = !e.fav;
+    e.updated = nowIso();
+    await Store.putEntries([e]);
+    this.index.setFav(id, e.fav);
+    if (this.filter.fav) this.runSearch(); else VList.paint(true);
+    this.renderSidebar();
+    if (this.currentId === id) this.showDetail(id);
+  },
+
+  /* ---------- search / list ---------- */
+  refresh() { this.renderSidebar(); this.runSearch({ keepCursor: true }); if (this.currentId) this.showDetail(this.currentId); },
+
+  runSearch({ keepCursor = false } = {}) {
+    const t0 = performance.now();
+    this.results = this.index.search(this.query, this.filter);
+    const ms = performance.now() - t0;
+    if (!keepCursor) this.cursor = 0;
+    this.cursor = Math.min(this.cursor, Math.max(0, this.results.length - 1));
+    VList.setData(this.results);
+    if (!keepCursor) $('#list').scrollTop = 0;
+    const scope = [this.filter.fav ? 'favourites' : '', this.filter.type ? Types.get(this.filter.type).label : ''].filter(Boolean).join(', ');
+    $('#resultMeta').textContent = `${this.results.length.toLocaleString()} result${this.results.length === 1 ? '' : 's'}${scope ? ' in ' + scope : ''} · ${ms.toFixed(1)} ms · ${this.entries.size.toLocaleString()} entries`;
+    // On wide screens, typing previews the top hit immediately.
+    if (!keepCursor && this.query && this.results.length && this.isWide()) this.showDetail(this.results[0], { fromSearch: true });
+    if (!this.results.length && !keepCursor && this.isWide() && this.query) $('#detail').innerHTML = '';
+  },
+
+  setFilter(patch) {
+    Object.assign(this.filter, patch);
+    $('#typeFilter').value = this.filter.type;
+    $('#favBtn').classList.toggle('on', this.filter.fav);
+    document.body.classList.remove('side-open');
+    this.renderSidebar();
+    this.runSearch();
+  },
+
+  moveCursor(delta) {
+    if (!this.results.length) return;
+    this.cursor = Math.max(0, Math.min(this.results.length - 1, this.cursor + delta));
+    VList.scrollToIndex(this.cursor);
+    VList.paint(true);
+    if (this.isWide()) this.showDetail(this.results[this.cursor], { fromSearch: true });
+  },
+
+  open(id) {
+    const idx = this.results.indexOf(id);
+    if (idx >= 0) this.cursor = idx;
+    this.showDetail(id);
+    document.body.classList.add('show-detail');
+    history.replaceState(null, '', '#/e/' + encodeURIComponent(id));
+  },
+
+  /* ---------- sidebar ---------- */
+  renderSidebar() {
+    const counts = new Map();
+    let favs = 0;
+    for (const e of this.entries.values()) { counts.set(e.type, (counts.get(e.type) || 0) + 1); if (e.fav) favs++; }
+    const link = (label, count, attrs, on) => `<a href="#" ${attrs} class="${on ? 'on' : ''}"><span>${label}</span><span class="count">${count}</span></a>`;
+    let html = link('All entries', this.entries.size, 'data-type=""', !this.filter.type && !this.filter.fav)
+      + link('★ Favourites', favs, 'data-fav="1"', this.filter.fav && !this.filter.type) + '<hr>';
+    for (const t of Types.list) {
+      html += link(esc(t.label), counts.get(t.key) || 0, `data-type="${esc(t.key)}"`, this.filter.type === t.key);
+    }
+    $('#sidebar').innerHTML = html;
+
+    // Keep the dropdown filter in sync with the category list.
+    const sel = $('#typeFilter');
+    sel.innerHTML = '<option value="">All categories</option>' + Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+    sel.value = this.filter.type;
+    $('#typeList').innerHTML = Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+  },
+
+  /* ---------- detail ---------- */
+  showDetail(id, { fromSearch = false } = {}) {
+    const e = this.entries.get(id);
+    const el = $('#detail');
+    if (!e) { el.innerHTML = '<div class="empty">Select an entry, or press <span class="kbd">/</span> to search.</div>'; return; }
+    this.currentId = id;
+    el.innerHTML = `
+      <div class="d-head">
+        <button class="back-btn" data-act="back">← Back</button>
+        <h2>${esc(e.name)}</h2>
+        <button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
+      </div>
+      <div class="d-sub">${Types.badge(e.type)} ${esc(subtitleOf(e))}</div>
+      <div class="d-tools">
+        <button data-act="edit" title="Edit (e)">Edit</button>
+        <button data-act="export">Export JSON</button>
+        <button data-act="copy">Copy text</button>
+        ${e.raw ? '<button data-act="raw">Show original paste</button>' : ''}
+        <button data-act="delete" class="danger">Delete</button>
+      </div>
+      <div class="d-body">${renderEntryBody(e)}</div>
+      ${e.raw ? `<div class="raw-box" hidden>${esc(e.raw)}</div>` : ''}`;
+    if (!fromSearch) el.scrollTop = 0;
+    VList.paint(true);
+  },
+};
+
+/* ---------- Virtual list: renders only visible rows, so 50k results cost the same as 50 ---------- */
+const VList = {
+  ROW_H: 54,
+  ids: [],
+  range: [-1, -1],
+  init() {
+    this.el = $('#list');
+    this.spacer = $('.vspacer', this.el);
+    this.rows = $('.vrows', this.el);
+    this.el.addEventListener('scroll', () => this.paint(), { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(() => this.paint(true)).observe(this.el);
+  },
+  setData(ids) {
+    this.ids = ids;
+    this.spacer.style.height = ids.length * this.ROW_H + 'px';
+    this.paint(true);
+  },
+  paint(force = false) {
+    const top = this.el.scrollTop, h = this.el.clientHeight || 600;
+    const start = Math.max(0, Math.floor(top / this.ROW_H) - 8);
+    const end = Math.min(this.ids.length, Math.ceil((top + h) / this.ROW_H) + 8);
+    if (!force && start === this.range[0] && end === this.range[1]) return;
+    this.range = [start, end];
+    if (!this.ids.length) {
+      this.rows.style.transform = 'none';
+      this.rows.innerHTML = `<div class="empty">${App.entries.size ? 'No matches.' : 'No entries yet. Use “Paste / Import” to add some.'}</div>`;
+      return;
+    }
+    let html = '';
+    for (let i = start; i < end; i++) {
+      const e = App.entries.get(this.ids[i]);
+      if (!e) continue;
+      const cls = ['row', i === App.cursor ? 'cur' : '', e.id === App.currentId ? 'open' : ''].join(' ');
+      html += `<div class="${cls}" data-id="${esc(e.id)}" data-i="${i}">
+        <button class="star ${e.fav ? 'on' : ''}" data-act="fav" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
+        <div class="t"><div class="n">${highlight(e.name, App.query)}</div><div class="s">${esc(summaryOf(e))}</div></div>
+        ${Types.badge(e.type)}</div>`;
+    }
+    this.rows.style.transform = `translateY(${start * this.ROW_H}px)`;
+    this.rows.innerHTML = html;
+  },
+  scrollToIndex(i) {
+    const top = i * this.ROW_H, bottom = top + this.ROW_H;
+    if (top < this.el.scrollTop) this.el.scrollTop = top;
+    else if (bottom > this.el.scrollTop + this.el.clientHeight) this.el.scrollTop = bottom - this.el.clientHeight;
+  },
+};
+
+/** Highlight each query term's first occurrence in a name, accent/apostrophe-insensitively. */
+function highlight(text, q) {
+  const terms = SearchIndex.tokenize(q);
+  if (!terms.length) return esc(text);
+  let folded = '';
+  const map = [];
+  for (let i = 0; i < text.length; i++) for (const ch of fold(text[i])) { folded += ch; map.push(i); }
+  const marks = new Array(text.length).fill(false);
+  for (const t of terms) {
+    const at = folded.indexOf(t);
+    if (at < 0) continue;
+    for (let k = at; k < at + t.length; k++) marks[map[k]] = true;
+  }
+  let out = '', open = false;
+  for (let i = 0; i < text.length; i++) {
+    if (marks[i] && !open) { out += '<mark>'; open = true; }
+    if (!marks[i] && open) { out += '</mark>'; open = false; }
+    out += esc(text[i]);
+  }
+  return out + (open ? '</mark>' : '');
+}
+
+/* ---------- Entry editor ---------- */
+const Editor = {
+  resolve: null,
+  current: null,
+
+  open(entry, title = 'Edit entry') {
+    this.current = entry;
+    $('#edTitle').textContent = title;
+    $('#edName').value = entry.name;
+    $('#edType').value = entry.type;
+    $('#edSource').value = entry.source;
+    $('#edTags').value = entry.tags.join(', ');
+    $('#edText').value = entry.text;
+    $('#edSections').value = sectionsToText(entry.sections);
+    $('#edTable').value = entry.table ? [entry.table.headers, ...entry.table.rows].map((r) => r.join('\t')).join('\n') : '';
+    $('#edSecWrap').open = entry.sections.length > 0;
+    $('#edTblWrap').open = !!entry.table;
+    const fl = $('#edFields');
+    fl.innerHTML = '';
+    for (const [k, v] of Object.entries(entry.fields)) this.addFieldRow(k, v);
+    $('#edAbil').innerHTML = ABILS.map((k) => {
+      const a = entry.abilities && entry.abilities[k];
+      return `<label>${k}<input data-ab="${k}" inputmode="numeric" value="${a ? a.score : ''}" placeholder="score"><input data-sv="${k}" value="${a ? esc(a.save) : ''}" placeholder="save"></label>`;
+    }).join('');
+    this.syncAbilVisibility();
+    const dlg = $('#editDlg');
+    dlg.showModal();
+    $('#edName').focus();
+    return new Promise((res) => { this.resolve = res; });
+  },
+
+  syncAbilVisibility() {
+    const show = $('#edType').value.trim() === 'monster' || !!(this.current && this.current.abilities);
+    $('#edAbilWrap').hidden = !show;
+  },
+
+  addFieldRow(k = '', v = '') {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    row.innerHTML = `<input class="fk" placeholder="Field name" value="${esc(k)}"><textarea class="fv" rows="1" placeholder="Value">${esc(v)}</textarea><button type="button" class="icon-btn" data-rm aria-label="Remove field">✕</button>`;
+    $('#edFields').appendChild(row);
+    return row;
+  },
+
+  collect() {
+    const fields = {};
+    for (const row of $$('#edFields .field-row')) {
+      const k = $('.fk', row).value.trim(), v = $('.fv', row).value.trim();
+      if (k && v) fields[k] = v;
+    }
+    const abilities = {};
+    for (const k of ABILS) {
+      const s = $(`[data-ab="${k}"]`).value.trim();
+      if (s !== '' && !isNaN(+s)) abilities[k] = { score: +s, mod: '', save: $(`[data-sv="${k}"]`).value.trim() };
+    }
+    const tblLines = $('#edTable').value.split('\n').map((l) => l.replace(/\s+$/, '')).filter(Boolean);
+    const table = tblLines.length ? { headers: tblLines[0].split('\t'), rows: tblLines.slice(1).map((l) => l.split('\t')) } : null;
+    const typeText = $('#edType').value.trim() || 'other';
+    const known = Types.list.find((t) => t.key === typeText || t.label.toLowerCase() === typeText.toLowerCase());
+    const type = known ? known.key : Types.keyOf(typeText);
+    if (!known) Types.ensure(type, cap(typeText));
+    return makeEntry({
+      ...this.current,
+      name: $('#edName').value,
+      type,
+      source: $('#edSource').value.trim(),
+      tags: $('#edTags').value.split(',').map((t) => t.trim()).filter(Boolean),
+      fields,
+      abilities: Object.keys(abilities).length ? abilities : null,
+      table,
+      sections: textToSections($('#edSections').value),
+      text: $('#edText').value,
+      updated: nowIso(),
+    });
+  },
+
+  finish(value) {
+    const r = this.resolve;
+    this.resolve = null;
+    $('#editDlg').close();
+    if (r) r(value);
+  },
+};
+
+/** Sections <-> editable text ("## Heading", "### [lvl] Item"). */
+function sectionsToText(sections) {
+  return sections.map((s) => [
+    '## ' + s.heading,
+    s.intro,
+    ...s.items.map((it) => `### ${it.level ? `[${it.level}] ` : ''}${it.name}\n${it.text}`),
+  ].filter(Boolean).join('\n')).join('\n\n');
+}
+function textToSections(text) {
+  const out = [];
+  let sec = null, item = null;
+  for (const line of text.split('\n')) {
+    let m;
+    if ((m = /^##\s+(?!#)(.*)$/.exec(line))) { sec = { heading: m[1].trim(), intro: '', items: [] }; out.push(sec); item = null; continue; }
+    if ((m = /^###\s+(?:\[(\d+)\]\s*)?(.*)$/.exec(line))) {
+      if (!sec) { sec = { heading: 'Details', intro: '', items: [] }; out.push(sec); }
+      item = { name: m[2].trim(), level: m[1] ? +m[1] : null, text: '' };
+      sec.items.push(item);
+      continue;
+    }
+    if (item) item.text += (item.text ? '\n' : '') + line;
+    else if (sec) sec.intro += (sec.intro ? '\n' : '') + line;
+    else if (line.trim()) { sec = { heading: 'Details', intro: line, items: [] }; out.push(sec); }
+  }
+  for (const s of out) { s.intro = s.intro.trim(); for (const it of s.items) it.text = it.text.trim(); }
+  return out;
+}
+
+/* ---------- Import (paste-and-parse) controller ---------- */
+const Importer = {
+  candidates: [], // [{ entry, parser, confidence, warnings, rawLines, include, dup, dupId, showPreview }]
+
+  open() {
+    $('#importDlg').showModal();
+    $('#pasteBox').focus();
+  },
+
+  parse() {
+    const text = $('#pasteBox').value;
+    if (!text.trim()) { this.candidates = []; this.render(); return; }
+    const t0 = performance.now();
+    this.candidates = Parsers.parseText(text, { forceSingle: $('#forceSingle').checked }).map((c) => this.decorate(c));
+    this.render(performance.now() - t0);
+  },
+
+  /** Add UI state and duplicate detection (same name + category already stored). */
+  decorate(c, prev = {}) {
+    const key = fold(c.entry.name) + '|' + c.entry.type;
+    let dupId = null;
+    for (const e of App.entries.values()) if (fold(e.name) + '|' + e.type === key) { dupId = e.id; break; }
+    return { include: true, dup: 'replace', showPreview: false, ...prev, ...c, dupId };
+  },
+
+  render(ms) {
+    const list = $('#previewList');
+    const n = this.candidates.length;
+    $('#previewHead').innerHTML = n
+      ? `<b>${n}</b> entr${n === 1 ? 'y' : 'ies'} detected${ms !== undefined ? ` in ${ms.toFixed(0)} ms` : ''}. Check the category and name, open “Edit fields” to fix anything, then save.`
+      : 'Parsed entries will appear here for review before anything is saved.';
+    const typeOpts = (sel) => Types.list.map((t) => `<option value="${esc(t.key)}" ${t.key === sel ? 'selected' : ''}>${esc(t.label)}</option>`).join('');
+    list.innerHTML = this.candidates.map((c, i) => {
+      const e = c.entry;
+      const nf = Object.keys(e.fields).length;
+      const ns = e.sections.reduce((a, s) => a + s.items.length, 0);
+      const bits = [summaryOf(e), nf ? `${nf} fields` : '', ns ? `${ns} sections/features` : '', e.abilities ? 'ability scores' : '', e.table ? `table (${e.table.rows.length} rows)` : '', e.text ? `${e.text.length} chars text` : ''].filter(Boolean).join(' · ');
+      const low = c.confidence < 0.6;
+      return `<div class="pcard ${c.include ? '' : 'off'}" data-i="${i}">
+        <div class="pc-top">
+          <input type="checkbox" data-act="inc" ${c.include ? 'checked' : ''} aria-label="Include">
+          <select data-act="type" title="Detected category; change it to re-parse as that layout">${typeOpts(e.type)}</select>
+          <input data-act="name" value="${esc(e.name)}" aria-label="Name">
+        </div>
+        <div class="pc-sum">${esc(bits)}</div>
+        <div class="conf ${low ? 'low' : ''}">${esc(c.parser)} parser · ${Math.round(c.confidence * 100)}% confidence${low ? ' (low: check it, or save as raw text)' : ''}</div>
+        ${c.warnings.map((w) => `<div class="pc-warn">⚠ ${esc(w)}</div>`).join('')}
+        ${c.dupId ? `<div class="pc-warn">An entry with this name and category exists:
+            <select data-act="dup"><option value="replace" ${c.dup === 'replace' ? 'selected' : ''}>Replace it</option><option value="new" ${c.dup === 'new' ? 'selected' : ''}>Keep both</option><option value="skip" ${c.dup === 'skip' ? 'selected' : ''}>Skip</option></select></div>` : ''}
+        <div class="pc-btns">
+          <button data-act="preview">${c.showPreview ? 'Hide preview' : 'Preview'}</button>
+          <button data-act="edit">Edit fields…</button>
+          <button data-act="raw" title="Discard structure, keep the text">Save as raw text</button>
+        </div>
+        ${c.showPreview ? `<div class="pc-preview d-body"><div class="d-sub">${esc(subtitleOf(e))}</div>${renderEntryBody(e)}</div>` : ''}
+      </div>`;
+    }).join('');
+    $('#saveParsedBtn').disabled = !this.candidates.some((c) => c.include);
+  },
+
+  async onAction(ev) {
+    const card = ev.target.closest('.pcard');
+    const act = ev.target.dataset.act;
+    if (!card || !act) return;
+    const i = +card.dataset.i;
+    const c = this.candidates[i];
+    if (ev.type === 'change' || ev.type === 'input') {
+      if (act === 'inc') { c.include = ev.target.checked; card.classList.toggle('off', !c.include); $('#saveParsedBtn').disabled = !this.candidates.some((x) => x.include); }
+      else if (act === 'name') c.entry.name = ev.target.value;
+      else if (act === 'dup') c.dup = ev.target.value;
+      else if (act === 'type') {
+        // Re-run the matching layout parser on the original lines (or keep text under the new category).
+        const name = c.entry.name;
+        this.candidates[i] = this.decorate(Parsers.reparseAs(ev.target.value, c.rawLines), { include: c.include, showPreview: c.showPreview });
+        if (!this.candidates[i].entry.name || this.candidates[i].entry.name === 'Untitled') this.candidates[i].entry.name = name;
+        this.render();
+      }
+      return;
+    }
+    if (ev.type !== 'click') return;
+    if (act === 'preview') { c.showPreview = !c.showPreview; this.render(); }
+    else if (act === 'raw') {
+      this.candidates[i] = this.decorate(Parsers.asRaw(c.rawLines, c.entry.type === 'other' ? 'other' : c.entry.type), { include: c.include, showPreview: c.showPreview });
+      this.candidates[i].warnings = ['Saved as raw text: structure discarded'];
+      this.render();
+    } else if (act === 'edit') {
+      const edited = await Editor.open(c.entry, 'Correct parsed entry');
+      if (edited) { c.entry = edited; this.candidates[i] = this.decorate({ ...c, entry: edited }, c); this.render(); }
+    }
+  },
+
+  async save() {
+    const toSave = [];
+    for (const c of this.candidates) {
+      if (!c.include) continue;
+      const e = c.entry;
+      if (c.dupId) {
+        if (c.dup === 'skip') continue;
+        if (c.dup === 'replace') {
+          const old = App.entries.get(c.dupId);
+          if (old) { e.id = old.id; e.fav = old.fav; e.created = old.created; }
+        }
+      }
+      e.updated = nowIso();
+      toSave.push(e);
+    }
+    if (!toSave.length) return;
+    await App.upsert(toSave);
+    this.candidates = [];
+    $('#pasteBox').value = '';
+    this.render();
+    $('#importDlg').close();
+    if (toSave.length === 1) App.open(toSave[0].id);
+  },
+
+  async importFile(file) {
+    if (!file) return;
+    let payload;
+    try { payload = readImportPayload(JSON.parse(await file.text())); }
+    catch (err) { toast('Import failed: ' + err.message, 'err', 8000); return; }
+    for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
+    const r = await App.merge(payload.entries);
+    toast(`Imported: ${r.added} new, ${r.updated} updated, ${r.kept} unchanged (local copy was newer or equal).`, 'ok', 6000);
+  },
+};
+
+/* ---------- Settings controller ---------- */
+const Settings = {
+  async open() {
+    const c = await GitHub.config();
+    $('#ghToken').value = c.token || '';
+    $('#ghOwner').value = c.owner || '';
+    $('#ghRepo').value = c.repo || '';
+    $('#ghBranch').value = c.branch || 'main';
+    $('#ghPath').value = c.path || 'dnd-reference-db.json';
+    const sync = await Store.getMeta('githubSync');
+    $('#ghStatus').textContent = sync ? `Last synced ${new Date(sync.at).toLocaleString()} (blob ${sync.sha.slice(0, 7)}).` : 'Not synced yet.';
+    const pref = localStorage.getItem('dndref.theme') || 'system';
+    for (const r of $$('input[name="theme"]')) r.checked = r.value === pref;
+    this.renderTypes();
+    this.storageInfo();
+    $('#settingsDlg').showModal();
+  },
+
+  async storageInfo() {
+    let s = `${App.entries.size.toLocaleString()} entries. `;
+    if (Store.mem) s += 'WARNING: running in memory only; nothing is saved. ';
+    try {
+      if (navigator.storage && navigator.storage.estimate) {
+        const est = await navigator.storage.estimate();
+        s += `Using ${(est.usage / 1048576).toFixed(1)} MB of ~${(est.quota / 1048576).toFixed(0)} MB available. `;
+      }
+      if (navigator.storage && navigator.storage.persisted) s += (await navigator.storage.persisted()) ? 'Storage is persistent.' : 'Storage is best-effort (the browser may evict it under pressure; keep backups).';
+    } catch { /* ignore */ }
+    $('#storageInfo').textContent = s;
+  },
+
+  renderTypes() {
+    const counts = new Map();
+    for (const e of App.entries.values()) counts.set(e.type, (counts.get(e.type) || 0) + 1);
+    $('#typeAdmin').innerHTML = Types.list.map((t) => `
+      <div class="ctl-row">
+        <span class="badge" style="--h:${t.hue}">${esc(t.key)}</span>
+        <input data-type-label="${esc(t.key)}" value="${esc(t.label)}" aria-label="Label for ${esc(t.key)}">
+        <span class="hint">${counts.get(t.key) || 0} entries</span>
+        ${t.custom && !counts.get(t.key) ? `<button data-type-del="${esc(t.key)}" class="danger">Remove</button>` : ''}
+      </div>`).join('');
+  },
+
+  async saveGitHub() {
+    const cfg = {
+      token: $('#ghToken').value.trim(),
+      owner: $('#ghOwner').value.trim(),
+      repo: $('#ghRepo').value.trim(),
+      branch: $('#ghBranch').value.trim() || 'main',
+      path: $('#ghPath').value.trim() || 'dnd-reference-db.json',
+    };
+    const prev = await GitHub.config();
+    // Pointing at a different file invalidates the remembered SHA.
+    if (prev.owner !== cfg.owner || prev.repo !== cfg.repo || prev.branch !== cfg.branch || prev.path !== cfg.path) await Store.setMeta('githubSync', null);
+    await Store.setMeta('github', cfg);
+  },
+
+  async withStatus(label, fn) {
+    const st = $('#ghStatus');
+    st.textContent = label + '…';
+    try {
+      await this.saveGitHub();
+      const msg = await fn();
+      if (msg) { st.textContent = msg; toast(msg, 'ok', 6000); }
+    } catch (err) {
+      st.textContent = '✖ ' + err.message;
+      toast(err.message, 'err', 9000);
+    }
+  },
+};
+
+/* ---------- Theme ---------- */
+const Theme = {
+  apply() {
+    const stored = localStorage.getItem('dndref.theme');
+    document.documentElement.dataset.theme = stored === 'light' || stored === 'dark'
+      ? stored : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  },
+  set(pref) {
+    if (pref === 'system') localStorage.removeItem('dndref.theme');
+    else localStorage.setItem('dndref.theme', pref);
+    this.apply();
+  },
+  toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
+};
+
+/* ---------- Event wiring ---------- */
+function wireEvents() {
+  const q = $('#q');
+  // Coalesce bursts of keystrokes into one search per frame; flush early if Enter/arrows arrive first.
+  let pending = false;
+  const flushSearch = () => { if (pending) { pending = false; App.runSearch(); } };
+  q.addEventListener('input', () => {
+    App.query = q.value;
+    if (!pending) { pending = true; requestAnimationFrame(flushSearch); }
+  });
+
+  $('#typeFilter').addEventListener('change', (e) => App.setFilter({ type: e.target.value }));
+  $('#favBtn').addEventListener('click', () => App.setFilter({ fav: !App.filter.fav }));
+  $('#menuBtn').addEventListener('click', () => document.body.classList.toggle('side-open'));
+  $('#themeBtn').addEventListener('click', () => Theme.toggle());
+  $('#importBtn').addEventListener('click', () => Importer.open());
+  $('#settingsBtn').addEventListener('click', () => Settings.open());
+  $('#newBtn').addEventListener('click', async () => {
+    const e = await Editor.open(makeEntry({ type: App.filter.type || 'other', name: '' }), 'New entry');
+    if (e) { await App.upsert([e]); App.open(e.id); }
+  });
+
+  $('#sidebar').addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    e.preventDefault();
+    if (a.dataset.fav) App.setFilter({ fav: true, type: '' });
+    else App.setFilter({ type: a.dataset.type, fav: false });
+  });
+
+  $('#list').addEventListener('click', (e) => {
+    const row = e.target.closest('.row');
+    if (!row) return;
+    if (e.target.closest('[data-act="fav"]')) { App.toggleFav(row.dataset.id); return; }
+    App.open(row.dataset.id);
+  });
+
+  $('#detail').addEventListener('click', async (ev) => {
+    const act = ev.target.closest('[data-act]')?.dataset.act;
+    const e = App.entries.get(App.currentId);
+    if (!act) return;
+    if (act === 'back') { document.body.classList.remove('show-detail'); history.replaceState(null, '', '#'); return; }
+    if (!e) return;
+    if (act === 'fav') App.toggleFav(e.id);
+    else if (act === 'edit') {
+      const out = await Editor.open(e);
+      if (out) await App.upsert([out]);
+    } else if (act === 'export') download(slugify(e.name) + '.json', JSON.stringify(exportPayload([e]), null, 2));
+    else if (act === 'copy') {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = `<h2>${esc(e.name)}</h2>` + renderEntryBody(e);
+      try { await navigator.clipboard.writeText(tmp.innerText); toast('Copied', 'ok'); } catch { toast('Clipboard unavailable', 'warn'); }
+    } else if (act === 'raw') { const box = $('.raw-box', $('#detail')); if (box) box.hidden = !box.hidden; }
+    else if (act === 'delete') {
+      const ok = await ask('Delete entry?', `<p>Delete <b>${esc(e.name)}</b>? This cannot be undone (except from a backup).</p>`,
+        [{ label: 'Cancel', value: null }, { label: 'Delete', value: true, kind: 'primary' }]);
+      if (ok) { await App.remove([e.id]); document.body.classList.remove('show-detail'); toast('Deleted', 'ok'); }
+    }
+  });
+
+  // Dialog close buttons (any element with data-close inside a dialog).
+  document.addEventListener('click', (e) => {
+    const c = e.target.closest('[data-close]');
+    if (!c) return;
+    const dlg = c.closest('dialog');
+    if (dlg.id === 'editDlg') Editor.finish(null); else dlg.close();
+  });
+  $('#editDlg').addEventListener('cancel', (e) => { e.preventDefault(); Editor.finish(null); });
+
+  // Editor
+  $('#edAddField').addEventListener('click', () => $('.fk', Editor.addFieldRow()).focus());
+  $('#edFields').addEventListener('click', (e) => { if (e.target.closest('[data-rm]')) e.target.closest('.field-row').remove(); });
+  $('#edType').addEventListener('input', () => Editor.syncAbilVisibility());
+  $('#edSave').addEventListener('click', () => {
+    if (!$('#edName').value.trim()) { $('#edName').focus(); toast('Name is required', 'warn'); return; }
+    Editor.finish(Editor.collect());
+  });
+
+  // Importer
+  $('#parseBtn').addEventListener('click', () => Importer.parse());
+  $('#pasteBox').addEventListener('paste', () => setTimeout(() => Importer.parse(), 0));
+  $('#pasteBox').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) Importer.parse(); });
+  $('#forceSingle').addEventListener('change', () => Importer.parse());
+  $('#previewList').addEventListener('click', (e) => Importer.onAction(e));
+  $('#previewList').addEventListener('change', (e) => Importer.onAction(e));
+  $('#previewList').addEventListener('input', (e) => { if (e.target.dataset.act === 'name') Importer.onAction(e); });
+  $('#saveParsedBtn').addEventListener('click', () => Importer.save());
+  $('#exampleSel').addEventListener('change', (e) => {
+    const ex = EXAMPLE_PASTES[+e.target.value - 1];
+    if (ex) { $('#pasteBox').value = ex.text; Importer.parse(); }
+    e.target.value = '';
+  });
+  const pickFile = () => $('#importFile').click();
+  $('#importFileBtn').addEventListener('click', pickFile);
+  $('#importJsonBtn2').addEventListener('click', pickFile);
+  $('#importFile').addEventListener('change', async (e) => { await Importer.importFile(e.target.files[0]); e.target.value = ''; });
+
+  // Settings: data
+  $('#exportAllBtn').addEventListener('click', () => {
+    const all = [...App.entries.values()];
+    download(`dnd-reference-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(exportPayload(all), null, 1));
+  });
+  $('#loadSamplesBtn').addEventListener('click', async () => { await App.upsert(SAMPLE_ENTRIES.map((s) => makeEntry(s))); });
+  $('#clearDbBtn').addEventListener('click', async () => {
+    const ok = await ask('Delete ALL entries?', `<p>This deletes all ${App.entries.size} entries from this browser. Settings and your GitHub backup are untouched.</p><p>Consider exporting first.</p>`,
+      [{ label: 'Cancel', value: null }, { label: 'Delete everything', value: true, kind: 'primary' }]);
+    if (ok) { await App.replaceAll([]); toast('Database cleared', 'ok'); Settings.storageInfo(); }
+  });
+  $('#themeRadios').addEventListener('change', (e) => Theme.set(e.target.value));
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => Theme.apply());
+
+  // Settings: categories
+  $('#addTypeBtn').addEventListener('click', () => {
+    const label = $('#newTypeLabel').value.trim();
+    if (!label) return;
+    const key = Types.keyOf(label);
+    if (!Types.ensure(key, label)) { toast('That category already exists', 'warn'); return; }
+    $('#newTypeLabel').value = '';
+    Settings.renderTypes();
+    App.renderSidebar();
+  });
+  $('#typeAdmin').addEventListener('change', (e) => {
+    const key = e.target.dataset.typeLabel;
+    if (!key) return;
+    const t = Types.list.find((x) => x.key === key);
+    if (t) { t.label = e.target.value.trim() || t.label; Types.save(); App.renderSidebar(); }
+  });
+  $('#typeAdmin').addEventListener('click', (e) => {
+    const key = e.target.dataset.typeDel;
+    if (!key) return;
+    Types.list = Types.list.filter((t) => t.key !== key);
+    Types.save();
+    Settings.renderTypes();
+    App.renderSidebar();
+  });
+
+  // Settings: GitHub
+  $('#ghSaveBtn').addEventListener('click', () => Settings.withStatus('Saving', async () => 'Settings saved (stored only in this browser).'));
+  $('#ghTestBtn').addEventListener('click', () => Settings.withStatus('Testing', () => GitHub.test()));
+  $('#ghPushBtn').addEventListener('click', () => Settings.withStatus('Pushing', async () => {
+    const r = await GitHub.push([...App.entries.values()]);
+    return r ? `Pushed ${App.entries.size} entries (${(r.bytes / 1024).toFixed(0)} KB), blob ${r.sha.slice(0, 7)}.` : 'Push cancelled.';
+  }));
+  $('#ghRestoreBtn').addEventListener('click', () => Settings.withStatus('Downloading', async () => {
+    const { payload, sha } = await GitHub.pull();
+    const mode = await ask('Restore from GitHub', `<p>The backup contains <b>${payload.entries.length}</b> entries; this browser has <b>${App.entries.size}</b>.</p>
+      <p><b>Merge</b> keeps the newer version of each entry and adds missing ones. <b>Replace</b> makes this browser an exact copy of the backup.</p>`,
+      [{ label: 'Cancel', value: null }, { label: 'Replace', value: 'replace' }, { label: 'Merge', value: 'merge', kind: 'primary' }]);
+    if (!mode) return 'Restore cancelled.';
+    for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
+    let msg;
+    if (mode === 'replace') { await App.replaceAll(payload.entries); msg = `Replaced with ${payload.entries.length} entries from GitHub.`; }
+    else { const r = await App.merge(payload.entries); msg = `Merged: ${r.added} new, ${r.updated} updated, ${r.kept} kept.`; }
+    // Only a full replace means local == remote; after a merge the next push needs no confirmation either,
+    // because the merge already incorporated the remote state.
+    await Store.setMeta('githubSync', { sha, at: nowIso() });
+    return msg;
+  }));
+
+  // Hash routing (deep links to entries)
+  window.addEventListener('hashchange', () => {
+    const m = /^#\/e\/(.+)$/.exec(location.hash);
+    if (m && App.entries.has(decodeURIComponent(m[1]))) App.showDetail(decodeURIComponent(m[1]));
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    const ae = document.activeElement;
+    const typing = ae && (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) || ae.isContentEditable);
+    const dialogOpen = !!document.querySelector('dialog[open]');
+    if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !typing && !dialogOpen)) {
+      if (dialogOpen) return;
+      e.preventDefault();
+      document.body.classList.remove('show-detail');
+      q.focus();
+      q.select();
+      return;
+    }
+    if (dialogOpen) return;
+    if (ae === q) {
+      flushSearch();
+      if (e.key === 'ArrowDown') { e.preventDefault(); App.moveCursor(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); App.moveCursor(-1); }
+      else if (e.key === 'PageDown') { e.preventDefault(); App.moveCursor(10); }
+      else if (e.key === 'PageUp') { e.preventDefault(); App.moveCursor(-10); }
+      else if (e.key === 'Enter') { if (App.results[App.cursor]) { App.open(App.results[App.cursor]); if (!App.isWide()) q.blur(); } }
+      else if (e.key === 'Escape') { if (q.value) { q.value = ''; App.query = ''; App.runSearch(); } else q.blur(); }
+      return;
+    }
+    if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'f' && App.currentId) App.toggleFav(App.currentId);
+    else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
+    else if (e.key === 'j' || e.key === 'ArrowDown') { e.preventDefault(); App.moveCursor(1); }
+    else if (e.key === 'k' || e.key === 'ArrowUp') { e.preventDefault(); App.moveCursor(-1); }
+    else if (e.key === 'Escape') document.body.classList.remove('show-detail', 'side-open');
+  });
+}
+
+
+/* =====================================================================
+   9. SAMPLE DATA AND EXAMPLE PASTES
+   Samples use SRD 5.1 content (CC-BY-4.0, Wizards of the Coast); the
+   example pastes are original homebrew written in D&D Beyond's layouts.
+   ===================================================================== */
+const SRD = 'SRD 5.1 (CC-BY-4.0)';
+const SAMPLE_ENTRIES = [
+  {
+    id: 'sample-fireball', type: 'spell', name: 'Fireball', source: SRD, tags: ['damage'],
+    fields: {
+      Level: '3', School: 'Evocation', 'Casting Time': '1 action', Range: '150 feet',
+      Components: 'V, S, M (a tiny ball of bat guano and sulfur)', Duration: 'Instantaneous',
+      Classes: 'Sorcerer, Wizard',
+      'At Higher Levels': 'When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each slot level above 3rd.',
+    },
+    text: 'A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must make a Dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a successful one.\nThe fire spreads around corners. It ignites flammable objects in the area that aren\'t being worn or carried.',
+  },
+  {
+    id: 'sample-goblin', type: 'monster', name: 'Goblin', source: SRD,
+    fields: {
+      Size: 'Small', 'Creature Type': 'humanoid (goblinoid)', Alignment: 'neutral evil',
+      AC: '15 (leather armor, shield)', HP: '7 (2d6)', Speed: '30 ft.', Skills: 'Stealth +6',
+      Senses: 'darkvision 60 ft., passive Perception 9', Languages: 'Common, Goblin', CR: '1/4 (50 XP)',
+    },
+    abilities: { STR: { score: 8 }, DEX: { score: 14 }, CON: { score: 10 }, INT: { score: 10 }, WIS: { score: 8 }, CHA: { score: 8 } },
+    sections: [
+      { heading: 'Traits', items: [{ name: 'Nimble Escape', text: 'The goblin can take the Disengage or Hide action as a bonus action on each of its turns.' }] },
+      { heading: 'Actions', items: [
+        { name: 'Scimitar', text: 'Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.' },
+        { name: 'Shortbow', text: 'Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage.' },
+      ] },
+    ],
+  },
+  {
+    id: 'sample-fighter', type: 'class', name: 'Fighter', source: SRD,
+    fields: {
+      'Hit Dice': '1d10 per fighter level', 'Hit Points at 1st Level': '10 + your Constitution modifier',
+      Armor: 'All armor, shields', Weapons: 'Simple weapons, martial weapons', 'Saving Throws': 'Strength, Constitution',
+      Skills: 'Choose two from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival',
+    },
+    table: {
+      headers: ['Level', 'Proficiency Bonus', 'Features'],
+      rows: [
+        'Fighting Style, Second Wind', 'Action Surge (one use)', 'Martial Archetype', 'Ability Score Improvement', 'Extra Attack',
+        'Ability Score Improvement', 'Martial Archetype feature', 'Ability Score Improvement', 'Indomitable (one use)', 'Martial Archetype feature',
+        'Extra Attack (2)', 'Ability Score Improvement', 'Indomitable (two uses)', 'Ability Score Improvement', 'Martial Archetype feature',
+        'Ability Score Improvement', 'Action Surge (two uses), Indomitable (three uses)', 'Martial Archetype feature', 'Ability Score Improvement', 'Extra Attack (3)',
+      ].map((f, i) => [ordinal(i + 1), '+' + (2 + Math.floor(i / 4)), f]),
+    },
+    sections: [{ heading: 'Class Features', items: [
+      { level: 1, name: 'Fighting Style', text: 'You adopt a particular style of fighting as your specialty, such as Archery, Defense, Dueling, Great Weapon Fighting, Protection or Two-Weapon Fighting.' },
+      { level: 1, name: 'Second Wind', text: 'On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level. Once you use this feature, you must finish a short or long rest before you can use it again.' },
+      { level: 2, name: 'Action Surge', text: 'On your turn, you can take one additional action. Once you use this feature, you must finish a short or long rest before you can use it again. From 17th level, you can use it twice before a rest, but only once on the same turn.' },
+      { level: 3, name: 'Martial Archetype', text: 'You choose an archetype that you strive to emulate in your combat styles and techniques, such as the Champion.' },
+      { level: 5, name: 'Extra Attack', text: 'You can attack twice, instead of once, whenever you take the Attack action on your turn. This increases to three attacks at 11th level and four at 20th level.' },
+      { level: 9, name: 'Indomitable', text: 'You can reroll a saving throw that you fail, and must use the new roll. You can then use this feature again after a long rest (twice between long rests from 13th level, three times from 17th level).' },
+    ] }],
+    text: 'A master of martial combat, skilled with a variety of weapons and armor.',
+  },
+];
+
+const EXAMPLE_PASTES = [
+  {
+    label: '1. Spell, book layout (2014 style)',
+    text: `Magic Missile
+1st-level evocation
+Casting Time: 1 action
+Range: 120 feet
+Components: V, S
+Duration: Instantaneous
+You create three glowing darts of magical force. Each dart hits a creature of your choice that you can see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously, and you can direct them to hit one creature or several.
+At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the spell creates one more dart for each slot level above 1st.`,
+  },
+  {
+    label: '2. D&D Beyond spell page + item + feat in one paste',
+    text: `Frost Lance
+Level
+2nd
+Casting Time
+1 Action
+Range/Area
+60 ft. (5 ft. Line)
+Components
+V, S, M *
+Duration
+Concentration 1 Minute
+School
+Evocation
+Attack/Save
+DEX Save
+Damage/Effect
+Cold
+A lance of rime erupts from your hand in a line 60 feet long and 5 feet wide. Each creature in the line makes a Dexterity saving throw, taking 3d8 Cold damage on a failed save or half as much damage on a successful one. Until the spell ends, the line is Difficult Terrain.
+Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 2.
+* - (a shard of clear glass)
+Spell Tags: Damage, Control
+Available For: Sorcerer, Wizard
+Homebrew Grimoire, pg. 12
+Lantern of Quiet Paths
+Wondrous Item, Uncommon (Requires Attunement)
+While holding this lantern, you and up to five allies within 30 feet of you have Advantage on Dexterity (Stealth) checks made while travelling.
+Shuttered Light. As a Magic action, you can shutter the lantern. For 1 hour, tracks left by you and your allies vanish.
+Steady Hands
+General Feat (Prerequisite: Level 4+, Dexterity 13+)
+You gain the following benefits.
+Ability Score Increase. Increase your Dexterity score by 1, to a maximum of 20.
+Careful Aim. When you take the Aim action, you ignore Half Cover.`,
+  },
+  {
+    label: '3. Two monsters: 2014 and 2024 stat block layouts',
+    text: `Wolf
+Medium beast, unaligned
+Armor Class 13 (natural armor)
+Hit Points 11 (2d8 + 2)
+Speed 40 ft.
+STR
+12 (+1)
+DEX
+15 (+2)
+CON
+12 (+1)
+INT
+3 (-4)
+WIS
+12 (+1)
+CHA
+6 (-2)
+Skills Perception +3, Stealth +4
+Senses Passive Perception 13
+Languages None
+Challenge 1/4 (50 XP)
+Keen Hearing and Smell. The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell.
+Pack Tactics. The wolf has advantage on an attack roll against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated.
+Actions
+Bite. Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.
+Ash Wight
+Medium Undead, Neutral Evil
+AC 14
+Initiative +2 (12)
+HP 45 (7d8 + 14)
+Speed 30 ft.
+\tMOD\tSAVE
+Str\t15\t+2\t+2
+Dex\t14\t+2\t+2
+Con\t14\t+2\t+2
+\tMOD\tSAVE
+Int\t10\t+0\t+0
+Wis\t13\t+1\t+3
+Cha\t12\t+1\t+1
+Skills Perception +3, Stealth +4
+Resistances Necrotic
+Immunities Poison; Exhaustion, Poisoned
+Senses Darkvision 60 ft.; Passive Perception 13
+Languages Common
+CR 3 (XP 700; PB +2)
+Traits
+Smouldering Aura. Any creature that starts its turn within 5 feet of the wight takes 2 (1d4) Fire damage.
+Actions
+Multiattack. The wight makes two Ember Claw attacks.
+Ember Claw. Melee Attack Roll: +4, reach 5 ft. Hit: 6 (1d8 + 2) Slashing damage plus 3 (1d6) Fire damage.
+Bonus Actions
+Cinder Step. The wight teleports up to 15 feet to an unoccupied space it can see that contains ash or embers.`,
+  },
+  {
+    label: '4. Class (feature table + Level N: features) and a subclass, split by ---',
+    text: `Warden
+Core Warden Traits
+Primary Ability\tWisdom
+Hit Point Die\tD10 per Warden level
+Saving Throw Proficiencies\tStrength and Wisdom
+Skill Proficiencies\tChoose 2: Athletics, Insight, Nature, Perception, or Survival
+Weapon Proficiencies\tSimple and Martial weapons
+Armor Training\tLight and Medium armor and Shields
+Warden Features
+Level\tProficiency Bonus\tClass Features\tWardings
+1\t+2\tWarding Bond, Weapon Mastery\t2
+2\t+2\tSteadfast\t2
+3\t+2\tWarden Subclass\t3
+4\t+2\tAbility Score Improvement\t3
+5\t+3\tExtra Attack\t3
+Level 1: Warding Bond
+As a Bonus Action, you bond with a willing creature you can see within 30 feet. While bonded, when that creature takes damage you can take a Reaction to take half of it instead.
+Level 1: Weapon Mastery
+Your training lets you use the mastery properties of two kinds of weapons of your choice.
+Level 2: Steadfast
+You have Advantage on saving throws to avoid or end the Frightened condition.
+Level 3: Warden Subclass
+You gain a Warden subclass of your choice.
+Level 4: Ability Score Improvement
+You gain the Ability Score Improvement feat or another feat of your choice for which you qualify.
+Level 5: Extra Attack
+You can attack twice instead of once whenever you take the Attack action on your turn.
+---
+Oath of the Hearthstone
+Warden Subclass: Guard the Flame of Home
+Level 3: Hearth Ward
+When a creature bonded by your Warding Bond takes Fire or Cold damage, it has Resistance to that damage.
+Level 3: Kindled Strike
+Once on each of your turns when you hit a creature with a weapon, you can deal an extra 1d6 Fire damage.
+Level 7: Banked Coals
+When you finish a Short Rest, you and your bonded creature each regain Hit Points equal to your Wisdom modifier.`,
+  },
+];
+
+
+/* =====================================================================
+   10. BOOT
+   ===================================================================== */
+async function boot() {
+  await Store.open();
+  await Types.load();
+
+  // First run: seed the samples once (deleting them later won't bring them back).
+  if (!(await Store.getMeta('seeded'))) {
+    await Store.putEntries(SAMPLE_ENTRIES.map((s) => makeEntry(s)));
+    await Store.setMeta('seeded', true);
+  }
+
+  const t0 = performance.now();
+  const all = await Store.getAllEntries();
+  for (const e of all) { App.entries.set(e.id, e); Types.ensure(e.type); }
+  App.index.build(all);
+  console.info(`Loaded and indexed ${all.length} entries in ${(performance.now() - t0).toFixed(0)} ms`);
+
+  $('#exampleSel').innerHTML += EXAMPLE_PASTES.map((x, i) => `<option value="${i + 1}">${esc(x.label)}</option>`).join('');
+  VList.init();
+  wireEvents();
+  App.renderSidebar();
+  App.runSearch();
+
+  const m = /^#\/e\/(.+)$/.exec(location.hash);
+  const initial = m && decodeURIComponent(m[1]);
+  if (initial && App.entries.has(initial)) App.open(initial);
+  else App.showDetail(null);
+}
+
+boot().catch((err) => { console.error(err); toast('Startup failed: ' + err.message, 'err', 15000); });
+</script>
+</body>
+</html>

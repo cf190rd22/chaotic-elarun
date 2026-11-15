@@ -180,6 +180,12 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 .facet-bar select { font-size: 14px; padding: 5px 6px; max-width: 190px; }
 .facet-bar button { font-size: 12px; padding: 3px 8px; }
 #resultMeta button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.pill { display: inline-flex; align-items: baseline; gap: 6px; border: 1px solid var(--border); background: var(--panel); border-radius: 6px; padding: 2px 9px; font-size: 14px; }
+.pill-k { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.chipb { font-size: 13.5px; padding: 2px 10px; }
+.snip { color: var(--muted); }
+.snip mark { color: var(--text); }
 a.xref.local { text-decoration-style: dashed; }
 a.xref { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; cursor: pointer; }
 a.xref:hover { text-decoration-style: solid; }
@@ -722,7 +728,7 @@ function editDistance(a, b, max) {
 }
 
 /** True for D&D-style lead-in names: every word capitalised except short joining words. */
-const LEAD_SMALL = new Set('a an and as at by for from in into of on or the to vs with'.split(' '));
+const LEAD_SMALL = new Set('a an and as at by for from in into of on or the to vs with between through against without within per over under upon via about after before across among than'.split(' '));
 function isTitleCaseName(name) {
   const words = name.replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(Boolean);
   return words.length > 0 && words.every((w, i) => /^[A-Z0-9'’"]/.test(w) || (i > 0 && LEAD_SMALL.has(w.toLowerCase())));
@@ -1900,15 +1906,62 @@ const Parsers = (() => {
       return { type: 'condition', name, source, tags, fields: {}, text: lines.slice(1).join('\n'), warnings: [] };
     },
   };
+  /**
+   * Is line i a glossary heading? Tagged ("Attack [Action]") always is. Otherwise: a short
+   * Title Case line followed straight away by a sentence. Lines after "…:" are list items, and
+   * after a run of short lines (a list) a line only counts if the sentence below mentions it
+   * ("Utilize" / "Advantage" / "If you have Advantage…" vs "Line" / "Sphere" / "An area of…").
+   */
+  function isGlossaryHeading(lines, i) {
+    const L = lines[i];
+    if (reGlossary.test(L)) return true;
+    if (!isNameLine(L) || L.length > 45 || !isTitleCaseName(L)) return false;
+    const next = lines[i + 1] || '';
+    if (next.includes('\t') || !(next.length > 60 || /[.:!?”")]$/.test(next))) return false;
+    const prev = i > 0 ? lines[i - 1] : '';
+    if (/:$/.test(prev)) return false;
+    const prevShort = i > 0 && !prev.includes('\t') && isNameLine(prev);
+    if (!prevShort) return true;
+    const words = fold(L).split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !LEAD_SMALL.has(w));
+    const nextWords = fold(next.split(/[.!?]/)[0]).split(/[^a-z0-9]+/).filter((w) => w.length >= 3);
+    return words.some((w) => nextWords.some((n) => n.startsWith(w.slice(0, 4)) || w.startsWith(n)));
+  }
+  // All-caps lines in a glossary are page furniture (e.g. a PDF purchaser watermark).
+  const isCapsFurniture = (l) => /^[A-Z][A-Z .'’-]{2,40}$/.test(l);
+
   const rule = {
     type: 'rule', label: 'Rule (glossary entry)',
-    detect(lines) { return reGlossary.test(lines[0]) ? 0.6 : 0; },
+    detect(lines) {
+      if (reGlossary.test(lines[0]) && lines.filter((l) => reGlossary.test(l)).length < 2) return 0.6;
+      let tags = 0, heads = 0, seeAlso = 0;
+      for (let i = 0; i < Math.min(lines.length, 600); i++) {
+        if (reGlossary.test(lines[i])) tags++;
+        else if (isGlossaryHeading(lines, i)) heads++;
+        if (/\bsee also\b/i.test(lines[i])) seeAlso++;
+      }
+      if (tags >= 2 || (heads >= 4 && seeAlso >= 2)) return 0.75;
+      if (heads >= 1 && seeAlso >= 1 && lines.length < 40) return 0.5;
+      return 0;
+    },
     startsAt(lines, i) { return reGlossary.test(lines[i]); },
+    /** Split a glossary at every heading. */
+    splitBlock(input) {
+      const lines = input.filter((l) => !isCapsFurniture(l));
+      const starts = [];
+      for (let i = 0; i < lines.length; i++) if (isGlossaryHeading(lines, i)) starts.push(i);
+      if (!starts.length || starts[0] !== 0) starts.unshift(0);
+      return starts.map((st, k) => lines.slice(st, k + 1 < starts.length ? starts[k + 1] : lines.length)).filter((c) => c.length);
+    },
     parse(input) {
-      const { lines, source, tags } = cleanCommon(input);
+      const { lines, source, tags } = cleanCommon(input.filter((l) => !isCapsFurniture(l)));
       const g = reGlossary.exec(lines[0]);
-      const f = g ? { Category: g[2].trim() } : {};
-      return { type: 'rule', name: g ? g[1].trim() : lines[0], source, tags, fields: f, text: lines.slice(1).join('\n'), warnings: [] };
+      const cat = g ? g[2].trim() : '';
+      // "Blinded [Condition]" belongs with the conditions.
+      const type = /^conditions?$/i.test(cat) ? 'condition' : 'rule';
+      return {
+        type, name: g ? g[1].trim() : lines[0], source, tags,
+        fields: cat && type === 'rule' ? { Category: cat } : {}, text: lines.slice(1).join('\n'), warnings: [],
+      };
     },
   };
 
@@ -2023,7 +2076,7 @@ const Parsers = (() => {
       if (!lines.length) continue;
       // With a forced category only that layout's split rules apply.
       const primary = forced || detect(lines).parser;
-      if (primary.splitBlock) { chunks.push(...primary.splitBlock(lines)); continue; }
+      if (primary.splitBlock) { for (const c of primary.splitBlock(lines)) { c.hint = primary; chunks.push(c); } continue; }
       if (primary.noSplit) { chunks.push(lines); continue; }
       const splitters = forced ? (forced.startsAt ? [forced] : []) : registry.filter((p) => p.startsAt && !p.noSplit);
       const starts = [0];
@@ -2047,7 +2100,7 @@ const Parsers = (() => {
     const forced = forceType ? (registry.find((p) => p.type === forceType) || null) : null;
     return split(text, forceSingle, forced).map((lines) => {
       if (forceType) return reparseAs(forceType, lines);
-      const { parser, score } = detect(lines);
+      const { parser, score } = lines.hint ? { parser: lines.hint, score: 0.8 } : detect(lines);
       return { ...runParser(parser, lines, score), rawLines: lines };
     });
   }
@@ -2241,14 +2294,17 @@ function formatText(text, { plainFirst = false } = {}) {
     }
     if (list.length) { out.push('<ul>' + list.map((l) => `<li>${inline(l)}</li>`).join('') + '</ul>'); list = []; }
   };
+  let listMode = false; // after "…:", short lines are list items
   for (const line of String(text).split('\n')) {
     const L = line.trim();
-    if (!L) { flush(); continue; }
-    if (L.includes('\t')) { if (list.length) flush(); tbl.push(L.split('\t')); continue; }
+    if (!L) { if (!listMode) flush(); continue; }
+    if (L.includes('\t')) { if (list.length) flush(); listMode = false; tbl.push(L.split('\t')); continue; }
     if (tbl.length) flush();
     const b = /^(?:[•●▪◦*]|-)\s+(.*)$/.exec(L);
     if (b) { list.push(b[1]); continue; }
+    if (listMode && L.length <= 90 && !/[.!?]$/.test(L)) { list.push(L); continue; }
     flush();
+    listMode = /:$/.test(L);
     // Item bodies ("Melee Attack Roll: +4, reach 5 ft. Hit: ...") must not get a fake bold lead-in.
     out.push(`<p>${first ? rich(L) : inline(L)}</p>`);
     first = false;
@@ -2468,7 +2524,11 @@ function card(label, value, wide = false) {
 function renderCards(fields, skip = []) {
   const items = Object.entries(fields).filter(([k, v]) => v && !skip.includes(k));
   if (!items.length) return '';
-  return '<div class="cards">' + items.map(([k, v]) => card(k, v, v.length > 60)).join('') + '</div>';
+  // Short values become small inline labels so the text starts higher up; long ones keep a box.
+  const short = items.filter(([, v]) => v.length <= 32 && !v.includes('\n'));
+  const long = items.filter((x) => !short.includes(x));
+  return (short.length ? '<div class="pills">' + short.map(([k, v]) => `<span class="pill"><span class="pill-k">${esc(k)}</span>${rich(v)}</span>`).join('') + '</div>' : '')
+    + (long.length ? '<div class="cards">' + long.map(([k, v]) => card(k, v, v.length > 60)).join('') + '</div>' : '');
 }
 
 /** Fields already shown in the subtitle, so not repeated as cards. */
@@ -2476,6 +2536,7 @@ const SUBTITLE_FIELDS = {
   item: ['Type', 'Rarity'],
   feat: ['Category'],
   subclass: ['Class', 'Tagline'],
+  rule: ['Category'],
 };
 
 /** Type-specific body renderers. Anything not listed uses `default`. */
@@ -2542,6 +2603,8 @@ function subtitleOf(e) {
   if (e.type === 'item') return [f.Type, f.Rarity ? f.Rarity.toLowerCase() : '', f.Attunement ? `(requires attunement${f.Attunement !== 'Required' ? ' ' + f.Attunement : ''})` : ''].filter(Boolean).join(', ').replace(/, \(/, ' (');
   if (e.type === 'subclass') return f.Class ? `${f.Class} Subclass` : 'Subclass';
   if (e.type === 'sage-advice') return ['Sage Advice', f.Topic].filter(Boolean).join(' · ');
+  if (e.type === 'rule') return ['Rule', f.Category].filter(Boolean).join(' · ');
+  if (e.type === 'condition') return 'Condition';
   if (e.type === 'feat') return [f.Category, f.Prerequisite ? `(Prerequisite: ${f.Prerequisite})` : ''].filter(Boolean).join(' ');
   return '';
 }
@@ -3217,7 +3280,7 @@ const App = {
     if (!keepCursor) $('#list').scrollTop = 0;
     this.renderMeta();
     // On wide screens, typing previews the top hit immediately.
-    if (!keepCursor && this.query.trim() && this.cursor >= 0 && this.isWide()) this.showDetail(this.rows[this.cursor].id, { fromSearch: true });
+    if (!keepCursor && this.query.trim() && this.cursor >= 0 && this.isWide()) { this.showDetail(this.rows[this.cursor].id, { fromSearch: true }); this.autoFind(this.rows[this.cursor].id); }
   },
 
   /** Which group an entry belongs to in the current view (null = flat list). */
@@ -3390,7 +3453,7 @@ const App = {
     this.cursor = j;
     VList.scrollToIndex(j);
     VList.paint(true);
-    if (this.isWide()) this.showDetail(this.rows[j].id, { fromSearch: true });
+    if (this.isWide()) { this.showDetail(this.rows[j].id, { fromSearch: true }); this.autoFind(this.rows[j].id); }
   },
 
   /** Open from the results list: starts a fresh trail. */
@@ -3401,6 +3464,17 @@ const App = {
     this.showDetail(id);
     document.body.classList.add('show-detail');
     setUrlHash('#/e/' + encodeURIComponent(id));
+    this.autoFind(id);
+  },
+
+  /** Opened from a search that matched the text: put the search in find-in-page and jump to it. */
+  autoFind(id) {
+    const e = this.entries.get(id), bm = e && bodyMatch(e);
+    const fi = $('#detail .fip-in');
+    if (!bm || !fi) return;
+    fi.value = bm.needle;
+    Find.forId = id;
+    Find.run(bm.needle);
   },
 
   /** Follow a link from one entry to another; "← Back" returns. Browser back works too where allowed. */
@@ -3472,6 +3546,36 @@ const App = {
   },
 };
 
+/**
+ * When a result matches because of its text (not its name), return the first matching
+ * search term and a highlighted snippet around it.
+ */
+function bodyMatch(e) {
+  const pq = App.parsedQuery().text.trim();
+  if (!pq) return null;
+  const { terms, phrases } = SearchIndex.parseQuery(pq);
+  const needles = [...phrases, ...terms.filter((t) => !STOPWORDS.has(t))].filter((t) => t.length >= 2);
+  if (!needles.length) return null;
+  const nm = fold(e.name);
+  if (needles.every((n) => nm.includes(n))) return null;
+  const text = [e.text, Object.values(e.fields).join(' · '),
+    e.sections.map((s) => s.items.map((i) => i.name + '. ' + i.text).join(' ')).join(' '),
+    e.table ? e.table.rows.map((r) => r.join(' ')).join(' ') : ''].join(' ').replace(/\s+/g, ' ');
+  const low = text.toLowerCase();
+  let at = -1, len = 0, needle = '';
+  // Prefer the whole search as typed ("unarmed strike"), then the earliest single word.
+  const whole = pq.toLowerCase().replace(/["*?]/g, '').replace(/\s+/g, ' ').trim();
+  if (whole.includes(' ') && low.indexOf(whole) >= 0) { at = low.indexOf(whole); len = whole.length; needle = whole; }
+  else for (const n of needles) { const i = low.indexOf(n); if (i >= 0 && (at < 0 || i < at)) { at = i; len = n.length; needle = n; } }
+  if (at < 0) return null;
+  const start = Math.max(0, text.lastIndexOf(' ', Math.max(0, at - 28)) + 1);
+  const end = Math.min(text.length, at + len + 70);
+  return {
+    needle,
+    html: (start ? '…' : '') + esc(text.slice(start, at)) + '<mark>' + esc(text.slice(at, at + len)) + '</mark>' + esc(text.slice(at + len, end)) + (end < text.length ? '…' : ''),
+  };
+}
+
 function rowAreaIcon(e) {
   if (e.type !== 'spell') return '';
   const a = spellArea(e);
@@ -3484,7 +3588,7 @@ function rowHtml(e, i, style = '', showType = false) {
   const cls = 'row' + (i >= 0 && i === App.cursor ? ' cur' : '') + (e.id === App.currentId ? ' open' : '');
   const chipHtml = chip ? `<span class="chip"${chip.h != null ? ` style="--h:${chip.h}"` : ''}>${esc(chip.t)}</span>` : '';
   return `<div class="${cls}" data-id="${esc(e.id)}"${style ? ` style="${style}"` : ''}>
-    ${chipHtml}<div class="t"><div class="n">${highlight(e.name, App.query)}${spellIcons(e)}</div><div class="s">${rowAreaIcon(e)}${esc(rowMeta(e))}</div></div>
+    ${chipHtml}<div class="t"><div class="n">${highlight(e.name, App.query)}${spellIcons(e)}</div><div class="s">${(() => { const bm = bodyMatch(e); return bm ? `<span class="snip">${bm.html}</span>` : rowAreaIcon(e) + esc(rowMeta(e)); })()}</div></div>
     ${showType ? Types.badge(e.type) : ''}
     <button class="star ${e.fav ? 'on' : ''}" data-act="fav" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></div>`;
 }

@@ -167,6 +167,7 @@ details.refs > summary { font-weight: 600; margin: 6px 0; }
 .answer { position: relative; padding-left: 30px; }
 .d-head h2.question { font-size: 23px; }
 .answer .qa { position: absolute; left: 0; top: 0; font: 700 18px var(--serif); color: var(--accent); }
+.boot-fail { grid-column: 1 / -1; padding: 16px; margin: 12px; border: 2px solid var(--danger); border-radius: 10px; background: var(--panel); overflow: auto; }
 .banner { background: var(--danger); color: #fff; padding: 8px 12px; font-size: 14px; }
 
 /* =====================================================================
@@ -650,14 +651,16 @@ const ErrorLog = {
       ...this.items.map((x) => `[${x.at}] ${x.kind}: ${x.msg}${x.detail ? '\n    ' + x.detail.split('\n').slice(0, 6).join('\n    ') : ''}`)].join('\n');
   },
 };
-for (const level of ['error', 'warn']) {
-  const orig = console[level].bind(console);
-  console[level] = (...args) => {
-    ErrorLog.add('console.' + level, args.map((a) => (a && a.message) || (typeof a === 'string' ? a : (() => { try { return JSON.stringify(a); } catch { return String(a); } })())).join(' '),
-      args.find((a) => a && a.stack)?.stack);
-    orig(...args);
-  };
+/* Safe logging. Some embedded viewers ship a partial or read-only `console`
+   (console.error can be missing), so the app never modifies it and never
+   assumes a method exists. */
+function safeConsole(level, args) {
+  try { const c = window.console; if (c && typeof c[level] === 'function') c[level].apply(c, args); } catch { /* no console */ }
 }
+const describe = (a) => (a && a.message) || (typeof a === 'string' ? a : (() => { try { return JSON.stringify(a); } catch { return String(a); } })());
+function logError(...args) { ErrorLog.add('error', args.map(describe).join(' '), (args.find((a) => a && a.stack) || {}).stack); safeConsole('error', args); }
+function logWarn(...args) { ErrorLog.add('warning', args.map(describe).join(' '), (args.find((a) => a && a.stack) || {}).stack); safeConsole('warn', args); }
+function logInfo(...args) { safeConsole('info', args); }
 window.addEventListener('error', (e) => {
   const msg = (e.error && e.error.message) || e.message || 'Unknown error';
   ErrorLog.add('error', msg, (e.error && e.error.stack) || `${e.filename || ''}:${e.lineno || ''}:${e.colno || ''}`);
@@ -798,6 +801,9 @@ const Store = {
     try {
       if (!('indexedDB' in window)) throw new Error('IndexedDB not supported');
       this.db = await new Promise((resolve, reject) => {
+        // Some embedded web views never answer: give up after 5 s.
+        const timer = setTimeout(() => reject(new Error('IndexedDB did not respond')), 5000);
+        const done = (fn) => (v) => { clearTimeout(timer); fn(v); };
         const req = indexedDB.open('dnd-reference', 1);
         req.onupgradeneeded = () => {
           const db = req.result;
@@ -806,16 +812,20 @@ const Store = {
           }
           if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta');
         };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-        req.onblocked = () => reject(new Error('Database upgrade blocked by another open tab'));
+        req.onsuccess = done(() => resolve(req.result));
+        req.onerror = done(() => reject(req.error));
+        req.onblocked = done(() => reject(new Error('Database upgrade blocked by another open tab')));
       });
-      // Ask the browser not to evict our data under storage pressure (best effort).
-      if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+      // iOS web views showing local files can open IndexedDB yet fail every read/write: prove it works.
+      await this._tx(['meta'], 'readwrite', (tx) => tx.objectStore('meta').put(Date.now(), '_probe'));
+      await this._tx(['meta'], 'readonly', (tx) => tx.objectStore('meta').get('_probe'));
     } catch (err) {
-      console.warn('IndexedDB unavailable, using memory only:', err);
+      this.db = null;
+      logWarn('Browser storage unusable here, using memory only:', err);
       this.mem = { entries: new Map(), meta: new Map() };
     }
+    // Ask the browser not to evict our data under storage pressure (best effort, may be missing).
+    try { if (!this.mem && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch { /* ignore */ }
   },
 
   /** Run fn inside a transaction; resolves when the transaction commits. */
@@ -1949,7 +1959,7 @@ const Parsers = (() => {
     let best = { parser: generic, score: 0 };
     for (const p of registry) {
       let s = 0;
-      try { s = p.detect(lines) || 0; } catch (e) { console.warn(p.type, 'detect failed', e); }
+      try { s = p.detect(lines) || 0; } catch (e) { logWarn(p.type, 'detect failed', e); }
       if (s > best.score) best = { parser: p, score: s };
     }
     return best.score >= 0.4 ? best : { parser: generic, score: best.score };
@@ -1964,7 +1974,7 @@ const Parsers = (() => {
       delete r.warnings;
       return { entry: makeEntry({ ...r, raw }), parser: parser.label, confidence: score, warnings };
     } catch (err) {
-      console.error('Parser failed:', parser.type, err);
+      logError('Parser failed:', parser.type, err);
       const r = generic.parse(lines, forcedType);
       delete r.warnings;
       return { entry: makeEntry({ ...r, raw }), parser: 'Raw text', confidence: 0, warnings: [`${parser.label} parser failed (${err.message}); saved as raw text`] };
@@ -4216,7 +4226,7 @@ async function boot() {
   const all = await Store.getAllEntries();
   for (const e of all) { App.entries.set(e.id, e); Types.ensure(e.type); }
   App.index.build(all);
-  console.info(`Loaded and indexed ${all.length} entries in ${(performance.now() - t0).toFixed(0)} ms`);
+  logInfo(`Loaded and indexed ${all.length} entries in ${(performance.now() - t0).toFixed(0)} ms`);
 
   $('#exampleSel').innerHTML += EXAMPLE_PASTES.map((x, i) => `<option value="${i + 1}">${esc(x.label)}</option>`).join('');
   App.index.textOf = (id) => entrySearchText(App.entries.get(id));
@@ -4238,7 +4248,17 @@ async function boot() {
   else App.showDetail(null);
 }
 
-boot().catch((err) => { console.error(err); toast('Startup failed: ' + err.message, 'err', 15000); });
+boot().catch((err) => {
+  logError('Startup failed:', err);
+  try { toast('Startup failed: ' + ((err && err.message) || err), 'err', 15000); } catch { /* ignore */ }
+  // Visible on any screen size, with details to copy.
+  const box = document.createElement('div');
+  box.className = 'boot-fail';
+  box.innerHTML = `<h2>Startup failed</h2><p>${esc((err && err.message) || err)}</p>
+    <pre class="raw-box">${esc(ErrorLog.text())}</pre><button>Copy details</button>`;
+  box.querySelector('button').onclick = () => { try { navigator.clipboard.writeText(ErrorLog.text()); } catch { /* ignore */ } };
+  document.querySelector('main').prepend(box);
+});
 </script>
 </body>
 </html>

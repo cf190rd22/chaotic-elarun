@@ -105,6 +105,50 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .pc-fields { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .pc-fields label { display: flex; gap: 4px; align-items: center; font-size: 12px; color: var(--muted); }
 .pc-fields input { font-size: 13px; padding: 2px 6px; }
+/* stat block boxes */
+.sb-top { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin: 2px 0 12px; }
+.sb-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; min-width: 0; }
+.sb-box.wide { grid-column: span 2; }
+.sb-v { font-weight: 600; overflow-wrap: anywhere; }
+.ab-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0 0 12px; }
+.ab { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; }
+.ab-k { font: 700 11.5px system-ui; letter-spacing: .1em; color: var(--accent); }
+.ab-s { font: 600 20px var(--serif); line-height: 1.2; }
+.ab-m { display: inline-block; font-weight: 700; font-size: 13px; border: 1px solid var(--border); border-radius: 10px; padding: 0 8px; background: var(--panel); }
+.ab-sv { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+.mods { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.mod-box { border: 1px solid var(--border); background: var(--panel-2); border-radius: 6px; padding: 0 7px; white-space: nowrap; }
+/* emphasis inside stat blocks */
+.hl-atk { color: var(--accent); }
+.hl-hit { font-weight: 600; }
+.hl-save { color: hsl(205 70% var(--hl-l)); }
+.hl-cond { color: hsl(290 45% var(--hl-l)); }
+.hl-dice { color: var(--text); }
+.hl-dmg { color: hsl(var(--dh, 0) var(--ds, 0%) var(--hl-l)); }
+:root { --hl-l: 38%; } :root[data-theme="dark"] { --hl-l: 70%; }
+.dmg-acid { --dh: 95; --ds: 60%; } .dmg-cold { --dh: 195; --ds: 75%; } .dmg-fire { --dh: 18; --ds: 85%; }
+.dmg-force { --dh: 330; --ds: 60%; } .dmg-lightning { --dh: 220; --ds: 85%; } .dmg-necrotic { --dh: 140; --ds: 25%; }
+.dmg-poison { --dh: 120; --ds: 55%; } .dmg-psychic { --dh: 300; --ds: 55%; } .dmg-radiant { --dh: 45; --ds: 90%; }
+.dmg-thunder { --dh: 265; --ds: 55%; } .dmg-bludgeoning, .dmg-piercing, .dmg-slashing { --dh: 25; --ds: 15%; }
+/* icons */
+.ico { width: 1em; height: 1em; vertical-align: -0.12em; }
+.ico-wrap { display: inline-flex; align-items: center; margin-left: .3em; color: var(--accent); }
+.ico-wrap.conc { color: hsl(40 85% var(--hl-l)); }
+.ico-wrap.rit { color: hsl(160 55% var(--hl-l)); }
+.d-head h2 .ico-wrap { font-size: .7em; vertical-align: .15em; }
+.row .n .ico-wrap { font-size: .85em; }
+.row .s .area-i { margin: 0 .3em 0 0; color: var(--muted); }
+.card-v .ico-wrap.conc { margin: 0 .15em 0 0; }
+.area { display: flex; align-items: center; gap: .35em; margin-top: 3px; font-weight: 600; color: var(--accent); }
+.area .ico { width: 1.3em; height: 1.3em; }
+/* Sage Advice box */
+.sage-box { border: 2px solid hsl(190 55% 45% / .6); background: hsl(190 60% 50% / .08); border-radius: 10px; padding: 4px 14px 10px; margin: 20px 0 6px; }
+.sage-box h3 { color: hsl(190 60% var(--hl-l)); border-bottom-color: hsl(190 55% 45% / .5); margin-top: 8px; }
+.sage-item { padding: 8px 0; border-top: 1px dashed hsl(190 40% 50% / .35); cursor: pointer; }
+.sage-item:first-of-type { border-top: 0; }
+.sage-item:hover .sage-q { text-decoration: underline; }
+.sage-q { font-weight: 600; }
+.sage-a { color: var(--text); opacity: .85; font-size: 14px; }
 a.xref { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; cursor: pointer; }
 a.xref:hover { text-decoration-style: solid; }
 .nav-back { margin: 0 8px 8px 0; font-size: 13px; max-width: 70%; overflow: hidden; text-overflow: ellipsis; }
@@ -296,6 +340,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
   .back-btn { display: inline-block; margin-bottom: 8px; font-size: 13px; }
   .d-head h2 { font-size: 27px; }
   .cards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ab-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .import-grid { grid-template-columns: 1fr; }
   #pasteBox { height: 30vh; }
   .field-row { grid-template-columns: 1fr; }
@@ -1992,7 +2037,7 @@ function rowChip(e) {
 function rowMeta(e) {
   const f = e.fields;
   switch (e.type) {
-    case 'spell': return [f.School, f.Classes, f.Concentration ? 'Concentration' : '', f.Ritual ? 'Ritual' : ''].filter(Boolean).join(' · ');
+    case 'spell': return [f.School, f.Classes].filter(Boolean).join(' · ');
     case 'monster': return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(' · ');
     case 'item': return [f.Type, f.Attunement ? 'requires attunement' : ''].filter(Boolean).join(' · ');
     case 'feat': return [f.Prerequisite ? 'Prerequisite: ' + f.Prerequisite : (f.Category || ''), e.source].filter(Boolean).join(' · ');
@@ -2058,7 +2103,7 @@ function formatText(text, { plainFirst = false } = {}) {
     if (tbl.length) {
       const [head, ...rows] = tbl;
       out.push('<div class="tbl-wrap"><table class="data"><thead><tr>' + head.map((c) => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>'
-        + rows.map((r) => '<tr>' + r.map((c) => `<td>${Linker.html(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
+        + rows.map((r) => '<tr>' + r.map((c) => `<td>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
       tbl = [];
     }
     if (list.length) { out.push('<ul>' + list.map((l) => `<li>${inline(l)}</li>`).join('') + '</ul>'); list = []; }
@@ -2072,7 +2117,7 @@ function formatText(text, { plainFirst = false } = {}) {
     if (b) { list.push(b[1]); continue; }
     flush();
     // Item bodies ("Melee Attack Roll: +4, reach 5 ft. Hit: ...") must not get a fake bold lead-in.
-    out.push(`<p>${first ? Linker.html(L) : inline(L)}</p>`);
+    out.push(`<p>${first ? rich(L) : inline(L)}</p>`);
     first = false;
   }
   flush();
@@ -2080,29 +2125,125 @@ function formatText(text, { plainFirst = false } = {}) {
 }
 function inline(L) {
   const m = /^([A-Z0-9][^.!?]{0,60}?(?:\([^)]{0,60}\))?)\.\s+(\S.*)$/.exec(L);
-  if (m && m[1].split(/\s+/).length <= 7 && isTitleCaseName(m[1])) return `<b><i>${esc(m[1])}.</i></b> ${Linker.html(m[2])}`;
-  return Linker.html(L);
+  if (m && m[1].split(/\s+/).length <= 7 && isTitleCaseName(m[1])) return `<b><i>${esc(m[1])}.</i></b> ${rich(m[2])}`;
+  return rich(L);
 }
 
 function renderKV(fields, skip = []) {
   const rows = Object.entries(fields).filter(([k]) => !skip.includes(k));
   if (!rows.length) return '';
-  return '<dl class="kv">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${Linker.html(v).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+  return '<dl class="kv">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : rich(v, { allTypes: /resist|immun|vulnerab/i.test(k) })).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
 }
 function renderTable(t) {
   if (!t || !t.headers.length) return '';
   return '<div class="tbl-wrap"><table class="data"><thead><tr>' + t.headers.map((h) => `<th>${esc(h)}</th>`).join('') + '</tr></thead><tbody>'
-    + t.rows.map((r) => '<tr>' + r.map((c) => `<td>${Linker.html(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+    + t.rows.map((r) => '<tr>' + r.map((c) => `<td>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
 }
+/* ---------- Stat-block emphasis and game-term capitalisation ----------
+   Applied at display time only (stored text is untouched). Fmt.sb is switched on
+   while a stat block renders; set HIGHLIGHT_TYPES to use it for other categories. */
+const HIGHLIGHT_TYPES = new Set(['monster']);
+const Fmt = { sb: false };
+const DAMAGE_TYPES = 'acid|bludgeoning|cold|fire|force|lightning|necrotic|piercing|poison|psychic|radiant|slashing|thunder';
+const CONDITION_NAMES = 'blinded|charmed|deafened|exhaustion|frightened|grappled|incapacitated|invisible|paralyzed|paralysed|petrified|poisoned|prone|restrained|stunned|unconscious';
+const ABILITY_NAMES = 'strength|dexterity|constitution|intelligence|wisdom|charisma';
+const titleWords = (s) => s.replace(/\b([a-z])/g, (c) => c.toUpperCase());
+
+/** 2024-style capitalisation of rules terms: "darkvision" -> "Darkvision", "bonus action" -> "Bonus Action". */
+const GAME_TERMS = [
+  [/\b(blindsight|darkvision|tremorsense|truesight)\b/gi],
+  [/\bpassive perception\b/gi],
+  [new RegExp(`\\b(${CONDITION_NAMES})\\b`, 'gi')],
+  [new RegExp(`\\b(${DAMAGE_TYPES})(?=\\s+damage\\b)`, 'gi')],
+  [/\b(attack|dash|disengage|dodge|help|hide|influence|magic|ready|search|study|utilize)(?=\s+action\b)/gi],
+  [/\b(bonus action|reaction|opportunity attack|advantage|disadvantage|temporary hit points|hit points|hit point maximum|difficult terrain|bright light|dim light|heavily obscured|lightly obscured|long rest|short rest|critical hit|initiative|proficiency bonus)\b/gi],
+  [/\b(burrow|climb|fly|swim)(?=\s+(?:\d|speed\b))/gi],
+  [/\b(climb|fly|swim|burrow) speed\b/gi],
+  [/\(hover\)/gi, '(Hover)'],
+];
+function gameTerms(text) {
+  let t = String(text);
+  for (const [re, fixed] of GAME_TERMS) t = t.replace(re, (m) => fixed || titleWords(m.toLowerCase()));
+  return t;
+}
+
+/** Bold + colour damage, saves/DCs, attack rolls and conditions. Works on escaped HTML, outside tags only. */
+function emphasise(html, { allTypes = false } = {}) {
+  const dmg = new RegExp(`(\\b\\d+\\s*\\(\\s*\\d+d\\d+(?:\\s*[+-]\\s*\\d+)?\\s*\\)\\s*|\\b\\d+d\\d+(?:\\s*[+-]\\s*\\d+)?\\s+)?\\b(${DAMAGE_TYPES})\\b(\\s+damage)?`, 'gi');
+  return html.split(/(<[^>]+>)/).map((seg) => {
+    if (seg.startsWith('<')) return seg;
+    return seg
+      .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)\s*([+-]?\d+(?: to hit)?)?/g,
+        (m, a, b) => `<b class="hl-atk">${a}${b ? ' ' + b : ''}</b>`)
+      .replace(/\bHit:/g, '<i class="hl-hit">Hit:</i>')
+      .replace(new RegExp(`\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
+        (m) => `<b class="hl-save">${m}</b>`)
+      .replace(dmg, (m, dice, type, word) => (dice || word || allTypes)
+        ? `<b class="hl-dmg dmg-${type.toLowerCase()}">${m.trimEnd()}</b>${m.endsWith(' ') ? ' ' : ''}` : m)
+      .replace(/\b\d+\s*\(\s*\d+d\d+(?:\s*[+-]\s*\d+)?\s*\)(?![^<]*<\/b>)/g, (m) => `<b class="hl-dice">${m}</b>`)
+      .replace(new RegExp(`\\b(${CONDITION_NAMES.split('|').map((c) => c[0].toUpperCase() + c.slice(1)).join('|')})\\b`, 'g'),
+        (m) => `<b class="hl-cond">${m}</b>`);
+  }).join('');
+}
+
+/** Text -> HTML: escape, auto-link, and (inside stat blocks) capitalise terms and emphasise. */
+function rich(text, opts) {
+  if (!text) return '';
+  if (!Fmt.sb) return Linker.html(text);
+  return emphasise(Linker.html(gameTerms(text)), opts);
+}
+
+/** Ability scores as six boxes: name, score, modifier, save. */
 function renderAbilities(a) {
   if (!a) return '';
   const modOf = (s) => { const m = Math.floor((s - 10) / 2); return (m >= 0 ? '+' : '') + m; };
-  const anySave = ABILS.some((k) => a[k] && a[k].save);
-  return '<table class="abil"><tr>' + ABILS.map((k) => `<th>${k}</th>`).join('') + '</tr><tr>'
-    + ABILS.map((k) => a[k] ? `<td>${a[k].score} (${esc(a[k].mod || modOf(a[k].score))})</td>` : '<td>-</td>').join('') + '</tr>'
-    + (anySave ? '<tr>' + ABILS.map((k) => `<td class="sv">${a[k] && a[k].save ? 'save ' + esc(a[k].save) : ''}</td>`).join('') + '</tr>' : '')
-    + '</table>';
+  const sign = (v) => String(v).replace(/^\(|\)$/g, '').replace(/^0$/, '+0').replace(/^(\d)/, '+$1').replace(/^−/, '-');
+  return '<div class="ab-grid">' + ABILS.map((k) => {
+    const x = a[k];
+    if (!x) return `<div class="ab"><div class="ab-k">${k}</div><div class="ab-s">-</div></div>`;
+    return `<div class="ab"><div class="ab-k">${k}</div><div class="ab-s">${x.score}</div>
+      <div class="ab-m">${esc(sign(x.mod || modOf(x.score)))}</div>${x.save ? `<div class="ab-sv">Save ${esc(sign(x.save))}</div>` : ''}</div>`;
+  }).join('') + '</div>';
 }
+
+/** "Perception +3, Stealth +4" -> small boxes. */
+function modBoxes(v) {
+  return '<span class="mods">' + String(v).split(/,\s*/).map((part) => {
+    const m = /^(.*?)\s*([+-−]\s?\d+.*)$/.exec(part.trim());
+    return m ? `<span class="mod-box">${rich(gameTerms(m[1]))} <b>${esc(m[2].replace('−', '-'))}</b></span>` : `<span class="mod-box">${rich(part)}</span>`;
+  }).join('') + '</span>';
+}
+
+/* ---------- Spell icons (original simple designs) ---------- */
+const svg = (body, title) => `<svg class="ico" viewBox="0 0 24 24" role="img" aria-label="${title}"><title>${title}</title>${body}</svg>`;
+const ICONS = {
+  concentration: svg('<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16.3" text-anchor="middle" font-size="12" font-weight="700" font-family="system-ui,sans-serif" fill="currentColor">C</text>', 'Concentration'),
+  ritual: svg('<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16.3" text-anchor="middle" font-size="12" font-weight="700" font-family="system-ui,sans-serif" fill="currentColor">R</text>', 'Ritual'),
+  sphere: svg('<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="3.2" fill="none" stroke="currentColor" stroke-width="1.5"/>', 'Sphere'),
+  cone: svg('<path d="M3 12 L20 4.5 A9.5 9.5 0 0 1 20 19.5 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="3" cy="12" r="1.6" fill="currentColor"/>', 'Cone'),
+  cube: svg('<path d="M12 2.5 L20.5 7 V17 L12 21.5 L3.5 17 V7 Z M3.5 7 L12 11.5 L20.5 7 M12 11.5 V21.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>', 'Cube'),
+  cylinder: svg('<ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 6 V18 A8 3 0 0 0 20 18 V6" fill="none" stroke="currentColor" stroke-width="1.8"/>', 'Cylinder'),
+  line: svg('<rect x="2" y="9.5" width="17" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19 7 L23 12 L19 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>', 'Line'),
+  emanation: svg('<circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2.5"/>', 'Emanation'),
+  wall: svg('<rect x="2" y="6" width="20" height="12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 12 H22 M8 6 V12 M16 6 V12 M12 12 V18 M5 12 V18 M19 12 V18" stroke="currentColor" stroke-width="1.3"/>', 'Wall'),
+};
+
+/** Area of effect from the Range field or the description: { size, shape } or null. */
+function spellArea(e) {
+  const hay = (e.fields.Range || '') + ' ' + (e.fields['Damage/Effect'] || '') + ' ' + e.text;
+  let m = /(\d+)(?:-foot|-ft\.?|\s*ft\.?|\s*feet)((?:[- ](?:radius|long|wide|tall|high|diameter|square|thick))*)\s+(sphere|cone|cube|cylinder|line|emanation|wall)\b/i.exec(hay);
+  if (m) return { size: `${m[1]}-ft${m[2] ? m[2].replace(/^[- ]/, ' ').replace(/-/g, ' ') : ''}`, shape: m[3].toLowerCase() };
+  m = /\b(Sphere|Cone|Cube|Cylinder|Line|Emanation|Wall)\b/.exec(hay);
+  return m ? { size: '', shape: m[1].toLowerCase() } : null;
+}
+
+/** Concentration / ritual icons for a spell (used beside the name in rows and the detail heading). */
+function spellIcons(e) {
+  if (e.type !== 'spell') return '';
+  return (e.fields.Concentration ? `<span class="ico-wrap conc" title="Concentration">${ICONS.concentration}</span>` : '')
+    + (e.fields.Ritual ? `<span class="ico-wrap rit" title="Ritual">${ICONS.ritual}</span>` : '');
+}
+
 function renderSections(sections) {
   return sections.map((s) => `<h3>${esc(s.heading)}</h3>` + formatText(s.intro)
     + s.items.map((it) => {
@@ -2113,7 +2254,7 @@ function renderSections(sections) {
 
 function card(label, value, wide = false) {
   if (!value) return '';
-  return `<div class="card${wide ? ' wide' : ''}"><div class="card-l">${esc(label)}</div><div class="card-v">${Linker.html(value).replace(/\n/g, '<br>')}</div></div>`;
+  return `<div class="card${wide ? ' wide' : ''}"><div class="card-l">${esc(label)}</div><div class="card-v">${rich(value).replace(/\n/g, '<br>')}</div></div>`;
 }
 /** Fields as a grid of cards; long values span the full width. */
 function renderCards(fields, skip = []) {
@@ -2134,26 +2275,33 @@ const Renderers = {
   spell(e) {
     const f = e.fields;
     const cast = CAST_ABBR[fold(f['Casting Time'] || '').trim()] || f['Casting Time'];
-    let html = '<div class="cards four">' + card('Casting Time', cast || '-') + card('Range', f.Range || '-')
-      + card('Components', f.Components || '-') + card('Duration', f.Duration || '-') + '</div>';
+    const area = spellArea(e);
+    const rangeHtml = rich(f.Range || '-') + (area ? `<div class="area">${ICONS[area.shape]} ${esc(area.size ? area.size + ' ' : '')}${esc(cap(area.shape))}</div>` : '');
+    const durHtml = (f.Concentration ? `<span class="ico-wrap conc">${ICONS.concentration}</span> ` : '') + rich(f.Duration || '-');
+    const raw = (label, html) => `<div class="card"><div class="card-l">${esc(label)}</div><div class="card-v">${html}</div></div>`;
+    let html = '<div class="cards four">' + card('Casting Time', cast || '-') + raw('Range / Area', rangeHtml)
+      + card('Components', f.Components || '-') + raw('Duration', durHtml) + '</div>';
     const fx = card('Attack / Save', f['Attack/Save']) + card('Effect', f['Damage/Effect']);
     if (fx) html += `<div class="cards fit">${fx}</div>`;
     html += renderCards(f, ['Casting Time', 'Range', 'Components', 'Duration', 'Attack/Save', 'Damage/Effect',
       'Level', 'School', 'Classes', 'Concentration', 'Ritual', 'At Higher Levels']);
     html += formatText(e.text) + renderSections(e.sections);
     if (f['At Higher Levels']) {
-      html += `<div class="higher"><b><i>${lvlNum(e) === 0 ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${Linker.html(f['At Higher Levels']).replace(/\n/g, '<br>')}</div>`;
+      html += `<div class="higher"><b><i>${lvlNum(e) === 0 ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${rich(f['At Higher Levels']).replace(/\n/g, '<br>')}</div>`;
     }
     return html;
   },
   monster(e) {
     const f = e.fields;
-    const top = ['AC', 'Initiative', 'HP', 'Speed'];
-    const topFields = Object.fromEntries(top.filter((k) => f[k]).map((k) => [k, f[k]]));
-    return '<div class="statblock">'
-      + renderKV(topFields) + renderAbilities(e.abilities)
-      + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment'])
-      + formatText(e.text) + renderSections(e.sections) + '</div>';
+    const top = ['AC', 'Initiative', 'HP', 'Speed', 'CR'];
+    Fmt.sb = HIGHLIGHT_TYPES.has(e.type);
+    try {
+      const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k}</div><div class="sb-v">${rich(k === 'Speed' ? f[k] : f[k])}</div></div>`).join('');
+      return '<div class="statblock">'
+        + (boxes ? `<div class="sb-top">${boxes}</div>` : '') + renderAbilities(e.abilities)
+        + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment'])
+        + formatText(e.text) + renderSections(e.sections) + '</div>';
+    } finally { Fmt.sb = false; }
   },
   class(e) {
     // Subclasses are linked by their "Class" field matching this class's name.
@@ -2203,8 +2351,7 @@ function headChips(e, hue) {
       const ce = findClassEntry(c.trim());
       chips.push([c.trim(), hue, ce ? `data-open="${esc(ce.id)}"` : '']);
     }
-    if (e.fields.Concentration) chips.push(['Concentration', 40]);
-    if (e.fields.Ritual) chips.push(['Ritual', 160]);
+    // Concentration / Ritual are shown as icons beside the name and in the Duration box.
   }
   if (e.type === 'sage-advice') {
     for (const id of Linker.mentions(e)) {
@@ -2392,12 +2539,22 @@ function backlinksOf(e) {
 }
 
 function renderBacklinks(e) {
-  const refs = backlinksOf(e);
-  if (!refs.length) return '';
+  const all = backlinksOf(e);
+  if (!all.length) return '';
+  const rulings = all.filter((r) => r.type === 'sage-advice');
+  const refs = all.filter((r) => r.type !== 'sage-advice');
+  // Sage Advice gets its own box first: the question plus the start of the answer.
+  const sageBox = rulings.length ? `<section class="sage-box"><h3>💬\uFE0E Sage Advice (${rulings.length})</h3>`
+    + rulings.map((r) => `<div class="sage-item" data-open="${esc(r.id)}" data-peek role="link" tabindex="0">
+        <div class="sage-q">Q. ${esc(r.name)}</div>
+        <div class="sage-a">A. ${esc(r.text.slice(0, 220))}${r.text.length > 220 ? '…' : ''}</div>
+        ${r.fields.Topic || r.source ? `<div class="hint">${esc([r.fields.Topic, r.source].filter(Boolean).join(' · '))}</div>` : ''}</div>`).join('')
+    + '</section>' : '';
+  if (!refs.length) return sageBox;
   const groups = new Map();
   for (const r of refs) { let g = groups.get(r.type); if (!g) groups.set(r.type, (g = [])); g.push(r); }
-  const order = [...groups.keys()].sort((a, b) => (a === 'sage-advice' ? -1 : b === 'sage-advice' ? 1 : App.typeOrder(a) - App.typeOrder(b)));
-  return `<h3>Referenced in (${refs.length})</h3>` + order.map((t) => {
+  const order = [...groups.keys()].sort((a, b) => App.typeOrder(a) - App.typeOrder(b));
+  return sageBox + `<h3>Referenced in (${refs.length})</h3>` + order.map((t) => {
     const list = groups.get(t).sort((a, b) => a.name.localeCompare(b.name));
     const open = t === 'sage-advice' || list.length <= 8 ? 'open' : '';
     return `<details class="refs" ${open}><summary>${esc(Types.get(t).label)} (${list.length})</summary>
@@ -2918,7 +3075,7 @@ const App = {
     el.innerHTML = `
       <div class="d-top">${prev ? `<button class="nav-back" data-act="nav-back" title="Back (Alt+←)">← ${esc(prev.name)}</button>` : ''}<button class="back-btn" data-act="back">☰ List</button></div>
       <div class="d-head">
-        <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}</h2>
+        <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}${spellIcons(e)}</h2>
         <button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
       </div>
       <div class="d-sub" style="--h:${t.hue}">${esc(subtitleOf(e) || t.label)}</div>
@@ -2944,13 +3101,19 @@ const App = {
   },
 };
 
+function rowAreaIcon(e) {
+  if (e.type !== 'spell') return '';
+  const a = spellArea(e);
+  return a ? `<span class="ico-wrap area-i" title="${esc(cap(a.shape))}">${ICONS[a.shape]}</span>` : '';
+}
+
 /** One result row. `i` is its row index (for the keyboard cursor); showType adds a category badge. */
 function rowHtml(e, i, style = '', showType = false) {
   const chip = rowChip(e);
   const cls = 'row' + (i >= 0 && i === App.cursor ? ' cur' : '') + (e.id === App.currentId ? ' open' : '');
   const chipHtml = chip ? `<span class="chip"${chip.h != null ? ` style="--h:${chip.h}"` : ''}>${esc(chip.t)}</span>` : '';
   return `<div class="${cls}" data-id="${esc(e.id)}"${style ? ` style="${style}"` : ''}>
-    ${chipHtml}<div class="t"><div class="n">${highlight(e.name, App.query)}</div><div class="s">${esc(rowMeta(e))}</div></div>
+    ${chipHtml}<div class="t"><div class="n">${highlight(e.name, App.query)}${spellIcons(e)}</div><div class="s">${rowAreaIcon(e)}${esc(rowMeta(e))}</div></div>
     ${showType ? Types.badge(e.type) : ''}
     <button class="star ${e.fav ? 'on' : ''}" data-act="fav" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></div>`;
 }

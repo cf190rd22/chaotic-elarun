@@ -98,6 +98,10 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .chipb.link { cursor: pointer; }
 .chipb.link:hover { filter: brightness(1.15); text-decoration: underline; }
 .tagline { font-style: italic; color: var(--muted); margin: -4px 0 10px; }
+.paste-src { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; align-items: center; margin: 4px 0 8px; }
+.paste-src > label:first-child { font-weight: 600; font-size: 13px; }
+.paste-src input[type="text"], .paste-src #pasteSource { min-width: 0; }
+.paste-src .hint { grid-column: 2; }
 .pc-fields { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .pc-fields label { display: flex; gap: 4px; align-items: center; font-size: 12px; color: var(--muted); }
 .pc-fields input { font-size: 13px; padding: 2px 6px; }
@@ -347,6 +351,11 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
             <select id="exampleSel"><option value="">Try an example paste…</option></select>
             <label class="hint"><input type="checkbox" id="forceSingle"> Treat as one entry</label>
           </div>
+          <div class="paste-src">
+            <label for="pasteSource">Source for this paste</label>
+            <input id="pasteSource" list="sourceList" autocomplete="off" placeholder="Pick an existing book or type a new one">
+            <label class="hint"><input type="checkbox" id="pasteSourceAll"> Also replace sources found in the text</label>
+          </div>
           <textarea id="pasteBox" spellcheck="false" placeholder="Paste text copied from D&amp;D Beyond (spells, stat blocks, classes, subclasses, items, feats, species, backgrounds, rules)…&#10;&#10;Multiple entries are detected automatically. To force a split, put a line containing only --- between entries."></textarea>
           <div class="ctl-row">
             <button id="parseBtn" class="primary">Parse</button>
@@ -358,7 +367,6 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
           <div id="previewHead" class="hint">Parsed entries will appear here for review before anything is saved.</div>
           <div id="bulkBar" class="ctl-row" hidden>
             <label class="hint">Class for all subclasses <input id="bulkClass" list="classList" placeholder="e.g. Warlock" size="12"></label>
-            <label class="hint">Source where missing <input id="bulkSource" list="sourceList" placeholder="e.g. Player’s Handbook" size="16"></label>
             <button id="bulkApply">Apply</button>
           </div>
           <datalist id="sourceList"></datalist>
@@ -3152,7 +3160,8 @@ const Importer = {
     if (!text.trim()) { this.candidates = []; this.render(); return; }
     const t0 = performance.now();
     this.candidates = Parsers.parseText(text, { forceSingle: $('#forceSingle').checked, forceType: $('#importAs').value })
-      .map((c) => this.decorate(c));
+      .map((c) => ({ ...c, detectedSource: c.entry.source }));
+    this.applyPasteSource(false);
     this.render(performance.now() - t0);
   },
 
@@ -3169,15 +3178,38 @@ const Importer = {
     return { include: true, dup: 'replace', showPreview: false, ...prev, ...c, dupId };
   },
 
-  /** Bulk-apply the parent class (subclasses) and a source (entries without one). */
+  /** Bulk-apply the parent class to every subclass in the preview. */
   applyBulk() {
-    const cls = $('#bulkClass').value.trim(), src = $('#bulkSource').value.trim();
+    const cls = $('#bulkClass').value.trim();
     for (const c of this.candidates) {
       if (cls && c.entry.type === 'subclass') c.entry.fields.Class = cls;
-      if (src && !c.entry.source) c.entry.source = src;
       this.recheck(c);
     }
     this.render();
+  },
+
+  /** Use an existing source's spelling when the typed one matches it ("players handbook" -> "Player’s Handbook"). */
+  canonicalSource(src) {
+    const k = fold(src).replace(/[^a-z0-9]+/g, ' ').trim();
+    if (!k) return '';
+    return App.sourceNames().find((x) => fold(x).replace(/[^a-z0-9]+/g, ' ').trim() === k) || src.trim();
+  },
+
+  /**
+   * "Source for this paste": fills entries with no detected source, or all of them
+   * when "Also replace sources found in the text" is ticked. Sources typed on an
+   * individual card are left alone.
+   */
+  applyPasteSource(rerender = true) {
+    const src = this.canonicalSource($('#pasteSource').value);
+    const all = $('#pasteSourceAll').checked;
+    for (const c of this.candidates) {
+      if (c.manualSource) continue;
+      c.entry.source = src && (all || !c.detectedSource) ? src : (c.detectedSource || '');
+      this.recheck(c);
+    }
+    this.candidates = this.candidates.map((c) => this.decorate(c, c)); // duplicate check depends on source
+    if (rerender) this.render();
   },
 
   /** Drop "not detected" warnings once the user has filled the field in. */
@@ -3191,7 +3223,7 @@ const Importer = {
     $('#previewHead').innerHTML = n
       ? `<b>${n}</b> entr${n === 1 ? 'y' : 'ies'} detected${ms !== undefined ? ` in ${ms.toFixed(0)} ms` : ''}. Check the category, name, class and source, open “Edit fields” to fix anything, then save.`
       : 'Parsed entries will appear here for review before anything is saved.';
-    $('#bulkBar').hidden = n < 2;
+    $('#bulkBar').hidden = !this.candidates.some((c) => c.entry.type === 'subclass');
     const typeOpts = (sel) => Types.list.map((t) => `<option value="${esc(t.key)}" ${t.key === sel ? 'selected' : ''}>${esc(t.label)}</option>`).join('');
     list.innerHTML = this.candidates.map((c, i) => {
       const e = c.entry;
@@ -3235,7 +3267,7 @@ const Importer = {
       if (act === 'inc') { c.include = ev.target.checked; card.classList.toggle('off', !c.include); $('#saveParsedBtn').disabled = !this.candidates.some((x) => x.include); }
       else if (act === 'name') c.entry.name = ev.target.value;
       else if (act === 'cls') { c.entry.fields.Class = ev.target.value.trim(); if (ev.type === 'change') { this.recheck(c); this.render(); } }
-      else if (act === 'src') { c.entry.source = ev.target.value.trim(); if (ev.type === 'change') { this.recheck(c); this.candidates[i] = this.decorate(c, c); this.render(); } }
+      else if (act === 'src') { c.entry.source = ev.target.value.trim(); c.manualSource = true; if (ev.type === 'change') { this.recheck(c); this.candidates[i] = this.decorate(c, c); this.render(); } }
       else if (act === 'dup') c.dup = ev.target.value;
       else if (act === 'type') {
         // Re-run the matching layout parser on the original lines (or keep text under the new category).
@@ -3495,6 +3527,9 @@ function wireEvents() {
   $('#previewList').addEventListener('change', (e) => Importer.onAction(e));
   $('#previewList').addEventListener('input', (e) => { if (['name', 'cls', 'src'].includes(e.target.dataset.act)) Importer.onAction(e); });
   $('#bulkApply').addEventListener('click', () => Importer.applyBulk());
+  $('#pasteSource').addEventListener('change', (e) => { e.target.value = Importer.canonicalSource(e.target.value); Importer.applyPasteSource(); });
+  $('#pasteSource').addEventListener('input', () => { clearTimeout(Importer.srcTimer); Importer.srcTimer = setTimeout(() => Importer.applyPasteSource(), 250); });
+  $('#pasteSourceAll').addEventListener('change', () => Importer.applyPasteSource());
   $('#importAs').addEventListener('change', () => Importer.parse());
   $('#saveParsedBtn').addEventListener('click', () => Importer.save());
   $('#exampleSel').addEventListener('change', (e) => {

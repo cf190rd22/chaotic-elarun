@@ -75,10 +75,19 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "brand search actions";
   gap: 10px; align-items: center; padding: 8px 12px 4px;
 }
-.brand { grid-area: brand; font: 600 18px var(--serif); margin: 0; white-space: nowrap; color: var(--accent); }
+.brand { grid-area: brand; margin: 0; white-space: nowrap; font-size: inherit; }
+#homeBtn {
+  display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 6px; margin-left: -6px;
+  font: 700 18px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: -.01em; color: var(--text);
+}
+#homeBtn:hover { background: var(--hover); }
+#homeBtn .logo { width: 26px; height: 26px; color: var(--accent); --logo-line: var(--panel); }
 .search-wrap { grid-area: search; min-width: 0; max-width: 760px; }
 #q { width: 100%; padding: 9px 12px; font-size: 16px; }
 .actions { grid-area: actions; display: flex; gap: 6px; }
+.actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; min-width: 40px; font-weight: 600; }
+.ui-ico { width: 20px; height: 20px; flex: none; }
+#resultMeta .ui-ico { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
 .tabs { display: flex; align-items: stretch; height: 40px; gap: 2px; overflow-x: auto; padding: 0 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
@@ -90,7 +99,7 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
 .tab .count { font-size: 11px; margin-left: 5px; opacity: .8; }
 .tab.zero { opacity: .45; }
-.src-sel { max-width: 180px; font-size: 12px; padding: 2px 4px; }
+.src-sel { max-width: 190px; font-size: 13px; padding: 4px 6px; }
 #resultMeta .rm-right { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 .src-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .src-list button { font-size: 13px; padding: 3px 10px; border-radius: 14px; }
@@ -136,12 +145,12 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .icon-prev { font-size: 22px; color: var(--accent); display: inline-flex; }
 .icon-row textarea { font-size: 11px; }
 .ico-wrap { display: inline-flex; align-items: center; margin-left: .3em; color: var(--accent); }
-.ico-wrap.conc { color: hsl(40 85% var(--hl-l)); }
-.ico-wrap.rit { color: hsl(160 55% var(--hl-l)); }
-.d-head h2 .ico-wrap { font-size: .7em; vertical-align: .15em; }
-.row .n .ico-wrap { font-size: .85em; }
+.ico-wrap.conc { color: hsl(42 95% 55%); }
+.ico-wrap.rit { color: hsl(165 60% 50%); }
+.d-head h2 .ico-wrap { font-size: .8em; vertical-align: .1em; }
+.row .n .ico-wrap { font-size: 1.15em; vertical-align: -1px; }
 .row .s .area-i { margin: 0 .3em 0 0; color: var(--muted); }
-.card-v .ico-wrap.conc { margin: 0 .15em 0 0; }
+.card-v .ico-wrap.conc { margin: 0 .2em 0 0; font-size: 1.15em; vertical-align: -2px; }
 .area { display: flex; align-items: center; gap: .35em; margin-top: 3px; font-weight: 600; color: var(--accent); }
 .area .ico { width: 1.3em; height: 1.3em; }
 /* Sage Advice box */
@@ -167,8 +176,8 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 .toc a:hover { border-color: var(--accent); color: var(--accent); }
 .toc .lvl { font-size: 10.5px; min-width: 0; padding: 0 4px; margin-right: 4px; }
 .facet-bar { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: flex-end; padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel-2); }
-.facet-bar label { display: flex; flex-direction: column; font-size: 11px; color: var(--muted); gap: 2px; }
-.facet-bar select { font-size: 12.5px; padding: 3px 4px; max-width: 170px; }
+.facet-bar label { display: flex; flex-direction: column; font-size: 12.5px; font-weight: 600; color: var(--text); gap: 3px; }
+.facet-bar select { font-size: 14px; padding: 5px 6px; max-width: 190px; }
 .facet-bar button { font-size: 12px; padding: 3px 8px; }
 #resultMeta button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
 a.xref.local { text-decoration-style: dashed; }
@@ -201,7 +210,7 @@ details.refs > summary { font-weight: 600; margin: 6px 0; }
   font-size: 13px; color: var(--muted); padding: 4px 10px; border-bottom: 1px solid var(--border);
 }
 #resultMeta b { color: var(--text); }
-#resultMeta button { font-size: 12px; padding: 2px 8px; }
+#resultMeta button { font-size: 13px; padding: 4px 10px; font-weight: 600; }
 #suggest { padding: 10px 12px; margin: 8px 10px 0; border: 1px solid var(--border); border-radius: 8px; background: var(--panel-2); }
 #suggest a { color: var(--accent); }
 #home { flex: 1; overflow: auto; padding: 12px; }
@@ -383,15 +392,15 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
      ===================================================================== -->
 <header class="topbar">
   <div class="bar-row">
-    <h1 class="brand">⚔ D&amp;D Reference</h1>
+    <h1 class="brand"><button id="homeBtn" title="Back to the main search" aria-label="D&amp;D Reference: back to the main search"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5 21.5 7v10L12 22.5 2.5 17V7Z" fill="currentColor"/><path d="M12 5.2 17.6 15H6.4Z M12 5.2 6.4 15 2.5 7M12 5.2 17.6 15 21.5 7M6.4 15 12 22.5 17.6 15M2.5 17 6.4 15M21.5 17 17.6 15" fill="none" stroke="var(--logo-line)" stroke-width="1.2" stroke-linejoin="round"/></svg><span>D&amp;D Reference</span></button></h1>
     <div class="search-wrap">
       <input id="q" type="search" placeholder="Search everything…" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search" enterkeyhint="search">
     </div>
     <div class="actions">
-      <button id="importBtn" title="Paste text from D&amp;D Beyond or import JSON" aria-label="Import">⇩ <span class="lbl">Import</span></button>
-      <button id="newBtn" title="Create a new entry" aria-label="New entry">＋ <span class="lbl">New</span></button>
-      <button id="settingsBtn" class="icon-btn" title="Settings, export &amp; GitHub backup" aria-label="Settings">⚙</button>
-      <button id="themeBtn" class="icon-btn" title="Toggle dark / light" aria-label="Toggle theme">◐</button>
+      <button id="importBtn" title="Paste text from D&amp;D Beyond or import JSON" aria-label="Import"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span class="lbl">Import</span></button>
+      <button id="newBtn" title="Create a new entry" aria-label="New entry"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">New</span></button>
+      <button id="settingsBtn" class="icon-btn" title="Settings, export &amp; GitHub backup" aria-label="Settings"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
+      <button id="themeBtn" class="icon-btn" title="Toggle dark / light" aria-label="Toggle theme"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
     </div>
   </div>
   <nav id="tabs" class="tabs" role="tablist" aria-label="Categories"></nav>
@@ -2343,7 +2352,7 @@ function modBoxes(v) {
    they're recognisable at a glance. Any icon can be replaced in Settings →
    Icons by pasting SVG markup; overrides are stored locally. */
 const svg = (body, title) => `<svg class="ico" viewBox="0 0 24 24" role="img" aria-label="${title}"><title>${title}</title>${body}</svg>`;
-const badge = (letter, title) => svg(`<path d="M12 1.2 22.8 12 12 22.8 1.2 12Z" fill="currentColor"/><text x="12" y="16.4" text-anchor="middle" font-size="11.5" font-weight="800" font-family="system-ui,sans-serif" fill="#fff">${letter}</text>`, title);
+const badge = (letter, title) => svg(`<path d="M12 .8 23.2 12 12 23.2 .8 12Z" fill="currentColor"/><text x="12" y="17.2" text-anchor="middle" font-size="14" font-weight="900" font-family="system-ui,-apple-system,sans-serif" fill="#111">${letter}</text>`, title);
 const DEFAULT_ICONS = {
   concentration: badge('C', 'Concentration'),
   ritual: badge('R', 'Ritual'),
@@ -3152,6 +3161,21 @@ const App = {
     if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   },
 
+  /** Top-left logo: back to the main search page from anywhere. */
+  goHome() {
+    this.query = '';
+    $('#q').value = '';
+    this.source = '';
+    this.facetOpen = false;
+    this.backStack = [];
+    document.body.classList.remove('show-detail');
+    setUrlHash('');
+    for (const d of $$('dialog[open]')) { if (d.id === 'editDlg') Editor.finish(null); else d.close(); }
+    this.setTab('');
+    $('#home').scrollTop = 0;
+    if (this.isWide()) this.showDetail(null);
+  },
+
   cycleTab(delta) {
     const keys = ['', 'fav', ...Types.list.map((t) => t.key)];
     const i = keys.indexOf(this.tab);
@@ -3245,7 +3269,7 @@ const App = {
     const sortOpts = Object.entries(SORTS).filter(([, v]) => !v.types || v.types.includes(this.tab));
     html += `<select class="src-sel" data-act="sort" aria-label="Sort">${sortOpts.map(([k, v]) => `<option value="${k}" ${k === vs.sort ? 'selected' : ''}>Sort: ${esc(v.label)}</option>`).join('')}</select>`;
     const nf = this.activeFilterCount();
-    html += `<button data-act="filters" class="${nf ? 'on' : ''}" aria-expanded="${this.facetOpen}">⚲ Filters${nf ? ` (${nf})` : ''}</button>`;
+    html += `<button data-act="filters" class="${nf ? 'on' : ''}" aria-expanded="${this.facetOpen}"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg>Filters${nf ? ` (${nf})` : ''}</button>`;
     this.renderFacets();
     const heads = this.rows.filter((r) => r.k === 'h');
     if (heads.length > 1) {
@@ -3971,6 +3995,7 @@ function wireEvents() {
   });
 
   $('#themeBtn').addEventListener('click', () => Theme.toggle());
+  $('#homeBtn').addEventListener('click', () => App.goHome());
   $('#importBtn').addEventListener('click', () => Importer.open());
   $('#settingsBtn').addEventListener('click', () => Settings.open());
   $('#newBtn').addEventListener('click', async () => {

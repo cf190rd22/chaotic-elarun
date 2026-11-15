@@ -209,6 +209,26 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 /* features separated by a rule */
 .feat + .feat { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 4px; }
 .feat h4 { margin-top: 10px; }
+/* results bar: one line */
+#resultMeta { flex-wrap: nowrap; }
+#resultMeta .rm-count { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#resultMeta .rm-right { flex: none; flex-wrap: nowrap; gap: 5px; }
+#resultMeta .src-sel[data-act="sort"] { max-width: 128px; }
+#resultMeta .icon-btn { padding: 3px 8px; font-size: 15px; line-height: 1; }
+/* tables: short cells stay on one line; resizable columns */
+table.data td.nw, table.data th.nw { white-space: nowrap; }
+table.data th { position: relative; }
+table.resized td, table.resized th { white-space: normal !important; overflow-wrap: anywhere; }
+.col-resize { position: absolute; top: 0; right: -5px; width: 10px; height: 100%; cursor: col-resize; touch-action: none; z-index: 2; }
+.col-resize::after { content: ''; position: absolute; top: 20%; bottom: 20%; left: 4px; width: 2px; border-radius: 1px; background: var(--border); }
+.col-resize:hover::after, .col-resize.active::after { background: var(--accent); top: 0; bottom: 0; }
+th:last-child > .col-resize { right: 0; }
+@media (max-width: 720px) {
+  table.data { font-size: 13px; }
+  table.data th, table.data td { padding: 4px 6px; }
+  .col-resize { width: 16px; right: -8px; }
+  .col-resize::after { left: 7px; }
+}
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -2387,8 +2407,8 @@ function formatText(text, { plainFirst = false } = {}) {
   const flush = () => {
     if (tbl.length) {
       const [head, ...rows] = tbl;
-      out.push('<div class="tbl-wrap"><table class="data"><thead><tr>' + head.map((c) => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>'
-        + rows.map((r) => '<tr>' + r.map((c) => `<td>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
+      out.push('<div class="tbl-wrap"><table class="data"><thead><tr>' + head.map((c) => `<th${tdClass(c)}>${esc(c)}</th>`).join('') + '</tr></thead><tbody>'
+        + rows.map((r) => '<tr>' + r.map((c) => `<td${tdClass(c)}>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
       tbl = [];
     }
     if (list.length) { out.push('<ul>' + list.map((l) => `<li>${inline(l)}</li>`).join('') + '</ul>'); list = []; }
@@ -2422,11 +2442,73 @@ function renderKV(fields, skip = []) {
   if (!rows.length) return '';
   return '<dl class="facts">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : rich(v, { allTypes: /resist|immun|vulnerab/i.test(k) })).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
 }
+/** Short cells ("01–50", "+2", "3rd") never wrap; long ones flow. */
+const tdClass = (c) => (String(c).length <= 12 ? ' class="nw"' : '');
 function renderTable(t) {
   if (!t || !t.headers.length) return '';
-  return '<div class="tbl-wrap"><table class="data"><thead><tr>' + t.headers.map((h) => `<th>${esc(h)}</th>`).join('') + '</tr></thead><tbody>'
-    + t.rows.map((r) => '<tr>' + r.map((c) => `<td>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+  return '<div class="tbl-wrap"><table class="data"><thead><tr>' + t.headers.map((h) => `<th${tdClass(h)}>${esc(h)}</th>`).join('') + '</tr></thead><tbody>'
+    + t.rows.map((r) => '<tr>' + r.map((c) => `<td${tdClass(c)}>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
 }
+
+/**
+ * Drag-to-resize table columns (mouse or touch). Widths are remembered per
+ * entry and table; double-click a handle to reset that table.
+ */
+const Tables = {
+  key: (entryId, i) => `dndref.cols.${entryId}.${i}`,
+  enhance(root, entryId) {
+    $$('table.data', root).forEach((t, i) => {
+      const ths = $$('thead th', t);
+      if (!ths.length) return;
+      t.dataset.tkey = this.key(entryId, i);
+      ths.forEach((th, ci) => {
+        const h = document.createElement('span');
+        h.className = 'col-resize';
+        h.dataset.ci = ci;
+        h.title = 'Drag to resize · double-click to reset';
+        th.appendChild(h);
+      });
+      try { const saved = JSON.parse(safeLocal.get(t.dataset.tkey) || 'null'); if (saved) this.apply(t, saved); } catch { /* ignore */ }
+    });
+  },
+  widths: (t) => $$('thead th', t).map((th) => th.getBoundingClientRect().width),
+  apply(t, widths) {
+    const ths = $$('thead th', t);
+    if (widths.length !== ths.length) return;
+    t.classList.add('resized');
+    t.style.tableLayout = 'fixed';
+    t.style.width = widths.reduce((a, b) => a + b, 0) + 'px';
+    ths.forEach((th, i) => { th.style.width = widths[i] + 'px'; });
+  },
+  reset(t) {
+    t.classList.remove('resized');
+    t.style.tableLayout = t.style.width = '';
+    $$('thead th', t).forEach((th) => { th.style.width = ''; });
+    safeLocal.remove(t.dataset.tkey);
+  },
+  start(ev) {
+    const h = ev.target.closest('.col-resize');
+    if (!h) return;
+    ev.preventDefault();
+    const t = h.closest('table'), ci = +h.dataset.ci;
+    const widths = this.widths(t);
+    this.apply(t, widths);
+    const x0 = ev.clientX, w0 = widths[ci];
+    h.classList.add('active');
+    try { h.setPointerCapture(ev.pointerId); } catch { /* ignore */ }
+    const move = (e) => { widths[ci] = Math.max(36, w0 + e.clientX - x0); this.apply(t, widths); };
+    const up = () => {
+      h.classList.remove('active');
+      h.removeEventListener('pointermove', move);
+      h.removeEventListener('pointerup', up);
+      h.removeEventListener('pointercancel', up);
+      safeLocal.set(t.dataset.tkey, JSON.stringify(widths.map(Math.round)));
+    };
+    h.addEventListener('pointermove', move);
+    h.addEventListener('pointerup', up);
+    h.addEventListener('pointercancel', up);
+  },
+};
 /* ---------- Stat-block emphasis and game-term capitalisation ----------
    Applied at display time only (stored text is untouched). Fmt.sb is switched on
    while a stat block renders; set HIGHLIGHT_TYPES to use it for other categories. */
@@ -3253,7 +3335,7 @@ const App = {
     await Store.deleteEntries(ids);
     for (const id of ids) { this.entries.delete(id); this.index.remove(id); }
     Linker.invalidate();
-    this.backStack = this.backStack.filter((x) => !ids.includes(x));
+    this.backStack = this.backStack.filter((x) => !ids.includes(x.id));
     if (ids.includes(this.currentId)) this.currentId = null;
     this.refresh();
   },
@@ -3461,17 +3543,17 @@ const App = {
     sg.hidden = true;
     if (this.isHome()) { el.innerHTML = `<span>${this.entries.size.toLocaleString()} entries</span>`; $('#facetBar').hidden = true; return; }
     const n = this.ids.length, q = this.activeQuery().trim();
-    let html = `<span>${n.toLocaleString()} result${n === 1 ? '' : 's'}${q ? ` for “<b>${esc(q)}</b>”` : ''} · ${this.lastMs.toFixed(1)} ms</span><span class="rm-right">`;
+    let html = `<span class="rm-count" title="${this.lastMs.toFixed(1)} ms">${n.toLocaleString()} result${n === 1 ? '' : 's'}${q ? ` for “<b>${esc(q)}</b>”` : ''}</span><span class="rm-right">`;
     const vs = this.viewState();
     const sortOpts = Object.entries(SORTS).filter(([, v]) => !v.types || v.types.includes(this.tab));
-    html += `<select class="src-sel" data-act="sort" aria-label="Sort">${sortOpts.map(([k, v]) => `<option value="${k}" ${k === vs.sort ? 'selected' : ''}>Sort: ${esc(v.label)}</option>`).join('')}</select>`;
+    html += `<select class="src-sel" data-act="sort" aria-label="Sort">${sortOpts.map(([k, v]) => `<option value="${k}" ${k === vs.sort ? 'selected' : ''}>${k === 'default' ? 'Default order' : esc(v.label)}</option>`).join('')}</select>`;
     const nf = this.activeFilterCount();
     html += `<button data-act="filters" class="${nf ? 'on' : ''}" aria-expanded="${this.facetOpen}"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg>Filters${nf ? ` (${nf})` : ''}</button>`;
     this.renderFacets();
     const heads = this.rows.filter((r) => r.k === 'h');
     if (heads.length > 1) {
       const allCollapsed = heads.every((r) => this.collapsed.has(r.key));
-      html += `<button data-act="toggle-all">${allCollapsed ? '⊞ Expand all' : '⊟ Collapse all'}</button>`;
+      html += `<button data-act="toggle-all" class="icon-btn" title="${allCollapsed ? 'Expand all groups' : 'Collapse all groups'}" aria-label="${allCollapsed ? 'Expand all groups' : 'Collapse all groups'}">${allCollapsed ? '⊞' : '⊟'}</button>`;
     }
     el.innerHTML = html + '</span>';
     // "Did you mean" only when nothing matched: beside real hits it is just noise.
@@ -3616,7 +3698,11 @@ const App = {
   /** Follow a link from one entry to another; "← Back" returns. Browser back works too where allowed. */
   navigate(id) {
     if (!this.entries.has(id) || id === this.currentId) return;
-    if (this.currentId) this.backStack.push(this.currentId);
+    const scroll = $('#detail').scrollTop;
+    if (this.currentId) {
+      this.backStack.push({ id: this.currentId, scroll }); // remember exactly where you were on the page
+      try { history.replaceState({ dndId: this.currentId, scroll }, '', location.hash || '#'); } catch { /* sandboxed */ }
+    }
     if (this.backStack.length > 100) this.backStack.shift();
     this.showDetail(id);
     document.body.classList.add('show-detail');
@@ -3625,11 +3711,20 @@ const App = {
 
   goBack() {
     while (this.backStack.length) {
-      const id = this.backStack.pop();
-      if (this.entries.has(id)) { this.showDetail(id); setUrlHash('#/e/' + encodeURIComponent(id)); return true; }
+      const { id, scroll } = this.backStack.pop();
+      if (this.entries.has(id)) { this.showDetail(id); this.restoreScroll(scroll); setUrlHash('#/e/' + encodeURIComponent(id)); return true; }
     }
     document.body.classList.remove('show-detail');
     return false;
+  },
+
+  /** Scroll the entry back to `y`; repeated once "Referenced in" has filled in below. */
+  restoreScroll(y) {
+    if (!y) return;
+    const el = $('#detail');
+    el.scrollTop = y;
+    requestAnimationFrame(() => { el.scrollTop = y; });
+    setTimeout(() => { el.scrollTop = y; }, 60);
   },
 
   /* ---------- detail ---------- */
@@ -3640,7 +3735,7 @@ const App = {
     this.currentId = id;
     const t = Types.get(e.type);
     Linker.begin(e.id, featureAnchors(e));
-    const prev = this.entries.get(this.backStack[this.backStack.length - 1]);
+    const prev = this.backStack.length ? this.entries.get(this.backStack[this.backStack.length - 1].id) : null;
     const findQ = Find.forId === id ? Find.q : '';
     el.innerHTML = `
       <div class="fip-bar">
@@ -3669,6 +3764,7 @@ const App = {
       ${e.raw ? `<div class="raw-box" hidden>${esc(e.raw)}</div>` : ''}
       <div class="d-refs" data-for="${esc(e.id)}"></div>`;
     if (!fromSearch) el.scrollTop = 0;
+    Tables.enhance(el, e.id);
     VList.paint(true);
     // Backlinks can touch many entries, so fill them in after the page has painted.
     setTimeout(() => {
@@ -4577,15 +4673,21 @@ function wireEvents() {
     else if (e.key === 'Escape') { e.stopPropagation(); if (e.target.value) { e.target.value = ''; Find.run(''); } else e.target.blur(); }
   });
 
+  // Resizable table columns
+  $('#detail').addEventListener('pointerdown', (e) => Tables.start(e));
+  $('#detail').addEventListener('dblclick', (e) => { const h = e.target.closest('.col-resize'); if (h) Tables.reset(h.closest('table')); });
+
   // Browser back after following links
   window.addEventListener('popstate', (ev) => {
     const id = ev.state && ev.state.dndId;
     const m = /^#\/e\/(.+)$/.exec(location.hash);
     const target = id || (m && decodeURIComponent(m[1]));
     if (target && App.entries.has(target)) {
-      if (App.backStack[App.backStack.length - 1] === target) App.backStack.pop();
+      const top = App.backStack[App.backStack.length - 1];
+      if (top && top.id === target) App.backStack.pop();
       App.showDetail(target);
       document.body.classList.add('show-detail');
+      App.restoreScroll((ev.state && ev.state.scroll) || (top && top.id === target ? top.scroll : 0));
     } else { App.backStack = []; document.body.classList.remove('show-detail'); }
   });
 

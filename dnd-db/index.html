@@ -132,6 +132,9 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .dmg-thunder { --dh: 265; --ds: 55%; } .dmg-bludgeoning, .dmg-piercing, .dmg-slashing { --dh: 25; --ds: 15%; }
 /* icons */
 .ico { width: 1em; height: 1em; vertical-align: -0.12em; }
+.icon-row { display: grid; grid-template-columns: 28px 110px 1fr auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+.icon-prev { font-size: 22px; color: var(--accent); display: inline-flex; }
+.icon-row textarea { font-size: 11px; }
 .ico-wrap { display: inline-flex; align-items: center; margin-left: .3em; color: var(--accent); }
 .ico-wrap.conc { color: hsl(40 85% var(--hl-l)); }
 .ico-wrap.rit { color: hsl(160 55% var(--hl-l)); }
@@ -489,6 +492,12 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
           <button id="clearDbBtn" class="danger">Delete all entries…</button>
         </div>
         <p class="hint" id="storageInfo"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Icons</legend>
+        <p class="hint">Paste SVG markup to replace an icon (e.g. one saved from a site you use). Stored only in this browser. Scripts and external links are stripped.</p>
+        <div id="iconAdmin"></div>
       </fieldset>
 
       <fieldset>
@@ -2214,19 +2223,45 @@ function modBoxes(v) {
   }).join('') + '</span>';
 }
 
-/* ---------- Spell icons (original simple designs) ---------- */
+/* ---------- Spell icons ----------
+   Drawn in the style of D&D Beyond's (filled glyphs, diamond C/R badges) so
+   they're recognisable at a glance. Any icon can be replaced in Settings →
+   Icons by pasting SVG markup; overrides are stored locally. */
 const svg = (body, title) => `<svg class="ico" viewBox="0 0 24 24" role="img" aria-label="${title}"><title>${title}</title>${body}</svg>`;
-const ICONS = {
-  concentration: svg('<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16.3" text-anchor="middle" font-size="12" font-weight="700" font-family="system-ui,sans-serif" fill="currentColor">C</text>', 'Concentration'),
-  ritual: svg('<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16.3" text-anchor="middle" font-size="12" font-weight="700" font-family="system-ui,sans-serif" fill="currentColor">R</text>', 'Ritual'),
-  sphere: svg('<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="3.2" fill="none" stroke="currentColor" stroke-width="1.5"/>', 'Sphere'),
-  cone: svg('<path d="M3 12 L20 4.5 A9.5 9.5 0 0 1 20 19.5 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="3" cy="12" r="1.6" fill="currentColor"/>', 'Cone'),
-  cube: svg('<path d="M12 2.5 L20.5 7 V17 L12 21.5 L3.5 17 V7 Z M3.5 7 L12 11.5 L20.5 7 M12 11.5 V21.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>', 'Cube'),
-  cylinder: svg('<ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 6 V18 A8 3 0 0 0 20 18 V6" fill="none" stroke="currentColor" stroke-width="1.8"/>', 'Cylinder'),
-  line: svg('<rect x="2" y="9.5" width="17" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19 7 L23 12 L19 17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>', 'Line'),
-  emanation: svg('<circle cx="12" cy="12" r="2.5" fill="currentColor"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2.5"/>', 'Emanation'),
-  wall: svg('<rect x="2" y="6" width="20" height="12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 12 H22 M8 6 V12 M16 6 V12 M12 12 V18 M5 12 V18 M19 12 V18" stroke="currentColor" stroke-width="1.3"/>', 'Wall'),
+const badge = (letter, title) => svg(`<path d="M12 1.2 22.8 12 12 22.8 1.2 12Z" fill="currentColor"/><text x="12" y="16.4" text-anchor="middle" font-size="11.5" font-weight="800" font-family="system-ui,sans-serif" fill="#fff">${letter}</text>`, title);
+const DEFAULT_ICONS = {
+  concentration: badge('C', 'Concentration'),
+  ritual: badge('R', 'Ritual'),
+  sphere: svg('<circle cx="12" cy="12" r="10" fill="currentColor"/><circle cx="8.5" cy="8.5" r="3.2" fill="#fff" opacity=".35"/>', 'Sphere'),
+  cone: svg('<path d="M2 12 L21 3.5 Q24.5 12 21 20.5 Z" fill="currentColor"/><path d="M21 3.5 Q24.5 12 21 20.5 Q18.5 12 21 3.5Z" fill="#fff" opacity=".3"/>', 'Cone'),
+  cube: svg('<path d="M12 2 21 6.8 12 11.6 3 6.8Z" fill="currentColor" opacity=".75"/><path d="M3 6.8 12 11.6V22L3 17.2Z" fill="currentColor"/><path d="M21 6.8 12 11.6V22L21 17.2Z" fill="currentColor" opacity=".55"/>', 'Cube'),
+  cylinder: svg('<path d="M3.5 5.5V18.5A8.5 3.3 0 0 0 20.5 18.5V5.5Z" fill="currentColor"/><ellipse cx="12" cy="5.5" rx="8.5" ry="3.3" fill="currentColor"/><ellipse cx="12" cy="5.5" rx="8.5" ry="3.3" fill="#fff" opacity=".35"/>', 'Cylinder'),
+  line: svg('<path d="M1.5 9H17V5L23 12 17 19V15H1.5Z" fill="currentColor"/>', 'Line'),
+  emanation: svg('<circle cx="12" cy="12" r="10.5" fill="currentColor" opacity=".3"/><circle cx="12" cy="12" r="7" fill="currentColor" opacity=".55"/><circle cx="12" cy="12" r="3.3" fill="currentColor"/>', 'Emanation'),
+  wall: svg('<rect x="1.5" y="5" width="21" height="14" rx="1" fill="currentColor"/><path d="M1.5 12H22.5M8 5V12M16 5V12M12 12V19M5 12V19M19 12V19" stroke="#fff" stroke-opacity=".45" stroke-width="1.3"/>', 'Wall'),
 };
+const ICONS = { ...DEFAULT_ICONS };
+
+/** Accept pasted SVG markup safely: strip scripts, event handlers and external references. */
+function sanitiseSvg(markup, title) {
+  const doc = new DOMParser().parseFromString(String(markup).trim(), 'image/svg+xml');
+  const root = doc.documentElement;
+  if (!root || root.nodeName.toLowerCase() !== 'svg' || doc.querySelector('parsererror')) return null;
+  for (const el of [...root.querySelectorAll('script, foreignObject, iframe, object, embed')]) el.remove();
+  for (const el of [root, ...root.querySelectorAll('*')]) {
+    for (const a of [...el.attributes]) {
+      const v = a.value.trim().toLowerCase();
+      if (/^on/i.test(a.name) || ((a.name === 'href' || a.name === 'xlink:href') && !v.startsWith('#'))) el.removeAttribute(a.name);
+    }
+  }
+  root.removeAttribute('width'); root.removeAttribute('height');
+  root.setAttribute('class', 'ico'); root.setAttribute('role', 'img'); root.setAttribute('aria-label', title);
+  return new XMLSerializer().serializeToString(root);
+}
+async function loadIconOverrides() {
+  const ov = (await Store.getMeta('icons')) || {};
+  for (const k of Object.keys(DEFAULT_ICONS)) ICONS[k] = (ov[k] && sanitiseSvg(ov[k], k)) || DEFAULT_ICONS[k];
+}
 
 /** Area of effect from the Range field or the description: { size, shape } or null. */
 function spellArea(e) {
@@ -3502,6 +3537,7 @@ const Settings = {
     const pref = safeLocal.get('dndref.theme') || 'system';
     for (const r of $$('input[name="theme"]')) r.checked = r.value === pref;
     this.renderTypes();
+    this.renderIcons();
     this.storageInfo();
     $('#settingsDlg').showModal();
   },
@@ -3517,6 +3553,26 @@ const Settings = {
       if (navigator.storage && navigator.storage.persisted) s += (await navigator.storage.persisted()) ? 'Storage is persistent.' : 'Storage is best-effort (the browser may evict it under pressure; keep backups).';
     } catch { /* ignore */ }
     $('#storageInfo').textContent = s;
+  },
+
+  async renderIcons() {
+    const ov = (await Store.getMeta('icons')) || {};
+    $('#iconAdmin').innerHTML = Object.keys(DEFAULT_ICONS).map((k) => `
+      <div class="icon-row">
+        <span class="icon-prev">${ICONS[k]}</span><b>${esc(cap(k))}</b>
+        <textarea data-icon="${k}" rows="1" placeholder="Paste &lt;svg&gt;…&lt;/svg&gt; to replace">${esc(ov[k] || '')}</textarea>
+        ${ov[k] ? `<button data-icon-reset="${k}">Reset</button>` : ''}
+      </div>`).join('');
+  },
+
+  async saveIcon(k, markup) {
+    const ov = (await Store.getMeta('icons')) || {};
+    if (markup && !sanitiseSvg(markup, k)) { toast('That isn\'t valid SVG markup', 'warn'); return; }
+    if (markup) ov[k] = markup; else delete ov[k];
+    await Store.setMeta('icons', ov);
+    await loadIconOverrides();
+    this.renderIcons();
+    App.refresh();
   },
 
   renderTypes() {
@@ -3718,6 +3774,10 @@ function wireEvents() {
   });
   $('#themeRadios').addEventListener('change', (e) => Theme.set(e.target.value));
   onMediaChange('(prefers-color-scheme: dark)', () => Theme.apply());
+
+  // Settings: icons
+  $('#iconAdmin').addEventListener('change', (e) => { const k = e.target.dataset.icon; if (k) Settings.saveIcon(k, e.target.value.trim()); });
+  $('#iconAdmin').addEventListener('click', (e) => { const k = e.target.dataset.iconReset; if (k) Settings.saveIcon(k, ''); });
 
   // Settings: categories
   $('#addTypeBtn').addEventListener('click', () => {
@@ -4052,6 +4112,7 @@ A. Doing so destroys both items and opens a gate to the Astral Plane, as the Bag
 async function boot() {
   await Store.open();
   await Types.load();
+  await loadIconOverrides();
 
   // First run: seed the samples once (deleting them later won't bring them back).
   if (!(await Store.getMeta('seeded'))) {

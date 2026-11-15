@@ -51,6 +51,7 @@
    BASE
    ===================================================================== */
 * { box-sizing: border-box; }
+[hidden] { display: none !important; } /* components set display:flex; hidden must still win */
 html, body { height: 100%; margin: 0; }
 body {
   font: 15px/1.55 'DM Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -88,7 +89,9 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
   gap: 10px; align-items: center; padding: 8px 12px 4px;
 }
 .brand { grid-area: brand; margin: 0; white-space: nowrap; font-size: inherit; display: flex; align-items: center; gap: 6px; }
-#listToggle { align-items: center; justify-content: center; min-width: 38px; min-height: 38px; }
+#listToggle { align-items: center; justify-content: center; min-width: 36px; min-height: 36px; background: none; border: 0; color: var(--muted); border-radius: 8px; padding: 6px; }
+#listToggle:hover { background: var(--hover); color: var(--text); }
+#listToggle[aria-pressed="true"] { color: var(--accent); background: var(--accent-dim); }
 #homeBtn {
   display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 6px; margin-left: -6px;
   font: 700 18px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: -.01em; color: var(--text);
@@ -206,11 +209,6 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 /* features separated by a rule */
 .feat + .feat { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 4px; }
 .feat h4 { margin-top: 10px; }
-/* list handle on the list's edge */
-.list-edge { position: absolute; top: 50%; left: calc(var(--list-w) - 12px); transform: translateY(-50%); z-index: 6; width: 24px; height: 56px; padding: 0;
-  display: none; align-items: center; justify-content: center; font-size: 18px; line-height: 1; border-radius: 8px; color: var(--muted); background: var(--panel); border: 1px solid var(--border); }
-.list-edge:hover { color: var(--text); border-color: var(--accent); }
-@media (min-width: 721px) { .list-edge { display: flex; } body.list-hidden .list-edge { left: 0; border-radius: 0 8px 8px 0; border-left: 0; } }
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -479,7 +477,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 .answer .qa { color: var(--amber); }
 .sage-box { border-color: rgba(107,203,203,.45); background: rgba(107,203,203,.06); }
 .sage-box h3 { color: #4fb3b3; }
-#homeBtn .logo { color: var(--amber); }
+#homeBtn .logo { color: var(--accent); }
 </style>
 
 </head>
@@ -506,7 +504,6 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 <div id="banner" class="banner" hidden></div>
 
 <main class="layout">
-  <button id="listEdge" class="list-edge" title="Hide the list ( \\ )" aria-label="Hide or show the results list">‹</button>
   <section id="listPane" aria-label="Results">
     <div class="list-search" id="listSearch" hidden>
       <input id="listQ" type="search" autocomplete="off" spellcheck="false" placeholder="Filter…" aria-label="Filter this tab" enterkeyhint="search">
@@ -888,7 +885,6 @@ const Types = {
     { key: 'background', label: 'Backgrounds', hue: 180 },
     { key: 'item', label: 'Items', hue: 32 },
     { key: 'monster', label: 'Monsters', hue: 345 },
-    { key: 'condition', label: 'Conditions', hue: 300 },
     { key: 'sage-advice', label: 'Sage Advice', hue: 190 },
     { key: 'other', label: 'Other', hue: 220 },
   ],
@@ -897,6 +893,7 @@ const Types = {
   async load() {
     const saved = await Store.getMeta('types');
     this.list = Array.isArray(saved) ? saved : this.DEFAULTS.map((t) => ({ ...t }));
+    this.list = this.list.filter((t) => t.key !== 'condition'); // conditions are rules (Category: Condition)
     for (const d of this.DEFAULTS) if (!this.list.some((t) => t.key === d.key)) this.list.push({ ...d });
   },
   save() { return Store.setMeta('types', this.list); },
@@ -2005,7 +2002,7 @@ const Parsers = (() => {
     parse(input) {
       const { lines, source, tags } = cleanCommon(input);
       const name = lines[0].replace(/\s*\[[^\]]*\]\s*$/, '');
-      return { type: 'condition', name, source, tags, fields: {}, text: lines.slice(1).join('\n'), warnings: [] };
+      return { type: 'rule', name, source, tags, fields: { Category: 'Condition' }, text: lines.slice(1).join('\n'), warnings: [] };
     },
   };
   /**
@@ -2059,7 +2056,7 @@ const Parsers = (() => {
       const g = reGlossary.exec(lines[0]);
       const cat = g ? g[2].trim() : '';
       // "Blinded [Condition]" belongs with the conditions.
-      const type = /^conditions?$/i.test(cat) ? 'condition' : 'rule';
+      const type = 'rule'; // "[Condition]" stays a rule with Category: Condition
       return {
         type, name: g ? g[1].trim() : lines[0], source, tags,
         fields: cat && type === 'rule' ? { Category: cat } : {}, text: lines.slice(1).join('\n'), warnings: [],
@@ -2433,10 +2430,10 @@ function renderTable(t) {
 /* ---------- Stat-block emphasis and game-term capitalisation ----------
    Applied at display time only (stored text is untouched). Fmt.sb is switched on
    while a stat block renders; set HIGHLIGHT_TYPES to use it for other categories. */
-const HIGHLIGHT_TYPES = new Set(['monster']);
+const HIGHLIGHT_TYPES = new Set(['monster', 'spell']);
 const Fmt = { sb: false };
 const DAMAGE_TYPES = 'acid|bludgeoning|cold|fire|force|lightning|necrotic|piercing|poison|psychic|radiant|slashing|thunder';
-const CONDITION_NAMES = 'blinded|charmed|deafened|exhaustion|frightened|grappled|incapacitated|invisible|paralyzed|paralysed|petrified|poisoned|prone|restrained|stunned|unconscious';
+const CONDITION_NAMES = 'blinded|charmed|deafened|exhaustion|exhausted|frightened|grappled|incapacitated|invisible|paralyzed|paralysed|petrified|poisoned|prone|restrained|stunned|unconscious';
 const ABILITY_NAMES = 'strength|dexterity|constitution|intelligence|wisdom|charisma';
 const titleWords = (s) => s.replace(/\b([a-z])/g, (c) => c.toUpperCase());
 
@@ -2472,6 +2469,7 @@ function emphasise(html, { allTypes = false } = {}) {
       .replace(dmg, (m, dice, type, word) => (dice || word || allTypes)
         ? `<b class="hl-dmg dmg-${type.toLowerCase()}">${m.trimEnd()}</b>${m.endsWith(' ') ? ' ' : ''}` : m)
       .replace(/\b\d+\s*\(\s*\d+d\d+(?:\s*[+-]\s*\d+)?\s*\)(?![^<]*<\/b>)/g, (m) => `<b class="hl-dice">${m}</b>`)
+      .replace(/\b\d*d\d+(?:\s*[+-]\s*\d+)?\b(?![^<]*<\/b>)/g, (m) => `<b class="hl-dice">${m}</b>`)
       .replace(new RegExp(`\\b(${CONDITION_NAMES.split('|').map((c) => c[0].toUpperCase() + c.slice(1)).join('|')})\\b`, 'g'),
         (m) => `<b class="hl-cond">${m}</b>`);
   }).join('');
@@ -2648,6 +2646,10 @@ const SUBTITLE_FIELDS = {
 /** Type-specific body renderers. Anything not listed uses `default`. */
 const Renderers = {
   spell(e) {
+    Fmt.sb = HIGHLIGHT_TYPES.has('spell'); // damage, saves and conditions stand out in spells too
+    try { return Renderers._spell(e); } finally { Fmt.sb = false; }
+  },
+  _spell(e) {
     const f = e.fields;
     const cast = CAST_ABBR[fold(f['Casting Time'] || '').trim()] || f['Casting Time'];
     const area = spellArea(e);
@@ -2882,7 +2884,7 @@ const Linker = {
     const spellCtx = /^(cast|casts|casting|learn|learns|prepare|prepared)$/.test(before) || /^(spell|spells|cantrip)$/.test(after);
     const byPriority = (list) => list.slice().sort((a, b) => LINK_PRIORITY.indexOf(a.type) - LINK_PRIORITY.indexOf(b.type))[0];
     if (spellCtx) { const sp = cands.find((e) => e.type === 'spell'); if (sp) return sp; }
-    if (after === 'condition' || after === 'conditions') { const c = cands.find((e) => e.type === 'condition'); if (c) return c; }
+    if (after === 'condition' || after === 'conditions') { const c = cands.find((e) => e.type === 'condition' || e.fields.Category === 'Condition'); if (c) return c; }
     if (n > 1) return byPriority(cands);
     // One-word names: need context.
     const afterListJoin = (before === 'or' || before === 'and') && i > 1 && /,\s*$/.test(text.slice(T[i - 2].e, T[i - 1].s));
@@ -3045,8 +3047,7 @@ function setListHidden(hidden) {
   document.body.classList.toggle('list-hidden', hidden);
   const b = $('#listToggle');
   if (b) b.setAttribute('aria-pressed', String(hidden));
-  const edge = $('#listEdge');
-  if (edge) { edge.textContent = hidden ? '›' : '‹'; edge.title = hidden ? 'Show the list ( \\ )' : 'Hide the list ( \\ )'; }
+  if (b) b.title = hidden ? 'Show the results list ( \\ )' : 'Hide the results list ( \\ )';
   safeLocal.set('dndref.listHidden', hidden ? '1' : '');
 }
 
@@ -3223,7 +3224,8 @@ const App = {
   collapsed: new Set(),     // collapsed group keys in grouped views
   source: '',               // folded source name to filter by ('' = all sources)
   view: {},                 // per tab: { sort, facets: { key: value } }
-  facetOpen: false,
+  get facetOpen() { return !!this.viewState().open; },
+  set facetOpen(v) { this.viewState().open = !!v; },
   cursor: -1,               // index into rows of the keyboard-highlighted entry
   currentId: null,          // entry shown in the detail pane
   backStack: [],            // entries visited via links, for "← Back"
@@ -4314,7 +4316,6 @@ function wireEvents() {
   $('#homeBtn').addEventListener('click', () => App.goHome());
   const toggleList = () => setListHidden(!document.body.classList.contains('list-hidden'));
   $('#listToggle').addEventListener('click', toggleList);
-  $('#listEdge').addEventListener('click', toggleList);
   $('#importBtn').addEventListener('click', () => Importer.open());
   $('#settingsBtn').addEventListener('click', () => Settings.open());
   $('#newBtn').addEventListener('click', async () => {
@@ -4876,6 +4877,10 @@ async function boot() {
 
   const t0 = performance.now();
   const all = await Store.getAllEntries();
+  // One-off migration: older versions stored conditions as their own category.
+  const migrated = [];
+  for (const e of all) if (e.type === 'condition') { e.type = 'rule'; e.fields = { Category: 'Condition', ...e.fields }; e.updated = nowIso(); migrated.push(e); }
+  if (migrated.length) await Store.putEntries(migrated);
   for (const e of all) { App.entries.set(e.id, e); Types.ensure(e.type); }
   App.index.build(all);
   logInfo(`Loaded and indexed ${all.length} entries in ${(performance.now() - t0).toFixed(0)} ms`);

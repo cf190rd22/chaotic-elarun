@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D&amp;D Reference</title>
+<!-- Same typeface as the other chaotic-elarun pages; falls back to the system font offline. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <script>
   /* Theme bootstrap: runs before first paint so there is no flash of the wrong theme.
      Stored choice wins; otherwise follow the OS preference. */
@@ -19,19 +23,27 @@
    THEME TOKENS
    ===================================================================== */
 :root {
-  --bg: #f6f4ef; --panel: #ffffff; --panel-2: #faf8f4; --text: #1f1d1a; --muted: #6b665e;
-  --border: #e2ddd3; --accent: #9b2c2c; --accent-text: #fff; --hover: #f1ece2; --sel: #f5e1d9;
-  --mark: #ffe08a; --warn: #9a6700; --ok: #1a7f37; --danger: #b42318;
-  --shadow: 0 10px 30px rgba(0,0,0,.15); --radius: 8px;
-  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
-  --badge-l: 38%; --badge-bg-a: .14;
+  /* Light counterpart of the chaotic-elarun palette */
+  --bg: #f3f5fa; --panel: #ffffff; --panel-2: #f7f8fc; --text: #1a2030; --muted: #5d6780;
+  --border: #dde2ee; --accent: #3a6fd8; --accent-text: #ffffff; --hover: #eef1f8; --sel: rgba(58,111,216,.10);
+  --accent-dim: rgba(58,111,216,.08); --accent-border: rgba(58,111,216,.35);
+  --amber: #b26a12; --amber-dim: rgba(178,106,18,.08); --amber-border: rgba(178,106,18,.35);
+  --mark: rgba(240,185,107,.55); --warn: #b26a12; --ok: #2f9e5b; --danger: #d64545;
+  --rarity-common: #6f7686; --rarity-uncommon: #2a9d5c; --rarity-rare: #2f7bd8; --rarity-veryrare: #8a4fd8; --rarity-legendary: #d4780f;
+  --shadow: 0 10px 30px rgba(20,30,60,.12); --radius: 8px;
+  --serif: 'DM Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --badge-l: 38%; --badge-bg-a: .12;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
-  --bg: #121212; --panel: #1c1c1e; --panel-2: #232326; --text: #e9e6e1; --muted: #a29d95;
-  --border: #34332f; --accent: #e07a68; --accent-text: #1a0d0b; --hover: #2a2a2d; --sel: #3a2925;
-  --mark: #6d5813; --warn: #e3b341; --ok: #3fb950; --danger: #f85149;
-  --shadow: 0 10px 30px rgba(0,0,0,.55); --badge-l: 72%; --badge-bg-a: .22;
+  /* chaotic-elarun dark palette (dm-reference / sheet / dice-roller) */
+  --bg: #0f1117; --panel: #161b27; --panel-2: #181e2e; --text: #e8eaf0; --muted: #8b96b3;
+  --border: #252d3f; --accent: #5b8ef0; --accent-text: #0f1117; --hover: #1c2236; --sel: rgba(91,142,240,.12);
+  --accent-dim: rgba(91,142,240,.08); --accent-border: rgba(91,142,240,.35);
+  --amber: #f0b96b; --amber-dim: rgba(240,185,107,.08); --amber-border: rgba(240,185,107,.3);
+  --mark: rgba(240,185,107,.35); --warn: #f0b96b; --ok: #6bcb8b; --danger: #f07070;
+  --rarity-common: #c8c8c8; --rarity-uncommon: #4fc97e; --rarity-rare: #4d9ef5; --rarity-veryrare: #c17fff; --rarity-legendary: #ff9f2e;
+  --shadow: 0 10px 30px rgba(0,0,0,.55); --badge-l: 74%; --badge-bg-a: .14;
   color-scheme: dark;
 }
 
@@ -41,7 +53,7 @@
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body {
-  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 15px/1.55 'DM Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background: var(--bg); color: var(--text);
   display: flex; flex-direction: column; overflow: hidden;
 }
@@ -75,7 +87,8 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "brand search actions";
   gap: 10px; align-items: center; padding: 8px 12px 4px;
 }
-.brand { grid-area: brand; margin: 0; white-space: nowrap; font-size: inherit; }
+.brand { grid-area: brand; margin: 0; white-space: nowrap; font-size: inherit; display: flex; align-items: center; gap: 6px; }
+#listToggle { align-items: center; justify-content: center; min-width: 38px; min-height: 38px; }
 #homeBtn {
   display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 6px; margin-left: -6px;
   font: 700 18px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: -.01em; color: var(--text);
@@ -186,6 +199,16 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 .chipb { font-size: 13.5px; padding: 2px 10px; }
 .snip { color: var(--muted); }
 .snip mark { color: var(--text); }
+/* collapsible results list (desktop) */
+#listToggle { display: none; }
+@media (min-width: 721px) {
+  #listToggle { display: inline-flex; }
+  body.list-hidden .layout { grid-template-columns: minmax(0, 1fr); }
+  body.list-hidden #listPane { display: none; }
+}
+/* source management */
+.src-admin-row { display: grid; grid-template-columns: minmax(0,1fr) 78px auto auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+.src-admin-row .hint { white-space: nowrap; }
 a.xref.local { text-decoration-style: dashed; }
 a.xref { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; cursor: pointer; }
 a.xref:hover { text-decoration-style: solid; }
@@ -388,6 +411,34 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
   .kv { grid-template-columns: 1fr; }
   .kv dd { margin-bottom: 6px; }
 }
+/* ---- chaotic-elarun look (kept last so it wins over earlier rules) ---- */
+.tab.on { color: var(--amber); border-bottom-color: var(--amber); }
+.d-head h2 { font-weight: 700; letter-spacing: -.01em; }
+.d-sub { color: var(--muted) !important; font-size: 15px; margin: 2px 0 12px; }
+.d-sub a.sub-link { color: var(--accent); text-decoration: none; font-weight: 600; }
+.d-sub a.sub-link:hover { text-decoration: underline; }
+.d-sub .sep { margin: 0 4px; opacity: .6; }
+.d-body h3, .d-refs h3, .sage-box h3 {
+  font: 700 12px/1.3 var(--serif); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--border); padding-bottom: 6px; margin: 1.8em 0 .8em;
+}
+.statblock h3 { color: var(--amber); border-bottom-color: var(--amber-border); }
+.d-body h4 { font: 600 16px var(--serif); margin: 1.1em 0 .3em; }
+.lvl { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-border); font-weight: 700; }
+.statblock { border-top: 2px solid var(--amber-border); border-bottom: 2px solid var(--amber-border); border-radius: 8px; }
+.ab-k { color: var(--amber); }
+.hl-atk { color: var(--accent); }
+.chipb { border-radius: 6px; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.toc { background: var(--panel); }
+.ghead { color: var(--muted); }
+.row.open { background: var(--sel); }
+.row.cur { box-shadow: inset 2px 0 0 var(--accent); }
+mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber); }
+.answer .qa { color: var(--amber); }
+.sage-box { border-color: rgba(107,203,203,.45); background: rgba(107,203,203,.06); }
+.sage-box h3 { color: #4fb3b3; }
+#homeBtn .logo { color: var(--amber); }
 </style>
 
 </head>
@@ -398,7 +449,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
      ===================================================================== -->
 <header class="topbar">
   <div class="bar-row">
-    <h1 class="brand"><button id="homeBtn" title="Back to the main search" aria-label="D&amp;D Reference: back to the main search"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5 21.5 7v10L12 22.5 2.5 17V7Z" fill="currentColor"/><path d="M12 5.2 17.6 15H6.4Z M12 5.2 6.4 15 2.5 7M12 5.2 17.6 15 21.5 7M6.4 15 12 22.5 17.6 15M2.5 17 6.4 15M21.5 17 17.6 15" fill="none" stroke="var(--logo-line)" stroke-width="1.2" stroke-linejoin="round"/></svg><span>D&amp;D Reference</span></button></h1>
+    <h1 class="brand"><button id="listToggle" class="icon-btn" title="Show / hide the results list" aria-label="Show or hide the results list" aria-pressed="false"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button><button id="homeBtn" title="Back to the main search" aria-label="D&amp;D Reference: back to the main search"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5 21.5 7v10L12 22.5 2.5 17V7Z" fill="currentColor"/><path d="M12 5.2 17.6 15H6.4Z M12 5.2 6.4 15 2.5 7M12 5.2 17.6 15 21.5 7M6.4 15 12 22.5 17.6 15M2.5 17 6.4 15M21.5 17 17.6 15" fill="none" stroke="var(--logo-line)" stroke-width="1.2" stroke-linejoin="round"/></svg><span>D&amp;D Reference</span></button></h1>
     <div class="search-wrap">
       <input id="q" type="search" placeholder="Search everything…" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search" enterkeyhint="search">
     </div>
@@ -530,6 +581,12 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
           <button id="clearDbBtn" class="danger">Delete all entries…</button>
         </div>
         <p class="hint" id="storageInfo"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Sources</legend>
+        <p class="hint">Rename a source (every entry updates; renaming to an existing source merges them), give entries without a source a book, show a source's entries, or delete them.</p>
+        <div id="sourceAdmin"></div>
       </fieldset>
 
       <fieldset>
@@ -1097,7 +1154,7 @@ class SearchIndex {
 
   _passes(d, filter) {
     return d.alive && (!filter.type || d.type === filter.type) && (!filter.fav || d.fav)
-      && (!filter.source || d.src === filter.source) && (!filter.srcLike || d.src.includes(filter.srcLike));
+      && (!filter.source || (filter.source === '__none__' ? !d.src : d.src === filter.source)) && (!filter.srcLike || d.src.includes(filter.srcLike));
   }
 
   /**
@@ -2162,7 +2219,7 @@ function rowChip(e) {
     }
     case 'item': {
       const r = rarityRank(f.Rarity);
-      return r < 9 ? { t: ['Common', 'Uncommon', 'Rare', 'V. Rare', 'Legend.', 'Artifact'][r], h: RARITY_HUE[r] } : null;
+      return r < 9 ? { t: ['Common', 'Uncommon', 'Rare', 'V. Rare', 'Legend.', 'Artifact'][r], c: ['var(--rarity-common)', 'var(--rarity-uncommon)', 'var(--rarity-rare)', 'var(--rarity-veryrare)', 'var(--rarity-legendary)', 'var(--danger)'][r] } : null;
     }
     case 'sage-advice': return { t: 'Q&A', h: 190 };
     case 'class': { const m = /d\d+/i.exec(f['Hit Point Die'] || f['Hit Dice'] || ''); return m ? { t: m[0].toLowerCase(), h: null } : null; }
@@ -2609,13 +2666,20 @@ function subtitleOf(e) {
   return '';
 }
 
-/** Chips under the subtitle: parent class, spell classes, flags, and the source (click to filter). */
+/** One line under the title: what it is (parent class linked for subclasses) · source (click to filter). */
+function subtitleHtml(e, t) {
+  let main;
+  if (e.type === 'subclass' && e.fields.Class) {
+    const p = findClassEntry(e.fields.Class);
+    main = (p ? `<a href="#" class="sub-link" data-open="${esc(p.id)}" title="Open the ${esc(e.fields.Class)} class">${esc(e.fields.Class)}</a>` : esc(e.fields.Class)) + ' subclass';
+  } else main = esc(subtitleOf(e) || t.label);
+  const src = e.source ? `<span class="sep">·</span><a href="#" class="sub-link" data-source="${esc(fold(e.source).trim())}" title="Show everything from this source">${esc(e.source)}</a>` : '';
+  return main + src;
+}
+
+/** Chips under the subtitle: a spell's classes (linked when the class exists) and Sage Advice connections. */
 function headChips(e, hue) {
   const chips = [];
-  if (e.type === 'subclass' && e.fields.Class) {
-    const parent = findClassEntry(e.fields.Class);
-    chips.push([e.fields.Class + (parent ? ' →' : ''), Types.get('class').hue, parent ? `data-open="${esc(parent.id)}"` : '']);
-  }
   if (e.type === 'spell') {
     for (const c of (e.fields.Classes || '').split(/,\s*/)) {
       if (!c.trim()) continue;
@@ -2630,7 +2694,6 @@ function headChips(e, hue) {
       if (t) chips.push([t.name, Types.get(t.type).hue, `data-open="${esc(t.id)}" data-peek title="${esc(Types.get(t.type).label)}"`]);
     }
   }
-  if (e.source) chips.push(['📖\uFE0E ' + e.source, 210, `data-source="${esc(fold(e.source).trim())}" title="Show everything from this source"`]);
   if (!chips.length) return '';
   return '<div class="chips">' + chips.map(([t, h, attrs]) => `<span class="chipb${attrs ? ' link' : ''}" style="--h:${h}" ${attrs || ''}>${esc(t)}</span>`).join('') + '</div>';
 }
@@ -2926,6 +2989,14 @@ function jumpTo(anchor) {
   el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
 }
 
+/** Collapse/expand the results list on wide screens; remembered between visits. */
+function setListHidden(hidden) {
+  document.body.classList.toggle('list-hidden', hidden);
+  const b = $('#listToggle');
+  if (b) b.setAttribute('aria-pressed', String(hidden));
+  safeLocal.set('dndref.listHidden', hidden ? '1' : '');
+}
+
 /** Hover preview for links (devices with a mouse). */
 const Peek = {
   el: null, timer: 0,
@@ -3180,7 +3251,7 @@ const App = {
     return { text, srcLike };
   },
   grouped() { return this.tab === '' || this.tab === 'fav'; },
-  isHome() { return this.tab === '' && !this.query.trim() && !this.source; },
+  isHome() { return false; }, // the summary page was removed: an empty search lists everything, grouped
 
   viewState() { return this.view[this.tab] || (this.view[this.tab] = { sort: 'default', facets: {} }); },
   activeFilterCount() { return Object.values(this.viewState().facets).filter(Boolean).length + (this.source ? 1 : 0); },
@@ -3197,12 +3268,12 @@ const App = {
     const f = this.filter();
     const m = new Map();
     for (const e of this.entries.values()) {
-      if (!e.source || (f.type && e.type !== f.type) || (f.fav && !e.fav)) continue;
-      const k = fold(e.source).trim();
+      if ((f.type && e.type !== f.type) || (f.fav && !e.fav)) continue;
+      const k = e.source ? fold(e.source).trim() : '__none__';
       const cur = m.get(k);
-      if (cur) cur.n++; else m.set(k, { label: e.source, n: 1 });
+      if (cur) cur.n++; else m.set(k, { label: e.source || '(No source)', n: 1 });
     }
-    return [...m.entries()].sort((a, b) => a[1].label.localeCompare(b[1].label));
+    return [...m.entries()].sort((a, b) => (a[0] === '__none__') - (b[0] === '__none__') || a[1].label.localeCompare(b[1].label));
   },
   typeOrder(key) { const i = Types.list.findIndex((t) => t.key === key); return i < 0 ? 999 : i; },
 
@@ -3377,6 +3448,7 @@ const App = {
       html += sel(d.key, d.label, opts, vs.facets[d.key] || '', 'data-facet');
     }
     html += this.activeFilterCount() ? '<button data-act="clear-filters">Clear filters</button>' : '';
+    if (this.ids.length) html += `<button data-act="bulk-source" title="Give every entry listed here the same source">Set source for these ${this.ids.length}…</button>`;
     bar.innerHTML = html || '<span class="hint">No filters for this tab yet.</span>';
   },
 
@@ -3518,7 +3590,7 @@ const App = {
         <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}${spellIcons(e)}</h2>
         <button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
       </div>
-      <div class="d-sub" style="--h:${t.hue}">${esc(subtitleOf(e) || t.label)}</div>
+      <div class="d-sub">${subtitleHtml(e, t)}</div>
       ${headChips(e, t.hue)}
       ${renderToc(e)}
       <div class="d-body">${renderEntryBody(e)}</div>
@@ -3586,7 +3658,7 @@ function rowAreaIcon(e) {
 function rowHtml(e, i, style = '', showType = false) {
   const chip = rowChip(e);
   const cls = 'row' + (i >= 0 && i === App.cursor ? ' cur' : '') + (e.id === App.currentId ? ' open' : '');
-  const chipHtml = chip ? `<span class="chip"${chip.h != null ? ` style="--h:${chip.h}"` : ''}>${esc(chip.t)}</span>` : '';
+  const chipHtml = chip ? `<span class="chip"${chip.c ? ` style="color:${chip.c}"` : chip.h != null ? ` style="--h:${chip.h}"` : ''}>${esc(chip.t)}</span>` : '';
   return `<div class="${cls}" data-id="${esc(e.id)}"${style ? ` style="${style}"` : ''}>
     ${chipHtml}<div class="t"><div class="n">${highlight(e.name, App.query)}${spellIcons(e)}</div><div class="s">${(() => { const bm = bodyMatch(e); return bm ? `<span class="snip">${bm.html}</span>` : rowAreaIcon(e) + esc(rowMeta(e)); })()}</div></div>
     ${showType ? Types.badge(e.type) : ''}
@@ -3980,6 +4052,7 @@ const Settings = {
     this.renderTypes();
     this.renderIcons();
     this.renderDiag();
+    Sources.render();
     this.storageInfo();
     $('#settingsDlg').showModal();
   },
@@ -4071,6 +4144,81 @@ const Settings = {
   },
 };
 
+/* ---------- Source management ---------- */
+const Sources = {
+  /** [{ key, label, ids }] for every source, plus entries with none. */
+  list() {
+    const m = new Map();
+    for (const e of App.entries.values()) {
+      const k = e.source ? fold(e.source).trim() : '__none__';
+      let g = m.get(k);
+      if (!g) m.set(k, (g = { key: k, label: e.source || '', ids: [] }));
+      g.ids.push(e.id);
+    }
+    return [...m.values()].sort((a, b) => (a.key === '__none__') - (b.key === '__none__') || a.label.localeCompare(b.label));
+  },
+
+  render() {
+    const box = $('#sourceAdmin');
+    if (!box) return;
+    const rows = this.list();
+    box.innerHTML = rows.length ? rows.map((g) => `
+      <div class="src-admin-row">
+        <input data-src="${esc(g.key)}" list="sourceList" value="${esc(g.label)}" placeholder="${g.key === '__none__' ? 'No source: type a book to assign it' : ''}" aria-label="Source name">
+        <span class="hint">${g.ids.length} entr${g.ids.length === 1 ? 'y' : 'ies'}</span>
+        <button data-src-show="${esc(g.key)}">Show</button>
+        <button class="danger" data-src-del="${esc(g.key)}">Delete…</button>
+      </div>`).join('') : '<p class="hint">No entries yet.</p>';
+  },
+
+  /** Rename / assign / clear a source on every entry in group `key`. */
+  async rename(key, value) {
+    const g = this.list().find((x) => x.key === key);
+    if (!g) return;
+    const name = value.trim() ? Importer.canonicalSource(value) : '';
+    if (name === g.label) return;
+    if (!name) {
+      const ok = await ask('Remove source?', `<p>Remove the source from ${g.ids.length} entries? They'll be listed under "(No source)".</p>`,
+        [{ label: 'Cancel', value: null }, { label: 'Remove source', value: true, kind: 'primary' }]);
+      if (!ok) { this.render(); return; }
+    }
+    const merging = name && this.list().some((x) => x.key === fold(name).trim() && x.key !== key);
+    await this.apply(g.ids, name);
+    toast(merging ? `Merged ${g.ids.length} entries into “${name}”.` : name ? `${g.ids.length} entries now use “${name}”.` : 'Source removed.', 'ok');
+    this.render();
+  },
+
+  async apply(ids, name) {
+    const at = nowIso();
+    const list = ids.map((id) => App.entries.get(id)).filter(Boolean).map((e) => ({ ...e, source: name, updated: at }));
+    await App.upsert(list, { quiet: true });
+  },
+
+  /** "Set source for these N…": the entries currently listed (after search and filters). */
+  async bulkSet(ids) {
+    if (!ids.length) return;
+    const v = await ask(`Set source for ${ids.length} entries`,
+      `<p>Every entry currently listed gets this source.</p><input id="bulkSrcIn" list="sourceList" style="width:100%" placeholder="Pick an existing book or type a new one">`,
+      [{ label: 'Cancel', value: null }, { label: 'Apply', value: true, kind: 'primary' }]);
+    const name = v ? Importer.canonicalSource($('#bulkSrcIn').value) : '';
+    if (!v || !name) return;
+    await this.apply(ids, name);
+    toast(`${ids.length} entries now use “${name}”.`, 'ok');
+  },
+
+  async remove(key) {
+    const g = this.list().find((x) => x.key === key);
+    if (!g) return;
+    const label = g.label || '(No source)';
+    const ok = await ask('Delete entries?', `<p>Delete all <b>${g.ids.length}</b> entries from <b>${esc(label)}</b>? This can't be undone except from a backup.</p>`,
+      [{ label: 'Cancel', value: null }, { label: `Delete ${g.ids.length} entries`, value: true, kind: 'primary' }]);
+    if (!ok) return;
+    await App.remove(g.ids);
+    toast(`Deleted ${g.ids.length} entries.`, 'ok');
+    this.render();
+  },
+};
+
 /* ---------- Theme ---------- */
 const Theme = {
   apply() {
@@ -4095,11 +4243,13 @@ function wireEvents() {
   const flushSearch = () => { if (pending) { pending = false; App.runSearch(); } };
   q.addEventListener('input', () => {
     App.query = q.value;
+    if (document.body.classList.contains('list-hidden')) setListHidden(false); // typing needs the results
     if (!pending) { pending = true; requestAnimationFrame(flushSearch); }
   });
 
   $('#themeBtn').addEventListener('click', () => Theme.toggle());
   $('#homeBtn').addEventListener('click', () => App.goHome());
+  $('#listToggle').addEventListener('click', () => setListHidden(!document.body.classList.contains('list-hidden')));
   $('#importBtn').addEventListener('click', () => Importer.open());
   $('#settingsBtn').addEventListener('click', () => Settings.open());
   $('#newBtn').addEventListener('click', async () => {
@@ -4139,6 +4289,7 @@ function wireEvents() {
     App.viewState().facets = {}; App.source = ''; App.runSearch();
   };
   $('#facetBar').addEventListener('click', clearFilters);
+  $('#facetBar').addEventListener('click', (e) => { if (e.target.closest('[data-act="bulk-source"]')) Sources.bulkSet(App.ids.slice()); });
   $('#list').addEventListener('click', clearFilters);
   $('#list').addEventListener('click', (e) => { if (e.target.closest('[data-act="clear-source"]')) App.setSource(''); });
 
@@ -4251,6 +4402,14 @@ function wireEvents() {
   });
   $('#themeRadios').addEventListener('change', (e) => Theme.set(e.target.value));
   onMediaChange('(prefers-color-scheme: dark)', () => Theme.apply());
+
+  // Settings: sources
+  $('#sourceAdmin').addEventListener('change', (e) => { const k = e.target.dataset.src; if (k) Sources.rename(k, e.target.value); });
+  $('#sourceAdmin').addEventListener('click', (e) => {
+    const show = e.target.dataset.srcShow, del = e.target.dataset.srcDel;
+    if (show) { $('#settingsDlg').close(); App.facetOpen = true; App.setSource(show, { toSearch: true }); }
+    if (del) Sources.remove(del);
+  });
 
   // Settings: diagnostics
   $('#diagCopy').addEventListener('click', async () => {
@@ -4646,6 +4805,7 @@ async function boot() {
   }
   VList.init();
   Peek.init();
+  if (safeLocal.get('dndref.listHidden')) setListHidden(true);
   wireEvents();
   App.setTab('');
 

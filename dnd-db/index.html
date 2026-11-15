@@ -89,7 +89,18 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .tab:hover { background: var(--hover); color: var(--text); }
 .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
 .tab .count { font-size: 11px; margin-left: 5px; opacity: .8; }
-.tab.empty { opacity: .45; }
+.tab.zero { opacity: .45; }
+.src-sel { max-width: 180px; font-size: 12px; padding: 2px 4px; }
+#resultMeta .rm-right { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.src-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.src-list button { font-size: 13px; padding: 3px 10px; border-radius: 14px; }
+.src-list .count { color: var(--muted); font-size: 11px; margin-left: 4px; }
+.chipb.link { cursor: pointer; }
+.chipb.link:hover { filter: brightness(1.15); text-decoration: underline; }
+.tagline { font-style: italic; color: var(--muted); margin: -4px 0 10px; }
+.pc-fields { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.pc-fields label { display: flex; gap: 4px; align-items: center; font-size: 12px; color: var(--muted); }
+.pc-fields input { font-size: 13px; padding: 2px 6px; }
 .banner { background: var(--danger); color: #fff; padding: 8px 12px; font-size: 14px; }
 
 /* =====================================================================
@@ -99,7 +110,7 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 #listPane, #detail { min-width: 0; }
 #listPane { display: flex; flex-direction: column; border-right: 1px solid var(--border); min-height: 0; background: var(--panel); }
 #resultMeta {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px;
+  display: flex; align-items: center; justify-content: space-between; gap: 6px 8px; min-height: 34px; flex-wrap: wrap;
   font-size: 13px; color: var(--muted); padding: 4px 10px; border-bottom: 1px solid var(--border);
 }
 #resultMeta b { color: var(--text); }
@@ -316,6 +327,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
       <div class="import-grid">
         <div>
           <div class="ctl-row">
+            <label class="hint">Import as <select id="importAs" title="Leave on auto-detect, or force every entry in the paste to one category"><option value="">Auto-detect</option></select></label>
             <select id="exampleSel"><option value="">Try an example paste…</option></select>
             <label class="hint"><input type="checkbox" id="forceSingle"> Treat as one entry</label>
           </div>
@@ -328,6 +340,12 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
         </div>
         <div>
           <div id="previewHead" class="hint">Parsed entries will appear here for review before anything is saved.</div>
+          <div id="bulkBar" class="ctl-row" hidden>
+            <label class="hint">Class for all subclasses <input id="bulkClass" list="classList" placeholder="e.g. Warlock" size="12"></label>
+            <label class="hint">Source where missing <input id="bulkSource" list="sourceList" placeholder="e.g. Player’s Handbook" size="16"></label>
+            <button id="bulkApply">Apply</button>
+          </div>
+          <datalist id="sourceList"></datalist>
           <div id="previewList"></div>
         </div>
       </div>
@@ -351,6 +369,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
         <label>Tags <input id="edTags" placeholder="comma, separated"></label>
       </div>
       <datalist id="typeList"></datalist>
+      <datalist id="classList"></datalist>
       <h3>Fields</h3>
       <div id="edFields"></div>
       <button id="edAddField" type="button">＋ Add field</button>
@@ -852,7 +871,7 @@ class SearchIndex {
   add(e) {
     if (this.slotOf.has(e.id)) this.remove(e.id);
     const slot = this.docs.length;
-    this.docs.push({ id: e.id, name: SearchIndex.foldName(e.name), type: e.type, fav: !!e.fav, alive: true });
+    this.docs.push({ id: e.id, name: SearchIndex.foldName(e.name), type: e.type, fav: !!e.fav, src: fold(e.source).trim(), alive: true });
     this.slotOf.set(e.id, slot);
 
     // Collect unique tokens per field, then sum field weights per token.
@@ -864,7 +883,7 @@ class SearchIndex {
     };
     feed(e.name, W.name);
     feed(e.tags.join(' '), W.tags);
-    feed(e.source, W.body);
+    feed(e.source, W.tags); // searchable by book: "grim hollow", "players handbook"
     feed(Object.values(e.fields).join(' '), W.field);
     for (const s of e.sections) {
       feed(s.heading + ' ' + s.items.map((i) => i.name).join(' '), W.section);
@@ -914,7 +933,8 @@ class SearchIndex {
   }
 
   _passes(d, filter) {
-    return d.alive && (!filter.type || d.type === filter.type) && (!filter.fav || d.fav);
+    return d.alive && (!filter.type || d.type === filter.type) && (!filter.fav || d.fav)
+      && (!filter.source || d.src === filter.source) && (!filter.srcLike || d.src.includes(filter.srcLike));
   }
 
   /**
@@ -1131,10 +1151,32 @@ const Parsers = (() => {
   const reSourcePg = /^(?:source:\s*)?([A-Z][\w'’&:\- ]{2,80}?(?:\(\d{4}\))?)\s*,\s*(?:pg|page|p)\.?\s*\d+\s*$/;
   const reSourceOnly = /^source:\s*(.+)$/i;
   const reTags = /^(?:spell|monster|item|feat)?\s*tags?\s*:\s*(.+)$/i;
+  /* Source lines: D&D Beyond puts the book on its own line under the name
+     ("Archfey Patron" / "Player’s Handbook"). The app supplies known sources and classes. */
+  const hooks = { knownSources: () => [], knownClasses: () => [] };
+  const reBookWord = /\b(handbook|guide|book|tome|manual|compendium|grimoire|codex|chronicles?|worldbook|bestiary|almanac|sourcebook|primer)\b|\(\d{4}\)/i;
+  const reBookish = /\b(handbook|guide|book|tome|manual|compendium|grimoire|codex|chronicles?|worldbook|bestiary|almanac|sourcebook|primer|player|players|master|options|setting|campaign|adventures?|expanded|unleashed|ravenloft|srd|basic rules|pack|part \w+)\b|\(\d{4}\)|:/i;
+  const isKnownSource = (l) => { const f = fold(l).trim(); return !!f && hooks.knownSources().some((s) => fold(s).trim() === f); };
+  /** A short title-like line: an entry name, tagline or table title. */
+  function isNameLine(l) {
+    return !!l && l.length <= 60 && !l.includes('\t') && /^[A-Z0-9“"']/.test(l) && !/[.:;,!?]$/.test(l)
+      && l.split(/\s+/).length <= 9 && !reLevelHead.test(l);
+  }
+  /** Shape of a book title line (may contain a colon: "Grim Hollow: Player’s Guide"). */
+  function isSourceLine(l) {
+    return !!l && l.length <= 90 && !l.includes('\t') && !l.includes(';') && /^[A-Z0-9“"']/.test(l)
+      && !/[.,!?]$/.test(l) && l.split(/\s+/).length <= 12 && !reLevelHead.test(l) && !reMeta.test(l);
+  }
+
   function cleanCommon(lines) {
     const out = [];
     let source = '';
     const tags = [];
+    // "Name" then a recognisable book title on the next line.
+    if (lines.length > 2 && isSourceLine(lines[1]) && (isKnownSource(lines[1]) || reBookWord.test(lines[1]))) {
+      source = lines[1];
+      lines = [lines[0], ...lines.slice(2)];
+    }
     for (const l of lines) {
       let m;
       if ((m = reSourcePg.exec(l)) || (m = reSourceOnly.exec(l))) { source = source || m[1].trim(); continue; }
@@ -1266,10 +1308,13 @@ const Parsers = (() => {
   const monster = {
     type: 'monster', label: 'Monster stat block',
     detect(lines) {
-      const head = lines.slice(0, 45);
+      // Without a size/type line under the name, the AC/HP lines must be near the top;
+      // otherwise this is probably a companion stat block embedded in a class feature.
+      const meta = reMeta.test(lines[1] || '') || reMeta.test(lines[2] || '');
+      const head = lines.slice(0, meta ? 45 : 10);
       const has = (re) => head.some((l) => re.test(l));
       let s = 0;
-      if (reMeta.test(lines[1] || '')) s += 0.4;
+      if (meta) s += 0.4;
       if (has(/^(ac|armou?r class)\b/i)) s += 0.25;
       if (has(/^(hp|hit points)\b/i)) s += 0.25;
       if (has(/^(cr|challenge)\b/i)) s += 0.1;
@@ -1448,21 +1493,38 @@ const Parsers = (() => {
   };
 
   /* ---------- SUBCLASS ----------
-     2024: "Path of the Berserker" + "Barbarian Subclass: ..." tagline, then
-           "Level 3: Frenzy" headings.
-     2014: short heading lines, level inferred from "Starting at 6th level". */
-  const reSubLine = /^(.+?)\s+subclass\b\s*:?\s*(.*)$/i;
+     2024 D&D Beyond: "Archfey Patron" / "Player’s Handbook" (source) /
+           "Bargain with Whimsical Fey" (tagline) / description / "Level 3: ..." features.
+           Older 2024 copies: "Barbarian Subclass: Path of the Berserker".
+     2014: short heading lines, level inferred from "Starting at 6th level".
+     A paste of several subclasses is split where feature levels restart
+     (… Level 14 → Level 3), at the "Name / Source" pair just before the reset. */
+  const reSubLine = /^([A-Z][\w'’-]*(?: [A-Z][\w'’-]*){0,2})\s+[Ss]ubclass\b\s*:?\s*(.*)$/;
+  const CORE_CLASSES = 'Artificer Barbarian Bard Cleric Druid Fighter Monk Paladin Ranger Rogue Sorcerer Warlock Wizard'.split(' ');
   const SUBCLASS_HINTS = [
     [/^path of\b/i, 'Barbarian'], [/^college of\b/i, 'Bard'], [/\bdomain$/i, 'Cleric'], [/^circle of\b/i, 'Druid'],
-    [/^oath of\b|^oath of the\b/i, 'Paladin'], [/^(way|warrior) of\b/i, 'Monk'], [/^school of\b/i, 'Wizard'],
+    [/^oath of\b/i, 'Paladin'], [/^(way|warrior) of\b/i, 'Monk'], [/^school of\b/i, 'Wizard'],
     [/\bpatron$/i, 'Warlock'], [/\b(sorcery|bloodline)$/i, 'Sorcerer'], [/\bconclave$/i, 'Ranger'],
     [/\barchetype$/i, 'Fighter'],
   ];
   const guessClass = (name) => (SUBCLASS_HINTS.find(([re]) => re.test(name)) || [])[1] || '';
+  /** Parent class: explicit name hint, else the class mentioned most in the text ("Warlock level"). */
+  function inferClass(name, text) {
+    const hinted = guessClass(name);
+    if (hinted) return hinted;
+    const names = [...new Set([...CORE_CLASSES, ...hooks.knownClasses()])];
+    let best = '', bestN = 0;
+    for (const c of names) {
+      const n = (text.match(new RegExp('\\b' + reEsc(c) + '\\b', 'gi')) || []).length;
+      if (n > bestN) { best = c; bestN = n; }
+    }
+    return bestN >= 1 ? best : '';
+  }
   const looksLikeHeading = (lines, i) => {
     const L = lines[i];
     return L.length <= 40 && /^[A-Z]/.test(L) && !/[.:;,!?]$/.test(L) && L.split(/\s+/).length <= 6 && (lines[i + 1] || '').length > 50;
   };
+  const endsSentence = (l) => /[.!?)”"’]$/.test(l) || l.includes('\t');
 
   const subclass = {
     type: 'subclass', label: 'Subclass', noSplit: true,
@@ -1470,18 +1532,43 @@ const Parsers = (() => {
       if (findClassTable(lines) >= 0) return 0;
       if (reSubLine.test(lines[0]) || reSubLine.test(lines[1] || '')) return 0.9;
       const lv = lines.filter((l) => reLevelHead.test(l)).length;
+      if (lv >= 2) return 0.8;
       if (guessClass(lines[0]) && lines.length > 2) return 0.65;
-      return lv >= 2 ? 0.6 : 0;
+      return 0;
+    },
+    /** Split a multi-subclass paste at feature-level resets. */
+    splitBlock(lines) {
+      const heads = [];
+      lines.forEach((l, i) => { const m = reLevelHead.exec(l); if (m) heads.push([i, +m[1]]); });
+      const starts = [0];
+      for (let k = 1; k < heads.length; k++) {
+        if (heads[k][1] >= heads[k - 1][1]) continue;
+        const from = heads[k - 1][0] + 1, to = heads[k][0];
+        const okBefore = (j) => j === from || endsSentence(lines[j - 1]);
+        let st = -1;
+        // Best signal: "Name" followed by a book title, after the end of the previous feature.
+        for (let j = from; j < to - 1 && st < 0; j++) if (okBefore(j) && isNameLine(lines[j]) && isSourceLine(lines[j + 1])) st = j;
+        // Otherwise the first title-like line after a finished sentence.
+        for (let j = from; j < to && st < 0; j++) if (okBefore(j) && isNameLine(lines[j])) st = j;
+        starts.push(st < 0 ? to : st);
+      }
+      return starts.map((st, i) => lines.slice(st, i + 1 < starts.length ? starts[i + 1] : lines.length)).filter((c) => c.length);
     },
     parse(input) {
-      const { lines, source, tags } = cleanCommon(input);
-      let name = lines[0];
+      const { lines, source: src0, tags } = cleanCommon(input);
+      let name = lines[0], source = src0;
       const f = {};
       const intro = [];
       let i = 1, m;
       if ((m = reSubLine.exec(lines[0]))) { f.Class = m[1]; if (m[2]) name = m[2]; }
-      else if (lines[1] && (m = reSubLine.exec(lines[1]))) { f.Class = m[1]; if (m[2]) intro.push(m[2]); i = 2; }
-      if (!f.Class) f.Class = guessClass(name);
+      else if (lines[1] && (m = reSubLine.exec(lines[1]))) { f.Class = m[1]; if (m[2]) f.Tagline = m[2]; i = 2; }
+      // Source on line 2: a book-like title, or a title followed by a tagline line.
+      if (i === 1 && !source && isSourceLine(lines[1])
+          && (reBookish.test(lines[1]) || isKnownSource(lines[1]) || (isNameLine(lines[2]) && !reLevelHead.test(lines[2] || '') && (lines[3] || '').length > 60))) {
+        source = lines[1]; i = 2;
+      }
+      // Tagline: a short title line followed by the description or the first feature.
+      if (!f.Tagline && isNameLine(lines[i]) && ((lines[i + 1] || '').length > 60 || reLevelHead.test(lines[i + 1] || ''))) { f.Tagline = lines[i]; i++; }
 
       const has2024 = lines.some((l) => reLevelHead.test(l));
       const items = [];
@@ -1495,12 +1582,14 @@ const Parsers = (() => {
       }
       for (const it of items) if (!it.level) it.level = levelFromText(it.text);
       items.sort((a, b) => (a.level || 0) - (b.level || 0));
+      if (!f.Class) f.Class = inferClass(name, lines.join('\n'));
 
       const warnings = [];
-      if (!f.Class) warnings.push('Parent class not detected; set the "Class" field');
+      if (!f.Class) warnings.push('Parent class not detected; set it below');
+      if (!source) warnings.push('No source found');
       if (!items.length) warnings.push('No features recognised');
       return {
-        type: 'subclass', name, source, tags, fields: f,
+        type: 'subclass', name, source, tags, fields: orderFields(f, ['Class', 'Tagline']),
         sections: items.length ? [{ heading: 'Subclass Features', intro: '', items }] : [],
         text: intro.join('\n'), warnings,
       };
@@ -1707,7 +1796,7 @@ const Parsers = (() => {
   }
 
   /** Split a paste into chunks: explicit separators first, then layout start markers. */
-  function split(text, forceSingle) {
+  function split(text, forceSingle, forced) {
     const norm = normalise(text);
     if (forceSingle) { const l = toLines(norm); return l.length ? [l] : []; }
     const blocks = ('\n' + norm + '\n').split(/\n[ \t]*(?:-{3,}|={3,}|\*{3,}|_{3,})[ \t]*(?=\n)|\n(?:[ \t]*\n){3,}/);
@@ -1715,11 +1804,14 @@ const Parsers = (() => {
     for (const b of blocks) {
       const lines = toLines(b);
       if (!lines.length) continue;
-      const primary = detect(lines).parser;
+      // With a forced category only that layout's split rules apply.
+      const primary = forced || detect(lines).parser;
+      if (primary.splitBlock) { chunks.push(...primary.splitBlock(lines)); continue; }
       if (primary.noSplit) { chunks.push(lines); continue; }
+      const splitters = forced ? (forced.startsAt ? [forced] : []) : registry.filter((p) => p.startsAt && !p.noSplit);
       const starts = [0];
       for (let i = 1; i < lines.length - 1; i++) {
-        if (registry.some((p) => p.startsAt && !p.noSplit && safe(() => p.startsAt(lines, i)))) starts.push(i);
+        if (splitters.some((p) => safe(() => p.startsAt(lines, i)))) starts.push(i);
       }
       starts.push(lines.length);
       for (let k = 0; k < starts.length - 1; k++) {
@@ -1734,8 +1826,10 @@ const Parsers = (() => {
   const safe = (fn) => { try { return fn(); } catch { return false; } };
 
   /** Full pipeline: text -> [{ entry, parser, confidence, warnings, rawLines }] */
-  function parseText(text, { forceSingle = false } = {}) {
-    return split(text, forceSingle).map((lines) => {
+  function parseText(text, { forceSingle = false, forceType = '' } = {}) {
+    const forced = forceType ? (registry.find((p) => p.type === forceType) || null) : null;
+    return split(text, forceSingle, forced).map((lines) => {
+      if (forceType) return reparseAs(forceType, lines);
       const { parser, score } = detect(lines);
       return { ...runParser(parser, lines, score), rawLines: lines };
     });
@@ -1752,7 +1846,7 @@ const Parsers = (() => {
     return { ...runParser(generic, lines, 0, type), rawLines: lines };
   }
 
-  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry };
+  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry, hooks, CORE_CLASSES };
 })();
 
 
@@ -1811,9 +1905,9 @@ function rowMeta(e) {
     case 'spell': return [f.School, f.Classes, f.Concentration ? 'Concentration' : '', f.Ritual ? 'Ritual' : ''].filter(Boolean).join(' · ');
     case 'monster': return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(' · ');
     case 'item': return [f.Type, f.Attunement ? 'requires attunement' : ''].filter(Boolean).join(' · ');
-    case 'feat': return f.Prerequisite ? 'Prerequisite: ' + f.Prerequisite : (f.Category || '');
-    case 'subclass': return (f.Class ? f.Class + ' subclass' : 'Subclass') + (e.source ? ' · ' + e.source : '');
-    case 'class': return [f['Primary Ability'], f['Hit Point Die'] || f['Hit Dice']].filter(Boolean).join(' · ');
+    case 'feat': return [f.Prerequisite ? 'Prerequisite: ' + f.Prerequisite : (f.Category || ''), e.source].filter(Boolean).join(' · ');
+    case 'subclass': return [f.Tagline, e.source].filter(Boolean).join(' · ') || (f.Class ? f.Class + ' subclass' : 'Subclass');
+    case 'class': return [f['Primary Ability'], f['Hit Point Die'] || f['Hit Dice'], e.source].filter(Boolean).join(' · ');
     default: return summaryOf(e);
   }
 }
@@ -1941,7 +2035,7 @@ function renderCards(fields, skip = []) {
 const SUBTITLE_FIELDS = {
   item: ['Type', 'Rarity'],
   feat: ['Category'],
-  subclass: ['Class'],
+  subclass: ['Class', 'Tagline'],
 };
 
 /** Type-specific body renderers. Anything not listed uses `default`. */
@@ -1971,13 +2065,25 @@ const Renderers = {
       + formatText(e.text) + renderSections(e.sections) + '</div>';
   },
   class(e) {
-    return renderCards(e.fields) + formatText(e.text) + renderTable(e.table) + renderSections(e.sections);
+    // Subclasses are linked by their "Class" field matching this class's name.
+    const subs = subclassesOf(e.name);
+    const subHtml = subs.length
+      ? `<h3>Subclasses (${subs.length})</h3><div class="static">${subs.map((s) => rowHtml(s, -1)).join('')}</div>` : '';
+    return renderCards(e.fields) + formatText(e.text) + renderTable(e.table) + subHtml + renderSections(e.sections);
   },
   default(e) {
     return renderCards(e.fields, SUBTITLE_FIELDS[e.type] || []) + renderAbilities(e.abilities) + renderTable(e.table)
       + formatText(e.text) + renderSections(e.sections);
   },
 };
+
+/** Subclass entries whose parent class is `className`. */
+function subclassesOf(className) {
+  const k = fold(className).trim();
+  return [...App.entries.values()].filter((s) => s.type === 'subclass' && fold(s.fields.Class).trim() === k)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+const findClassEntry = (name) => { const k = fold(name).trim(); return [...App.entries.values()].find((e) => e.type === 'class' && fold(e.name).trim() === k); };
 
 function subtitleOf(e) {
   const f = e.fields;
@@ -1989,23 +2095,28 @@ function subtitleOf(e) {
   return '';
 }
 
-/** Chips under the subtitle: classes for spells, flags like Concentration/Ritual. */
+/** Chips under the subtitle: parent class, spell classes, flags, and the source (click to filter). */
 function headChips(e, hue) {
   const chips = [];
+  if (e.type === 'subclass' && e.fields.Class) {
+    const parent = findClassEntry(e.fields.Class);
+    chips.push([e.fields.Class + (parent ? ' →' : ''), Types.get('class').hue, parent ? `data-open="${esc(parent.id)}"` : '']);
+  }
   if (e.type === 'spell') {
     for (const c of (e.fields.Classes || '').split(/,\s*/)) if (c.trim()) chips.push([c.trim(), hue]);
     if (e.fields.Concentration) chips.push(['Concentration', 40]);
     if (e.fields.Ritual) chips.push(['Ritual', 160]);
   }
+  if (e.source) chips.push(['📖\uFE0E ' + e.source, 210, `data-source="${esc(fold(e.source).trim())}" title="Show everything from this source"`]);
   if (!chips.length) return '';
-  return '<div class="chips">' + chips.map(([t, h]) => `<span class="chipb" style="--h:${h}">${esc(t)}</span>`).join('') + '</div>';
+  return '<div class="chips">' + chips.map(([t, h, attrs]) => `<span class="chipb${attrs ? ' link' : ''}" style="--h:${h}" ${attrs || ''}>${esc(t)}</span>`).join('') + '</div>';
 }
 
 function renderEntryBody(e) {
   const r = Renderers[e.type] || Renderers.default;
   const tags = e.tags.length ? '<div class="tags">' + e.tags.map((t) => `<span class="badge grey">${esc(t)}</span>`).join('') + '</div>' : '';
-  const src = e.source ? `<p class="hint">Source: ${esc(e.source)}</p>` : '';
-  return r(e) + tags + src;
+  const tagline = e.fields.Tagline ? `<p class="tagline">${esc(e.fields.Tagline)}</p>` : '';
+  return tagline + r(e) + tags;
 }
 
 
@@ -2146,7 +2257,8 @@ const App = {
   query: '',
   ids: [],                  // matching entry ids in display order
   rows: [],                 // list rows: { k: 'h', type, count } group headers and { k: 'e', id } entries
-  collapsed: new Set(),     // collapsed group types in grouped views
+  collapsed: new Set(),     // collapsed group keys in grouped views
+  source: '',               // folded source name to filter by ('' = all sources)
   cursor: -1,               // index into rows of the keyboard-highlighted entry
   currentId: null,          // entry shown in the detail pane
   lastMs: 0,
@@ -2211,9 +2323,37 @@ const App = {
   },
 
   /* ---------- view state ---------- */
-  filter() { return { type: this.tab && this.tab !== 'fav' ? this.tab : '', fav: this.tab === 'fav' }; },
+  filter() {
+    return { type: this.tab && this.tab !== 'fav' ? this.tab : '', fav: this.tab === 'fav', source: this.source, srcLike: this.parsedQuery().srcLike };
+  },
+  /** Pull "source:grim" / source:"grim hollow" out of the query. */
+  parsedQuery() {
+    let srcLike = '';
+    const text = this.query.replace(/\b(?:source|src):(?:"([^"]*)"?|(\S+))/gi, (_, a, b) => { srcLike = fold(a || b || '').trim(); return ' '; });
+    return { text, srcLike };
+  },
   grouped() { return this.tab === '' || this.tab === 'fav'; },
-  isHome() { return this.tab === '' && !this.query.trim(); },
+  isHome() { return this.tab === '' && !this.query.trim() && !this.source; },
+
+  setSource(src, { toSearch = false } = {}) {
+    this.source = src || '';
+    if (toSearch && this.tab !== '') { this.tab = ''; this.renderTabs(); }
+    document.body.classList.remove('show-detail');
+    this.runSearch();
+  },
+
+  /** Distinct sources (with counts) among entries in the current tab, ignoring the source filter. */
+  sourcesInScope() {
+    const f = this.filter();
+    const m = new Map();
+    for (const e of this.entries.values()) {
+      if (!e.source || (f.type && e.type !== f.type) || (f.fav && !e.fav)) continue;
+      const k = fold(e.source).trim();
+      const cur = m.get(k);
+      if (cur) cur.n++; else m.set(k, { label: e.source, n: 1 });
+    }
+    return [...m.entries()].sort((a, b) => a[1].label.localeCompare(b[1].label));
+  },
   typeOrder(key) { const i = Types.list.findIndex((t) => t.key === key); return i < 0 ? 999 : i; },
 
   counts() {
@@ -2254,7 +2394,7 @@ const App = {
       return;
     }
     const t0 = performance.now();
-    let ids = this.index.search(this.query, this.filter());
+    let ids = this.index.search(this.parsedQuery().text, this.filter());
     const sorter = !this.query.trim() && TAB_SORT[this.tab];
     if (sorter) {
       ids = ids.map((id) => this.entries.get(id)).sort((a, b) => sorter(a, b) || a.name.localeCompare(b.name)).map((e) => e.id);
@@ -2272,36 +2412,42 @@ const App = {
     if (!keepCursor && this.query.trim() && this.cursor >= 0 && this.isWide()) this.showDetail(this.rows[this.cursor].id, { fromSearch: true });
   },
 
-  /** Flatten results into rows; grouped views get a header per category, ordered by best hit. */
+  /** Which group an entry belongs to in the current view (null = flat list). */
+  groupOf(e) {
+    if (this.grouped()) return { key: 't:' + e.type, label: Types.get(e.type).label, tab: e.type, order: this.typeOrder(e.type) };
+    if (this.tab === 'subclass') { const c = e.fields.Class || 'No class set'; return { key: 'c:' + fold(c), label: c, order: c === 'No class set' ? 1 : 0 }; }
+    return null;
+  },
+
+  /** Flatten results into rows. Grouped views get a header per group, ordered by best hit (or by category/name when browsing). */
   buildRows() {
-    if (!this.grouped()) { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
+    if (!this.grouped() && this.tab !== 'subclass') { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
     const groups = new Map();
     for (const id of this.ids) {
-      const t = this.entries.get(id).type;
-      let g = groups.get(t);
-      if (!g) groups.set(t, (g = []));
-      g.push(id);
+      const g0 = this.groupOf(this.entries.get(id));
+      let g = groups.get(g0.key);
+      if (!g) groups.set(g0.key, (g = { ...g0, ids: [] }));
+      g.ids.push(id);
     }
-    const order = [...groups.keys()];
-    if (!this.query.trim()) order.sort((a, b) => this.typeOrder(a) - this.typeOrder(b));
+    const order = [...groups.values()];
+    if (!this.parsedQuery().text.trim()) order.sort((a, b) => a.order - b.order || a.label.localeCompare(b.label));
     const rows = [];
-    for (const t of order) {
-      const g = groups.get(t);
-      rows.push({ k: 'h', type: t, count: g.length });
-      if (!this.collapsed.has(t)) for (const id of g) rows.push({ k: 'e', id });
+    for (const g of order) {
+      rows.push({ k: 'h', key: g.key, label: g.label, tab: g.tab, count: g.ids.length });
+      if (!this.collapsed.has(g.key)) for (const id of g.ids) rows.push({ k: 'e', id });
     }
     this.rows = rows;
   },
 
-  toggleGroup(type) {
-    if (this.collapsed.has(type)) this.collapsed.delete(type); else this.collapsed.add(type);
+  toggleGroup(key) {
+    if (this.collapsed.has(key)) this.collapsed.delete(key); else this.collapsed.add(key);
     this.runSearch({ keepCursor: true });
   },
 
   toggleAllGroups() {
-    const types = this.rows.filter((r) => r.k === 'h').map((r) => r.type);
-    const allCollapsed = types.every((t) => this.collapsed.has(t));
-    if (allCollapsed) this.collapsed.clear(); else types.forEach((t) => this.collapsed.add(t));
+    const keys = this.rows.filter((r) => r.k === 'h').map((r) => r.key);
+    const allCollapsed = keys.every((k) => this.collapsed.has(k));
+    if (allCollapsed) keys.forEach((k) => this.collapsed.delete(k)); else keys.forEach((k) => this.collapsed.add(k));
     this.runSearch({ keepCursor: true });
   },
 
@@ -2310,13 +2456,18 @@ const App = {
     sg.hidden = true;
     if (this.isHome()) { el.innerHTML = `<span>${this.entries.size.toLocaleString()} entries</span>`; return; }
     const n = this.ids.length, q = this.query.trim();
-    let html = `<span>${n.toLocaleString()} result${n === 1 ? '' : 's'}${q ? ` for “<b>${esc(q)}</b>”` : ''} · ${this.lastMs.toFixed(1)} ms</span>`;
+    let html = `<span>${n.toLocaleString()} result${n === 1 ? '' : 's'}${q ? ` for “<b>${esc(q)}</b>”` : ''} · ${this.lastMs.toFixed(1)} ms</span><span class="rm-right">`;
+    const sources = this.sourcesInScope();
+    if (sources.length || this.source) {
+      html += `<select class="src-sel" data-act="source" aria-label="Filter by source"><option value="">All sources</option>`
+        + sources.map(([k, v]) => `<option value="${esc(k)}" ${k === this.source ? 'selected' : ''}>${esc(v.label)} (${v.n})</option>`).join('') + '</select>';
+    }
     const heads = this.rows.filter((r) => r.k === 'h');
     if (heads.length > 1) {
-      const allCollapsed = heads.every((r) => this.collapsed.has(r.type));
+      const allCollapsed = heads.every((r) => this.collapsed.has(r.key));
       html += `<button data-act="toggle-all">${allCollapsed ? '⊞ Expand all' : '⊟ Collapse all'}</button>`;
     }
-    el.innerHTML = html;
+    el.innerHTML = html + '</span>';
     // "Did you mean" only when nothing matched: beside real hits it is just noise.
     if (!n && q) {
       const sugg = this.index.suggest(q).filter((s) => this.index.search(s, this.filter()).length);
@@ -2329,6 +2480,7 @@ const App = {
 
   emptyHtml() {
     if (!this.entries.size) return 'No entries yet. Use “Import” to add some.';
+    if (this.source) return 'Nothing here from this source.<br><button data-act="clear-source">Show all sources</button>';
     if (this.tab === 'fav' && !this.query.trim()) return 'No favourites yet. Tap ☆ on any entry to add it here.';
     if (!this.grouped() && this.query.trim()) return `No matches in ${esc(Types.get(this.tab).label)}.<br><button data-tab="">Search everything</button>`;
     return this.query.trim() ? 'No matches.' : 'Nothing in this category yet.';
@@ -2337,11 +2489,28 @@ const App = {
   /* ---------- tabs and home page ---------- */
   renderTabs() {
     const counts = this.counts();
-    const tab = (key, label, n) => `<button class="tab ${this.tab === key ? 'on' : ''} ${n === 0 ? 'empty' : ''}" role="tab" aria-selected="${this.tab === key}" data-tab="${esc(key)}">${label}${n !== null ? `<span class="count">${n}</span>` : ''}</button>`;
+    const tab = (key, label, n) => `<button class="tab ${this.tab === key ? 'on' : ''} ${n === 0 ? 'zero' : ''}" role="tab" aria-selected="${this.tab === key}" data-tab="${esc(key)}">${label}${n !== null ? `<span class="count">${n}</span>` : ''}</button>`;
     let html = tab('', 'Search', null) + tab('fav', '★\uFE0E Favourites', counts.fav);
     for (const t of Types.list) html += tab(t.key, esc(t.label), counts.get(t.key) || 0);
     $('#tabs').innerHTML = html;
     $('#typeList').innerHTML = Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+    $('#classList').innerHTML = this.classNames().map((c) => `<option value="${esc(c)}">`).join('');
+    $('#sourceList').innerHTML = this.sourceNames().map((c) => `<option value="${esc(c)}">`).join('');
+    const ia = $('#importAs'), cur = ia.value;
+    ia.innerHTML = '<option value="">Auto-detect</option>' + Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+    ia.value = cur;
+  },
+
+  /** Class names for the parent-class pickers: the core classes plus any class entries you have. */
+  classNames() {
+    const set = new Set(Parsers.CORE_CLASSES);
+    for (const e of this.entries.values()) if (e.type === 'class') set.add(e.name);
+    return [...set].sort();
+  },
+  sourceNames() {
+    const m = new Map();
+    for (const e of this.entries.values()) if (e.source) m.set(fold(e.source).trim(), e.source);
+    return [...m.values()].sort();
   },
 
   renderHome() {
@@ -2351,11 +2520,18 @@ const App = {
     const recent = all.sort((a, b) => (b.updated > a.updated ? 1 : b.updated < a.updated ? -1 : 0)).slice(0, 8);
     const tiles = Types.list.filter((t) => counts.get(t.key));
     $('#home').innerHTML = `
-      <p class="hint">Type to search everything. Multiple words = AND · <code>"exact phrase"</code> · <code>*</code> wildcard · <code>?</code> single character</p>
+      <p class="hint">Type to search everything. Multiple words = AND · <code>"exact phrase"</code> · <code>*</code> wildcard · <code>?</code> single character · <code>source:grim</code> limits to a book</p>
       ${tiles.length ? `<div class="tiles">${tiles.map((t) => `<button class="tile" data-tab="${esc(t.key)}" style="--h:${t.hue}"><b>${counts.get(t.key)}</b>${esc(t.label)}</button>`).join('')}</div>`
         : '<p class="empty">No entries yet. Use “Import” to paste from D&amp;D Beyond.</p>'}
       <h3 class="home-h"><span>★ Favourites</span>${favs.length > 12 ? `<a href="#" data-tab="fav">all ${favs.length} →</a>` : ''}</h3>
       ${favs.length ? `<div class="static">${favs.slice(0, 12).map((e) => rowHtml(e, -1, '', true)).join('')}</div>` : '<p class="hint">Tap ☆ on any entry to pin it here.</p>'}
+      ${(() => {
+        const srcs = new Map();
+        for (const e of all) if (e.source) { const k = fold(e.source).trim(); const c = srcs.get(k); if (c) c.n++; else srcs.set(k, { label: e.source, n: 1 }); }
+        if (!srcs.size) return '';
+        return `<h3 class="home-h"><span>📖\uFE0E Sources</span></h3><div class="src-list">`
+          + [...srcs.entries()].sort((a, b) => b[1].n - a[1].n).map(([k, v]) => `<button data-source="${esc(k)}">${esc(v.label)}<span class="count">${v.n}</span></button>`).join('') + '</div>';
+      })()}
       ${recent.length ? `<h3 class="home-h"><span>Recently added or edited</span></h3><div class="static">${recent.map((e) => rowHtml(e, -1, '', true)).join('')}</div>` : ''}`;
   },
 
@@ -2427,10 +2603,10 @@ function rowHtml(e, i, style = '', showType = false) {
 }
 
 function groupHeadHtml(r, style) {
-  const t = Types.get(r.type), closed = App.collapsed.has(r.type);
-  return `<div class="ghead" data-group="${esc(r.type)}" style="${style}" role="button" aria-expanded="${!closed}">
-    <span class="gi">${closed ? '⊞' : '⊟'}</span>${esc(t.label)} <span class="gc">${r.count}</span>
-    ${App.tab === '' ? `<button class="go" data-tab="${esc(r.type)}">Open tab →</button>` : ''}</div>`;
+  const closed = App.collapsed.has(r.key);
+  return `<div class="ghead" data-group="${esc(r.key)}" style="${style}" role="button" aria-expanded="${!closed}">
+    <span class="gi">${closed ? '⊞' : '⊟'}</span>${esc(r.label)} <span class="gc">${r.count}</span>
+    ${App.tab === '' && r.tab ? `<button class="go" data-tab="${esc(r.tab)}">Open tab →</button>` : ''}</div>`;
 }
 
 /* ---------- Virtual list: renders only visible rows, so 50k results cost the same as 50.
@@ -2630,24 +2806,47 @@ const Importer = {
     const text = $('#pasteBox').value;
     if (!text.trim()) { this.candidates = []; this.render(); return; }
     const t0 = performance.now();
-    this.candidates = Parsers.parseText(text, { forceSingle: $('#forceSingle').checked }).map((c) => this.decorate(c));
+    this.candidates = Parsers.parseText(text, { forceSingle: $('#forceSingle').checked, forceType: $('#importAs').value })
+      .map((c) => this.decorate(c));
     this.render(performance.now() - t0);
   },
 
-  /** Add UI state and duplicate detection (same name + category already stored). */
+  /** Add UI state and duplicate detection: same name + category, and not from a different book. */
   decorate(c, prev = {}) {
-    const key = fold(c.entry.name) + '|' + c.entry.type;
+    const key = fold(c.entry.name) + '|' + c.entry.type, src = fold(c.entry.source).trim();
     let dupId = null;
-    for (const e of App.entries.values()) if (fold(e.name) + '|' + e.type === key) { dupId = e.id; break; }
+    for (const e of App.entries.values()) {
+      if (fold(e.name) + '|' + e.type !== key) continue;
+      const es = fold(e.source).trim();
+      if (src && es && src !== es) continue; // same name from another book is a different entry
+      dupId = e.id; break;
+    }
     return { include: true, dup: 'replace', showPreview: false, ...prev, ...c, dupId };
+  },
+
+  /** Bulk-apply the parent class (subclasses) and a source (entries without one). */
+  applyBulk() {
+    const cls = $('#bulkClass').value.trim(), src = $('#bulkSource').value.trim();
+    for (const c of this.candidates) {
+      if (cls && c.entry.type === 'subclass') c.entry.fields.Class = cls;
+      if (src && !c.entry.source) c.entry.source = src;
+      this.recheck(c);
+    }
+    this.render();
+  },
+
+  /** Drop "not detected" warnings once the user has filled the field in. */
+  recheck(c) {
+    c.warnings = c.warnings.filter((w) => !((/parent class/i.test(w) && c.entry.fields.Class) || (/no source/i.test(w) && c.entry.source)));
   },
 
   render(ms) {
     const list = $('#previewList');
     const n = this.candidates.length;
     $('#previewHead').innerHTML = n
-      ? `<b>${n}</b> entr${n === 1 ? 'y' : 'ies'} detected${ms !== undefined ? ` in ${ms.toFixed(0)} ms` : ''}. Check the category and name, open “Edit fields” to fix anything, then save.`
+      ? `<b>${n}</b> entr${n === 1 ? 'y' : 'ies'} detected${ms !== undefined ? ` in ${ms.toFixed(0)} ms` : ''}. Check the category, name, class and source, open “Edit fields” to fix anything, then save.`
       : 'Parsed entries will appear here for review before anything is saved.';
+    $('#bulkBar').hidden = n < 2;
     const typeOpts = (sel) => Types.list.map((t) => `<option value="${esc(t.key)}" ${t.key === sel ? 'selected' : ''}>${esc(t.label)}</option>`).join('');
     list.innerHTML = this.candidates.map((c, i) => {
       const e = c.entry;
@@ -2660,6 +2859,10 @@ const Importer = {
           <input type="checkbox" data-act="inc" ${c.include ? 'checked' : ''} aria-label="Include">
           <select data-act="type" title="Detected category; change it to re-parse as that layout">${typeOpts(e.type)}</select>
           <input data-act="name" value="${esc(e.name)}" aria-label="Name">
+        </div>
+        <div class="pc-fields">
+          ${e.type === 'subclass' ? `<label>Class <input data-act="cls" list="classList" value="${esc(e.fields.Class || '')}" placeholder="Parent class" size="11"></label>` : ''}
+          <label>Source <input data-act="src" list="sourceList" value="${esc(e.source)}" placeholder="Book" size="22"></label>
         </div>
         <div class="pc-sum">${esc(bits)}</div>
         <div class="conf ${low ? 'low' : ''}">${esc(c.parser)} parser · ${Math.round(c.confidence * 100)}% confidence${low ? ' (low: check it, or save as raw text)' : ''}</div>
@@ -2686,6 +2889,8 @@ const Importer = {
     if (ev.type === 'change' || ev.type === 'input') {
       if (act === 'inc') { c.include = ev.target.checked; card.classList.toggle('off', !c.include); $('#saveParsedBtn').disabled = !this.candidates.some((x) => x.include); }
       else if (act === 'name') c.entry.name = ev.target.value;
+      else if (act === 'cls') { c.entry.fields.Class = ev.target.value.trim(); if (ev.type === 'change') { this.recheck(c); this.render(); } }
+      else if (act === 'src') { c.entry.source = ev.target.value.trim(); if (ev.type === 'change') { this.recheck(c); this.candidates[i] = this.decorate(c, c); this.render(); } }
       else if (act === 'dup') c.dup = ev.target.value;
       else if (act === 'type') {
         // Re-run the matching layout parser on the original lines (or keep text under the new category).
@@ -2865,10 +3070,14 @@ function wireEvents() {
     App.runSearch();
   });
   $('#resultMeta').addEventListener('click', (e) => { if (e.target.closest('[data-act="toggle-all"]')) App.toggleAllGroups(); });
+  $('#resultMeta').addEventListener('change', (e) => { if (e.target.dataset.act === 'source') App.setSource(e.target.value); });
+  $('#list').addEventListener('click', (e) => { if (e.target.closest('[data-act="clear-source"]')) App.setSource(''); });
 
   // Result rows (virtual list and the static lists on the home page)
   const onRowClick = (e) => {
     if (e.target.closest('[data-tab]')) return;
+    const src = e.target.closest('[data-source]');
+    if (src) { App.setSource(src.dataset.source, { toSearch: true }); return; }
     const head = e.target.closest('.ghead');
     if (head) { App.toggleGroup(head.dataset.group); return; }
     const row = e.target.closest('.row');
@@ -2880,6 +3089,16 @@ function wireEvents() {
   $('#home').addEventListener('click', onRowClick);
 
   $('#detail').addEventListener('click', async (ev) => {
+    // Linked rows (e.g. a class's subclasses), parent-class and source chips.
+    const linkRow = ev.target.closest('.row');
+    if (linkRow) {
+      if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.open(linkRow.dataset.id);
+      return;
+    }
+    const openEl = ev.target.closest('[data-open]');
+    if (openEl) { App.open(openEl.dataset.open); return; }
+    const srcEl = ev.target.closest('[data-source]');
+    if (srcEl) { App.setSource(srcEl.dataset.source, { toSearch: true }); return; }
     const act = ev.target.closest('[data-act]')?.dataset.act;
     const e = App.entries.get(App.currentId);
     if (!act) return;
@@ -2927,7 +3146,9 @@ function wireEvents() {
   $('#forceSingle').addEventListener('change', () => Importer.parse());
   $('#previewList').addEventListener('click', (e) => Importer.onAction(e));
   $('#previewList').addEventListener('change', (e) => Importer.onAction(e));
-  $('#previewList').addEventListener('input', (e) => { if (e.target.dataset.act === 'name') Importer.onAction(e); });
+  $('#previewList').addEventListener('input', (e) => { if (['name', 'cls', 'src'].includes(e.target.dataset.act)) Importer.onAction(e); });
+  $('#bulkApply').addEventListener('click', () => Importer.applyBulk());
+  $('#importAs').addEventListener('change', () => Importer.parse());
   $('#saveParsedBtn').addEventListener('click', () => Importer.save());
   $('#exampleSel').addEventListener('change', (e) => {
     const ex = EXAMPLE_PASTES[+e.target.value - 1];
@@ -3272,6 +3493,8 @@ async function boot() {
 
   $('#exampleSel').innerHTML += EXAMPLE_PASTES.map((x, i) => `<option value="${i + 1}">${esc(x.label)}</option>`).join('');
   App.index.textOf = (id) => entrySearchText(App.entries.get(id));
+  Parsers.hooks.knownClasses = () => App.classNames();
+  Parsers.hooks.knownSources = () => App.sourceNames();
   if (Store.mem) {
     const b = $('#banner');
     b.textContent = 'This viewer blocks browser storage, so nothing you add will be saved. Open the file in Safari/Chrome or host it on GitHub Pages.';

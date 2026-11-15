@@ -237,6 +237,13 @@ th:last-child > .col-resize { right: 0; }
   .col-resize { width: 16px; right: -8px; }
   .col-resize::after { left: 7px; }
 }
+/* keyboard shortcut guide */
+kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--panel-2); color: var(--text); white-space: nowrap; }
+.sc-wrap { columns: 2 320px; column-gap: 28px; }
+.sc-wrap .sc-h { margin: 10px 0 4px; font: 700 11px var(--serif); letter-spacing: .1em; text-transform: uppercase; color: var(--amber); break-after: avoid; }
+.sc-wrap .facts { break-inside: avoid; margin-bottom: 8px; font-size: 13.5px; }
+.sc-wrap .facts dt { text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--text); }
+#askDlg:has(.sc-wrap) { width: min(860px, 96vw); }
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -651,6 +658,12 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
           <button id="clearDbBtn" class="danger">Delete all entries…</button>
         </div>
         <p class="hint" id="storageInfo"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Keyboard shortcuts</legend>
+        <div id="shortcutGuide" class="sc-wrap"></div>
+        <p class="hint">Press <kbd>?</kbd> anywhere (when not typing) to see this list.</p>
       </fieldset>
 
       <fieldset>
@@ -4220,6 +4233,7 @@ const Settings = {
     this.renderTypes();
     this.renderIcons();
     this.renderDiag();
+    $('#shortcutGuide').innerHTML = shortcutsHtml();
     Sources.render();
     this.storageInfo();
     $('#settingsDlg').showModal();
@@ -4403,6 +4417,57 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
+/* ---------- Keyboard shortcuts guide ----------
+   Single-key shortcuts only work when you're not typing in a box. */
+const MOD = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘' : 'Ctrl';
+const SHORTCUTS = [
+  ['Search', [
+    [`${MOD} + G`, 'Master search: jump to the top box (searches everything), from anywhere'],
+    [`/  or  ${MOD} + K`, 'Same: focus the top search'],
+    ['↓ ↑  ·  PgDn PgUp', 'Move through results while in a search box'],
+    ['Enter', 'Open the highlighted result'],
+    ['Esc', 'Clear the box; press again to leave it'],
+    [`${MOD} + F`, 'Find in this page (press again for the browser’s own find)'],
+    ['Enter  ·  Shift + Enter', 'Next / previous match in Find in this page'],
+  ]],
+  ['Move around', [
+    ['j  ·  k', 'Next / previous result'],
+    ['Enter', 'Open the highlighted result'],
+    ['[  ·  ]', 'Previous / next tab'],
+    ['1 – 9', 'Go to tab 1–9 (1 = Search, 2 = Favourites, then categories)'],
+    ['h', 'Home: main search with everything cleared'],
+    ['Alt + ←  ·  Backspace', 'Back to the entry you came from, at the same scroll position'],
+    ['\\', 'Hide / show the results list'],
+    ['x', 'Open / close Filters'],
+    ['c', 'Collapse / expand all groups'],
+    ['Esc', 'Close the open entry (phone)'],
+  ]],
+  ['Open entry', [
+    ['f', 'Favourite / unfavourite'],
+    ['e', 'Edit'],
+    ['y', 'Copy the entry as text'],
+  ]],
+  ['App', [
+    ['n', 'New entry'],
+    ['i', 'Import / paste'],
+    [',', 'Settings'],
+    ['t', 'Switch dark / light'],
+    ['?', 'Show this guide'],
+  ]],
+  ['In dialogs', [
+    [`${MOD} + Enter`, 'Parse the paste (Import) · Save (editor)'],
+    [`${MOD} + S`, 'Save (editor)'],
+    ['Esc', 'Close'],
+  ]],
+];
+function shortcutsHtml() {
+  return SHORTCUTS.map(([group, rows]) => `<h4 class="sc-h">${esc(group)}</h4><dl class="facts sc">`
+    + rows.map(([k, d]) => `<dt>${k.split('  ').map((x) => x.trim() ? `<kbd>${esc(x.trim())}</kbd>` : '').join(' ')}</dt><dd>${esc(d)}</dd>`).join('') + '</dl>').join('');
+}
+function showShortcuts() {
+  ask('Keyboard shortcuts', `<div class="sc-wrap">${shortcutsHtml()}</div><p class="hint">Single keys only work when you're not typing in a box. Also in Settings.</p>`, [{ label: 'Close', value: null, kind: 'primary' }]);
+}
+
 /* ---------- Event wiring ---------- */
 function wireEvents() {
   const q = $('#q');
@@ -4423,7 +4488,9 @@ function wireEvents() {
   $('#importBtn').addEventListener('click', () => Importer.open());
   $('#settingsBtn').addEventListener('click', () => Settings.open());
   $('#newBtn').addEventListener('click', async () => {
-    const e = await Editor.open(makeEntry({ type: App.filter().type || 'other', name: '' }), 'New entry');
+    const blank = makeEntry({ type: App.filter().type || 'other' });
+    blank.name = ''; // start with an empty name box, not "Untitled"
+    const e = await Editor.open(blank, 'New entry');
     if (e) { await App.upsert([e]); App.open(e.id); }
   });
 
@@ -4721,6 +4788,18 @@ function wireEvents() {
     const ae = document.activeElement;
     const typing = ae && (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) || ae.isContentEditable);
     const dialogOpen = !!document.querySelector('dialog[open]');
+    // Master search: Ctrl/⌘ + G from anywhere (overrides the browser's "find next" while the app has focus)
+    if ((e.key === 'g' || e.key === 'G') && (e.ctrlKey || e.metaKey) && !e.altKey) {
+      e.preventDefault();
+      for (const d of $$('dialog[open]')) { if (d.id === 'editDlg') Editor.finish(null); else d.close(); }
+      document.body.classList.remove('show-detail');
+      if (document.body.classList.contains('list-hidden')) setListHidden(false);
+      q.focus();
+      q.select();
+      return;
+    }
+    // Editor: Ctrl/⌘ + S or Ctrl/⌘ + Enter saves
+    if ($('#editDlg').open && (e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'Enter')) { e.preventDefault(); $('#edSave').click(); return; }
     if (e.key === 'f' && (e.ctrlKey || e.metaKey) && !dialogOpen && App.currentId) {
       const fi = $('#detail .fip-in');
       if (fi && ae !== fi && $('#detail').offsetParent !== null) { e.preventDefault(); fi.focus(); fi.select(); return; }
@@ -4751,13 +4830,28 @@ function wireEvents() {
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === 'Backspace' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
     if (e.key === '\\') { e.preventDefault(); setListHidden(!document.body.classList.contains('list-hidden')); return; }
+    // Arrow keys are left alone so they scroll the entry you're reading; j / k move through results.
+    const tabKeys = ['', 'fav', ...Types.list.map((t) => t.key)];
     if (e.key === 'f' && App.currentId) App.toggleFav(App.currentId);
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
-    else if (e.key === 'j' || e.key === 'ArrowDown') { e.preventDefault(); App.moveCursor(1); }
-    else if (e.key === 'k' || e.key === 'ArrowUp') { e.preventDefault(); App.moveCursor(-1); }
+    else if (e.key === 'y' && App.currentId) $('#detail [data-act="copy"]')?.click();
+    else if (e.key === 'j') { e.preventDefault(); App.moveCursor(1); }
+    else if (e.key === 'k') { e.preventDefault(); App.moveCursor(-1); }
+    else if (e.key === 'Enter') { const r = App.rows[App.cursor]; if (!r || r.k !== 'e' || e.target.closest('button, a')) return; App.open(r.id); }
     else if (e.key === '[') App.cycleTab(-1);
     else if (e.key === ']') App.cycleTab(1);
+    else if (/^[1-9]$/.test(e.key) && tabKeys[+e.key - 1] !== undefined) App.setTab(tabKeys[+e.key - 1]);
+    else if (e.key === 'h') App.goHome();
+    else if (e.key === 'x') { App.facetOpen = !App.facetOpen; App.renderMeta(); }
+    else if (e.key === 'c') { if (App.rows.some((r) => r.k === 'h')) App.toggleAllGroups(); }
+    else if (e.key === 'n') $('#newBtn').click();
+    else if (e.key === 'i') $('#importBtn').click();
+    else if (e.key === ',') $('#settingsBtn').click();
+    else if (e.key === 't') Theme.toggle();
+    else if (e.key === '?') showShortcuts();
     else if (e.key === 'Escape') document.body.classList.remove('show-detail');
+    else return;
+    e.preventDefault(); // consumed: don't also type the key into whatever just opened (e.g. "e" into the editor)
   });
 }
 

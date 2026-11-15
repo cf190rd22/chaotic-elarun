@@ -495,6 +495,13 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
       </fieldset>
 
       <fieldset>
+        <legend>Diagnostics</legend>
+        <p class="hint">Errors are recorded here (even where there's no browser console). Copy and send them if something breaks.</p>
+        <pre id="diagBox" class="raw-box"></pre>
+        <div class="ctl-row"><button id="diagCopy">Copy diagnostics</button><button id="diagClear">Clear</button></div>
+      </fieldset>
+
+      <fieldset>
         <legend>Icons</legend>
         <p class="hint">Paste SVG markup to replace an icon (e.g. one saved from a site you use). Stored only in this browser. Scripts and external links are stripped.</p>
         <div id="iconAdmin"></div>
@@ -629,11 +636,38 @@ function onMediaChange(query, fn) {
   } catch { /* ignore */ }
 }
 // Surface unexpected errors in the UI instead of failing silently.
+/* Diagnostics: every error (and console error/warning) is kept so it can be copied
+   from Settings → Diagnostics, including on phones where there is no console. */
+const ErrorLog = {
+  items: [],
+  add(kind, msg, detail = '') {
+    this.items.push({ at: new Date().toLocaleTimeString(), kind, msg: String(msg), detail: String(detail || '') });
+    if (this.items.length > 100) this.items.shift();
+  },
+  text() {
+    return [`D&D Reference diagnostics · ${new Date().toISOString()}`, `URL: ${location.protocol}//… ${location.pathname.split('/').pop()}`,
+      `Browser: ${navigator.userAgent}`, `Storage: ${typeof Store !== 'undefined' && Store.mem ? 'memory only (blocked)' : 'IndexedDB'}`, '',
+      ...this.items.map((x) => `[${x.at}] ${x.kind}: ${x.msg}${x.detail ? '\n    ' + x.detail.split('\n').slice(0, 6).join('\n    ') : ''}`)].join('\n');
+  },
+};
+for (const level of ['error', 'warn']) {
+  const orig = console[level].bind(console);
+  console[level] = (...args) => {
+    ErrorLog.add('console.' + level, args.map((a) => (a && a.message) || (typeof a === 'string' ? a : (() => { try { return JSON.stringify(a); } catch { return String(a); } })())).join(' '),
+      args.find((a) => a && a.stack)?.stack);
+    orig(...args);
+  };
+}
 window.addEventListener('error', (e) => {
   const msg = (e.error && e.error.message) || e.message || 'Unknown error';
-  toast('Error: ' + msg + (msg === 'Script error.' ? ' (details hidden by the viewer; try a normal browser)' : ''), 'err', 9000);
+  ErrorLog.add('error', msg, (e.error && e.error.stack) || `${e.filename || ''}:${e.lineno || ''}:${e.colno || ''}`);
+  toast('Error: ' + msg + (msg === 'Script error.' ? ' (details hidden by the viewer; try a normal browser)' : '') + ' · Settings → Diagnostics', 'err', 9000);
 });
-window.addEventListener('unhandledrejection', (e) => toast('Error: ' + ((e.reason && e.reason.message) || e.reason), 'err', 9000));
+window.addEventListener('unhandledrejection', (e) => {
+  const msg = (e.reason && e.reason.message) || e.reason;
+  ErrorLog.add('unhandled promise', msg, e.reason && e.reason.stack);
+  toast('Error: ' + msg + ' · Settings → Diagnostics', 'err', 9000);
+});
 
 /** Levenshtein distance with an early exit once it exceeds `max`. */
 function editDistance(a, b, max) {
@@ -897,7 +931,8 @@ function readImportPayload(json) {
   else if (json && typeof json === 'object' && json.name) list = [json];
   else throw new Error('Unrecognised JSON: expected { entries: [...] }, an array of entries, or a single entry.');
   const entries = list.filter((o) => o && typeof o === 'object' && typeof o.name === 'string').map(makeEntry);
-  return { entries, types };
+  const icons = json && json.settings && json.settings.icons ? json.settings.icons : null;
+  return { entries, types, icons };
 }
 
 function exportPayload(entries) {
@@ -906,6 +941,7 @@ function exportPayload(entries) {
     version: 1,
     exportedAt: nowIso(),
     types: Types.list,
+    settings: { icons: IconOverrides },   // your pasted icons travel with exports and GitHub backups
     entries,
   };
 }
@@ -2242,11 +2278,15 @@ const DEFAULT_ICONS = {
 };
 const ICONS = { ...DEFAULT_ICONS };
 
-/** Accept pasted SVG markup safely: strip scripts, event handlers and external references. */
+/**
+ * Accept pasted SVG markup safely. Parsed leniently as HTML, so SVGs copied from a
+ * web page (no xmlns, xlink:href, classes) work; scripts, event handlers and
+ * external references are stripped.
+ */
 function sanitiseSvg(markup, title) {
-  const doc = new DOMParser().parseFromString(String(markup).trim(), 'image/svg+xml');
-  const root = doc.documentElement;
-  if (!root || root.nodeName.toLowerCase() !== 'svg' || doc.querySelector('parsererror')) return null;
+  const doc = new DOMParser().parseFromString(String(markup || '').trim(), 'text/html');
+  const root = doc.querySelector('svg');
+  if (!root) return null;
   for (const el of [...root.querySelectorAll('script, foreignObject, iframe, object, embed')]) el.remove();
   for (const el of [root, ...root.querySelectorAll('*')]) {
     for (const a of [...el.attributes]) {
@@ -2254,13 +2294,35 @@ function sanitiseSvg(markup, title) {
       if (/^on/i.test(a.name) || ((a.name === 'href' || a.name === 'xlink:href') && !v.startsWith('#'))) el.removeAttribute(a.name);
     }
   }
+  for (const st of [...root.querySelectorAll('style')]) if (/url\(\s*['"]?(?!#)/i.test(st.textContent) || /@import/i.test(st.textContent)) st.remove();
+  if (!root.getAttribute('viewBox') && root.getAttribute('width') && root.getAttribute('height')) {
+    root.setAttribute('viewBox', `0 0 ${parseFloat(root.getAttribute('width'))} ${parseFloat(root.getAttribute('height'))}`);
+  }
   root.removeAttribute('width'); root.removeAttribute('height');
   root.setAttribute('class', 'ico'); root.setAttribute('role', 'img'); root.setAttribute('aria-label', title);
-  return new XMLSerializer().serializeToString(root);
+  return root.outerHTML;
+}
+
+/** Your pasted icon markup (raw, as pasted). Saved locally and included in exports/backups. */
+let IconOverrides = {};
+function applyIconOverrides() {
+  for (const k of Object.keys(DEFAULT_ICONS)) ICONS[k] = (IconOverrides[k] && sanitiseSvg(IconOverrides[k], k)) || DEFAULT_ICONS[k];
 }
 async function loadIconOverrides() {
-  const ov = (await Store.getMeta('icons')) || {};
-  for (const k of Object.keys(DEFAULT_ICONS)) ICONS[k] = (ov[k] && sanitiseSvg(ov[k], k)) || DEFAULT_ICONS[k];
+  IconOverrides = (await Store.getMeta('icons')) || {};
+  applyIconOverrides();
+}
+async function saveIconOverrides() {
+  await Store.setMeta('icons', IconOverrides);
+  applyIconOverrides();
+}
+/** Bring icons in from an import/backup. Replace = take theirs entirely; merge = keep yours where both exist. */
+async function importIconOverrides(icons, replace = false) {
+  if (!icons || typeof icons !== 'object') return 0;
+  const clean = Object.fromEntries(Object.entries(icons).filter(([k, v]) => k in DEFAULT_ICONS && typeof v === 'string' && v.trim()));
+  IconOverrides = replace ? clean : { ...clean, ...IconOverrides };
+  await saveIconOverrides();
+  return Object.keys(clean).length;
 }
 
 /** Area of effect from the Range field or the description: { size, shape } or null. */
@@ -3518,8 +3580,9 @@ const Importer = {
     try { payload = readImportPayload(JSON.parse(await file.text())); }
     catch (err) { toast('Import failed: ' + err.message, 'err', 8000); return; }
     for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
+    const nIcons = await importIconOverrides(payload.icons, false);
     const r = await App.merge(payload.entries);
-    toast(`Imported: ${r.added} new, ${r.updated} updated, ${r.kept} unchanged (local copy was newer or equal).`, 'ok', 6000);
+    toast(`Imported: ${r.added} new, ${r.updated} updated, ${r.kept} unchanged${nIcons ? `, ${nIcons} custom icons` : ''}.`, 'ok', 6000);
   },
 };
 
@@ -3538,6 +3601,7 @@ const Settings = {
     for (const r of $$('input[name="theme"]')) r.checked = r.value === pref;
     this.renderTypes();
     this.renderIcons();
+    this.renderDiag();
     this.storageInfo();
     $('#settingsDlg').showModal();
   },
@@ -3555,8 +3619,12 @@ const Settings = {
     $('#storageInfo').textContent = s;
   },
 
+  renderDiag() {
+    $('#diagBox').textContent = ErrorLog.items.length ? ErrorLog.text() : 'No errors recorded this session.';
+  },
+
   async renderIcons() {
-    const ov = (await Store.getMeta('icons')) || {};
+    const ov = IconOverrides;
     $('#iconAdmin').innerHTML = Object.keys(DEFAULT_ICONS).map((k) => `
       <div class="icon-row">
         <span class="icon-prev">${ICONS[k]}</span><b>${esc(cap(k))}</b>
@@ -3565,14 +3633,24 @@ const Settings = {
       </div>`).join('');
   },
 
-  async saveIcon(k, markup) {
-    const ov = (await Store.getMeta('icons')) || {};
-    if (markup && !sanitiseSvg(markup, k)) { toast('That isn\'t valid SVG markup', 'warn'); return; }
-    if (markup) ov[k] = markup; else delete ov[k];
-    await Store.setMeta('icons', ov);
-    await loadIconOverrides();
+  async saveIcon(k, markup, { quiet = false } = {}) {
+    if (quiet) {
+      // Saving while typing/pasting: only store usable SVG, and don't redraw the box being edited.
+      if (!markup || !sanitiseSvg(markup, k)) return;
+      IconOverrides[k] = markup;
+      await saveIconOverrides();
+      const prev = document.querySelector(`[data-icon="${k}"]`)?.closest('.icon-row')?.querySelector('.icon-prev');
+      if (prev) prev.innerHTML = ICONS[k];
+      App.refresh();
+      return;
+    }
+    // Never throw away what was pasted: if it can't be used, leave it in the box and say why.
+    if (markup && !sanitiseSvg(markup, k)) { toast('No <svg> element found in that text; it was not saved (still in the box).', 'warn', 6000); return; }
+    if (markup) IconOverrides[k] = markup; else delete IconOverrides[k];
+    await saveIconOverrides();
     this.renderIcons();
     App.refresh();
+    if (Store.mem) toast('Saved for this session only: this viewer blocks browser storage.', 'warn', 6000);
   },
 
   renderTypes() {
@@ -3775,8 +3853,21 @@ function wireEvents() {
   $('#themeRadios').addEventListener('change', (e) => Theme.set(e.target.value));
   onMediaChange('(prefers-color-scheme: dark)', () => Theme.apply());
 
+  // Settings: diagnostics
+  $('#diagCopy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(ErrorLog.text()); toast('Diagnostics copied', 'ok'); }
+    catch { const r = document.createRange(); r.selectNodeContents($('#diagBox')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Select-all done: copy it manually', 'warn'); }
+  });
+  $('#diagClear').addEventListener('click', () => { ErrorLog.items = []; Settings.renderDiag(); });
+
   // Settings: icons
   $('#iconAdmin').addEventListener('change', (e) => { const k = e.target.dataset.icon; if (k) Settings.saveIcon(k, e.target.value.trim()); });
+  $('#iconAdmin').addEventListener('input', (e) => {
+    const k = e.target.dataset.icon;
+    if (!k) return;
+    clearTimeout(Settings.iconTimer);
+    Settings.iconTimer = setTimeout(() => Settings.saveIcon(k, e.target.value.trim(), { quiet: true }), 400);
+  });
   $('#iconAdmin').addEventListener('click', (e) => { const k = e.target.dataset.iconReset; if (k) Settings.saveIcon(k, ''); });
 
   // Settings: categories
@@ -3818,6 +3909,7 @@ function wireEvents() {
       [{ label: 'Cancel', value: null }, { label: 'Replace', value: 'replace' }, { label: 'Merge', value: 'merge', kind: 'primary' }]);
     if (!mode) return 'Restore cancelled.';
     for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
+    await importIconOverrides(payload.icons, mode === 'replace');
     let msg;
     if (mode === 'replace') { await App.replaceAll(payload.entries); msg = `Replaced with ${payload.entries.length} entries from GitHub.`; }
     else { const r = await App.merge(payload.entries); msg = `Merged: ${r.added} new, ${r.updated} updated, ${r.kept} kept.`; }

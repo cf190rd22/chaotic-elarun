@@ -101,6 +101,21 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .pc-fields { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
 .pc-fields label { display: flex; gap: 4px; align-items: center; font-size: 12px; color: var(--muted); }
 .pc-fields input { font-size: 13px; padding: 2px 6px; }
+a.xref { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; cursor: pointer; }
+a.xref:hover { text-decoration-style: solid; }
+.nav-back { margin: 0 8px 8px 0; font-size: 13px; max-width: 70%; overflow: hidden; text-overflow: ellipsis; }
+.peek {
+  position: fixed; z-index: 50; width: min(360px, 90vw); background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: var(--shadow); padding: 10px 12px; font-size: 13.5px; pointer-events: none;
+}
+.peek-t { font: 600 16px var(--serif); }
+.peek .d-sub { font-size: 13px; margin: 2px 0 6px; }
+.peek-b { color: var(--text); margin-bottom: 4px; }
+details.refs { margin: 0 0 8px; }
+details.refs > summary { font-weight: 600; margin: 6px 0; }
+.answer { position: relative; padding-left: 30px; }
+.d-head h2.question { font-size: 23px; }
+.answer .qa { position: absolute; left: 0; top: 0; font: 700 18px var(--serif); color: var(--accent); }
 .banner { background: var(--danger); color: #fff; padding: 8px 12px; font-size: 14px; }
 
 /* =====================================================================
@@ -170,6 +185,7 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
    ===================================================================== */
 #detail { overflow: auto; padding: 18px 28px 60px; min-width: 0; }
 .d-top:empty { display: none; }
+@media (min-width: 721px) { .d-top:not(:has(.nav-back)) { display: none; } }
 .d-head { display: flex; align-items: flex-start; gap: 8px; }
 .d-head h2 { margin: 0; font-size: 30px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .d-sub { color: hsl(var(--h) 55% var(--badge-l)); font-size: 17px; margin: 4px 0 10px; }
@@ -273,7 +289,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
   #detail { display: none; padding: 10px 16px 60px; }
   body.show-detail #detail { display: block; }
   body.show-detail #listPane, body.show-detail .tabs { display: none; }
-  .back-btn { display: inline-block; margin-bottom: 8px; }
+  .back-btn { display: inline-block; margin-bottom: 8px; font-size: 13px; }
   .d-head h2 { font-size: 27px; }
   .cards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .import-grid { grid-template-columns: 1fr; }
@@ -487,6 +503,7 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
      4. Search index
      5. Parsers (one module per D&D Beyond layout, plus a registry)
      6. Rendering (list rows, detail views, text formatting)
+    6b. Cross-references (auto-links, backlinks, hover previews)
      7. GitHub sync
      8. UI controllers (app state, list, dialogs, keyboard)
      9. Sample data and example pastes
@@ -634,6 +651,7 @@ const Types = {
     { key: 'item', label: 'Items', hue: 32 },
     { key: 'monster', label: 'Monsters', hue: 345 },
     { key: 'condition', label: 'Conditions', hue: 300 },
+    { key: 'sage-advice', label: 'Sage Advice', hue: 190 },
     { key: 'other', label: 'Other', hue: 220 },
   ],
   list: [],
@@ -1094,7 +1112,9 @@ const Parsers = (() => {
       .replace(/(\d)\s*–\s*(\d)/g, '$1-$2')
       .replace(/–(?=\d)/g, '-');
   }
-  const toLines = (text) => text.split('\n').map((l) => l.trim()).filter(Boolean);
+  // Alphabetical index headings in D&D Beyond lists ("Spells (B)", "Magic Items (A)") are page chrome.
+  const reIndexHeading = /^[A-Z][A-Za-z’' ]{2,30}\s\((?:[A-Z]|[A-Z]\s*[-–]\s*[A-Z]|#|\d+)\)$/;
+  const toLines = (text) => text.split('\n').map((l) => l.trim()).filter((l) => l && !reIndexHeading.test(l));
 
   /** Build label definitions: [['Key', 'Alias', ...], ...] */
   function labels(defs) {
@@ -1600,7 +1620,7 @@ const Parsers = (() => {
      "Bag of Holding" / "Wondrous Item, Uncommon"
      "Flame Tongue"   / "Weapon (Any Sword), Rare (Requires Attunement)"
      Mundane gear pages: "Cost 15 GP", "Weight 3 lb.", "Damage", "Properties", "Mastery". */
-  const reItemLine = /^((?:wondrous item|weapon|armou?r|shield|ring|rod|staff|wand|potion|scroll|ammunition|adventuring gear|tools?|instrument|vehicle|mount|trinket|poison|spellcasting focus)\b[^,]*),\s*(.+)$/i;
+  const reItemLine = /^((?:wondrous item|weapon|armou?r|shield|ring|rod|staff|wand|potion|scroll|ammunition|adventuring gear|tools?|instrument|vehicle|mount|trinket|poison|spellcasting focus)\b(?:\s*\([^)]*\))?[^,(]*),\s*(.+)$/i;
   const reRarity = /\b(very rare|uncommon|common|rare|legendary|artifact|rarity varies|varies)\b/i;
   const ITEM_LABELS = labels([
     ['Type', 'Item Type'], ['Rarity'], ['Attunement'], ['Cost'], ['Weight'], ['Damage'], ['Properties'],
@@ -1624,7 +1644,9 @@ const Parsers = (() => {
       const m = reItemLine.exec(lines[1] || '');
       if (m && reRarity.test(m[2])) {
         f.Type = m[1].trim();
-        f.Rarity = cap(reRarity.exec(m[2])[1].toLowerCase());
+        // Keep the whole rarity text when it varies: "Uncommon (+1), Rare (+2), or Very Rare (+3)".
+        const rar = m[2].replace(/\(\s*requires attunement[^)]*\)/i, '').trim().replace(/,$/, '');
+        f.Rarity = /,|\bor\b/.test(rar) ? rar : cap(reRarity.exec(m[2])[1].toLowerCase());
         const att = /\(\s*(requires attunement[^)]*)\)/i.exec(m[2]);
         if (att) f.Attunement = att[1].replace(/^requires attunement\s*/i, '').trim() || 'Required';
         i = 2;
@@ -1751,6 +1773,62 @@ const Parsers = (() => {
     },
   };
 
+  /* ---------- SAGE ADVICE ----------
+     Compendium style: optional "Sage Advice Compendium" title, topic headings
+     ("Spells"), then "Q. …?" / "A. …" pairs. Each Q&A becomes one entry; its
+     topic and source are kept. Articles without Q./A. markers work when you
+     choose "Import as: Sage Advice": any line ending in "?" starts a question. */
+  const reQ = /^(?:Q|Question)\s*[.:)\]]\s*(.+)$/i;
+  const reA = /^(?:A|Answer)\s*[.:)\]]\s*(.*)$/i;
+  const isQuestionLine = (l) => l.length >= 12 && l.length <= 500 && /\?\s*["”’)]*$/.test(l);
+  const sage = {
+    type: 'sage-advice', label: 'Sage Advice',
+    detect(lines) {
+      const q = lines.filter((l) => reQ.test(l)).length, a = lines.filter((l) => reA.test(l)).length;
+      if (q && a) return 0.92;
+      if (/sage advice/i.test(lines.slice(0, 3).join(' ')) && lines.some(isQuestionLine)) return 0.85;
+      return 0;
+    },
+    splitBlock(lines) {
+      const marked = lines.some((l) => reQ.test(l));
+      const isStart = (i) => (marked ? reQ.test(lines[i]) : isQuestionLine(lines[i]));
+      let source = '', topic = '', cur = null;
+      const chunks = [];
+      for (let i = 0; i < lines.length; i++) {
+        const L = lines[i];
+        if (!cur && !source && /sage advice/i.test(L) && L.length < 80 && !isStart(i)) { source = L; continue; }
+        if (isStart(i)) {
+          cur = [...(source ? ['Source: ' + source] : []), ...(topic ? ['Topic: ' + topic] : []), L];
+          chunks.push(cur);
+          continue;
+        }
+        // A short title line right before a question (or another heading) is a topic heading.
+        if (isNameLine(L) && i + 1 < lines.length && (isStart(i + 1) || isNameLine(lines[i + 1]))) { topic = L; continue; }
+        if (cur) cur.push(L);
+      }
+      return chunks.length ? chunks : [lines];
+    },
+    parse(input) {
+      const { lines, source, tags } = cleanCommon(input);
+      const f = {};
+      const q = [], a = [];
+      let inA = false, m;
+      for (const L of lines) {
+        if (!q.length && (m = /^topic:\s*(.+)$/i.exec(L))) { f.Topic = m[1]; continue; }
+        if (!q.length && (m = reQ.exec(L))) { q.push(m[1]); continue; }
+        if (!inA && (m = reA.exec(L))) { inA = true; if (m[1]) a.push(m[1]); continue; }
+        if (!q.length) { q.push(L); continue; }
+        // Unmarked: the question ends at the first line ending in "?".
+        if (!inA && /\?\s*["”’)]*$/.test(q[q.length - 1])) inA = true;
+        (inA ? a : q).push(L);
+      }
+      return {
+        type: 'sage-advice', name: q.join(' ').trim() || 'Untitled ruling', source: source || 'Sage Advice', tags,
+        fields: f, text: a.join('\n'), warnings: a.length ? [] : ['No answer found'],
+      };
+    },
+  };
+
   /* ---------- GENERIC (fallback, raw text) ---------- */
   const generic = {
     type: 'other', label: 'Raw text',
@@ -1766,7 +1844,7 @@ const Parsers = (() => {
 
   /* ---------- registry + pipeline ---------- */
   function register(p) { registry.push(p); }
-  [spell, monster, klass, subclass, item, feat, species, background, condition, rule].forEach(register);
+  [spell, monster, klass, subclass, item, feat, species, background, condition, rule, sage].forEach(register);
 
   /** Pick the best parser for a chunk. */
   function detect(lines) {
@@ -1868,7 +1946,10 @@ function crNum(cr) {
   return isNaN(n) ? 999 : n;
 }
 const RARITIES = ['common', 'uncommon', 'rare', 'very rare', 'legendary', 'artifact'];
-const rarityRank = (r) => { const i = RARITIES.indexOf(fold(r || '').trim()); return i < 0 ? 9 : i; };
+const rarityRank = (r) => {
+  const m = /\b(very rare|uncommon|common|rare|legendary|artifact)\b/i.exec(r || '');
+  return m ? RARITIES.indexOf(m[1].toLowerCase()) : 9;
+};
 const LEVEL_HUE = [null, 215, 185, 28, 275, 330, 150, 18, 0, 45];
 const RARITY_HUE = [null, 130, 215, 275, 30, 0];
 const CAST_ABBR = { a: '1 Action', ba: '1 Bonus Action', b: '1 Bonus Action', r: '1 Reaction' };
@@ -1891,6 +1972,7 @@ function rowChip(e) {
       const r = rarityRank(f.Rarity);
       return r < 9 ? { t: ['Common', 'Uncommon', 'Rare', 'V. Rare', 'Legend.', 'Artifact'][r], h: RARITY_HUE[r] } : null;
     }
+    case 'sage-advice': return { t: 'Q&A', h: 190 };
     case 'class': { const m = /d\d+/i.exec(f['Hit Point Die'] || f['Hit Dice'] || ''); return m ? { t: m[0].toLowerCase(), h: null } : null; }
     case 'subclass': return f.Class ? { t: f.Class, h: null } : null;
     case 'feat': return f.Category ? { t: f.Category.replace(/\s*feat$/i, ''), h: null } : null;
@@ -1908,6 +1990,7 @@ function rowMeta(e) {
     case 'feat': return [f.Prerequisite ? 'Prerequisite: ' + f.Prerequisite : (f.Category || ''), e.source].filter(Boolean).join(' · ');
     case 'subclass': return [f.Tagline, e.source].filter(Boolean).join(' · ') || (f.Class ? f.Class + ' subclass' : 'Subclass');
     case 'class': return [f['Primary Ability'], f['Hit Point Die'] || f['Hit Dice'], e.source].filter(Boolean).join(' · ');
+    case 'sage-advice': return [f.Topic, e.source].filter(Boolean).join(' · ');
     default: return summaryOf(e);
   }
 }
@@ -1967,7 +2050,7 @@ function formatText(text, { plainFirst = false } = {}) {
     if (tbl.length) {
       const [head, ...rows] = tbl;
       out.push('<div class="tbl-wrap"><table class="data"><thead><tr>' + head.map((c) => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>'
-        + rows.map((r) => '<tr>' + r.map((c) => `<td>${esc(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
+        + rows.map((r) => '<tr>' + r.map((c) => `<td>${Linker.html(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>');
       tbl = [];
     }
     if (list.length) { out.push('<ul>' + list.map((l) => `<li>${inline(l)}</li>`).join('') + '</ul>'); list = []; }
@@ -1981,7 +2064,7 @@ function formatText(text, { plainFirst = false } = {}) {
     if (b) { list.push(b[1]); continue; }
     flush();
     // Item bodies ("Melee Attack Roll: +4, reach 5 ft. Hit: ...") must not get a fake bold lead-in.
-    out.push(`<p>${first ? esc(L) : inline(L)}</p>`);
+    out.push(`<p>${first ? Linker.html(L) : inline(L)}</p>`);
     first = false;
   }
   flush();
@@ -1989,19 +2072,19 @@ function formatText(text, { plainFirst = false } = {}) {
 }
 function inline(L) {
   const m = /^([A-Z0-9][^.!?]{0,60}?(?:\([^)]{0,60}\))?)\.\s+(\S.*)$/.exec(L);
-  if (m && m[1].split(/\s+/).length <= 7 && isTitleCaseName(m[1])) return `<b><i>${esc(m[1])}.</i></b> ${esc(m[2])}`;
-  return esc(L);
+  if (m && m[1].split(/\s+/).length <= 7 && isTitleCaseName(m[1])) return `<b><i>${esc(m[1])}.</i></b> ${Linker.html(m[2])}`;
+  return Linker.html(L);
 }
 
 function renderKV(fields, skip = []) {
   const rows = Object.entries(fields).filter(([k]) => !skip.includes(k));
   if (!rows.length) return '';
-  return '<dl class="kv">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+  return '<dl class="kv">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${Linker.html(v).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
 }
 function renderTable(t) {
   if (!t || !t.headers.length) return '';
   return '<div class="tbl-wrap"><table class="data"><thead><tr>' + t.headers.map((h) => `<th>${esc(h)}</th>`).join('') + '</tr></thead><tbody>'
-    + t.rows.map((r) => '<tr>' + r.map((c) => `<td>${esc(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+    + t.rows.map((r) => '<tr>' + r.map((c) => `<td>${Linker.html(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
 }
 function renderAbilities(a) {
   if (!a) return '';
@@ -2022,7 +2105,7 @@ function renderSections(sections) {
 
 function card(label, value, wide = false) {
   if (!value) return '';
-  return `<div class="card${wide ? ' wide' : ''}"><div class="card-l">${esc(label)}</div><div class="card-v">${esc(value).replace(/\n/g, '<br>')}</div></div>`;
+  return `<div class="card${wide ? ' wide' : ''}"><div class="card-l">${esc(label)}</div><div class="card-v">${Linker.html(value).replace(/\n/g, '<br>')}</div></div>`;
 }
 /** Fields as a grid of cards; long values span the full width. */
 function renderCards(fields, skip = []) {
@@ -2051,7 +2134,7 @@ const Renderers = {
       'Level', 'School', 'Classes', 'Concentration', 'Ritual', 'At Higher Levels']);
     html += formatText(e.text) + renderSections(e.sections);
     if (f['At Higher Levels']) {
-      html += `<div class="higher"><b><i>${lvlNum(e) === 0 ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${esc(f['At Higher Levels']).replace(/\n/g, '<br>')}</div>`;
+      html += `<div class="higher"><b><i>${lvlNum(e) === 0 ? 'Cantrip Upgrade' : 'At Higher Levels'}.</i></b> ${Linker.html(f['At Higher Levels']).replace(/\n/g, '<br>')}</div>`;
     }
     return html;
   },
@@ -2070,6 +2153,9 @@ const Renderers = {
     const subHtml = subs.length
       ? `<h3>Subclasses (${subs.length})</h3><div class="static">${subs.map((s) => rowHtml(s, -1)).join('')}</div>` : '';
     return renderCards(e.fields) + formatText(e.text) + renderTable(e.table) + subHtml + renderSections(e.sections);
+  },
+  'sage-advice'(e) {
+    return `<div class="answer"><span class="qa">A.</span>${formatText(e.text)}</div>` + renderCards(e.fields, ['Topic']) + renderSections(e.sections);
   },
   default(e) {
     return renderCards(e.fields, SUBTITLE_FIELDS[e.type] || []) + renderAbilities(e.abilities) + renderTable(e.table)
@@ -2091,6 +2177,7 @@ function subtitleOf(e) {
   if (e.type === 'monster') return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(', ');
   if (e.type === 'item') return [f.Type, f.Rarity ? f.Rarity.toLowerCase() : '', f.Attunement ? `(requires attunement${f.Attunement !== 'Required' ? ' ' + f.Attunement : ''})` : ''].filter(Boolean).join(', ').replace(/, \(/, ' (');
   if (e.type === 'subclass') return f.Class ? `${f.Class} Subclass` : 'Subclass';
+  if (e.type === 'sage-advice') return ['Sage Advice', f.Topic].filter(Boolean).join(' · ');
   if (e.type === 'feat') return [f.Category, f.Prerequisite ? `(Prerequisite: ${f.Prerequisite})` : ''].filter(Boolean).join(' ');
   return '';
 }
@@ -2103,9 +2190,19 @@ function headChips(e, hue) {
     chips.push([e.fields.Class + (parent ? ' →' : ''), Types.get('class').hue, parent ? `data-open="${esc(parent.id)}"` : '']);
   }
   if (e.type === 'spell') {
-    for (const c of (e.fields.Classes || '').split(/,\s*/)) if (c.trim()) chips.push([c.trim(), hue]);
+    for (const c of (e.fields.Classes || '').split(/,\s*/)) {
+      if (!c.trim()) continue;
+      const ce = findClassEntry(c.trim());
+      chips.push([c.trim(), hue, ce ? `data-open="${esc(ce.id)}"` : '']);
+    }
     if (e.fields.Concentration) chips.push(['Concentration', 40]);
     if (e.fields.Ritual) chips.push(['Ritual', 160]);
+  }
+  if (e.type === 'sage-advice') {
+    for (const id of Linker.mentions(e)) {
+      const t = App.entries.get(id);
+      if (t) chips.push([t.name, Types.get(t.type).hue, `data-open="${esc(t.id)}" data-peek title="${esc(Types.get(t.type).label)}"`]);
+    }
   }
   if (e.source) chips.push(['📖\uFE0E ' + e.source, 210, `data-source="${esc(fold(e.source).trim())}" title="Show everything from this source"`]);
   if (!chips.length) return '';
@@ -2119,6 +2216,219 @@ function renderEntryBody(e) {
   return tagline + r(e) + tags;
 }
 
+
+/* =====================================================================
+   6b. CROSS-REFERENCES
+   Every rendered text (descriptions, features, table cells, field values)
+   is scanned for the names of other entries, which become links. Matching
+   is token-based (first word -> candidate names, longest first), so it is
+   linear in the text length however many entries exist.
+   Rules that keep false links down:
+   - matches must be Title Case, as D&D 2024 capitalises game terms
+     ("Bag of Holding", "Magic Missile", "the Charmed condition");
+   - one-word names are common words ("Light", "Shield", "Sleep"), so they
+     only link with context: a spell needs "cast X" / "X spell" or to stand
+     alone as a list item ("…, Misty Step, Sleep"); other one-word names
+     must not start a sentence or sit inside a longer proper name ("Dire Wolf");
+   - where names collide (Shield spell vs Shield armour) context picks;
+   - each target is linked once per page (its first mention).
+   ===================================================================== */
+const LINK_SMALL = new Set('a an and as at by for from in into of on or the to vs with'.split(' '));
+// One-word entry names that are also everyday words: these only link with context
+// ("cast Light", "the Shield spell", or as an item in a list). Extend freely.
+const LINK_COMMON = new Set(('aid alarm alert awaken bane banishment barkskin bless blindness blink blur charm command '
+  + 'compulsion confusion contagion counterspell darkness daylight dominate druidcraft enhance entangle etherealness fear '
+  + 'feeblemind fly friends gate geas grease guidance harm haste heal heroism hex identify imprisonment insect invisibility '
+  + 'jump knock levitate light longstrider mending message mislead nondetection passwall polymorph prestidigitation '
+  + 'regenerate resistance resurrection sanctuary scrying seeming shatter shield shillelagh silence sleep slow sending '
+  + 'suggestion telekinesis teleport thaumaturgy thunderwave tongues wish web weird athlete actor charger chef crafter '
+  + 'durable healer lucky musician observant sentinel skilled tough grappler mobile resilient boar rat goat ape owl '
+  + 'mastiff badger bat cat crab deer eagle elk hawk hyena jackal lion lizard mule octopus panther pony raven scorpion '
+  + 'spider tiger weasel wolf bear horse frog toad snake shark camel dog').split(' '));
+const LINK_DETERMINER = new Set('the a an this that these those your its their his her each any every no another'.split(' '));
+const LINK_PRIORITY = ['condition', 'item', 'monster', 'feat', 'class', 'subclass', 'species', 'background', 'rule', 'other', 'spell'];
+const Linker = {
+  map: null,          // first token -> [{ toks, ents }] longest first
+  self: null,         // entry being rendered (never links to itself)
+  seen: new Set(),    // targets already linked on this page
+  cache: new Map(),   // id -> { updated, ids } outgoing mentions
+
+  invalidate() { this.map = null; this.cache.clear(); },
+
+  tokens(text) {
+    const out = [];
+    const re = /[\p{L}\p{N}'’]+/gu;
+    let m;
+    while ((m = re.exec(text))) { const f = fold(m[0]); if (f) out.push({ s: m.index, e: m.index + m[0].length, o: m[0], f }); }
+    return out;
+  },
+
+  build() {
+    const byName = new Map();
+    for (const e of App.entries.values()) {
+      if (e.type === 'sage-advice') continue; // rulings are questions, not link targets
+      const toks = this.tokens(e.name).map((t) => t.f);
+      if (!toks.length || toks.join('').length < 3) continue;
+      const key = toks.join(' ');
+      let g = byName.get(key);
+      if (!g) byName.set(key, (g = { toks, ents: [] }));
+      g.ents.push(e);
+    }
+    const map = new Map();
+    for (const g of byName.values()) { let a = map.get(g.toks[0]); if (!a) map.set(g.toks[0], (a = [])); a.push(g); }
+    for (const a of map.values()) a.sort((x, y) => y.toks.length - x.toks.length);
+    this.map = map;
+  },
+
+  /** Start rendering a page: no self-links, first mention only. */
+  begin(selfId) { this.self = selfId; this.seen = new Set(); },
+
+  /** Find mentions in `text`; cb({ ent, start, end }) for each. */
+  scan(text, cb) {
+    if (!this.map) this.build();
+    const T = this.tokens(text);
+    const isUpper = (s) => /^[\p{Lu}\p{N}]/u.test(s);
+    for (let i = 0; i < T.length; i++) {
+      const groups = this.map.get(T[i].f) || this.map.get(T[i].f.replace(/(es|s)$/, ''));
+      if (!groups) continue;
+      for (const g of groups) {
+        const n = g.toks.length;
+        if (i + n > T.length) continue;
+        let ok = true;
+        for (let k = 0; k < n && ok; k++) {
+          const t = T[i + k].f, c = g.toks[k];
+          ok = t === c || (k === n - 1 && (t === c + 's' || t === c + 'es'));
+          if (ok && k > 0) ok = /^[\s-]+$/.test(text.slice(T[i + k - 1].e, T[i + k].s));
+          if (ok && !LINK_SMALL.has(c) && !isUpper(T[i + k].o)) ok = false;
+        }
+        if (!ok || (n === 1 && LINK_SMALL.has(g.toks[0]))) continue;
+        const ent = this.pick(g.ents, text, T, i, n);
+        if (!ent) continue;
+        cb({ ent, start: T[i].s, end: T[i + n - 1].e });
+        i += n - 1;
+        break;
+      }
+    }
+  },
+
+  pick(ents, text, T, i, n) {
+    const cands = ents.filter((e) => e.id !== this.self);
+    if (!cands.length) return null;
+    const before = T[i - 1] ? T[i - 1].f : '', after = T[i + n] ? T[i + n].f : '';
+    const gapBefore = i ? text.slice(T[i - 1].e, T[i].s) : '';
+    const gapAfter = T[i + n] ? text.slice(T[i + n - 1].e, T[i + n].s) : '';
+    const spellCtx = /^(cast|casts|casting|learn|learns|prepare|prepared)$/.test(before) || /^(spell|spells|cantrip)$/.test(after);
+    const byPriority = (list) => list.slice().sort((a, b) => LINK_PRIORITY.indexOf(a.type) - LINK_PRIORITY.indexOf(b.type))[0];
+    if (spellCtx) { const sp = cands.find((e) => e.type === 'spell'); if (sp) return sp; }
+    if (after === 'condition' || after === 'conditions') { const c = cands.find((e) => e.type === 'condition'); if (c) return c; }
+    if (n > 1) return byPriority(cands);
+    // One-word names: need context.
+    const afterListJoin = (before === 'or' || before === 'and') && i > 1 && /,\s*$/.test(text.slice(T[i - 2].e, T[i - 1].s));
+    const isolated = (i === 0 || /,\s*$/.test(gapBefore) || afterListJoin)
+      && (i + n === T.length || /^\s*[,;]/.test(gapAfter));
+    if (isolated) return byPriority(cands);
+    const sentenceStart = i === 0 || /[.!?:]["”’)]?\s*$/.test(gapBefore);
+    const partOfName = (T[i - 1] && /^\s$/.test(gapBefore) && /^\p{Lu}/u.test(T[i - 1].o) && !sentenceStart)
+      || (T[i + n] && /^\s$/.test(gapAfter) && /^\p{Lu}/u.test(T[i + n].o) && !/['’]s$/i.test(T[i + n - 1].o)); // "Goblin's Nimble Escape" is a possessive
+    if (partOfName) return null;
+    if (LINK_COMMON.has(T[i].f.replace(/s$/, '')) || LINK_COMMON.has(T[i].f)) return null; // everyday word, no context
+    // "this Shield", "the Wolf": an object, not a spell.
+    const pool = LINK_DETERMINER.has(before) ? cands.filter((e) => e.type !== 'spell') : cands;
+    return pool.length ? byPriority(pool) : null;
+  },
+
+  /** Escape `text` and turn mentions into links (first mention of each target per page). */
+  html(text) {
+    if (!text) return '';
+    text = String(text);
+    let out = '', pos = 0;
+    this.scan(text, (h) => {
+      const label = esc(text.slice(h.start, h.end));
+      out += esc(text.slice(pos, h.start));
+      out += this.seen.has(h.ent.id) ? label
+        : `<a class="xref" href="#/e/${encodeURIComponent(h.ent.id)}" data-open="${esc(h.ent.id)}" data-peek>${label}</a>`;
+      this.seen.add(h.ent.id);
+      pos = h.end;
+    });
+    return out + esc(text.slice(pos));
+  },
+
+  /** Ids of entries mentioned by `e` (cached per entry version). */
+  mentions(e) {
+    const c = this.cache.get(e.id);
+    if (c && c.updated === e.updated) return c.ids;
+    const prev = this.self;
+    this.self = e.id;
+    const ids = new Set();
+    for (const part of [e.type === 'sage-advice' ? e.name : '', Object.values(e.fields).join('\n'), e.text,
+      e.table ? e.table.rows.map((r) => r.join('\n')).join('\n') : '',
+      ...e.sections.map((s) => s.intro + '\n' + s.items.map((it) => it.text).join('\n'))]) {
+      for (const line of part.split(/[\n\t]/)) this.scan(line, (h) => ids.add(h.ent.id)); // table cells scanned one by one
+    }
+    this.self = prev;
+    this.cache.set(e.id, { updated: e.updated, ids });
+    return ids;
+  },
+};
+
+/** Entries whose text mentions `e` (phrase search narrows candidates; the linker confirms). */
+function backlinksOf(e) {
+  const ids = App.index.search('"' + e.name.replace(/"/g, '') + '"', {});
+  const out = [];
+  for (const id of ids) {
+    if (id === e.id) continue;
+    const o = App.entries.get(id);
+    if (o && Linker.mentions(o).has(e.id)) out.push(o);
+  }
+  return out;
+}
+
+function renderBacklinks(e) {
+  const refs = backlinksOf(e);
+  if (!refs.length) return '';
+  const groups = new Map();
+  for (const r of refs) { let g = groups.get(r.type); if (!g) groups.set(r.type, (g = [])); g.push(r); }
+  const order = [...groups.keys()].sort((a, b) => (a === 'sage-advice' ? -1 : b === 'sage-advice' ? 1 : App.typeOrder(a) - App.typeOrder(b)));
+  return `<h3>Referenced in (${refs.length})</h3>` + order.map((t) => {
+    const list = groups.get(t).sort((a, b) => a.name.localeCompare(b.name));
+    const open = t === 'sage-advice' || list.length <= 8 ? 'open' : '';
+    return `<details class="refs" ${open}><summary>${esc(Types.get(t).label)} (${list.length})</summary>
+      <div class="static">${list.slice(0, 200).map((x) => rowHtml(x, -1)).join('')}</div></details>`;
+  }).join('');
+}
+
+/** Hover preview for links (devices with a mouse). */
+const Peek = {
+  el: null, timer: 0,
+  init() {
+    let hover = false;
+    try { hover = matchMedia('(hover: hover)').matches; } catch { /* ignore */ }
+    if (!hover) return;
+    this.el = document.createElement('div');
+    this.el.className = 'peek';
+    this.el.hidden = true;
+    document.body.appendChild(this.el);
+    document.addEventListener('mouseover', (ev) => {
+      const a = ev.target.closest('[data-peek]');
+      clearTimeout(this.timer);
+      if (!a) { this.timer = setTimeout(() => (this.el.hidden = true), 120); return; }
+      this.timer = setTimeout(() => this.show(a), 300);
+    });
+  },
+  show(a) {
+    const e = App.entries.get(a.dataset.open);
+    if (!e) return;
+    const t = Types.get(e.type);
+    const body = e.text || Object.entries(e.fields).map(([k, v]) => k + ': ' + v).join(' · ');
+    this.el.innerHTML = `<div class="peek-t">${esc(e.name)}</div><div class="d-sub" style="--h:${t.hue}">${esc(subtitleOf(e) || t.label)}</div>
+      <div class="peek-b">${esc(body.slice(0, 320))}${body.length > 320 ? '…' : ''}</div><div class="hint">Click to open</div>`;
+    const r = a.getBoundingClientRect();
+    this.el.hidden = false;
+    const w = this.el.offsetWidth, h = this.el.offsetHeight;
+    this.el.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left)) + 'px';
+    this.el.style.top = (r.bottom + h + 12 < innerHeight ? r.bottom + 6 : Math.max(8, r.top - h - 6)) + 'px';
+  },
+};
 
 /* =====================================================================
    7. GITHUB SYNC
@@ -2261,6 +2571,7 @@ const App = {
   source: '',               // folded source name to filter by ('' = all sources)
   cursor: -1,               // index into rows of the keyboard-highlighted entry
   currentId: null,          // entry shown in the detail pane
+  backStack: [],            // entries visited via links, for "← Back"
   lastMs: 0,
   isWide: () => { try { return matchMedia('(min-width: 721px)').matches; } catch { return true; } },
 
@@ -2276,6 +2587,7 @@ const App = {
     }
     for (const e of list) { this.entries.set(e.id, e); this.index.add(e); }
     this.index.maybeCompact([...this.entries.values()]);
+    Linker.invalidate();
     this.refresh();
     if (!quiet) toast(`Saved ${list.length} entr${list.length === 1 ? 'y' : 'ies'}`, 'ok');
   },
@@ -2283,6 +2595,8 @@ const App = {
   async remove(ids) {
     await Store.deleteEntries(ids);
     for (const id of ids) { this.entries.delete(id); this.index.remove(id); }
+    Linker.invalidate();
+    this.backStack = this.backStack.filter((x) => !ids.includes(x));
     if (ids.includes(this.currentId)) this.currentId = null;
     this.refresh();
   },
@@ -2291,6 +2605,8 @@ const App = {
     await Store.clearEntries();
     this.entries.clear();
     this.index.reset();
+    Linker.invalidate();
+    this.backStack = [];
     this.currentId = null;
     if (list.length) await this.upsert(list, { quiet: true });
     else this.refresh();
@@ -2553,12 +2869,33 @@ const App = {
     if (this.isWide()) this.showDetail(this.rows[j].id, { fromSearch: true });
   },
 
+  /** Open from the results list: starts a fresh trail. */
   open(id) {
     const idx = this.rows.findIndex((r) => r.id === id);
     if (idx >= 0) this.cursor = idx;
+    this.backStack = [];
     this.showDetail(id);
     document.body.classList.add('show-detail');
     setUrlHash('#/e/' + encodeURIComponent(id));
+  },
+
+  /** Follow a link from one entry to another; "← Back" returns. Browser back works too where allowed. */
+  navigate(id) {
+    if (!this.entries.has(id) || id === this.currentId) return;
+    if (this.currentId) this.backStack.push(this.currentId);
+    if (this.backStack.length > 100) this.backStack.shift();
+    this.showDetail(id);
+    document.body.classList.add('show-detail');
+    try { history.pushState({ dndId: id }, '', '#/e/' + encodeURIComponent(id)); } catch { /* sandboxed */ }
+  },
+
+  goBack() {
+    while (this.backStack.length) {
+      const id = this.backStack.pop();
+      if (this.entries.has(id)) { this.showDetail(id); setUrlHash('#/e/' + encodeURIComponent(id)); return true; }
+    }
+    document.body.classList.remove('show-detail');
+    return false;
   },
 
   /* ---------- detail ---------- */
@@ -2568,10 +2905,12 @@ const App = {
     if (!e) { el.innerHTML = '<div class="empty">Select an entry, or press <span class="kbd">/</span> to search.</div>'; return; }
     this.currentId = id;
     const t = Types.get(e.type);
+    Linker.begin(e.id);
+    const prev = this.entries.get(this.backStack[this.backStack.length - 1]);
     el.innerHTML = `
-      <div class="d-top"><button class="back-btn" data-act="back">← Back</button></div>
+      <div class="d-top">${prev ? `<button class="nav-back" data-act="nav-back" title="Back (Alt+←)">← ${esc(prev.name)}</button>` : ''}<button class="back-btn" data-act="back">☰ List</button></div>
       <div class="d-head">
-        <h2>${esc(e.name)}</h2>
+        <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}</h2>
         <button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
       </div>
       <div class="d-sub" style="--h:${t.hue}">${esc(subtitleOf(e) || t.label)}</div>
@@ -2585,9 +2924,15 @@ const App = {
         ${e.raw ? '<button data-act="raw">Original paste</button>' : ''}
         <button data-act="delete" class="danger">Delete</button>
       </div>
-      ${e.raw ? `<div class="raw-box" hidden>${esc(e.raw)}</div>` : ''}`;
+      ${e.raw ? `<div class="raw-box" hidden>${esc(e.raw)}</div>` : ''}
+      <div class="d-refs" data-for="${esc(e.id)}"></div>`;
     if (!fromSearch) el.scrollTop = 0;
     VList.paint(true);
+    // Backlinks can touch many entries, so fill them in after the page has painted.
+    setTimeout(() => {
+      const box = el.querySelector(`.d-refs[data-for="${CSS.escape(e.id)}"]`);
+      if (box) box.innerHTML = renderBacklinks(e);
+    }, 0);
   },
 };
 
@@ -2874,7 +3219,7 @@ const Importer = {
           <button data-act="edit">Edit fields…</button>
           <button data-act="raw" title="Discard structure, keep the text">Save as raw text</button>
         </div>
-        ${c.showPreview ? `<div class="pc-preview d-body"><div class="d-sub">${esc(subtitleOf(e))}</div>${renderEntryBody(e)}</div>` : ''}
+        ${c.showPreview ? `<div class="pc-preview d-body"><div class="d-sub">${esc(subtitleOf(e))}</div>${(Linker.begin(null), renderEntryBody(e))}</div>` : ''}
       </div>`;
     }).join('');
     $('#saveParsedBtn').disabled = !this.candidates.some((c) => c.include);
@@ -3092,17 +3437,18 @@ function wireEvents() {
     // Linked rows (e.g. a class's subclasses), parent-class and source chips.
     const linkRow = ev.target.closest('.row');
     if (linkRow) {
-      if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.open(linkRow.dataset.id);
+      if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.navigate(linkRow.dataset.id);
       return;
     }
     const openEl = ev.target.closest('[data-open]');
-    if (openEl) { App.open(openEl.dataset.open); return; }
+    if (openEl) { ev.preventDefault(); if (Peek.el) Peek.el.hidden = true; App.navigate(openEl.dataset.open); return; }
+    if (ev.target.closest('[data-act="nav-back"]')) { App.goBack(); return; }
     const srcEl = ev.target.closest('[data-source]');
     if (srcEl) { App.setSource(srcEl.dataset.source, { toSearch: true }); return; }
     const act = ev.target.closest('[data-act]')?.dataset.act;
     const e = App.entries.get(App.currentId);
     if (!act) return;
-    if (act === 'back') { document.body.classList.remove('show-detail'); setUrlHash(''); return; }
+    if (act === 'back') { App.backStack = []; document.body.classList.remove('show-detail'); setUrlHash(''); return; }
     if (!e) return;
     if (act === 'fav') App.toggleFav(e.id);
     else if (act === 'edit') {
@@ -3111,6 +3457,7 @@ function wireEvents() {
     } else if (act === 'export') download(slugify(e.name) + '.json', JSON.stringify(exportPayload([e]), null, 2));
     else if (act === 'copy') {
       const tmp = document.createElement('div');
+      Linker.begin(e.id);
       tmp.innerHTML = `<h2>${esc(e.name)}</h2>` + renderEntryBody(e);
       try { await navigator.clipboard.writeText(tmp.innerText); toast('Copied', 'ok'); } catch { toast('Clipboard unavailable', 'warn'); }
     } else if (act === 'raw') { const box = $('.raw-box', $('#detail')); if (box) box.hidden = !box.hidden; }
@@ -3222,6 +3569,18 @@ function wireEvents() {
     return msg;
   }));
 
+  // Browser back after following links
+  window.addEventListener('popstate', (ev) => {
+    const id = ev.state && ev.state.dndId;
+    const m = /^#\/e\/(.+)$/.exec(location.hash);
+    const target = id || (m && decodeURIComponent(m[1]));
+    if (target && App.entries.has(target)) {
+      if (App.backStack[App.backStack.length - 1] === target) App.backStack.pop();
+      App.showDetail(target);
+      document.body.classList.add('show-detail');
+    } else { App.backStack = []; document.body.classList.remove('show-detail'); }
+  });
+
   // Hash routing (deep links to entries)
   window.addEventListener('hashchange', () => {
     const m = /^#\/e\/(.+)$/.exec(location.hash);
@@ -3255,7 +3614,9 @@ function wireEvents() {
       else if (e.key === 'Escape') { if (q.value) { q.value = ''; App.query = ''; App.runSearch(); } else q.blur(); }
       return;
     }
+    if (e.altKey && e.key === 'ArrowLeft' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Backspace' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
     if (e.key === 'f' && App.currentId) App.toggleFav(App.currentId);
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
     else if (e.key === 'j' || e.key === 'ArrowDown') { e.preventDefault(); App.moveCursor(1); }
@@ -3469,6 +3830,21 @@ Once on each of your turns when you hit a creature with a weapon, you can deal a
 Level 7: Banked Coals
 When you finish a Short Rest, you and your bonded creature each regain Hit Points equal to your Wisdom modifier.`,
   },
+  {
+    label: '5. Sage Advice (Q./A. pairs under topic headings)',
+    text: `Sage Advice Compendium
+Spells
+Q. If I cast Fireball in a small room, does the explosion expand to fill a larger space?
+A. No. Fireball always creates a 20-foot-radius Sphere. The fire spreads around corners, but it never reaches beyond that Sphere.
+Q. Can the Shield spell stop Magic Missile?
+A. Yes. While Shield is active, you take no damage from Magic Missile; the darts still hit, but deal no damage to you.
+Monsters
+Q. Does a Goblin's Nimble Escape let it Hide in plain sight?
+A. No. Nimble Escape lets the Goblin take the Hide action as a Bonus Action, but it still needs a way to hide, such as Heavy Obscurement or cover.
+Magic Items
+Q. Can I put a Bag of Holding inside another extradimensional space?
+A. Doing so destroys both items and opens a gate to the Astral Plane, as the Bag of Holding description explains.`,
+  }
 ];
 
 
@@ -3501,6 +3877,7 @@ async function boot() {
     b.hidden = false;
   }
   VList.init();
+  Peek.init();
   wireEvents();
   App.setTab('');
 

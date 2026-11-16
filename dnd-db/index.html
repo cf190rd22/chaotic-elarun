@@ -267,6 +267,12 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 .tx-meta { margin-top: -2px; color: var(--muted); font-style: italic; font-size: 14px; }
 .tbl-cap { font: 700 14px var(--serif); margin: 14px 0 4px; }
 .tbl-cap + .tbl-wrap { margin-top: 0; }
+/* monster families and quotes */
+.mon-desc { font-style: italic; color: var(--muted); }
+.mon-desc p { margin: 0 0 8px; }
+blockquote.quote { margin: 14px 0; padding: 8px 14px; border-left: 3px solid var(--accent-border); background: var(--panel); border-radius: 0 8px 8px 0; }
+blockquote.quote p { font-style: italic; margin: 0 0 4px; }
+blockquote.quote cite { display: block; font-size: 13px; color: var(--muted); font-style: normal; }
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -1433,12 +1439,28 @@ const Parsers = (() => {
   const CREDIT_KEEP = /^(?:(?:BONUS |LEGENDARY |LAIR |MYTHIC |VILLAIN )?ACTIONS|REACTIONS|TRAITS|SPELLCASTING|REGIONAL EFFECTS|LAIR|STR|DEX|CON|INT|WIS|CHA|MOD|SAVE|AC|HP|CR|XP|PB|DC)$/;
   const isCaption = (c) => c.length < 100 && !/[\t:\[\]]/.test(c) && /^[A-Z]/.test(c) && /\s[a-z]/.test(c) && !isTitleCaseName(c.replace(/[.!?]$/, ''))
     && (!/[.!?]$/.test(c) || c.length <= 70);
+  // 2025 Monster Manual credits are names in ordinary case, left with a trailing space by the copy.
+  const reNameCredit = /^[A-Z][\p{L}'’.-]+(?: +(?:(?:de|da|di|del|van|von|der|la|le|du) +)?[A-Z][\p{L}'’.-]+){1,3}$/u;
   function stripCredits(text) {
     const L = text.split('\n');
     const blank = (i) => i < 0 || i >= L.length || !L[i].trim();
     const out = [];
+    // Only trust the trailing space when few lines have one (some copies pad every line).
+    const nonBlank = L.filter((l) => l.trim()).length;
+    const padded = L.filter((l) => /\S +$/.test(l)).length;
+    const nameCredits = padded > 0 && padded <= Math.max(2, nonBlank * 0.15);
     for (let i = 0; i < L.length; i++) {
       const t = L[i].trim();
+      if (nameCredits && / $/.test(L[i]) && reNameCredit.test(t) && !CREDIT_KEEP.test(t)) {
+        let j = i + 1;
+        while (j < L.length && !L[j].trim()) j++;
+        if (j < L.length && isCaption(L[j].trim())) {
+          j++;
+          while (j < L.length && /^[a-z]/.test(L[j].trim())) j++;
+          i = j - 1;
+        }
+        continue;
+      }
       if (/^[A-Z][A-Z .'’-]{2,40}$/.test(t) && /[A-Z]{3}/.test(t) && blank(i - 1) && blank(i + 1) && !CREDIT_KEEP.test(t)) {
         let j = i + 1;
         while (j < L.length && !L[j].trim()) j++;
@@ -1659,7 +1681,7 @@ const Parsers = (() => {
   ]);
   const reMonSection = /^(traits|special traits|actions|bonus actions|reactions|legendary actions|mythic actions|lair actions|regional effects|villain actions)$/i;
   // Lines that belong to the ability-score grid in any of its copy-paste shapes.
-  const reAbilityish = /^(?:(?:str|dex|con|int|wis|cha)\b|mod\b|save\b|score\b|\d{1,2}\s*(?:\(\s*[+-]?\d+\s*\))?(?:\s+[+-]\d+){0,2}\s*$|[+-]\d+(?:\s+[+-]\d+)?\s*$|\(\s*[+-]\d+\s*\)\s*$)/i;
+  const reAbilityish = /^(?:(?:str|dex|con|int|wis|cha)\b|ability\b|mod\b|save\b|score\b|\d{1,2}\s*(?:\(\s*[+-]?\d+\s*\))?(?:\s+[+-]\d+){0,2}\s*$|[+-]\d+(?:\s+[+-]\d+)?\s*$|\(\s*[+-]\d+\s*\)\s*$)/i;
 
   function extractAbilities(text) {
     const out = {};
@@ -1720,6 +1742,8 @@ const Parsers = (() => {
             let val = m.rest;
             if (!val && i + 1 < lines.length && !matchLabel(lines[i + 1], MON_LABELS) && !reMonSection.test(lines[i + 1])) val = lines[++i];
             if (val) f[m.key] = f[m.key] ? f[m.key] + ', ' + val : val;
+            // 2024: "AC 16 Initiative +3 (13)" on one line
+            if (m.key === 'AC' && /\sInitiative\s/i.test(f.AC || '')) { const [ac, ini] = f.AC.split(/\s+Initiative\s+/i); f.AC = ac.trim(); f.Initiative = ini.trim(); }
             continue;
           }
           if (L.length < 80 && reAbilityish.test(L)) continue;
@@ -2352,7 +2376,22 @@ const Parsers = (() => {
 
   /** null = nothing to change; otherwise the entries that replace e (the first keeps e's id). */
   function tidyEntry(e) {
-    if (e.type === 'monster') return null;
+    if (e.type === 'monster') {
+      // 2025 stat blocks: "AC 16 Initiative +3 (13)" and the "Ability Score Mod Save" grid stopped
+      // the old parser early, losing Skills/Senses/Languages/CR. Re-parse unedited ones.
+      if (!/\sInitiative\s/i.test(e.fields.AC || '')) return null;
+      const edited = Date.parse(e.updated) - Date.parse(e.created) > 5000;
+      if (e.raw && !edited) {
+        const n = monster.parse(toLines(normalise(e.raw)));
+        return [{ ...n, id: e.id, fav: e.fav, created: e.created, updated: e.updated, name: e.name, type: 'monster',
+          source: n.source || e.source, tags: [...new Set([...(e.tags || []), ...n.tags])], fields: { ...e.fields, ...n.fields } }];
+      }
+      const c = JSON.parse(JSON.stringify(e));
+      const [ac, ini] = c.fields.AC.split(/\s+Initiative\s+/i);
+      c.fields.AC = ac.trim();
+      c.fields.Initiative = c.fields.Initiative || ini.trim();
+      return [c];
+    }
     const edited = Date.parse(e.updated) - Date.parse(e.created) > 5000;
     if (e.raw && ['background', 'species', 'rule', 'other'].includes(e.type) && !edited) {
       const lines = dropCreditLines(toLines(normalise(e.raw)));
@@ -2387,9 +2426,114 @@ const Parsers = (() => {
     return sameJSON(c, e) ? null : [c];
   }
 
+  /* ---------- Monster Manual (2025) families ----------
+     "Aarakocra" / tagline / "Habitat: …; Treasure: …" / lore (tables, lairs, quotes), then one
+     or more stat blocks, each optionally introduced by its name and a short description.
+     A family with several stat blocks (or one with a different name) becomes a family entry
+     (the lore) plus one monster per stat block linked by "Family". A family whose only stat
+     block has its own name (Aboleth) stays one entry with the lore under the stat block. */
+  const reHabitat = /^habitat\s*:/i;
+  const isSBStart = (lines, i) => !!lines[i] && lines[i].length <= 60 && reMeta.test(lines[i + 1] || '')
+    && lines.slice(i + 2, i + 8).some((l) => /^(ac|armou?r class)\b/i.test(l));
+  const isQuoteBy = (l) => /^[—―]\s*\S/.test(l || '');
+  function habitatFields(l) {
+    const f = {};
+    for (const part of String(l).split(/;\s*/)) { const m = /^(habitat|treasure)\s*:\s*(.+)$/i.exec(part.trim()); if (m) f[cap(m[1].toLowerCase())] = m[2].trim(); }
+    return f;
+  }
+  function pick(lines, idx) { const out = idx.map((i) => lines[i]); out.gap = idx.map((i) => !!(lines.gap || [])[i]); return out; }
+  /** Headings for a run of text that has no name line of its own. */
+  const mh = (ls) => { const a = ['', ...ls]; a.gap = [false, ...(ls.gap || [])]; return markHeadings(a).slice(1); };
+
+  function mmSplit(lines) {
+    const heads = [];
+    for (let i = 1; i < lines.length; i++) {
+      if (!reHabitat.test(lines[i])) continue;
+      const twoUp = i >= 2 && isTitleLine(lines[i - 2]) && isTitleLine(lines[i - 1]) && !reHabitat.test(lines[i - 2]);
+      heads.push({ start: twoUp ? i - 2 : i - 1, tag: twoUp ? lines[i - 1] : '', hab: i });
+    }
+    if (!heads.length) return null;
+    const range = (a, b) => Array.from({ length: Math.max(0, b - a) }, (_, k) => a + k);
+    const chunks = [];
+    if (heads[0].start > 0) { const pre = pick(lines, range(0, heads[0].start)); if (pre.join(' ').length >= 25) chunks.push(pre); }
+    heads.forEach((h, k) => {
+      const end = k + 1 < heads.length ? heads[k + 1].start : lines.length;
+      const name = lines[h.start];
+      const place = habitatFields(lines[h.hab]);
+      const sbs = range(h.hab + 1, end).filter((i) => isSBStart(lines, i));
+      const kids = sbs.map((st, j) => {
+        const floor = j ? sbs[j - 1] + 2 : h.hab + 1;
+        let introAt = -1;
+        for (let x = st - 1; x >= floor; x--) if (fold(lines[x]) === fold(lines[st])) { introAt = x; break; }
+        return { st, introAt, body: [], intro: [] };
+      });
+      const lore = [];
+      let cur = null, inIntro = false;
+      for (let i = h.hab + 1; i < end; i++) {
+        const ki = kids.find((c) => c.introAt === i);
+        if (ki) { cur = ki; inIntro = true; continue; }
+        const ks = kids.find((c) => c.st === i);
+        if (ks) { cur = ks; inIntro = false; ks.body.push(i); continue; }
+        if (!cur) { lore.push(i); continue; }
+        if (inIntro) { cur.intro.push(i); continue; }
+        // A quote after a stat block ("…" / "—Levity Quickstitch") belongs to the family, not the last action.
+        if (isQuoteBy(lines[i + 1])) { lore.push(i, i + 1); i++; continue; }
+        if (isQuoteBy(lines[i])) { lore.push(i); continue; }
+        cur.body.push(i);
+      }
+      const loreLines = pick(lines, lore);
+      if (kids.length === 1 && fold(lines[kids[0].st]) === fold(name)) {
+        const c = pick(lines, kids[0].body);
+        c.extra = { fields: { ...(h.tag ? { Tagline: h.tag } : {}), ...place }, intro: pick(lines, kids[0].intro), lore: loreLines };
+        c.hint = monster;
+        chunks.push(c);
+        return;
+      }
+      const g = pick(lines, [h.start, ...(h.tag ? [h.start + 1] : []), h.hab, ...lore]);
+      g.hint = monsterGroup;
+      chunks.push(g);
+      for (const c of kids) {
+        const ch = pick(lines, c.body);
+        ch.extra = { fields: { Family: name, ...place }, intro: pick(lines, c.intro) };
+        ch.hint = monster;
+        chunks.push(ch);
+      }
+    });
+    return chunks;
+  }
+
+  /** Family / description / lore around a stat block (from mmSplit). */
+  function applyExtra(r, x) {
+    if (!x || r.type !== 'monster') return r;
+    r.fields = { ...x.fields, ...r.fields };
+    const intro = x.intro && x.intro.length ? mh(x.intro).join('\n') : '';
+    if (intro) r.text = [intro, r.text].filter(Boolean).join('\n');
+    if (x.lore && x.lore.length) r.sections = [...(r.sections || []), { heading: 'Lore', intro: mh(x.lore).join('\n'), items: [] }];
+    return r;
+  }
+
+  const monsterGroup = {
+    type: 'monster', label: 'Monster family (lore)',
+    detect(lines) {
+      return lines.slice(1, 4).some((l) => reHabitat.test(l)) && !lines.slice(0, 12).some((l, i) => isSBStart(lines, i)) ? 0.8 : 0;
+    },
+    parse(input) {
+      const f = {};
+      let i = 1;
+      if (!reHabitat.test(input[1] || '') && reHabitat.test(input[2] || '')) { f.Tagline = input[1]; i = 2; }
+      if (reHabitat.test(input[i] || '')) { Object.assign(f, habitatFields(input[i])); i++; }
+      const lore = input.slice(i);
+      lore.gap = (input.gap || []).slice(i);
+      const { lines, source, tags } = cleanCommon(['-', ...mh(lore)]);
+      const body = lines.slice(1).join('\n');
+      return { type: 'monster', name: input[0], source, tags, fields: f, abilities: null,
+        sections: body ? [{ heading: 'Lore', intro: body, items: [] }] : [], text: '', warnings: [] };
+    },
+  };
+
   /* ---------- registry + pipeline ---------- */
   function register(p) { registry.push(p); }
-  [spell, monster, klass, subclass, item, feat, species, background, condition, rule, sage].forEach(register);
+  [spell, monster, monsterGroup, klass, subclass, item, feat, species, background, condition, rule, sage].forEach(register);
 
   /** Pick the best parser for a chunk. */
   function detect(lines) {
@@ -2406,7 +2550,7 @@ const Parsers = (() => {
   function runParser(parser, lines, score, forcedType) {
     const raw = lines.map((l, i) => l + (lines.gap && lines.gap[i] ? '\n' : '')).join('\n');
     try {
-      const r = parser.parse(lines, forcedType);
+      const r = applyExtra(parser.parse(lines, forcedType), lines.extra);
       const warnings = r.warnings || [];
       delete r.warnings;
       return { entry: makeEntry({ ...r, raw }), parser: parser.label, confidence: score, warnings };
@@ -2427,6 +2571,8 @@ const Parsers = (() => {
     for (const b of blocks) {
       const lines = toLines(b);
       if (!lines.length) continue;
+      // Monster Manual families (a "Habitat:" line under the name) split into family + stat blocks.
+      if (!forced || forced.type === 'monster') { const mm = mmSplit(lines); if (mm) { chunks.push(...mm); continue; } }
       // With a forced category only that layout's split rules apply.
       const primary = forced || detect(lines).parser;
       if (primary.splitBlock) { for (const c of primary.splitBlock(lines)) { c.hint = primary; chunks.push(c); } continue; }
@@ -2494,7 +2640,7 @@ const Parsers = (() => {
     return { ...runParser(generic, lines, 0, type), rawLines: lines };
   }
 
-  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry, hooks, CORE_CLASSES, isItemLine, tidyEntry, isStatMeta: (l) => reMeta.test(String(l).trim()) };
+  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry, hooks, CORE_CLASSES, isItemLine, tidyEntry, isQuoteBy, isStatMeta: (l) => reMeta.test(String(l).trim()) };
 })();
 
 
@@ -2534,6 +2680,7 @@ function rowChip(e) {
       return n === 0 ? { t: 'Cantrip', h: null } : { t: 'Lvl ' + n, h: LEVEL_HUE[n] };
     }
     case 'monster': {
+      if (isMonGroup(e)) return { t: 'Family', h: 35 };
       if (!f.CR) return null;
       const c = crNum(f.CR);
       return { t: 'CR ' + String(f.CR).trim().split(/[\s(]/)[0], h: c < 1 ? null : c < 5 ? 130 : c < 11 ? 215 : c < 17 ? 275 : 18 };
@@ -2555,7 +2702,7 @@ function rowMeta(e) {
   const f = e.fields;
   switch (e.type) {
     case 'spell': return [f.School, f.Classes].filter(Boolean).join(' · ');
-    case 'monster': return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(' · ');
+    case 'monster': return isMonGroup(e) ? f.Tagline || 'Monster family' : [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment, f.Family ? f.Family + ' family' : ''].filter(Boolean).join(' · ');
     case 'item': return [f.Type, f.Attunement ? 'requires attunement' : ''].filter(Boolean).join(' · ');
     case 'feat': return [f.Prerequisite ? 'Prerequisite: ' + f.Prerequisite : (f.Category || ''), e.source].filter(Boolean).join(' · ');
     case 'subclass': return [f.Tagline, e.source].filter(Boolean).join(' · ') || (f.Class ? f.Class + ' subclass' : 'Subclass');
@@ -2598,6 +2745,8 @@ const FACETS = {
     { key: 'area', label: 'Area', get: (e) => { const a = spellArea(e); return a ? cap(a.shape) : 'None'; } },
   ],
   monster: [
+    { key: 'family', label: 'Family', get: (e) => e.fields.Family || (isMonGroup(e) ? e.name : null) },
+    { key: 'habitat', label: 'Habitat', get: (e) => (e.fields.Habitat ? e.fields.Habitat.split(/,\s*(?![^(]*\))/).map((x) => x.replace(/\s*\(.*\)$/, '').trim()) : null) },
     { key: 'cr', label: 'CR', get: (e) => (e.fields.CR ? String(e.fields.CR).trim().split(/[\s(]/)[0] : null), order: (a, b) => crNum(a) - crNum(b) },
     { key: 'ctype', label: 'Type', get: (e) => (e.fields['Creature Type'] ? cap(e.fields['Creature Type'].split(/[\s(]/)[0].toLowerCase()) : null) },
     { key: 'size', label: 'Size', get: (e) => e.fields.Size || null, order: (a, b) => SIZE_ORDER.indexOf(a.split(' ')[0].toLowerCase()) - SIZE_ORDER.indexOf(b.split(' ')[0].toLowerCase()) },
@@ -2622,6 +2771,7 @@ const SORTS = {
   'level-desc': { label: 'Level (high first)', fn: (a, b) => lvlNum(b) - lvlNum(a), types: ['spell'] },
   school: { label: 'School', fn: (a, b) => (a.fields.School || '~').localeCompare(b.fields.School || '~'), types: ['spell'] },
   cr: { label: 'CR', fn: (a, b) => crNum(a.fields.CR) - crNum(b.fields.CR), types: ['monster'] },
+  family: { label: 'Family', fn: (a, b) => fold(a.fields.Family || a.name).localeCompare(fold(b.fields.Family || b.name)) || isMonGroup(b) - isMonGroup(a) || crNum(a.fields.CR) - crNum(b.fields.CR), types: ['monster'] },
   'cr-desc': { label: 'CR (high first)', fn: (a, b) => crNum(b.fields.CR) - crNum(a.fields.CR), types: ['monster'] },
   rarity: { label: 'Rarity', fn: (a, b) => rarityRank(a.fields.Rarity) - rarityRank(b.fields.Rarity), types: ['item'] },
   itype: { label: 'Item type', fn: (a, b) => (a.fields.Type || '~').localeCompare(b.fields.Type || '~'), types: ['item'] },
@@ -2692,8 +2842,9 @@ function formatText(text, { plainFirst = false } = {}) {
   };
   let listMode = false; // after "…:", short lines are list items
   let afterHead = false;
-  for (const line of String(text).split('\n')) {
-    const L = line.trim();
+  const LS = String(text).split('\n');
+  for (let li = 0; li < LS.length; li++) {
+    const L = LS[li].trim();
     if (!L) { if (!listMode) flush(); continue; }
     const hm = /^(#{2,4})\s*(.+)$/.exec(L);
     if (hm) {
@@ -2711,6 +2862,13 @@ function formatText(text, { plainFirst = false } = {}) {
     if (b) { list.push(b[1]); continue; }
     if (listMode && L.length <= 90 && !/[.!?]$/.test(L)) { list.push(L); continue; }
     flush();
+    let nx = li + 1;
+    while (nx < LS.length && !LS[nx].trim()) nx++;
+    if (!Parsers.isQuoteBy(L) && nx < LS.length && Parsers.isQuoteBy(LS[nx].trim())) {
+      out.push(`<blockquote class="quote"><p>${rich(L)}</p><cite>${esc(LS[nx].trim())}</cite></blockquote>`);
+      li = nx; first = false; listMode = false;
+      continue;
+    }
     listMode = /:$/.test(L);
     // Item bodies ("Melee Attack Roll: +4, reach 5 ft. Hit: ...") must not get a fake bold lead-in.
     out.push(`<p>${first ? rich(L) : inline(L)}</p>`);
@@ -2728,7 +2886,7 @@ function inline(L) {
 function renderKV(fields, skip = []) {
   const rows = Object.entries(fields).filter(([k]) => !skip.includes(k));
   if (!rows.length) return '';
-  return '<dl class="facts">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : rich(v, { allTypes: /resist|immun|vulnerab/i.test(k) })).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+  return '<dl class="facts">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : (/^languages$/i.test(k) ? esc(v) : rich(v, { allTypes: /resist|immun|vulnerab/i.test(k) }))).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
 }
 /** Short cells ("01–50", "+2", "3rd") never wrap; long ones flow. */
 const tdClass = (c) => (String(c).length <= 12 ? ' class="nw"' : '');
@@ -3175,14 +3333,25 @@ const Renderers = {
   monster(e, { prefix = 'sec' } = {}) {
     const f = e.fields;
     const top = ['AC', 'Initiative', 'HP', 'Speed', 'CR'];
+    const lore = e.sections.filter((s) => s.heading === 'Lore');
+    const secs = e.sections.filter((s) => s.heading !== 'Lore'); // Lore is always last, so indices match
+    const place = prefix === 'sec' ? renderCards({ Habitat: f.Habitat, Treasure: f.Treasure }) : '';
+    if (isMonGroup(e)) {
+      const kids = familyMembers(e);
+      return place + (kids.length ? `<h3>Stat blocks (${kids.length})</h3><div class="static">${kids.map((k) => rowHtml(k, -1)).join('')}</div>` : '')
+        + formatText(e.text) + renderSections(lore, { prefix: 'lore' });
+    }
     Fmt.sb = HIGHLIGHT_TYPES.has(e.type);
+    let sb;
     try {
       const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k}</div><div class="sb-v">${rich(k === 'Speed' ? f[k] : f[k])}</div></div>`).join('');
-      return '<div class="statblock">'
+      sb = '<div class="statblock">'
         + (boxes ? `<div class="sb-top">${boxes}</div>` : '') + renderAbilities(e.abilities)
-        + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment'])
-        + formatText(e.text) + renderSections(e.sections, { runIn: true, prefix }) + '</div>';
+        + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE])
+        + renderSections(secs, { runIn: true, prefix }) + '</div>';
     } finally { Fmt.sb = false; }
+    return place + (e.text ? `<div class="mon-desc">${formatText(e.text)}</div>` : '') + sb
+      + (lore.length ? renderSections(lore, { prefix: 'lore' }) : '');
   },
   class(e) {
     // Subclasses are linked by their "Class" field matching this class's name.
@@ -3200,6 +3369,17 @@ const Renderers = {
   },
 };
 
+/* ---------- Monster families ---------- */
+const MON_PLACE = ['Habitat', 'Treasure', 'Family', 'Tagline'];
+/** A family entry: Monster Manual lore with no stat block of its own. */
+const isMonGroup = (e) => e.type === 'monster' && !e.abilities && !e.fields.AC && !e.fields.HP && !e.fields.CR;
+function familyMembers(g) {
+  const k = fold(g.name).trim();
+  return [...App.entries.values()].filter((x) => x.type === 'monster' && x.id !== g.id && fold(x.fields.Family || '').trim() === k)
+    .sort((a, b) => crNum(a.fields.CR) - crNum(b.fields.CR) || a.name.localeCompare(b.name));
+}
+const findFamily = (name) => { const k = fold(name).trim(); return [...App.entries.values()].find((x) => isMonGroup(x) && fold(x.name).trim() === k); };
+
 /** Subclass entries whose parent class is `className`. */
 function subclassesOf(className) {
   const k = fold(className).trim();
@@ -3211,6 +3391,7 @@ const findClassEntry = (name) => { const k = fold(name).trim(); return [...App.e
 function subtitleOf(e) {
   const f = e.fields;
   if (e.type === 'spell') return spellLine(e);
+  if (e.type === 'monster' && isMonGroup(e)) return 'Monster family';
   if (e.type === 'monster') return [[f.Size, f['Creature Type']].filter(Boolean).join(' '), f.Alignment].filter(Boolean).join(', ');
   if (e.type === 'item') return [f.Type, f.Rarity ? f.Rarity.toLowerCase() : '', f.Attunement ? `(requires attunement${f.Attunement !== 'Required' ? ' ' + f.Attunement : ''})` : ''].filter(Boolean).join(', ').replace(/, \(/, ' (');
   if (e.type === 'subclass') return f.Class ? `${f.Class} Subclass` : 'Subclass';
@@ -3227,6 +3408,10 @@ function subtitleHtml(e, t) {
   if (e.type === 'subclass' && e.fields.Class) {
     const p = findClassEntry(e.fields.Class);
     main = (p ? `<a href="#" class="sub-link" data-open="${esc(p.id)}" title="Open the ${esc(e.fields.Class)} class">${esc(e.fields.Class)}</a>` : esc(e.fields.Class)) + ' subclass';
+  } else if (e.type === 'monster' && e.fields.Family) {
+    const g = findFamily(e.fields.Family);
+    const fam = g ? `<a href="#" class="sub-link" data-open="${esc(g.id)}" title="Open the ${esc(e.fields.Family)} family">${esc(e.fields.Family)}</a>` : esc(e.fields.Family);
+    main = esc(subtitleOf(e)) + `<span class="sep">·</span>${fam} family`;
   } else main = esc(subtitleOf(e) || ({ class: 'Class', species: 'Species', background: 'Background', item: 'Item', monster: 'Monster', spell: 'Spell', feat: 'Feat', other: 'Other' }[e.type] || t.label));
   const src = e.source ? `<span class="sep">·</span><a href="#" class="sub-link" data-source="${esc(fold(e.source).trim())}" title="Show everything from this source">${esc(e.source)}</a>` : '';
   return main + src;
@@ -3458,6 +3643,7 @@ function backlinksOf(e) {
   for (const id of ids) {
     if (id === e.id) continue;
     const o = App.entries.get(id);
+    if (o && isMonGroup(e) && fold(o.fields.Family || '').trim() === fold(e.name).trim()) continue; // listed under "Stat blocks"
     if (o && Linker.mentions(o).has(e.id)) out.push(o);
   }
   return out;
@@ -4477,7 +4663,8 @@ const Importer = {
     const key = fold(c.entry.name) + '|' + c.entry.type, src = fold(c.entry.source).trim();
     let dupId = null;
     for (const e of App.entries.values()) {
-      if (fold(e.name) + '|' + e.type !== key) continue;
+      const famOverOther = c.entry.type === 'monster' && isMonGroup(c.entry) && e.type === 'other' && fold(e.name) === fold(c.entry.name);
+      if (!famOverOther && fold(e.name) + '|' + e.type !== key) continue;
       const es = fold(e.source).trim();
       if (src && es && src !== es) continue; // same name from another book is a different entry
       dupId = e.id; break;
@@ -4606,7 +4793,7 @@ const Importer = {
         if (c.dup === 'skip') continue;
         if (c.dup === 'replace') {
           const old = App.entries.get(c.dupId);
-          if (old) { e.id = old.id; e.fav = old.fav; e.created = old.created; }
+          if (old) { e.id = old.id; e.fav = old.fav; e.created = old.created; if (old.type !== e.type) await App.remove([old.id]); }
         }
       }
       e.updated = nowIso();
@@ -4834,7 +5021,7 @@ const Theme = {
 };
 
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
-const TIDY_VERSION = 2;
+const TIDY_VERSION = 3;
 const Tidy = {
   async run({ manual = false } = {}) {
     const olds = [], news = [];

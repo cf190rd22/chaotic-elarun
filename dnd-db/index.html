@@ -144,9 +144,11 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .mods { display: inline-flex; flex-wrap: wrap; gap: 4px; }
 .mod-box { border: 1px solid var(--border); background: var(--panel-2); border-radius: 6px; padding: 0 7px; white-space: nowrap; }
 /* emphasis inside stat blocks */
-.hl-atk { color: var(--accent); }
+/* Attack rolls (teal) and save DCs (plum) get a tinted pill so they never blend into damage colours or links. */
+.hl-atk, .hl-save { padding: 0 4px; border-radius: 4px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.hl-atk { color: hsl(172 75% calc(var(--hl-l) - 10%)); background: hsl(172 60% 45% / .13); }
 .hl-hit { font-weight: 600; }
-.hl-save { color: hsl(205 70% var(--hl-l)); }
+.hl-save { color: hsl(328 62% var(--hl-l)); background: hsl(328 60% 50% / .12); }
 .hl-cond { color: hsl(290 45% var(--hl-l)); }
 .hl-dice { color: var(--text); }
 .hl-dmg { color: hsl(var(--dh, 0) var(--ds, 0%) var(--hl-l)); }
@@ -530,7 +532,6 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
 .lvl { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-border); font-weight: 700; }
 .statblock { border-top: 2px solid var(--amber-border); border-bottom: 2px solid var(--amber-border); border-radius: 8px; }
 .ab-k { color: var(--amber); }
-.hl-atk { color: var(--accent); }
 .chipb { border-radius: 6px; }
 button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 .toc { background: var(--panel); }
@@ -3595,7 +3596,18 @@ const Linker = {
     const gapAfter = T[i + n] ? text.slice(T[i + n - 1].e, T[i + n].s) : '';
     // "Melee Attack Roll: +4" is stat-block notation, not a reference to the rule.
     if (/^(melee|ranged)$/.test(before) && /^attack/.test(T[i].f)) return null;
-    const spellCtx = /^(cast|casts|casting|learn|learns|prepare|prepared)$/.test(before) || /^(spell|spells|cantrip)$/.test(after);
+    const reCastVerb = /^(cast|casts|casting|learn|learns|prepare|prepared)$/;
+    // Spell-list lines ("At Will: Fly, Shield", "2/Day Each: …", "3rd level (3 slots): …"): every name after the colon is a spell.
+    const listColon = /^\s*(?:at will|\d+\/day(?: each)?|cantrips?(?: \([^)]*\))?|\d+(?:st|nd|rd|th)[- ]level(?: \([^)]*\))?|level \d+(?: \([^)]*\))?)\s*:/i.exec(text);
+    // "casts Counterspell or Shield": the list after a casting verb continues past "or" / "and" / commas.
+    let castList = false;
+    if (/^(or|and)$/.test(before) || /,\s*$/.test(gapBefore)) {
+      for (let k = i - 1; k >= Math.max(0, i - 8); k--) {
+        if (/[.!?;:]/.test(text.slice(T[k].e, T[k + 1].s))) break;
+        if (reCastVerb.test(T[k].f)) { castList = true; break; }
+      }
+    }
+    const spellCtx = reCastVerb.test(before) || /^(spell|spells|cantrip)$/.test(after) || castList || (listColon && T[i].s >= listColon[0].length);
     const byPriority = (list) => list.slice().sort((a, b) => LINK_PRIORITY.indexOf(a.type) - LINK_PRIORITY.indexOf(b.type))[0];
     if (spellCtx) { const sp = cands.find((e) => e.type === 'spell'); if (sp) return sp; }
     if (after === 'condition' || after === 'conditions') { const c = cands.find((e) => e.type === 'condition' || e.fields.Category === 'Condition'); if (c) return c; }

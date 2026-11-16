@@ -244,6 +244,10 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 .sc-wrap .facts { break-inside: avoid; margin-bottom: 8px; font-size: 13.5px; }
 .sc-wrap .facts dt { text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--text); }
 #askDlg:has(.sc-wrap) { width: min(860px, 96vw); }
+/* stat block inside a feature (companions, summons) */
+.embedded-sb { margin: 12px 0 4px; }
+.embedded-sb .sb-title { font: 700 18px var(--serif); margin: 0; }
+.embedded-sb .sb-meta { color: var(--muted); font-style: italic; font-size: 14px; margin: 0 0 6px; }
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -2256,7 +2260,7 @@ const Parsers = (() => {
     return { ...runParser(generic, lines, 0, type), rawLines: lines };
   }
 
-  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry, hooks, CORE_CLASSES };
+  return { register, parseText, reparseAs, asRaw, normalise, toLines, registry, hooks, CORE_CLASSES, isStatMeta: (l) => reMeta.test(String(l).trim()) };
 })();
 
 
@@ -2564,8 +2568,8 @@ function emphasise(html, { allTypes = false } = {}) {
   return html.split(/(<[^>]+>)/).map((seg) => {
     if (seg.startsWith('<')) return seg;
     return seg
-      .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)\s*([+-]?\d+(?: to hit)?)?/g,
-        (m, a, b) => `<b class="hl-atk">${a}${b ? ' ' + b : ''}</b>`)
+      .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)(\s*)([+-]?\d+(?: to hit)?)?/g,
+        (m, a, sp, b) => (b ? `<b class="hl-atk">${a} ${b}</b>` : `<b class="hl-atk">${a}</b>${sp}`))
       .replace(/\bHit:/g, '<i class="hl-hit">Hit:</i>')
       .replace(new RegExp(`\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
         (m) => `<b class="hl-save">${m}</b>`)
@@ -2696,17 +2700,75 @@ function featureAnchors(e) {
 }
 
 /** Sections and their features. `runIn` (stat blocks): "Bite. Melee Attack Roll…" on one paragraph. */
-function renderSections(sections, { runIn = false } = {}) {
-  return sections.map((s, si) => `<h3 data-anchor="sec-${si}">${esc(s.heading)}</h3>` + formatText(s.intro)
+/**
+ * Find a stat block inside a feature's text: a "Medium Undead, Neutral" line with AC
+ * close below it. Returns the text before it, the creature's name (the line above, or
+ * the feature's own name) and the stat block lines; null if there isn't one. The stat
+ * block is taken to run to the end of the feature.
+ */
+function findStatblock(text, ownerName) {
+  const lines = String(text || '').split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    if (!Parsers.isStatMeta(lines[i])) continue;
+    if (!lines.slice(i + 1, i + 7).some((l) => /^\s*(AC|Armou?r Class)\b/i.test(l))) continue;
+    const above = i > 0 ? lines[i - 1].trim() : '';
+    const named = !!above && above.length <= 60 && !/[.:;!?,]$/.test(above);
+    // Where does it end? After its Traits/Actions entries, the first ordinary paragraph of
+    // feature prose ("The grim is Friendly to you…") hands back to the feature text.
+    const reSection = /^(traits|actions|bonus actions|reactions|legendary actions|mythic actions|lair actions)$/i;
+    const isLead = (l) => { const m = /^([A-Z0-9][^.!?]{0,60}?(?:\([^)]{0,60}\))?)\.\s+\S/.exec(l); return !!m && isTitleCaseName(m[1]); };
+    let end = lines.length, inSection = false, hadItem = false;
+    for (let j = i + 1; j < lines.length; j++) {
+      const L = lines[j].trim(), prev = lines[j - 1].trim();
+      if (!L) continue;
+      if (reSection.test(L)) { inSection = true; hadItem = false; continue; }
+      if (!inSection) continue;
+      if (isLead(L)) { hadItem = true; continue; }
+      const prose = hadItem && !/:$/.test(prev) && !L.includes('\t') && !/^[^.]{0,30}:/.test(L)
+        && /^(The|A|An|When|If|While|In addition|Once|You|Your|This|As|Whenever|Each)\b/.test(L);
+      if (prose) { end = j; break; }
+    }
+    return {
+      before: lines.slice(0, named ? i - 1 : i).join('\n'), name: named ? above : ownerName, titled: named,
+      body: lines.slice(i, end).join('\n'), after: lines.slice(end).join('\n'),
+    };
+  }
+  return null;
+}
+
+let sbSeq = 0;
+/** Render an embedded stat block with the full monster layout (header, chips, abilities, actions). */
+function renderEmbeddedStatblock(name, body, showTitle) {
+  const mon = Parsers.registry.find((p) => p.type === 'monster');
+  const r = mon.parse(Parsers.toLines(Parsers.normalise(name + '\n' + body)));
+  delete r.warnings;
+  const ent = makeEntry({ ...r, name });
+  const title = name === name.toUpperCase() ? cap(name.toLowerCase()) : name; // "VESTIGE COMPANION" -> "Vestige Companion"
+  const savedAnchor = Linker.curAnchor;
+  const html = `<div class="embedded-sb">${showTitle ? `<div class="sb-title">${esc(title)}</div>` : ''}`
+    + `<div class="sb-meta">${esc(subtitleOf(ent))}</div>${Renderers.monster(ent, { prefix: 'sb' + (++sbSeq) })}</div>`;
+  Linker.curAnchor = savedAnchor;
+  return html;
+}
+
+/** Feature text, with any stat block inside it drawn as a stat block. */
+function featureText(text, ownerName) {
+  const sb = findStatblock(text, ownerName);
+  if (!sb) return formatText(text, { plainFirst: true });
+  return formatText(sb.before, { plainFirst: true }) + renderEmbeddedStatblock(sb.name, sb.body, sb.titled) + featureText(sb.after, ownerName);
+}
+
+function renderSections(sections, { runIn = false, prefix = 'sec' } = {}) {
+  return sections.map((s, si) => `<h3 data-anchor="${prefix}-${si}">${esc(s.heading)}</h3>` + formatText(s.intro)
     + s.items.map((it, ii) => {
-      Linker.curAnchor = `sec-${si}-${ii}`;
+      Linker.curAnchor = `${prefix}-${si}-${ii}`;
       let html;
       if (runIn) {
         const [first, ...rest] = String(it.text || '').split('\n');
-        html = `<p class="sb-item" data-anchor="sec-${si}-${ii}"><b><i>${esc(it.name)}.</i></b> ${rich(first)}</p>` + formatText(rest.join('\n'));
+        html = `<p class="sb-item" data-anchor="${prefix}-${si}-${ii}"><b><i>${esc(it.name)}.</i></b> ${rich(first)}</p>` + formatText(rest.join('\n'));
       } else {
         const lvl = it.level ? `<span class="lvl" title="Level ${it.level}">${it.level}</span>` : '';
-        html = `<div class="feat"><h4 data-anchor="sec-${si}-${ii}">${lvl}${esc(it.name)}</h4>` + formatText(it.text, { plainFirst: true }) + '</div>';
+        html = `<div class="feat"><h4 data-anchor="${prefix}-${si}-${ii}">${lvl}${esc(it.name)}</h4>` + featureText(it.text, it.name) + '</div>';
       }
       Linker.curAnchor = null;
       return html;
@@ -2771,7 +2833,7 @@ const Renderers = {
     }
     return html;
   },
-  monster(e) {
+  monster(e, { prefix = 'sec' } = {}) {
     const f = e.fields;
     const top = ['AC', 'Initiative', 'HP', 'Speed', 'CR'];
     Fmt.sb = HIGHLIGHT_TYPES.has(e.type);
@@ -2780,7 +2842,7 @@ const Renderers = {
       return '<div class="statblock">'
         + (boxes ? `<div class="sb-top">${boxes}</div>` : '') + renderAbilities(e.abilities)
         + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment'])
-        + formatText(e.text) + renderSections(e.sections, { runIn: true }) + '</div>';
+        + formatText(e.text) + renderSections(e.sections, { runIn: true, prefix }) + '</div>';
     } finally { Fmt.sb = false; }
   },
   class(e) {
@@ -2976,7 +3038,16 @@ const Linker = {
   },
 
   pick(ents, text, T, i, n) {
-    if (ents[0] && ents[0].local) return ents[0].anchor === this.curAnchor ? null : ents[0];
+    if (ents[0] && ents[0].local) {
+      if (ents[0].anchor === this.curAnchor) return null;
+      // A one-word feature name inside a longer name ("Grim" in "Grim Harbinger Spells") isn't a reference.
+      if (n === 1) {
+        const next = T[i + n], prevT = T[i - 1];
+        if (next && /^\s$/.test(text.slice(T[i].e, next.s)) && /^\p{Lu}/u.test(next.o)) return null;
+        if (prevT && /^\s$/.test(text.slice(prevT.e, T[i].s)) && /^\p{Lu}/u.test(prevT.o) && !/[.!?:]\s*$/.test(text.slice(0, T[i].s))) return null;
+      }
+      return ents[0];
+    }
     const cands = ents.filter((e) => e.id !== this.self);
     if (!cands.length) return null;
     const before = T[i - 1] ? T[i - 1].f : '', after = T[i + n] ? T[i + n].f : '';
@@ -4022,8 +4093,8 @@ function textToSections(text) {
   let sec = null, item = null;
   for (const line of text.split('\n')) {
     let m;
-    if ((m = /^##\s+(?!#)(.*)$/.exec(line))) { sec = { heading: m[1].trim(), intro: '', items: [] }; out.push(sec); item = null; continue; }
-    if ((m = /^###\s+(?:\[(\d+)\]\s*)?(.*)$/.exec(line))) {
+    if ((m = /^##(?!#)\s*(.*)$/.exec(line))) { sec = { heading: m[1].trim(), intro: '', items: [] }; out.push(sec); item = null; continue; }
+    if ((m = /^###\s*(?:\[(\d+)\]\s*)?(.*)$/.exec(line))) {
       if (!sec) { sec = { heading: 'Details', intro: '', items: [] }; out.push(sec); }
       item = { name: m[2].trim(), level: m[1] ? +m[1] : null, text: '' };
       sec.items.push(item);

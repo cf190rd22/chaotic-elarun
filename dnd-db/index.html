@@ -144,19 +144,22 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .mods { display: inline-flex; flex-wrap: wrap; gap: 4px; }
 .mod-box { border: 1px solid var(--border); background: var(--panel-2); border-radius: 6px; padding: 0 7px; white-space: nowrap; }
 /* emphasis inside stat blocks */
-/* Attack rolls (teal) and save DCs (plum) get a tinted pill so they never blend into damage colours or links. */
-.hl-atk, .hl-save { padding: 0 4px; border-radius: 4px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-.hl-atk { color: hsl(172 75% calc(var(--hl-l) - 10%)); background: hsl(172 60% 45% / .13); }
+/* What you scan for at a glance - the to-hit bonus (teal) and damage (its type's colour) - sit on tinted pills.
+   Save DCs are bold plum text; the "Melee Weapon Attack:" wording is plain bold. */
+.hl-tohit, .hl-dmg { padding: 0 5px; border-radius: 5px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.hl-atk { font-weight: 600; color: var(--text); }
+.hl-tohit { color: hsl(172 75% var(--hl-d)); background: hsl(172 60% 45% / .16); }
 .hl-hit { font-weight: 600; }
-.hl-save { color: hsl(328 62% var(--hl-l)); background: hsl(328 60% 50% / .12); }
+.hl-save { color: hsl(328 62% var(--hl-l)); }
 .hl-cond { color: hsl(290 45% var(--hl-l)); }
 .hl-dice { color: var(--text); }
-.hl-dmg { color: hsl(var(--dh, 0) var(--ds, 0%) var(--hl-l)); }
-:root { --hl-l: 38%; } :root[data-theme="dark"] { --hl-l: 70%; }
+.hl-dmg { color: hsl(var(--dh, 0) var(--ds, 0%) var(--hl-d)); background: hsl(var(--dh, 0) var(--ds, 0%) 50% / .16); }
+:root { --hl-l: 38%; --hl-d: 30%; } :root[data-theme="dark"] { --hl-l: 70%; --hl-d: 72%; }
+:root:not([data-theme="dark"]) .hl-tohit, :root:not([data-theme="dark"]) .dmg-radiant, :root:not([data-theme="dark"]) .dmg-acid { --hl-d: 24%; } /* keep 4.5:1 on light */
 .dmg-acid { --dh: 95; --ds: 60%; } .dmg-cold { --dh: 195; --ds: 75%; } .dmg-fire { --dh: 18; --ds: 85%; }
 .dmg-force { --dh: 330; --ds: 60%; } .dmg-lightning { --dh: 220; --ds: 85%; } .dmg-necrotic { --dh: 140; --ds: 25%; }
 .dmg-poison { --dh: 120; --ds: 55%; } .dmg-psychic { --dh: 300; --ds: 55%; } .dmg-radiant { --dh: 45; --ds: 90%; }
-.dmg-thunder { --dh: 265; --ds: 55%; } .dmg-bludgeoning, .dmg-piercing, .dmg-slashing { --dh: 25; --ds: 15%; }
+.dmg-thunder { --dh: 265; --ds: 55%; } .dmg-bludgeoning, .dmg-piercing, .dmg-slashing { --dh: 355; --ds: 62%; }
 /* icons */
 .ico { width: 1em; height: 1em; vertical-align: -0.12em; }
 .icon-row { display: grid; grid-template-columns: 28px 110px 1fr auto; gap: 8px; align-items: center; margin-bottom: 6px; }
@@ -3006,7 +3009,7 @@ function emphasise(html, { allTypes = false } = {}) {
     if (seg.startsWith('<')) return seg;
     return seg
       .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)(\s*)([+-]?\d+(?: to hit)?)?/g,
-        (m, a, sp, b) => (b ? `<b class="hl-atk">${a} ${b}</b>` : `<b class="hl-atk">${a}</b>${sp}`))
+        (m, a, sp, b) => (b ? `<b class="hl-atk">${a}</b> <b class="hl-tohit">${b}</b>` : `<b class="hl-atk">${a}</b>${sp}`))
       .replace(/\bHit:/g, '<i class="hl-hit">Hit:</i>')
       .replace(new RegExp(`\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
         (m) => `<b class="hl-save">${m}</b>`)

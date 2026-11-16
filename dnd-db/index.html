@@ -1251,7 +1251,7 @@ class SearchIndex {
   }
 
   _passes(d, filter) {
-    return d.alive && (!filter.type || d.type === filter.type) && (!filter.fav || d.fav)
+    return d.alive && (!filter.type || d.type === filter.type) && (!filter.types || filter.types.includes(d.type)) && (!filter.fav || d.fav)
       && (!filter.source || (filter.source === '__none__' ? !d.src : d.src === filter.source)) && (!filter.srcLike || d.src.includes(filter.srcLike));
   }
 
@@ -1410,7 +1410,8 @@ const Parsers = (() => {
       .replace(/[​﻿]/g, '')
       .replace(/−/g, '-')
       .replace(/(\d)\s*–\s*(\d)/g, '$1-$2')
-      .replace(/–(?=\d)/g, '-');
+      .replace(/–(?=\d)/g, '-')
+      .replace(/\[([^\[\]\n]+)\]\((?:https?:\/\/|\/)[^)\s]*\)/g, '$1');
   }
   // Alphabetical index headings in D&D Beyond lists ("Spells (B)", "Magic Items (A)") are page chrome.
   const reIndexHeading = /^[A-Z][A-Za-z’' ]{2,30}\s\((?:[A-Z]|[A-Z]\s*[-–]\s*[A-Z]|#|\d+)\)$/;
@@ -2010,8 +2011,43 @@ const Parsers = (() => {
      2024: "Creature Type: Humanoid", "Size: Medium ...", "Speed: 30 feet", traits.
      2014: "Ability Score Increase. ...", "Age. ...", "Speed. ..." lead-ins. */
   const SPECIES_LABELS = labels([['Creature Type'], ['Size'], ['Speed']]);
+  /* ---------- Splitting pastes of several species / backgrounds ----------
+     Each entry is found by its fixed fields (the anchor), then its name is found by
+     walking back: "Aasimar" above "Aasimar Traits", or the short title line above the
+     fields (skipping illustration credits such as "TITUS LUNTER"). */
+  const isCredit = (l) => /^[A-Z][A-Z .'’-]{2,40}$/.test(l) && /[A-Z]{2}/.test(l);
+  const isTitleLine = (l) => l.length <= 50 && !l.includes('\t') && /^[A-Z]/.test(l) && !/[.:;,!?)]$/.test(l)
+    && l.split(/\s+/).length <= 6 && !/:/.test(l) && !isCredit(l);
+  function splitAtAnchors(lines, isAnchor) {
+    const anchors = [];
+    for (let i = 0; i < lines.length; i++) if (isAnchor(lines, i)) anchors.push(i);
+    if (anchors.length < 2) return [lines];
+    const starts = anchors.map((a, k) => {
+      const floor = k ? anchors[k - 1] + 1 : 0;
+      let t = -1;
+      for (let j = a - 1; j >= floor; j--) if (isTitleLine(lines[j])) { t = j; break; }
+      if (t < 0) return a;
+      const m = /^(.+?)\s+traits$/i.exec(lines[t]);
+      if (m) {
+        const want = fold(m[1]);
+        for (let j = t - 1; j >= floor; j--) if (fold(lines[j]) === want) return j;
+      }
+      return t;
+    });
+    const out = [];
+    if (starts[0] > 0) { const pre = lines.slice(0, starts[0]); if (pre.join(' ').length >= 25) out.push(pre); }
+    starts.forEach((st, k) => out.push(lines.slice(st, k + 1 < starts.length ? starts[k + 1] : lines.length)));
+    return out;
+  }
+  const fold = (x) => String(x).toLowerCase().replace(/[’']/g, "'").trim();
+  const dropCredits = (lines) => lines.filter((l, i) => i === 0 || !isCredit(l));
+
   const species = {
     type: 'species', label: 'Species / Race',
+    splitBlock(lines) {
+      return splitAtAnchors(lines, (ls, i) => /^creature type\s*:/i.test(ls[i])
+        || (/^ability score increase\./i.test(ls[i]) && !ls.slice(Math.max(0, i - 4), i).some((l) => /^creature type\s*:/i.test(l))));
+    },
     detect(lines) {
       const head = lines.slice(0, 25);
       const has = (re) => head.some((l) => re.test(l));
@@ -2020,10 +2056,12 @@ const Parsers = (() => {
       return 0;
     },
     parse(input) {
-      const { lines, source, tags } = cleanCommon(input);
+      const { lines, source, tags } = cleanCommon(dropCredits(input));
       const f = {};
       const body = [];
+      const nm = fold(lines[0].replace(/\s+(race|species)$/i, ''));
       for (let i = 1; i < lines.length; i++) {
+        if (fold(lines[i]) === nm + ' traits') continue; // the "Aasimar Traits" heading
         const lab = matchLabel(lines[i], SPECIES_LABELS, true);
         if (lab && lab.rest && !f[lab.key]) { f[lab.key] = lab.rest; continue; }
         body.push(lines[i]);
@@ -2041,6 +2079,10 @@ const Parsers = (() => {
   ]);
   const background = {
     type: 'background', label: 'Background',
+    splitBlock(lines) {
+      return splitAtAnchors(lines, (ls, i) => /^ability scores\s*:/i.test(ls[i])
+        || (/^skill proficiencies\s*:/i.test(ls[i]) && !ls.slice(Math.max(0, i - 4), i).some((l) => /^ability scores\s*:/i.test(l))));
+    },
     detect(lines) {
       const head = lines.slice(0, 25);
       const has = (re) => head.some((l) => re.test(l));
@@ -2048,12 +2090,13 @@ const Parsers = (() => {
       return 0;
     },
     parse(input) {
-      const { lines, source, tags } = cleanCommon(input);
+      const { lines, source, tags } = cleanCommon(dropCredits(input));
       const f = {};
       const body = [];
       for (let i = 1; i < lines.length; i++) {
         const lab = matchLabel(lines[i], BG_LABELS, true);
-        if (lab && lab.rest && !f[lab.key]) { f[lab.key] = lab.rest; continue; }
+        // "(see chapter 5)" points at the book, not this database.
+        if (lab && lab.rest && !f[lab.key]) { f[lab.key] = lab.rest.replace(/\s*\(see (?:chapter|appendix)[^)]*\)/gi, '').trim(); continue; }
         body.push(lines[i]);
       }
       return { type: 'background', name: lines[0].replace(/\s+background$/i, ''), source, tags, fields: f, text: body.join('\n'), warnings: [] };
@@ -2363,7 +2406,25 @@ function rowMeta(e) {
    automatically. get(e) returns a value, an array of values, or null. */
 const LEVEL_LABEL = (n) => (n === 0 ? 'Cantrip' : 'Level ' + n);
 const SIZE_ORDER = ['tiny', 'small', 'medium', 'large', 'huge', 'gargantuan'];
+/* ---------- Tabs that hold several categories ----------
+   Backgrounds and Species are both "Character Origins" in the 2024 rules, so they share a
+   tab. Entries keep their own category; the tab groups them. */
+const TAB_GROUPS = { origins: { label: 'Origins', types: ['species', 'background'] } };
+function tabFor(type) {
+  for (const [k, g] of Object.entries(TAB_GROUPS)) if (g.types.includes(type)) return k;
+  return type;
+}
+function tabLabel(tab) { return TAB_GROUPS[tab] ? TAB_GROUPS[tab].label : Types.get(tab).label; }
+/** Category tabs in order: a group sits where its first category would be. */
+function categoryTabs() {
+  const out = [];
+  for (const t of Types.list) { const k = tabFor(t.key); if (!out.includes(k)) out.push(k); }
+  return out;
+}
+const inTab = (e, f) => (!f.type || e.type === f.type) && (!f.types || f.types.includes(e.type)) && (!f.fav || e.fav);
+
 const FACETS = {
+  origins: [{ key: 'okind', label: 'Kind', get: (e) => Types.get(e.type).label }],
   spell: [
     { key: 'level', label: 'Level', get: (e) => (lvlNum(e) === 99 ? null : LEVEL_LABEL(lvlNum(e))), order: (a, b) => (a === 'Cantrip' ? -1 : b === 'Cantrip' ? 1 : parseInt(a.slice(6)) - parseInt(b.slice(6))) },
     { key: 'school', label: 'School', get: (e) => e.fields.School || null },
@@ -3559,7 +3620,8 @@ const App = {
 
   /* ---------- view state ---------- */
   filter() {
-    return { type: this.tab && this.tab !== 'fav' ? this.tab : '', fav: this.tab === 'fav', source: this.source, srcLike: this.parsedQuery().srcLike };
+    const grp = TAB_GROUPS[this.tab];
+    return { type: this.tab && this.tab !== 'fav' && !grp ? this.tab : '', types: grp ? grp.types : null, fav: this.tab === 'fav', source: this.source, srcLike: this.parsedQuery().srcLike };
   },
   /** Pull "source:grim" / source:"grim hollow" out of the query. */
   parsedQuery() {
@@ -3585,7 +3647,7 @@ const App = {
     const f = this.filter();
     const m = new Map();
     for (const e of this.entries.values()) {
-      if ((f.type && e.type !== f.type) || (f.fav && !e.fav)) continue;
+      if (!inTab(e, f)) continue;
       const k = e.source ? fold(e.source).trim() : '__none__';
       const cur = m.get(k);
       if (cur) cur.n++; else m.set(k, { label: e.source || '(No source)', n: 1 });
@@ -3606,12 +3668,13 @@ const App = {
   activeQuery() { return this.tab === '' ? this.query : (this.viewState().q || ''); },
 
   setTab(tab, { carryQuery = false } = {}) {
+    if (tab && tab !== 'fav') tab = tabFor(tab);
     this.tab = tab;
     if (tab !== '' && carryQuery && this.query.trim()) this.viewState().q = this.query;
     const ls = $('#listSearch'), lq = $('#listQ');
     ls.hidden = tab === '';
     lq.value = tab === '' ? '' : (this.viewState().q || '');
-    lq.placeholder = tab === 'fav' ? 'Filter favourites…' : tab ? `Filter ${Types.get(tab).label.toLowerCase()}…` : '';
+    lq.placeholder = tab === 'fav' ? 'Filter favourites…' : tab ? `Filter ${tabLabel(tab).toLowerCase()}…` : '';
     document.body.classList.remove('show-detail');
     this.renderTabs();
     this.runSearch();
@@ -3636,7 +3699,7 @@ const App = {
   },
 
   cycleTab(delta) {
-    const keys = ['', 'fav', ...Types.list.map((t) => t.key)];
+    const keys = ['', 'fav', ...categoryTabs()];
     const i = keys.indexOf(this.tab);
     this.setTab(keys[(i + delta + keys.length) % keys.length]);
   },
@@ -3681,14 +3744,15 @@ const App = {
 
   /** Which group an entry belongs to in the current view (null = flat list). */
   groupOf(e) {
-    if (this.grouped()) return { key: 't:' + e.type, label: Types.get(e.type).label, tab: e.type, order: this.typeOrder(e.type) };
+    if (this.grouped()) return { key: 't:' + e.type, label: Types.get(e.type).label, tab: tabFor(e.type), order: this.typeOrder(e.type) };
+    if (TAB_GROUPS[this.tab]) return { key: 't:' + e.type, label: Types.get(e.type).label, order: this.typeOrder(e.type) };
     if (this.tab === 'subclass') { const c = e.fields.Class || 'No class set'; return { key: 'c:' + fold(c), label: c, order: c === 'No class set' ? 1 : 0 }; }
     return null;
   },
 
   /** Flatten results into rows. Grouped views get a header per group, ordered by best hit (or by category/name when browsing). */
   buildRows() {
-    if (!this.grouped() && this.tab !== 'subclass') { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
+    if (!this.grouped() && this.tab !== 'subclass' && !TAB_GROUPS[this.tab]) { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
     const groups = new Map();
     for (const id of this.ids) {
       const g0 = this.groupOf(this.entries.get(id));
@@ -3753,7 +3817,7 @@ const App = {
     if (bar.hidden) return;
     const vs = this.viewState(), defs = FACETS[this.tab] || [];
     const f = this.filter();
-    const scope = [...this.entries.values()].filter((e) => (!f.type || e.type === f.type) && (!f.fav || e.fav));
+    const scope = [...this.entries.values()].filter((e) => inTab(e, f));
     const sel = (key, label, opts, cur, attr) => `<label><span>${esc(label)}</span><select ${attr}="${esc(key)}"><option value="">Any</option>`
       + opts.map(([v, n, l]) => `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(l || v)} (${n})</option>`).join('') + '</select></label>';
     let html = '';
@@ -3783,7 +3847,7 @@ const App = {
     if (this.source) return 'Nothing here from this source.<br><button data-act="clear-source">Show all sources</button>';
     const aq = this.activeQuery().trim();
     if (this.tab === 'fav' && !aq) return 'No favourites yet. Tap ☆ on any entry to add it here.';
-    if (this.tab !== '' && aq) return `No matches in ${esc(this.tab === 'fav' ? 'Favourites' : Types.get(this.tab).label)}.<br><button data-act="search-all">Search everything for “${esc(aq)}”</button>`;
+    if (this.tab !== '' && aq) return `No matches in ${esc(this.tab === 'fav' ? 'Favourites' : tabLabel(this.tab))}.<br><button data-act="search-all">Search everything for “${esc(aq)}”</button>`;
     return aq ? 'No matches.' : 'Nothing in this category yet.';
   },
 
@@ -3792,7 +3856,10 @@ const App = {
     const counts = this.counts();
     const tab = (key, label, n) => `<button class="tab ${this.tab === key ? 'on' : ''} ${n === 0 ? 'zero' : ''}" role="tab" aria-selected="${this.tab === key}" data-tab="${esc(key)}">${label}${n !== null ? `<span class="count">${n}</span>` : ''}</button>`;
     let html = tab('', 'Search', null) + tab('fav', '★\uFE0E Favourites', counts.fav);
-    for (const t of Types.list) html += tab(t.key, esc(t.label), counts.get(t.key) || 0);
+    for (const k of categoryTabs()) {
+      const g = TAB_GROUPS[k];
+      html += tab(k, esc(tabLabel(k)), g ? g.types.reduce((n, t) => n + (counts.get(t) || 0), 0) : counts.get(k) || 0);
+    }
     $('#tabs').innerHTML = html;
     $('#typeList').innerHTML = Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
     $('#classList').innerHTML = this.classNames().map((c) => `<option value="${esc(c)}">`).join('');
@@ -3822,7 +3889,7 @@ const App = {
     const tiles = Types.list.filter((t) => counts.get(t.key));
     $('#home').innerHTML = `
       <p class="hint">Type to search everything. Multiple words = AND · <code>"exact phrase"</code> · <code>*</code> wildcard · <code>?</code> single character · <code>source:grim</code> limits to a book</p>
-      ${tiles.length ? `<div class="tiles">${tiles.map((t) => `<button class="tile" data-tab="${esc(t.key)}" style="--h:${t.hue}"><b>${counts.get(t.key)}</b>${esc(t.label)}</button>`).join('')}</div>`
+      ${tiles.length ? `<div class="tiles">${tiles.map((t) => `<button class="tile" data-tab="${esc(tabFor(t.key))}" style="--h:${t.hue}"><b>${counts.get(t.key)}</b>${esc(t.label)}</button>`).join('')}</div>`
         : '<p class="empty">No entries yet. Use “Import” to paste from D&amp;D Beyond.</p>'}
       <h3 class="home-h"><span>★ Favourites</span>${favs.length > 12 ? `<a href="#" data-tab="fav">all ${favs.length} →</a>` : ''}</h3>
       ${favs.length ? `<div class="static">${favs.slice(0, 12).map((e) => rowHtml(e, -1, '', true)).join('')}</div>` : '<p class="hint">Tap ☆ on any entry to pin it here.</p>'}
@@ -4647,7 +4714,7 @@ function wireEvents() {
   $('#importBtn').addEventListener('click', () => Importer.open());
   $('#settingsBtn').addEventListener('click', () => Settings.open());
   $('#newBtn').addEventListener('click', async () => {
-    const blank = makeEntry({ type: App.filter().type || 'other' });
+    const blank = makeEntry({ type: App.filter().type || (TAB_GROUPS[App.tab] ? TAB_GROUPS[App.tab].types[0] : 'other') });
     blank.name = ''; // start with an empty name box, not "Untitled"
     const e = await Editor.open(blank, 'New entry');
     if (e) { await App.upsert([e]); App.open(e.id); }
@@ -4990,7 +5057,7 @@ function wireEvents() {
     if (e.key === 'Backspace' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
     if (e.key === '\\') { e.preventDefault(); setListHidden(!document.body.classList.contains('list-hidden')); return; }
     // Arrow keys are left alone so they scroll the entry you're reading; j / k move through results.
-    const tabKeys = ['', 'fav', ...Types.list.map((t) => t.key)];
+    const tabKeys = ['', 'fav', ...categoryTabs()];
     if (e.key === 'f' && App.currentId) App.toggleFav(App.currentId);
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
     else if (e.key === 'y' && App.currentId) $('#detail [data-act="copy"]')?.click();

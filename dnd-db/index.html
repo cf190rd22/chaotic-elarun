@@ -1543,7 +1543,7 @@ const Parsers = (() => {
 
   /** Strip D&D Beyond chrome (source/page lines, tag lines) and capture it. */
   const reSourcePg = /^(?:source:\s*)?([A-Z][\w'’&:\- ]{2,80}?(?:\(\d{4}\))?)\s*,\s*(?:pg|page|p)\.?\s*\d+\s*$/;
-  const reSourceOnly = /^source:\s*(.+)$/i;
+  const reSourceOnly = /^(?:[Ss][Oo][Uu][Rr][Cc][Ee]:\s*(.+)|[Ss]ource\s+([A-Z][^.!?:]{2,60}))$/;
   const reTags = /^(?:spell|monster|item|feat)?\s*tags?\s*:\s*(.+)$/i;
   /* Source lines: D&D Beyond puts the book on its own line under the name
      ("Archfey Patron" / "Player’s Handbook"). The app supplies known sources and classes. */
@@ -1573,7 +1573,7 @@ const Parsers = (() => {
     }
     for (const l of lines) {
       let m;
-      if ((m = reSourcePg.exec(l)) || (m = reSourceOnly.exec(l))) { source = source || m[1].trim(); continue; }
+      if ((m = reSourcePg.exec(l)) || (m = reSourceOnly.exec(l))) { source = source || (m[1] || m[2]).trim(); continue; }
       if ((m = reTags.exec(l))) { tags.push(...m[1].split(/,\s*/).map((t) => t.trim()).filter(Boolean)); continue; }
       out.push(l);
     }
@@ -1672,7 +1672,9 @@ const Parsers = (() => {
            "Str 27 +8 +8" with MOD/SAVE headers, "Immunities", "CR 17 (...)",
            "Traits", "Actions", "Bonus Actions", "Reactions", "Legendary Actions". */
   const SIZES = 'tiny|small|medium|large|huge|gargantuan';
-  const reMeta = new RegExp(`^((?:${SIZES})(?:\\s*(?:or|,)\\s*(?:${SIZES}))*)\\s+([^,]+?)\\s*,\\s*(.+)$`, 'i');
+  // "Medium Undead, Neutral" or, without an alignment, "Medium or Large Creature" (only with a real creature type).
+  const CREATURE_TYPES = 'aberration|beast|celestial|construct|dragon|elemental|fey|fiend|giant|humanoid|monstrosity|ooze|plant|undead|creature|swarm';
+  const reMeta = new RegExp(`^((?:${SIZES})(?:\\s*(?:or|,)\\s*(?:${SIZES}))*)\\s+(?:([^,]+?)\\s*,\\s*(.+)|((?:swarm of \\w+\\s+)?(?:${CREATURE_TYPES})s?\\b[^,.]{0,40}))$`, 'i');
   const MON_LABELS = labels([
     ['AC', 'Armor Class', 'Armour Class'], ['HP', 'Hit Points'], ['Speed'], ['Initiative'],
     ['Saving Throws', 'Saves'], ['Skills'], ['Vulnerabilities', 'Damage Vulnerabilities'],
@@ -1724,7 +1726,7 @@ const Parsers = (() => {
       const intro = [];
       let i = 1;
       const meta = reMeta.exec(lines[1] || '');
-      if (meta) { f.Size = cap(meta[1].toLowerCase()); f['Creature Type'] = meta[2]; f.Alignment = meta[3]; i = 2; }
+      if (meta) { f.Size = cap(meta[1].toLowerCase()).replace(/\bOr\b/g, 'or'); f['Creature Type'] = (meta[2] || meta[4]).trim(); if (meta[3]) f.Alignment = meta[3]; i = 2; }
 
       const crIdx = lines.findIndex((l) => /^(cr|challenge)\b/i.test(l));
       const abilities = extractAbilities(lines.slice(0, crIdx >= 0 ? crIdx + 1 : Math.min(lines.length, 40)).join('\n'));
@@ -1743,10 +1745,14 @@ const Parsers = (() => {
             if (!val && i + 1 < lines.length && !matchLabel(lines[i + 1], MON_LABELS) && !reMonSection.test(lines[i + 1])) val = lines[++i];
             if (val) f[m.key] = f[m.key] ? f[m.key] + ', ' + val : val;
             // 2024: "AC 16 Initiative +3 (13)" on one line
+            if (m.key === 'CR' && /\sProficiency Bonus\s/i.test(f.CR || '')) { const [cr, pb] = f.CR.split(/\s+Proficiency Bonus\s+/i); f.CR = cr.trim(); f['Proficiency Bonus'] = pb.trim(); }
             if (m.key === 'AC' && /\sInitiative\s/i.test(f.AC || '')) { const [ac, ini] = f.AC.split(/\s+Initiative\s+/i); f.AC = ac.trim(); f.Initiative = ini.trim(); }
             continue;
           }
           if (L.length < 80 && reAbilityish.test(L)) continue;
+          if (L.includes('\t') && L.split('\t').every((c) => /^\s*\d{1,2}\s*\(\s*[+\-−]?\d+\s*\)\s*$|^\s*(str|dex|con|int|wis|cha)\s*$/i.test(c))) continue;
+          // An unknown line (a stray "Source …", a note) doesn't end the header while stat lines follow it.
+          if (lines.slice(i + 1, i + 7).some((x) => matchLabel(x, MON_LABELS) || /^(str|dex|con|int|wis|cha)\b/i.test(x)) && !reMonSection.test(L) && !leadIn(L)) { intro.push(L); continue; }
           if (!('AC' in f) && !('HP' in f)) { intro.push(L); continue; }
           mode = 'body';
           openSection('Traits'); // 2014 blocks have no "Traits" heading
@@ -1758,6 +1764,13 @@ const Parsers = (() => {
         else sec.intro = sec.intro ? sec.intro + '\n' + L : L;
       }
 
+      // Designer notes after the last action ("This stat block relies on Strength.") aren't part of it.
+      const lastSec = sections[sections.length - 1], lastItem = lastSec && lastSec.items[lastSec.items.length - 1];
+      if (lastItem) {
+        const tl = lastItem.text.split('\n');
+        const k = tl.findIndex((l, x) => x > 0 && /\bstat block\b/i.test(l));
+        if (k > 0) { sections.push({ heading: 'Notes', intro: tl.slice(k).join('\n'), items: [] }); lastItem.text = tl.slice(0, k).join('\n'); }
+      }
       const warnings = [];
       if (!abilities) warnings.push('Ability scores not found');
       if (!f.HP) warnings.push('No hit points found');
@@ -2379,13 +2392,15 @@ const Parsers = (() => {
     if (e.type === 'monster') {
       // 2025 stat blocks: "AC 16 Initiative +3 (13)" and the "Ability Score Mod Save" grid stopped
       // the old parser early, losing Skills/Senses/Languages/CR. Re-parse unedited ones.
-      if (!/\sInitiative\s/i.test(e.fields.AC || '')) return null;
+      const spilled = (e.sections || []).some((sc) => /^(saving throws|skills|senses|languages|challenge|cr)\b/im.test(sc.intro || ''));
+      if (!/\sInitiative\s/i.test(e.fields.AC || '') && !spilled) return null;
       const edited = Date.parse(e.updated) - Date.parse(e.created) > 5000;
       if (e.raw && !edited) {
         const n = monster.parse(toLines(normalise(e.raw)));
-        return [{ ...n, id: e.id, fav: e.fav, created: e.created, updated: e.updated, name: e.name, type: 'monster',
+        return [{ ...n, id: e.id, raw: e.raw, fav: e.fav, created: e.created, updated: e.updated, name: e.name, type: 'monster',
           source: n.source || e.source, tags: [...new Set([...(e.tags || []), ...n.tags])], fields: { ...e.fields, ...n.fields } }];
       }
+      if (!/\sInitiative\s/i.test(e.fields.AC || '')) return null; // edited: leave it to the user
       const c = JSON.parse(JSON.stringify(e));
       const [ac, ini] = c.fields.AC.split(/\s+Initiative\s+/i);
       c.fields.AC = ac.trim();
@@ -3333,8 +3348,9 @@ const Renderers = {
   monster(e, { prefix = 'sec' } = {}) {
     const f = e.fields;
     const top = ['AC', 'Initiative', 'HP', 'Speed', 'CR'];
-    const lore = e.sections.filter((s) => s.heading === 'Lore');
-    const secs = e.sections.filter((s) => s.heading !== 'Lore'); // Lore is always last, so indices match
+    const isOut = (s) => s.heading === 'Lore' || s.heading === 'Notes'; // drawn after the stat block
+    const lore = e.sections.filter(isOut);
+    const secs = e.sections.filter((s) => !isOut(s)); // these are always last, so indices match
     const place = prefix === 'sec' ? renderCards({ Habitat: f.Habitat, Treasure: f.Treasure }) : '';
     if (isMonGroup(e)) {
       const kids = familyMembers(e);
@@ -5021,7 +5037,7 @@ const Theme = {
 };
 
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
-const TIDY_VERSION = 3;
+const TIDY_VERSION = 4;
 const Tidy = {
   async run({ manual = false } = {}) {
     const olds = [], news = [];

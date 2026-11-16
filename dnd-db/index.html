@@ -248,6 +248,17 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 .embedded-sb { margin: 12px 0 4px; }
 .embedded-sb .sb-title { font: 700 18px var(--serif); margin: 0; }
 .embedded-sb .sb-meta { color: var(--muted); font-style: italic; font-size: 14px; margin: 0 0 6px; }
+/* option lists (Misfortunes, Invocations…) */
+.opt-intro { color: var(--muted); font-style: italic; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin: 10px 0 6px; }
+.opt { background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--accent-border); border-radius: 8px; padding: 10px 12px 4px; min-width: 0; }
+.opt-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-bottom: 6px; }
+.opt-name { font-weight: 700; font-size: 15px; }
+.opt-prop { font-size: 13px; border: 1px solid var(--border); border-radius: 6px; padding: 0 7px; background: var(--panel-2); white-space: nowrap; }
+.opt p { font-size: 14px; }
+.toc-break { flex-basis: 100%; height: 0; }
+.toc a.sub { font-size: 12px; opacity: .9; }
+@media (max-width: 720px) { .opts { grid-template-columns: minmax(0, 1fr); } }
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -1890,7 +1901,23 @@ const Parsers = (() => {
         else intro.push(L);
       }
       for (const it of items) if (!it.level) it.level = levelFromText(it.text);
-      items.sort((a, b) => (a.level || 0) - (b.level || 0));
+      // An options list (Misfortunes, Invocations…) glued to a feature becomes its own section,
+      // starting at its intro sentence ("The following options are available to your … feature").
+      for (let k = 0; k < items.length; k++) {
+        const it = items[k], so = splitOptions(it.text);
+        if (!so) continue;
+        const pre = so.before.split('\n');
+        let cut = pre.length;
+        for (let q = pre.length - 1; q >= Math.max(0, pre.length - 3); q--) if (/\b(following|these)\b.*\b(options?|available)\b|alphabetical order/i.test(pre[q])) { cut = q; break; }
+        const intro = pre.slice(cut).join('\n').trim();
+        it.text = pre.slice(0, cut).join('\n').trim();
+        items.splice(k + 1, 0, { name: intro ? optionsTitle(intro) : `${it.name} Options`, level: null, options: true,
+          text: [intro, ...so.options.map((o) => [o.name, ...o.props.map(([pk, pv]) => `${pk}: ${pv}`), o.text].join('\n'))].filter(Boolean).join('\n') });
+        k++;
+      }
+      // Keep option sections after the levelled features.
+      items.sort((a, b) => (a.options ? 99 : a.level || 0) - (b.options ? 99 : b.level || 0));
+      for (const it of items) delete it.options;
       if (!f.Class) f.Class = inferClass(name, lines.join('\n'));
 
       const warnings = [];
@@ -2610,6 +2637,42 @@ function modBoxes(v) {
   }).join('') + '</span>';
 }
 
+/* ---------- Option lists inside features ----------
+   Misfortunes, Invocations, Maneuvers, Metamagic…: a short Title Case name, then one or
+   more property lines ("Cost: 2 Jinx Points", "Prerequisite: Level 5+"), then the text. */
+const reOptionProp = /^(cost|prerequisites?|level|levels?|requires?|requirement|range|duration|uses|recharge|type|activation|price)\s*:/i;
+function isOptionName(l) {
+  const t = String(l || '').trim();
+  return t.length > 0 && t.length <= 60 && !t.includes('\t') && /^[A-Z0-9]/.test(t) && !/[.:;,!?]$/.test(t)
+    && t.split(/\s+/).length <= 8 && !reOptionProp.test(t) && isTitleCaseName(t);
+}
+/** { before, intro, options: [{ name, props: [[k, v]], text }] } when text holds 2+ options, else null. */
+function splitOptions(text) {
+  const lines = String(text || '').split('\n');
+  const starts = [];
+  for (let i = 0; i < lines.length - 1; i++) if (isOptionName(lines[i]) && reOptionProp.test(lines[i + 1].trim())) starts.push(i);
+  if (starts.length < 2) return null;
+  const options = starts.map((st, k) => {
+    const end = k + 1 < starts.length ? starts[k + 1] : lines.length;
+    const props = [];
+    let j = st + 1;
+    while (j < end && reOptionProp.test(lines[j].trim())) { const m = /^([^:]+):\s*(.*)$/.exec(lines[j].trim()); props.push([m[1].trim(), m[2].trim()]); j++; }
+    return { name: lines[st].trim(), props, text: lines.slice(j, end).join('\n') };
+  });
+  return { before: lines.slice(0, starts[0]).join('\n'), options };
+}
+/** "The following options are available to your Misfortunist feature…" -> "Misfortunist Options". */
+function optionsTitle(sentence) {
+  const m = /available to (?:your|the) (.+?)(?: feature| class feature)?[.:,]/i.exec(sentence || '');
+  return m ? `${m[1].trim()} Options` : 'Options';
+}
+/** Feature names that are really sentences get a short title; the sentence becomes the intro. */
+function itemTitle(it) {
+  const n = String(it.name || '');
+  if (!it.level && (n.length > 60 || /[.:]$/.test(n))) return { title: optionsTitle(n), intro: n };
+  return { title: n, intro: '' };
+}
+
 /* ---------- Spell icons ----------
    Drawn in the style of D&D Beyond's (filled glyphs, diamond C/R badges) so
    they're recognisable at a glance. Any icon can be replaced in Settings →
@@ -2695,7 +2758,13 @@ function spellIcons(e) {
 /** Anchors for an entry's sections and features: "sec-<section>-<item>". */
 function featureAnchors(e) {
   const out = [];
-  e.sections.forEach((s, si) => s.items.forEach((it, ii) => { if (it.name) out.push({ name: it.name, anchor: `sec-${si}-${ii}`, level: it.level, section: s.heading }); }));
+  e.sections.forEach((s, si) => s.items.forEach((it, ii) => {
+    if (!it.name) return;
+    const { title } = itemTitle(it);
+    out.push({ name: title, anchor: `sec-${si}-${ii}`, level: it.level, section: s.heading });
+    const so = e.type === 'monster' ? null : splitOptions(it.text);
+    if (so) so.options.forEach((o, k) => out.push({ name: o.name, anchor: `sec-${si}-${ii}-o${k}`, level: null, section: s.heading, sub: title }));
+  }));
   return out;
 }
 
@@ -2752,10 +2821,25 @@ function renderEmbeddedStatblock(name, body, showTitle) {
 }
 
 /** Feature text, with any stat block inside it drawn as a stat block. */
-function featureText(text, ownerName) {
+function featureText(text, ownerName, anchor = '') {
+  const so = splitOptions(text);
+  if (so) return featureText(so.before, ownerName) + renderOptions(so.options, anchor);
   const sb = findStatblock(text, ownerName);
   if (!sb) return formatText(text, { plainFirst: true });
   return formatText(sb.before, { plainFirst: true }) + renderEmbeddedStatblock(sb.name, sb.body, sb.titled) + featureText(sb.after, ownerName);
+}
+
+/** Options as cards: name, cost/prerequisite labels, then the text. */
+function renderOptions(options, anchor) {
+  return '<div class="opts">' + options.map((o, k) => {
+    const saved = Linker.curAnchor;
+    Linker.curAnchor = `${anchor}-o${k}`;
+    const html = `<div class="opt" data-anchor="${anchor}-o${k}"><div class="opt-h"><span class="opt-name">${esc(o.name)}</span>`
+      + o.props.map(([pk, pv]) => `<span class="opt-prop"><span class="pill-k">${esc(pk)}</span> ${rich(pv)}</span>`).join('')
+      + `</div>${formatText(o.text, { plainFirst: true })}</div>`;
+    Linker.curAnchor = saved;
+    return html;
+  }).join('') + '</div>';
 }
 
 function renderSections(sections, { runIn = false, prefix = 'sec' } = {}) {
@@ -2768,7 +2852,9 @@ function renderSections(sections, { runIn = false, prefix = 'sec' } = {}) {
         html = `<p class="sb-item" data-anchor="${prefix}-${si}-${ii}"><b><i>${esc(it.name)}.</i></b> ${rich(first)}</p>` + formatText(rest.join('\n'));
       } else {
         const lvl = it.level ? `<span class="lvl" title="Level ${it.level}">${it.level}</span>` : '';
-        html = `<div class="feat"><h4 data-anchor="${prefix}-${si}-${ii}">${lvl}${esc(it.name)}</h4>` + featureText(it.text, it.name) + '</div>';
+        const { title, intro } = itemTitle(it);
+        html = `<div class="feat"><h4 data-anchor="${prefix}-${si}-${ii}">${lvl}${esc(title)}</h4>` + (intro ? `<p class="opt-intro">${rich(intro)}</p>` : '')
+          + featureText(it.text, title, `${prefix}-${si}-${ii}`) + '</div>';
       }
       Linker.curAnchor = null;
       return html;
@@ -2781,9 +2867,11 @@ function renderToc(e) {
   if (feats.length < 3) return '';
   const multi = new Set(feats.map((f) => f.section)).size > 1 && !feats.some((f) => f.level);
   let last = null, html = '';
+  let lastSub = null;
   for (const f of feats) {
     if (multi && f.section !== last) { html += `<span class="toc-sec">${esc(f.section)}</span>`; last = f.section; }
-    html += `<a href="#" data-jump="${f.anchor}">${f.level ? `<span class="lvl">${f.level}</span>` : ''}${esc(f.name)}</a>`;
+    if (f.sub && f.sub !== lastSub) { html += `<span class="toc-break"></span><span class="toc-sec">${esc(f.sub)}</span>`; lastSub = f.sub; }
+    html += `<a href="#" data-jump="${f.anchor}"${f.sub ? ' class="sub"' : ''}>${f.level ? `<span class="lvl">${f.level}</span>` : ''}${esc(f.name)}</a>`;
   }
   return `<nav class="toc" aria-label="Jump to"><span class="toc-l">Jump to</span>${html}</nav>`;
 }

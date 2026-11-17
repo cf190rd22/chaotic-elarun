@@ -279,6 +279,20 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 blockquote.quote { margin: 14px 0; padding: 8px 14px; border-left: 3px solid var(--accent-border); background: var(--panel); border-radius: 0 8px 8px 0; }
 blockquote.quote p { font-style: italic; margin: 0 0 4px; }
 blockquote.quote cite { display: block; font-size: 13px; color: var(--muted); font-style: normal; }
+/* grid columns may shrink below their content, so dialogs never scroll sideways on phones */
+.import-grid > * { min-width: 0; }
+.paste-src > * { min-width: 0; }
+/* swipe back/forward hint */
+.swipe-hint { position: fixed; top: 45%; z-index: 60; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  font: 700 28px/1 var(--serif); background: var(--panel-2); color: var(--muted); border: 1px solid var(--border); box-shadow: 0 4px 14px rgb(0 0 0 / .25); pointer-events: none; }
+.swipe-hint.l { left: 10px; } .swipe-hint.r { right: 10px; }
+.swipe-hint.go { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+/* source picker */
+.src-pick { position: fixed; z-index: 1000; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / .28); padding: 4px 0; }
+.src-pick .sp-h { font: 700 10.5px var(--serif); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 6px 12px 2px; }
+.src-pick .sp-i { padding: 8px 12px; cursor: pointer; font-size: 14px; }
+.src-pick .sp-i:hover, .src-pick .sp-i.cur { background: var(--panel-2); color: var(--accent); }
+@media (pointer: coarse) { .src-pick .sp-i { padding: 11px 14px; font-size: 15px; } }
 /* per-tab filter box */
 .list-search { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .list-search input { width: 100%; padding: 7px 10px; font-size: 14px; }
@@ -487,7 +501,8 @@ details > summary { cursor: pointer; font-weight: 600; margin: 10px 0 6px; }
   .d-head h2 { font-size: 27px; }
   .cards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ab-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .import-grid { grid-template-columns: 1fr; }
+  .import-grid { grid-template-columns: minmax(0, 1fr); }
+  #importDlg select, #importDlg input, #importDlg textarea { max-width: 100%; }
   #pasteBox { height: 30vh; }
   .field-row { grid-template-columns: 1fr; }
   .abil-inputs { grid-template-columns: repeat(3, 1fr); }
@@ -2288,6 +2303,10 @@ const Parsers = (() => {
       const q = lines.filter((l) => reQ.test(l)).length, a = lines.filter((l) => reA.test(l)).length;
       if (q && a) return 0.92;
       if (/sage advice/i.test(lines.slice(0, 3).join(' ')) && lines.some(isQuestionLine)) return 0.85;
+      // Unmarked Q&A ("Ability Checks" / "Can you…?" / answer…): several questions, each followed by an answer.
+      let paired = 0;
+      for (let i = 0; i < lines.length - 1; i++) if (isQuestionLine(lines[i]) && !isQuestionLine(lines[i + 1]) && !isNameLine(lines[i + 1])) paired++;
+      if (paired >= 2 && paired / lines.length >= 0.2) return 0.8;
       return 0;
     },
     splitBlock(lines) {
@@ -3979,7 +3998,8 @@ const App = {
   query: '',
   ids: [],                  // matching entry ids in display order
   rows: [],                 // list rows: { k: 'h', type, count } group headers and { k: 'e', id } entries
-  collapsed: new Set(),     // collapsed group keys in grouped views
+  collapsed: new Set(),
+  forwardStack: [],         // entries you went Back from (swipe left / Alt+→ reopens them)     // collapsed group keys in grouped views
   source: '',               // folded source name to filter by ('' = all sources)
   view: {},                 // per tab: { sort, facets: { key: value } }
   get facetOpen() { return !!this.viewState().open; },
@@ -4181,13 +4201,14 @@ const App = {
   groupOf(e) {
     if (this.grouped()) return { key: 't:' + e.type, label: Types.get(e.type).label, tab: tabFor(e.type), order: this.typeOrder(e.type) };
     if (TAB_GROUPS[this.tab]) return { key: 't:' + e.type, label: Types.get(e.type).label, order: this.typeOrder(e.type) };
+    if (this.tab === 'sage-advice') { const t = e.fields.Topic || 'No topic'; return { key: 'q:' + fold(t), label: t, order: t === 'No topic' ? 1 : 0 }; }
     if (this.tab === 'subclass') { const c = e.fields.Class || 'No class set'; return { key: 'c:' + fold(c), label: c, order: c === 'No class set' ? 1 : 0 }; }
     return null;
   },
 
   /** Flatten results into rows. Grouped views get a header per group, ordered by best hit (or by category/name when browsing). */
   buildRows() {
-    if (!this.grouped() && this.tab !== 'subclass' && !TAB_GROUPS[this.tab]) { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
+    if (!this.grouped() && this.tab !== 'subclass' && this.tab !== 'sage-advice' && !TAB_GROUPS[this.tab]) { this.rows = this.ids.map((id) => ({ k: 'e', id })); return; }
     const groups = new Map();
     for (const id of this.ids) {
       const g0 = this.groupOf(this.entries.get(id));
@@ -4361,6 +4382,7 @@ const App = {
     const idx = this.rows.findIndex((r) => r.id === id);
     if (idx >= 0) this.cursor = idx;
     this.backStack = [];
+    this.forwardStack = [];
     this.showDetail(id);
     document.body.classList.add('show-detail');
     setUrlHash('#/e/' + encodeURIComponent(id));
@@ -4394,17 +4416,40 @@ const App = {
       try { history.replaceState({ dndId: this.currentId, scroll }, '', location.hash || '#'); } catch { /* sandboxed */ }
     }
     if (this.backStack.length > 100) this.backStack.shift();
+    this.forwardStack = []; // a new link starts a new path, as in a browser
     this.showDetail(id);
     document.body.classList.add('show-detail');
     try { history.pushState({ dndId: id }, '', '#/e/' + encodeURIComponent(id)); } catch { /* sandboxed */ }
   },
 
   goBack() {
+    const showing = document.body.classList.contains('show-detail') || this.isWide();
+    const cur = this.currentId && showing ? { id: this.currentId, scroll: $('#detail').scrollTop } : null;
     while (this.backStack.length) {
       const { id, scroll } = this.backStack.pop();
-      if (this.entries.has(id)) { this.showDetail(id); this.restoreScroll(scroll); setUrlHash('#/e/' + encodeURIComponent(id)); return true; }
+      if (this.entries.has(id)) {
+        if (cur) this.forwardStack.push(cur);
+        this.showDetail(id); this.restoreScroll(scroll); setUrlHash('#/e/' + encodeURIComponent(id)); return true;
+      }
     }
+    // Phone: back from the first entry returns to the list (forward reopens it).
+    if (cur && document.body.classList.contains('show-detail')) this.forwardStack.push(cur);
     document.body.classList.remove('show-detail');
+    return false;
+  },
+  /** Undo a Back: reopen the entry you came back from, at the same scroll position. */
+  goForward() {
+    while (this.forwardStack.length) {
+      const { id, scroll } = this.forwardStack.pop();
+      if (!this.entries.has(id)) continue;
+      const showing = document.body.classList.contains('show-detail') || this.isWide();
+      if (this.currentId && showing) this.backStack.push({ id: this.currentId, scroll: $('#detail').scrollTop });
+      this.showDetail(id);
+      document.body.classList.add('show-detail');
+      this.restoreScroll(scroll);
+      setUrlHash('#/e/' + encodeURIComponent(id));
+      return true;
+    }
     return false;
   },
 
@@ -5089,7 +5134,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.3'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.4'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 4;
 const Tidy = {
@@ -5157,6 +5202,8 @@ const SHORTCUTS = [
     ['1 – 9', 'Go to tab 1–9 (1 = Search, 2 = Favourites, then categories)'],
     ['h', 'Home: main search with everything cleared'],
     ['Alt + ←  ·  Backspace', 'Back to the entry you came from, at the same scroll position'],
+    ['Alt + →', 'Forward again (after going back)'],
+    ['Swipe right  ·  Swipe left', 'Phone/tablet: back / forward, as many steps as you like'],
     ['\\', 'Hide / show the results list'],
     ['x', 'Open / close Filters'],
     ['c', 'Collapse / expand all groups'],
@@ -5187,6 +5234,147 @@ function shortcutsHtml() {
 function showShortcuts() {
   ask('Keyboard shortcuts', `<div class="sc-wrap">${shortcutsHtml()}</div><p class="hint">Single keys only work when you're not typing in a box. Also in Settings.</p>`, [{ label: 'Close', value: null, kind: 'primary' }]);
 }
+
+/* ---------- Swipe back / forward (touch) ----------
+   Right = back, left = forward. Ignored when it starts on something that scrolls sideways
+   (tables, the Jump-to bar), in a form field, inside a dialog, or at the screen edge
+   (the phone's own back gesture lives there). */
+const Swipe = {
+  init() {
+    const hint = document.createElement('div');
+    hint.className = 'swipe-hint';
+    hint.hidden = true;
+    document.body.appendChild(hint);
+    let st = null;
+    const sideScroller = (el) => {
+      for (let n = el; n && n !== document.body; n = n.parentElement) {
+        if (n.scrollWidth > n.clientWidth + 2 && /(auto|scroll)/.test(getComputedStyle(n).overflowX)) return true;
+      }
+      return false;
+    };
+    document.addEventListener('touchstart', (e) => {
+      st = null;
+      if (e.touches.length !== 1 || $$('dialog[open]').length) return;
+      const t = e.touches[0], tg = e.target;
+      if (t.clientX < 18 || t.clientX > innerWidth - 18) return;
+      if (tg.closest('input, textarea, select, [contenteditable], .tbl-wrap, .toc') || sideScroller(tg)) return;
+      if (!tg.closest('#detail, #list, .list-pane, main')) return;
+      st = { x: t.clientX, y: t.clientY, t: Date.now(), dir: 0 };
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      if (!st) return;
+      const t = e.touches[0], dx = t.clientX - st.x, dy = t.clientY - st.y;
+      if (Math.abs(dy) > 40 && Math.abs(dy) > Math.abs(dx)) { st = null; hint.hidden = true; return; } // scrolling
+      const can = dx > 0 ? (App.backStack.length || document.body.classList.contains('show-detail')) : App.forwardStack.length;
+      if (Math.abs(dx) > 24 && can) {
+        hint.hidden = false;
+        hint.textContent = dx > 0 ? '‹' : '›';
+        hint.className = 'swipe-hint ' + (dx > 0 ? 'l' : 'r') + (Math.abs(dx) > 70 ? ' go' : '');
+      } else hint.hidden = true;
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      if (!st) return;
+      const t = e.changedTouches[0], dx = t.clientX - st.x, dy = t.clientY - st.y, dt = Date.now() - st.t;
+      st = null; hint.hidden = true;
+      if (Math.abs(dx) < 70 || Math.abs(dy) > 60 || Math.abs(dy) > Math.abs(dx) * 0.6 || dt > 900) return;
+      if (dx > 0) App.goBack(); else App.goForward();
+    }, { passive: true });
+    document.addEventListener('touchcancel', () => { st = null; hint.hidden = true; }, { passive: true });
+  },
+};
+
+/* ---------- Source picker ----------
+   Every "Source" box opens a list of your books: recently used first, then the rest A-Z,
+   narrowed as you type. Typing a new name still works. */
+const SourcePicker = {
+  KEY: 'dndref.recentSources',
+  recent() { try { return JSON.parse(safeLocal.get(this.KEY) || '[]'); } catch { return []; } },
+  use(name) {
+    const v = String(name || '').trim();
+    if (!v) return;
+    const k = fold(v).trim();
+    const list = [v, ...this.recent().filter((x) => fold(x).trim() !== k)].slice(0, 12);
+    safeLocal.set(this.KEY, JSON.stringify(list));
+  },
+  matches(el) { return el && el.matches && el.matches('#edSource, #pasteSource, #bulkSrcIn, input[data-act="src"], input[data-src]'); },
+  init() {
+    this.box = document.createElement('div');
+    this.box.className = 'src-pick';
+    this.box.hidden = true;
+    this.box.setAttribute('role', 'listbox');
+    document.addEventListener('focusin', (e) => { if (this.matches(e.target)) this.open(e.target); });
+    document.addEventListener('input', (e) => { if (e.target === this.input) this.render(); });
+    document.addEventListener('focusout', (e) => { if (e.target === this.input) setTimeout(() => { if (document.activeElement !== this.input) this.close(); }, 120); });
+    document.addEventListener('change', (e) => { if (this.matches(e.target)) this.use(e.target.value); });
+    document.addEventListener('keydown', (e) => {
+      if (!this.input || e.target !== this.input || this.box.hidden) return;
+      const items = $$('.sp-i', this.box);
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        this.cur = Math.max(0, Math.min(items.length - 1, this.cur + (e.key === 'ArrowDown' ? 1 : -1)));
+        items.forEach((x, i) => x.classList.toggle('cur', i === this.cur));
+        items[this.cur]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter' && this.cur >= 0 && items[this.cur]) { e.preventDefault(); this.pick(items[this.cur].dataset.v); }
+      else if (e.key === 'Escape') { e.stopPropagation(); this.close(); }
+    }, true);
+    // pointerdown keeps focus in the box; the pick happens on click
+    this.box.addEventListener('pointerdown', (e) => e.preventDefault());
+    this.box.addEventListener('click', (e) => { const it = e.target.closest('.sp-i'); if (it) this.pick(it.dataset.v); });
+    addEventListener('resize', () => this.place());
+    document.addEventListener('scroll', () => this.place(), true);
+  },
+  open(input) {
+    if (input.hasAttribute('list')) input.removeAttribute('list'); // our list replaces the browser's suggestions
+    this.input = input;
+    (input.closest('dialog') || document.body).appendChild(this.box); // dialogs sit on top of everything else
+    this.render();
+  },
+  close() { this.box.hidden = true; this.input = null; },
+  render() {
+    if (!this.input) return;
+    const loose = (x) => fold(x).replace(/[^a-z0-9]+/g, ''); // "players handbook" finds "Player’s Handbook"
+    const q = loose(this.input.value);
+    const all = App.sourceNames();
+    const known = new Map(all.map((n) => [fold(n).trim(), n]));
+    const rec = this.recent().map((r) => known.get(fold(r).trim()) || r).filter((r, i, a) => a.indexOf(r) === i);
+    const recK = new Set(rec.map((r) => fold(r).trim()));
+    const hit = (n) => !q || loose(n).includes(q);
+    const recent = rec.filter(hit).slice(0, 6);
+    const rest = all.filter((n) => !recK.has(fold(n).trim()) && hit(n)).sort((a, b) => a.localeCompare(b));
+    const row = (n) => `<div class="sp-i" role="option" data-v="${esc(n)}">${esc(n)}</div>`;
+    let html = '';
+    if (recent.length) html += `<div class="sp-h">Recently used</div>${recent.map(row).join('')}`;
+    if (rest.length) html += `<div class="sp-h">${recent.length ? 'All sources' : 'Sources'}</div>${rest.map(row).join('')}`;
+    if (!html) { this.box.hidden = true; return; }
+    this.box.innerHTML = html;
+    this.cur = -1;
+    this.box.hidden = false;
+    this.place();
+  },
+  place() {
+    if (!this.input || this.box.hidden) return;
+    const r = this.input.getBoundingClientRect();
+    // Inside a dialog, stay clear of its buttons so OK / Save stay tappable.
+    const foot = this.input.closest('dialog')?.querySelector('.dlg-foot');
+    const floor = foot ? Math.min(innerHeight, foot.getBoundingClientRect().top - 4) : innerHeight;
+    const below = floor - r.bottom, up = below < 150 && r.top > below;
+    Object.assign(this.box.style, {
+      left: Math.max(6, Math.min(r.left, innerWidth - Math.max(r.width, 240) - 6)) + 'px',
+      width: Math.max(r.width, 240) + 'px',
+      top: up ? '' : r.bottom + 4 + 'px', bottom: up ? innerHeight - r.top + 4 + 'px' : '',
+      maxHeight: Math.max(140, (up ? r.top : below) - 16) + 'px',
+    });
+  },
+  pick(v) {
+    const el = this.input;
+    if (!el) return;
+    el.value = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    this.use(v);
+    this.close();
+  },
+};
 
 /* ---------- Event wiring ---------- */
 function wireEvents() {
@@ -5552,6 +5740,7 @@ function wireEvents() {
       return;
     }
     if (e.altKey && e.key === 'ArrowLeft' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
+    if (e.altKey && e.key === 'ArrowRight' && App.forwardStack.length) { e.preventDefault(); App.goForward(); return; }
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === 'Backspace' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
     if (e.key === '\\') { e.preventDefault(); setListHidden(!document.body.classList.contains('list-hidden')); return; }
@@ -5837,6 +6026,8 @@ async function boot() {
   }
   VList.init();
   Peek.init();
+  Swipe.init();
+  SourcePicker.init();
   if (safeLocal.get('dndref.listHidden')) setListHidden(true);
   wireEvents();
   App.setTab('');

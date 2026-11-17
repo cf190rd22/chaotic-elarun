@@ -2978,7 +2978,7 @@ const Tables = {
    Applied at display time only (stored text is untouched). Fmt.sb is switched on
    while a stat block renders; set HIGHLIGHT_TYPES to use it for other categories. */
 const HIGHLIGHT_TYPES = new Set(['monster', 'spell']);
-const Fmt = { sb: false };
+const Fmt = { sb: false, hl: true }; // hl: emphasis (damage, to-hit, DCs, checks, conditions) in every entry
 const DAMAGE_TYPES = 'acid|bludgeoning|cold|fire|force|lightning|necrotic|piercing|poison|psychic|radiant|slashing|thunder';
 const CONDITION_NAMES = 'blinded|charmed|deafened|exhaustion|exhausted|frightened|grappled|incapacitated|invisible|paralyzed|paralysed|petrified|poisoned|prone|restrained|stunned|unconscious';
 const ABILITY_NAMES = 'strength|dexterity|constitution|intelligence|wisdom|charisma';
@@ -3011,7 +3011,7 @@ function emphasise(html, { allTypes = false } = {}) {
       .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)(\s*)([+-]?\d+(?: to hit)?)?/g,
         (m, a, sp, b) => (b ? `<b class="hl-atk">${a}</b> <b class="hl-tohit">${b}</b>` : `<b class="hl-atk">${a}</b>${sp}`))
       .replace(/\bHit:/g, '<i class="hl-hit">Hit:</i>')
-      .replace(new RegExp(`\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
+      .replace(new RegExp(`\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})(?:\\s*\\([A-Z][A-Za-z ]{2,20}\\))?\\s+checks?\\b|\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
         (m) => `<b class="hl-save">${m}</b>`)
       .replace(dmg, (m, dice, type, word) => (dice || word || allTypes)
         ? `<b class="hl-dmg dmg-${type.toLowerCase()}">${m.trimEnd()}</b>${m.endsWith(' ') ? ' ' : ''}` : m)
@@ -3025,7 +3025,7 @@ function emphasise(html, { allTypes = false } = {}) {
 /** Text -> HTML: escape, auto-link, and (inside stat blocks) capitalise terms and emphasise. */
 function rich(text, opts) {
   if (!text) return '';
-  if (!Fmt.sb) return Linker.html(text);
+  if (!Fmt.sb) return Fmt.hl ? emphasise(Linker.html(text), opts) : Linker.html(text);
   return emphasise(Linker.html(gameTerms(text)), opts);
 }
 
@@ -3494,6 +3494,8 @@ const LINK_COMMON = new Set(('aid alarm alert awaken bane banishment barkskin bl
   + 'durable healer lucky musician observant sentinel skilled tough grappler mobile resilient boar rat goat ape owl '
   + 'mastiff badger bat cat crab deer eagle elk hawk hyena jackal lion lizard mule octopus panther pony raven scorpion '
   + 'spider tiger weasel wolf bear horse frog toad snake shark camel dog').split(' '));
+/** Names from an entry's "Aliases" (or "Also Known As") field. */
+const aliasesOf = (e) => String(e.fields.Aliases || e.fields.Alias || e.fields['Also Known As'] || '').split(/\s*[,;]\s*/).map((x) => x.trim()).filter((x) => x.length >= 3);
 const LINK_DETERMINER = new Set('the a an this that these those your its their his her each any every no another'.split(' '));
 const LINK_PRIORITY = ['condition', 'item', 'monster', 'feat', 'class', 'subclass', 'species', 'background', 'rule', 'other', 'spell'];
 const Linker = {
@@ -3516,12 +3518,18 @@ const Linker = {
     const byName = new Map();
     for (const e of App.entries.values()) {
       if (e.type === 'sage-advice') continue; // rulings are questions, not link targets
-      const toks = this.tokens(e.name).map((t) => t.f);
-      if (!toks.length || toks.join('').length < 3) continue;
-      const key = toks.join(' ');
-      let g = byName.get(key);
-      if (!g) byName.set(key, (g = { toks, ents: [] }));
-      g.ents.push(e);
+      // Other names it answers to: an "Aliases" field ("Half Cover, Three-Quarters Cover, Total Cover").
+      const aliases = aliasesOf(e);
+      for (const nm of [e.name, ...aliases]) {
+        const toks = this.tokens(nm).map((t) => t.f);
+        if (!toks.length || toks.join('').length < 3) continue;
+        const key = toks.join(' ');
+        let g = byName.get(key);
+        if (!g) byName.set(key, (g = { toks, ents: [], aliasFor: new Map() }));
+        if (g.ents.includes(e)) continue;
+        g.ents.push(e);
+        if (nm !== e.name) g.aliasFor.set(e.id, nm);
+      }
     }
     const map = new Map();
     for (const g of byName.values()) { let a = map.get(g.toks[0]); if (!a) map.set(g.toks[0], (a = [])); a.push(g); }
@@ -3574,7 +3582,7 @@ const Linker = {
         if (!ok || (n === 1 && LINK_SMALL.has(g.toks[0]))) continue;
         const ent = this.pick(g.ents, text, T, i, n);
         if (!ent) continue;
-        cb({ ent, start: T[i].s, end: T[i + n - 1].e });
+        cb({ ent, start: T[i].s, end: T[i + n - 1].e, alias: (g.aliasFor && g.aliasFor.get(ent.id)) || '' });
         i += n - 1;
         break;
       }
@@ -3639,9 +3647,12 @@ const Linker = {
       const label = esc(text.slice(h.start, h.end));
       out += esc(text.slice(pos, h.start));
       if (h.ent.local) out += `<a class="xref local" href="#" data-jump="${h.ent.anchor}" title="Jump to this feature">${label}</a>`;
-      else out += this.seen.has(h.ent.id) ? label
-        : `<a class="xref" href="#/e/${encodeURIComponent(h.ent.id)}" data-open="${esc(h.ent.id)}" data-peek>${label}</a>`;
-      this.seen.add(h.ent.id);
+      else {
+        const key = h.ent.id + (h.alias ? '|' + fold(h.alias) : '');
+        out += this.seen.has(key) ? label
+          : `<a class="xref" href="#/e/${encodeURIComponent(h.ent.id)}" data-open="${esc(h.ent.id)}"${h.alias ? ` data-find="${esc(h.alias)}"` : ''} data-peek>${label}</a>`;
+        this.seen.add(key);
+      }
       pos = h.end;
     });
     return out + esc(text.slice(pos));
@@ -4350,6 +4361,14 @@ const App = {
   },
 
   /** Follow a link from one entry to another; "← Back" returns. Browser back works too where allowed. */
+  /** Highlight `needle` in the open entry with Find in page (used by alias links). */
+  findText(id, needle) {
+    const fi = $('#detail .fip-in');
+    if (!fi || this.currentId !== id) return;
+    fi.value = needle;
+    Find.forId = id;
+    Find.run(needle);
+  },
   navigate(id) {
     if (!this.entries.has(id) || id === this.currentId) return;
     const scroll = $('#detail').scrollTop;
@@ -5260,7 +5279,12 @@ function wireEvents() {
       return;
     }
     const openEl = ev.target.closest('[data-open]');
-    if (openEl) { ev.preventDefault(); if (Peek.el) Peek.el.hidden = true; App.navigate(openEl.dataset.open); return; }
+    if (openEl) {
+      ev.preventDefault(); if (Peek.el) Peek.el.hidden = true;
+      App.navigate(openEl.dataset.open);
+      if (openEl.dataset.find) App.findText(openEl.dataset.open, openEl.dataset.find); // "Total Cover" -> that part of Cover
+      return;
+    }
     if (ev.target.closest('[data-act="nav-back"]')) { App.goBack(); return; }
     const srcEl = ev.target.closest('[data-source]');
     if (srcEl) { App.setSource(srcEl.dataset.source, { toSearch: true }); return; }

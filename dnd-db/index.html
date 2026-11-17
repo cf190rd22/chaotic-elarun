@@ -652,6 +652,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
           <div class="ctl-row">
             <button id="parseBtn" class="primary">Parse</button>
             <button id="importFileBtn">Import JSON file…</button>
+            <button id="ghFolderBtn" title="Import every stat block in a GitHub folder, e.g. a 5e Artisanal Database monster folder">From GitHub folder…</button>
             <input type="file" id="importFile" accept=".json,application/json" hidden>
           </div>
         </div>
@@ -2605,9 +2606,80 @@ const Parsers = (() => {
     },
   };
 
+  /* ---------- Markdown stat blocks ----------
+     "# Aatxe" / "*Large* *Celestial* *lawful good*" / "- **Armor Class:** 14 (natural armor)" /
+     a "| STR | DEX | …" table / "### Special Abilities" / "- **Charge:** text". Converted to the
+     plain stat-block layout the monster parser already reads. */
+  const MD_SECTIONS = { 'special abilities': 'Traits', traits: 'Traits', actions: 'Actions', 'bonus actions': 'Bonus Actions',
+    reactions: 'Reactions', 'legendary actions': 'Legendary Actions', 'mythic actions': 'Mythic Actions', 'lair actions': 'Lair Actions' };
+  const isMdMonster = (lines) => /^#\s+\S/.test(lines[0] || '') && lines.slice(1, 14).some((l) => /^[-*]\s*\*\*(armou?r class|hit points)\s*:?\*\*/i.test(l));
+  const unMd = (l) => l.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/(^|[\s(])[*_]([^*_]+)[*_](?=$|[\s.,;:)])/g, '$1$2');
+  function mdToStatblock(lines) {
+    const out = [];
+    let source = '', page = '', inBody = false, crLine = '';
+    // The monster parser reads ability scores above the Challenge line, so Challenge goes in just before the first section.
+    const flushCr = () => { if (crLine) { out.push(crLine); crLine = ''; } };
+    for (let i = 0; i < lines.length; i++) {
+      const l = lines[i];
+      let m;
+      if (i === 0 && (m = /^#\s+(.+)$/.exec(l))) { out.push(m[1].trim()); continue; }
+      // "*Large* *Celestial* *lawful good*" -> "Large Celestial, lawful good"
+      if (out.length === 1 && /^\*[^*]+\*(\s+\*[^*]+\*)*\s*$/.test(l)) {
+        const parts = [...l.matchAll(/\*([^*]+)\*/g)].map((x) => x[1].trim());
+        out.push(parts.length >= 3 ? `${parts[0]} ${parts.slice(1, -1).join(' ')}, ${parts[parts.length - 1]}` : parts.join(' '));
+        continue;
+      }
+      if ((m = /^#{2,4}\s+(.+?)\s*$/.exec(l))) { flushCr(); out.push(MD_SECTIONS[m[1].toLowerCase()] || m[1]); inBody = true; continue; }
+      // A paragraph introducing the next section ("The dragon can take 3 legendary actions…") goes under its heading.
+      if (!/^[-*|]/.test(l) && /^#{2,4}\s/.test(lines[i + 1] || '')) {
+        const h = /^#{2,4}\s+(.+?)\s*$/.exec(lines[i + 1])[1];
+        flushCr(); out.push(MD_SECTIONS[h.toLowerCase()] || h, unMd(l)); inBody = true; i++; continue;
+      }
+      if ((m = /^\|(.+)\|\s*$/.exec(l))) {
+        const cells = m[1].split('|').map((c) => c.trim());
+        if (cells.every((c) => /^:?-{2,}:?$/.test(c))) continue; // | --- | --- |
+        out.push(cells.join('\t'));
+        continue;
+      }
+      if ((m = /^[-*]\s+\*\*(.+?):?\*\*:?\s*(.*)$/.exec(l))) {
+        const key = m[1].replace(/:$/, '').trim(), val = unMd(m[2].trim());
+        if (!inBody) {
+          if (/^source$/i.test(key)) { const sm = /^(.+?)(?:,\s*(?:page|pg\.?|p\.)\s*(\d+))?$/i.exec(val); source = sm[1].trim(); page = sm[2] || ''; continue; }
+          if (/^speed$/i.test(key)) { out.push('Speed ' + val.replace(/^walk\s+/i, '')); continue; }
+          if (/^challenge rating$/i.test(key)) { crLine = 'Challenge ' + val; continue; }
+          out.push(`${key} ${val}`);
+          continue;
+        }
+        out.push(`${key}. ${val}`); // "- **Gore (Costs 2 Actions):** …" -> "Gore (Costs 2 Actions). …"
+        continue;
+      }
+      out.push(unMd(l.replace(/^[-*]\s+/, '')));
+    }
+    flushCr();
+    return { lines: out, source, page };
+  }
+  const mdMonster = {
+    type: 'monster', label: 'Monster stat block (Markdown)',
+    detect(lines) { return isMdMonster(lines) ? 0.98 : 0; },
+    /** Several files pasted together: one monster per "# Name". */
+    splitBlock(lines) {
+      const starts = [];
+      for (let i = 0; i < lines.length; i++) if (/^#\s+\S/.test(lines[i]) && isMdMonster(lines.slice(i))) starts.push(i);
+      if (starts.length < 2) return [lines];
+      return starts.map((st, k) => lines.slice(st, k + 1 < starts.length ? starts[k + 1] : lines.length));
+    },
+    parse(input) {
+      const { lines, source, page } = mdToStatblock(input);
+      const r = monster.parse(lines);
+      if (source) r.source = source;
+      if (page) r.fields = { ...r.fields, Page: page };
+      return r;
+    },
+  };
+
   /* ---------- registry + pipeline ---------- */
   function register(p) { registry.push(p); }
-  [spell, monster, monsterGroup, klass, subclass, item, feat, species, background, condition, rule, sage].forEach(register);
+  [spell, monster, monsterGroup, mdMonster, klass, subclass, item, feat, species, background, condition, rule, sage].forEach(register);
 
   /** Pick the best parser for a chunk. */
   function detect(lines) {
@@ -2641,6 +2713,8 @@ const Parsers = (() => {
     const norm = normalise(text);
     if (forceSingle) { const l = toLines(norm); return l.length ? [l] : []; }
     const blocks = ('\n' + norm + '\n').split(/\n[ \t]*(?:-{3,}|={3,}|\*{3,}|_{3,})[ \t]*(?=\n)|\n(?:[ \t]*\n){3,}/);
+    // A block that starts with a Markdown sub-heading ("### Legendary Actions") continues the entry above it.
+    for (let k = blocks.length - 1; k > 0; k--) if (/^\s*#{2,4}\s/.test(blocks[k])) { blocks[k - 1] += '\n' + blocks[k]; blocks.splice(k, 1); }
     const chunks = [];
     for (const b of blocks) {
       const lines = toLines(b);
@@ -3457,7 +3531,7 @@ const Renderers = {
 };
 
 /* ---------- Monster families ---------- */
-const MON_PLACE = ['Habitat', 'Treasure', 'Family', 'Tagline'];
+const MON_PLACE = ['Habitat', 'Treasure', 'Family', 'Tagline', 'Page'];
 /** A family entry: Monster Manual lore with no stat block of its own. */
 const isMonGroup = (e) => e.type === 'monster' && !e.abilities && !e.fields.AC && !e.fields.HP && !e.fields.CR;
 function familyMembers(g) {
@@ -3500,7 +3574,7 @@ function subtitleHtml(e, t) {
     const fam = g ? `<a href="#" class="sub-link" data-open="${esc(g.id)}" title="Open the ${esc(e.fields.Family)} family">${esc(e.fields.Family)}</a>` : esc(e.fields.Family);
     main = esc(subtitleOf(e)) + `<span class="sep">·</span>${fam} family`;
   } else main = esc(subtitleOf(e) || ({ class: 'Class', species: 'Species', background: 'Background', item: 'Item', monster: 'Monster', spell: 'Spell', feat: 'Feat', other: 'Other' }[e.type] || t.label));
-  const src = e.source ? `<span class="sep">·</span><a href="#" class="sub-link" data-source="${esc(fold(e.source).trim())}" title="Show everything from this source">${esc(e.source)}</a>` : '';
+  const src = e.source ? `<span class="sep">·</span><a href="#" class="sub-link" data-source="${esc(fold(e.source).trim())}" title="Show everything from this source">${esc(e.source)}</a>${e.fields.Page ? `<span class="pg">, p. ${esc(e.fields.Page)}</span>` : ''}` : '';
   return main + src;
 }
 
@@ -4812,6 +4886,46 @@ const Importer = {
     this.render(performance.now() - t0);
   },
 
+  /** Ask for GitHub folder links (remembered ones can be updated), then load every file into the preview. */
+  async fromGitHub() {
+    const saved = await GitFolders.saved();
+    const rows = saved.map((x, i) => `<div class="cm-row"><label class="hint" style="flex:1"><input type="checkbox" data-gh="${i}"> <b>${esc(GitFolders.label(x.url))}</b> · ${x.count} entries · ${esc(String(x.at).slice(0, 10))}</label><button data-ghforget="${i}" class="danger" title="Forget this folder">×</button></div>`).join('');
+    const pr = ask('Import from GitHub folders',
+      `<p class="hint">Paste folder links, one per line (github.com/owner/repo/tree/branch/folder). Each Markdown file becomes an entry; you review them before saving.</p>
+       <textarea id="ghUrls" rows="4" style="width:100%" placeholder="https://github.com/mshea/lazy_gm_tools/tree/main/5e_artisanal_database/monsters/md/creature_codex"></textarea>
+       ${saved.length ? `<h4 class="sc-h">Connected folders: tick to update</h4>${rows}` : ''}`,
+      [{ label: 'Cancel', value: null }, { label: 'Fetch', value: true, kind: 'primary' }]);
+    $('#askBody').addEventListener('click', async (ev) => {
+      const f = ev.target.closest('[data-ghforget]');
+      if (f) { await GitFolders.forget(saved[+f.dataset.ghforget].url); f.closest('.cm-row').remove(); }
+    });
+    if (!(await pr)) return;
+    const urls = [...new Set([...($('#ghUrls')?.value || '').split(/\s+/).filter(Boolean), ...saved.filter((_, i) => $(`#askBody [data-gh="${i}"]`)?.checked).map((x) => x.url)])];
+    if (!urls.length) return;
+    const head = $('#previewHead');
+    const all = [];
+    try {
+      for (const u of urls) {
+        head.textContent = `Listing ${GitFolders.label(u)}…`;
+        const files = await GitFolders.files(u);
+        const texts = await GitFolders.download(files, (d, n) => { head.textContent = `Downloading ${GitFolders.label(u)}: ${d} / ${n}…`; });
+        let n = 0;
+        for (const t of texts) {
+          if (!t.trim()) continue;
+          for (const c of Parsers.parseText(t)) { all.push({ ...c, detectedSource: c.entry.source }); n++; }
+        }
+        await GitFolders.remember(u, n);
+      }
+    } catch (err) { toast(err.message, 'err', 9000); logWarn('GitHub folder import', err); head.textContent = err.message; return; }
+    this.candidates = all;
+    $('#pasteBox').value = '';
+    this.applyPasteSource(false);
+    // Updating a folder: entries you have edited are kept as they are.
+    this.candidates = this.candidates.map((c) => (c.dupId && App.entries.get(c.dupId)?.edited ? { ...c, dup: 'skip' } : c));
+    this.render();
+    toast(`${all.length} entries ready to review from ${urls.length} folder${urls.length === 1 ? '' : 's'}`, 'ok', 6000);
+  },
+
   /** Add UI state and duplicate detection: same name + category, and not from a different book. */
   decorate(c, prev = {}) {
     const key = fold(c.entry.name) + '|' + c.entry.type, src = fold(c.entry.source).trim();
@@ -4947,7 +5061,7 @@ const Importer = {
         if (c.dup === 'skip') continue;
         if (c.dup === 'replace') {
           const old = App.entries.get(c.dupId);
-          if (old) { e.id = old.id; e.fav = old.fav; e.created = old.created; if (old.type !== e.type) await App.remove([old.id]); }
+          if (old) { e.id = old.id; e.fav = old.fav; e.created = old.created; if (old.cols) e.cols = old.cols; if (old.type !== e.type) await App.remove([old.id]); }
         }
       }
       e.updated = nowIso();
@@ -5176,7 +5290,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.5'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.6'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 4;
 const Tidy = {
@@ -5277,6 +5391,56 @@ function shortcutsHtml() {
 function showShortcuts() {
   ask('Keyboard shortcuts', `<div class="sc-wrap">${shortcutsHtml()}</div><p class="hint">Single keys only work when you're not typing in a box. Also in Settings.</p>`, [{ label: 'Close', value: null, kind: 'primary' }]);
 }
+
+/* ---------- Import from GitHub folders ----------
+   Paste one or more folder links (github.com/owner/repo/tree/branch/path). The folder is listed
+   through the GitHub API (one request per folder; your backup token is used if you set one) and
+   each Markdown file is downloaded and parsed. Folders are remembered, so "Update" re-imports
+   them later: unchanged-by-you entries are replaced, entries you edited are skipped. */
+const GitFolders = {
+  KEY: 'ghFolders',
+  async saved() { return (await Store.getMeta(this.KEY)) || []; },
+  async remember(url, count) {
+    const list = (await this.saved()).filter((x) => x.url !== url);
+    list.unshift({ url, count, at: nowIso() });
+    await Store.setMeta(this.KEY, list.slice(0, 30));
+  },
+  async forget(url) { await Store.setMeta(this.KEY, (await this.saved()).filter((x) => x.url !== url)); },
+  parse(u) {
+    const m = /github\.com\/([^/\s]+)\/([^/\s]+)\/(?:tree|blob)\/([^/\s]+)\/([^?#\s]+?)\/?(?:[?#].*)?$/i.exec(String(u).trim());
+    return m ? { owner: m[1], repo: m[2], ref: m[3], path: decodeURIComponent(m[4]) } : null;
+  },
+  label(u) { const g = this.parse(u); return g ? g.path.split('/').pop().replace(/[_-]+/g, ' ') : u; },
+  async files(u) {
+    const g = this.parse(u);
+    if (!g) throw new Error(`Not a GitHub folder link: ${u}`);
+    const c = await GitHub.config();
+    const headers = { Accept: 'application/vnd.github+json', ...(c.token ? { Authorization: `Bearer ${c.token}` } : {}) };
+    let res;
+    try { res = await fetch(`https://api.github.com/repos/${g.owner}/${g.repo}/contents/${g.path.split('/').map(encodeURIComponent).join('/')}?ref=${encodeURIComponent(g.ref)}`, { headers }); }
+    catch (err) { throw new Error('Could not reach GitHub (offline, or this viewer blocks web requests).'); }
+    if (res.status === 403 || res.status === 429) throw new Error('GitHub rate limit reached (60 folder listings an hour without a token). Add a token under Settings → GitHub backup, or try again later.');
+    if (res.status === 404) throw new Error(`Folder not found: ${g.owner}/${g.repo}/${g.path}`);
+    if (!res.ok) throw new Error(`GitHub answered ${res.status} for ${g.path}`);
+    const list = await res.json();
+    if (!Array.isArray(list)) throw new Error('That link is a file, not a folder.');
+    return list.filter((f) => f.type === 'file' && /\.(md|markdown|txt)$/i.test(f.name)).map((f) => ({ name: f.name, url: f.download_url }));
+  },
+  /** Download files, a few at a time. */
+  async download(files, onStep) {
+    const out = new Array(files.length);
+    let next = 0, done = 0;
+    const worker = async () => {
+      while (next < files.length) {
+        const k = next++;
+        try { const r = await fetch(files[k].url); out[k] = r.ok ? await r.text() : ''; } catch { out[k] = ''; }
+        onStep(++done, files.length);
+      }
+    };
+    await Promise.all(Array.from({ length: 8 }, worker));
+    return out;
+  },
+};
 
 /* ---------- Favourite collections ----------
    Named groups of favourites ("Tonight", "Lich fight", "My Warlock"); an entry can be in several.
@@ -5767,6 +5931,7 @@ function wireEvents() {
   $('#pasteSourceAll').addEventListener('change', () => Importer.applyPasteSource());
   $('#importAs').addEventListener('change', () => Importer.parse());
   $('#saveParsedBtn').addEventListener('click', () => Importer.save());
+  $('#ghFolderBtn').addEventListener('click', () => Importer.fromGitHub().catch((err) => logError('GitHub folder import', err)));
   $('#exampleSel').addEventListener('change', (e) => {
     const ex = EXAMPLE_PASTES[+e.target.value - 1];
     if (ex) { $('#pasteBox').value = ex.text; Importer.parse(); }

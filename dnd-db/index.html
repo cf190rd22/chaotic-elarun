@@ -2453,11 +2453,17 @@ const Parsers = (() => {
       // 2025 stat blocks: "AC 16 Initiative +3 (13)" and the "Ability Score Mod Save" grid stopped
       // the old parser early, losing Skills/Senses/Languages/CR. Re-parse unedited ones.
       const spilled = (e.sections || []).some((sc) => /^(saving throws|skills|senses|languages|challenge|cr)\b/im.test(sc.intro || ''));
+      // Markdown imports with the "[+]Appearance[/+]" glitch: re-read from the original file.
+      if (e.raw && /^#\s/.test(e.raw) && /\[\/?\+\+?\]/.test(e.raw) && (includeEdited || !isEdited(e))) {
+        const n = mdMonster.parse(toLines(normalise(e.raw)));
+        return [{ ...n, id: e.id, raw: e.raw, fav: e.fav, ...(e.cols ? { cols: e.cols } : {}), created: e.created, updated: e.updated, name: e.name, type: 'monster',
+          source: n.source || e.source, tags: e.tags || [] }];
+      }
       if (!/\sInitiative\s/i.test(e.fields.AC || '') && !spilled) return null;
       const edited = !includeEdited && isEdited(e);
       if (e.raw && !edited) {
         const n = monster.parse(toLines(normalise(e.raw)));
-        return [{ ...n, id: e.id, raw: e.raw, fav: e.fav, created: e.created, updated: e.updated, name: e.name, type: 'monster',
+        return [{ ...n, id: e.id, raw: e.raw, fav: e.fav, ...(e.cols ? { cols: e.cols } : {}), created: e.created, updated: e.updated, name: e.name, type: 'monster',
           source: n.source || e.source, tags: [...new Set([...(e.tags || []), ...n.tags])], fields: { ...e.fields, ...n.fields } }];
       }
       if (!/\sInitiative\s/i.test(e.fields.AC || '')) return null; // edited: leave it to the user
@@ -2476,7 +2482,7 @@ const Parsers = (() => {
         const out = chunks.map((c, k) => {
           const n = reparseAs(e.type, c).entry;
           return {
-            ...n, type: e.type, id: k === 0 ? e.id : n.id, fav: k === 0 ? e.fav : false, created: e.created,
+            ...n, type: e.type, id: k === 0 ? e.id : n.id, fav: k === 0 ? e.fav : false, ...(k === 0 && e.cols ? { cols: e.cols } : {}), created: e.created,
             name: k === 0 && chunks.length === 1 ? e.name : n.name,
             source: n.source || e.source, tags: [...new Set([...(e.tags || []), ...n.tags])],
             fields: { ...(k === 0 ? e.fields : {}), ...n.fields }, updated: e.updated,
@@ -2645,11 +2651,14 @@ const Parsers = (() => {
         const key = m[1].replace(/:$/, '').trim(), val = unMd(m[2].trim());
         if (!inBody) {
           if (/^source$/i.test(key)) { const sm = /^(.+?)(?:,\s*(?:page|pg\.?|p\.)\s*(\d+))?$/i.exec(val); source = sm[1].trim(); page = sm[2] || ''; continue; }
-          if (/^speed$/i.test(key)) { out.push('Speed ' + val.replace(/^walk\s+/i, '')); continue; }
+          if (/^speed$/i.test(key)) { out.push('Speed ' + normaliseSpeed(val)); continue; }
           if (/^challenge rating$/i.test(key)) { crLine = 'Challenge ' + val; continue; }
           out.push(`${key} ${val}`);
           continue;
         }
+        // "- **False:** [+]Appearance[/+] While…" (a conversion glitch): the bracketed words finish the name.
+        const g = /^\[\+\+?\]\s*(.+?)\s*\[\/\+\+?\]\s*(.*)$/.exec(val);
+        if (g) { out.push(`${key} ${g[1]}. ${g[2]}`); continue; }
         out.push(`${key}. ${val}`); // "- **Gore (Costs 2 Actions):** …" -> "Gore (Costs 2 Actions). …"
         continue;
       }
@@ -3034,7 +3043,7 @@ function inline(L) {
 function renderKV(fields, skip = []) {
   const rows = Object.entries(fields).filter(([k]) => !skip.includes(k));
   if (!rows.length) return '';
-  return '<dl class="facts">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : (/^languages$/i.test(k) ? esc(v) : rich(v, { allTypes: /resist|immun|vulnerab/i.test(k) }))).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
+  return '<dl class="facts">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : (/^languages$/i.test(k) ? esc(v) : rich(/resist|immun|vulnerab/i.test(k) ? String(v).replace(new RegExp(`\\b(${DAMAGE_TYPES})\\b`, 'g'), (w) => cap(w)) : v, { allTypes: /resist|immun|vulnerab/i.test(k) }))).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
 }
 /** Short cells ("01–50", "+2", "3rd") never wrap; long ones flow. */
 const tdClass = (c) => (String(c).length <= 12 ? ' class="nw"' : '');
@@ -3125,8 +3134,26 @@ const GAME_TERMS = [
   [/\b(climb|fly|swim|burrow) speed\b/gi],
   [/\(hover\)/gi, '(Hover)'],
 ];
+/** Shorthand some conversions use: 60' -> 60 ft., "+-3" -> "-3", "30 ft. fly 60 ft." -> "30 ft., fly 60 ft.". */
+function tidyStatText(t) {
+  return String(t).replace(/(\d+)['’](?![\w'’])/g, '$1 ft.').replace(/\+\s?([-−]\d)/g, '$1')
+    .replace(/(\d+\s*ft\.)\s+(?=(?:walk|burrow|climb|fly|swim|hover)\b)/gi, '$1, ');
+}
+/** "fly 30 ft. hover True ft. walk 20 ft." -> "20 ft., Fly 30 ft. (hover)". Anything not understood is left as written. */
+function normaliseSpeed(v) {
+  const t = String(v || '').trim();
+  if (!/\b(walk|hover|bur\.)(?=\s)/i.test(t) && !/^(?:walk|burrow|climb|fly|swim)\s/i.test(t)) return tidyStatText(t);
+  const re = /\b(walk|burrow|bur\.|climb|fly|swim|hover)\s+(true(?:\s*ft\.?)?|\d+\s*(?:ft\.?|feet|['’]))/gi;
+  const m = {};
+  let hover = false;
+  t.replace(re, (_, k, val) => { k = k.toLowerCase().replace('bur.', 'burrow'); if (k === 'hover') hover = true; else m[k] = parseInt(val, 10) + ' ft.'; return ''; });
+  if (t.replace(re, '').replace(/[,\s]+/g, '')) return tidyStatText(t);
+  const parts = m.walk ? [m.walk] : [];
+  for (const k of ['burrow', 'climb', 'fly', 'swim']) if (m[k]) parts.push(`${cap(k)} ${m[k]}${k === 'fly' && hover ? ' (hover)' : ''}`);
+  return parts.join(', ') || tidyStatText(t);
+}
 function gameTerms(text) {
-  let t = String(text);
+  let t = tidyStatText(text);
   for (const [re, fixed] of GAME_TERMS) t = t.replace(re, (m) => fixed || titleWords(m.toLowerCase()));
   return t;
 }
@@ -3152,7 +3179,7 @@ function emphasise(html, { allTypes = false } = {}) {
       .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)(\s*)([+-]?\d+(?: to hit)?)?/g,
         (m, a, sp, b) => (b ? `<b class="hl-atk">${a}</b> <b class="hl-tohit">${b}</b>` : `<b class="hl-atk">${a}</b>${sp}`))
       .replace(/\bHit:/g, '<i class="hl-hit">Hit:</i>')
-      .replace(new RegExp(`\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})(?:\\s*\\([A-Z][A-Za-z ]{2,20}\\))?\\s+checks?\\b|\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
+      .replace(new RegExp(`\\bDC\\s*\\d+\\s+(?:Str|Dex|Con|Int|Wis|Cha)\\b(?:\\s+saves?\\b)?|\\b(?:Str|Dex|Con|Int|Wis|Cha)\\s+saves?\\b(?:\\s+DC\\s*\\d+)?|\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})(?:\\s*\\([A-Z][A-Za-z ]{2,20}\\))?\\s+checks?\\b|\\b(?:DC\\s*\\d+\\s+)?(?:${ABILITY_NAMES})\\s+saving throw\\b(?:\\s*:\\s*DC\\s*\\d+)?|\\b(?:${ABILITY_NAMES}) Saving Throw:\\s*DC\\s*\\d+|\\bDC\\s*\\d+\\b`, 'gi'),
         (m) => `<b class="hl-save">${m}</b>`)
       .replace(dmg, (m, dice, type, word) => (dice || word || allTypes)
         ? `<b class="hl-dmg dmg-${type.toLowerCase()}">${m.trimEnd()}</b>${m.endsWith(' ') ? ' ' : ''}` : m)
@@ -3186,8 +3213,10 @@ function renderAbilities(a) {
 /** "Perception +3, Stealth +4" -> small boxes. */
 function modBoxes(v) {
   return '<span class="mods">' + String(v).split(/,\s*/).map((part) => {
-    const m = /^(.*?)\s*([+-−]\s?\d+.*)$/.exec(part.trim());
-    return m ? `<span class="mod-box">${rich(gameTerms(m[1]))} <b>${esc(m[2].replace('−', '-'))}</b></span>` : `<span class="mod-box">${rich(part)}</span>`;
+    part = part.trim().replace(/\+\s*([-−])\s*/g, '$1'); // "perception +-3" -> "perception -3"
+    const m = /^(.*?)\s*([+\-−]\s?\d+.*)$/.exec(part);
+    const name = m && m[1] === m[1].toLowerCase() ? titleWords(m[1]).replace(/ (Of|And|The) /g, (w) => w.toLowerCase()) : m && m[1]; // "sleight of hand" -> "Sleight of Hand"
+    return m ? `<span class="mod-box">${rich(gameTerms(name))} <b>${esc(m[2].replace('−', '-'))}</b></span>` : `<span class="mod-box">${rich(part)}</span>`;
   }).join('') + '</span>';
 }
 
@@ -3505,7 +3534,7 @@ const Renderers = {
     Fmt.sb = HIGHLIGHT_TYPES.has(e.type);
     let sb;
     try {
-      const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k}</div><div class="sb-v">${rich(k === 'Speed' ? f[k] : f[k])}</div></div>`).join('');
+      const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k}</div><div class="sb-v">${rich(k === 'Speed' ? normaliseSpeed(f[k]) : f[k])}</div></div>`).join('');
       sb = '<div class="statblock">'
         + (boxes ? `<div class="sb-top">${boxes}</div>` : '') + renderAbilities(e.abilities)
         + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE])
@@ -5290,9 +5319,9 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.6'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.7'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
-const TIDY_VERSION = 4;
+const TIDY_VERSION = 5;
 const Tidy = {
   async run({ manual = false } = {}) {
     let includeEdited = false;

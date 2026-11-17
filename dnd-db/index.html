@@ -310,6 +310,9 @@ blockquote.quote cite { display: block; font-size: 13px; color: var(--muted); fo
 .col-menu .cm-new input { flex: 1; min-width: 0; }
 .cm-row { display: flex; gap: 10px; align-items: center; margin: 6px 0; } .cm-row > input { flex: 1; min-width: 0; }
 @media (pointer: coarse) { .col-menu .cm-i { padding: 11px 8px; font-size: 15px; } .tray-chip { padding: 5px 12px; font-size: 14px; } }
+/* in-entry navigation flash */
+@keyframes navhit { from { background: hsl(215 80% 55% / .22); box-shadow: 0 0 0 6px hsl(215 80% 55% / .22); } to { background: transparent; box-shadow: 0 0 0 6px transparent; } }
+.nav-hit { animation: navhit 1s ease-out; border-radius: 4px; }
 /* swipe back/forward hint */
 .swipe-hint { position: fixed; top: 45%; z-index: 60; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
   font: 700 28px/1 var(--serif); background: var(--panel-2); color: var(--muted); border: 1px solid var(--border); box-shadow: 0 4px 14px rgb(0 0 0 / .25); pointer-events: none; }
@@ -5327,7 +5330,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.8'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.9'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5375,6 +5378,35 @@ const Tidy = {
   },
 };
 
+/* ---------- Moving around inside an entry ----------
+   } / { : next / previous section (Traits, Actions, Lore, article headings, Referenced in)
+   J / K : next / previous item (every trait, action, feature, option card or subheading)
+   g / G : top / bottom. Works from wherever you have scrolled to. */
+const EntryNav = {
+  offset() {
+    const bar = $('#detail .fip-bar');
+    return (bar ? bar.getBoundingClientRect().bottom : $('#detail').getBoundingClientRect().top) + 6;
+  },
+  targets(kind) {
+    const sel = kind === 'section' ? '.d-body h3, .d-refs h3'
+      : '.d-body h3, .d-body h4, .d-body p.sb-item, .d-body .opt, .d-body .embedded-sb .sb-title, .d-refs h3';
+    return $$(sel, $('#detail')).filter((el) => el.offsetParent !== null && !el.closest('.toc, .raw-box'));
+  },
+  go(kind, dir) {
+    const list = this.targets(kind), top = this.offset();
+    const t = dir > 0 ? list.find((el) => el.getBoundingClientRect().top > top + 4)
+      : [...list].reverse().find((el) => el.getBoundingClientRect().top < top - 4);
+    if (t) this.show(t); else this.edge(dir);
+  },
+  show(el) {
+    const d = $('#detail');
+    d.scrollTop += el.getBoundingClientRect().top - this.offset();
+    el.classList.toggle('nav-hit', false); void el.offsetWidth; el.classList.toggle('nav-hit', true); // restart the flash
+    clearTimeout(el._navT); el._navT = setTimeout(() => el.classList.toggle('nav-hit', false), 1000);
+  },
+  edge(dir) { const d = $('#detail'); d.scrollTop = dir < 0 ? 0 : d.scrollHeight; },
+};
+
 /* ---------- Keyboard shortcuts guide ----------
    Single-key shortcuts only work when you're not typing in a box. */
 const MOD = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘' : 'Ctrl';
@@ -5401,6 +5433,12 @@ const SHORTCUTS = [
     ['x', 'Open / close Filters'],
     ['c', 'Collapse / expand all groups'],
     ['Esc', 'Close the open entry (phone)'],
+  ]],
+  ['Inside an entry', [
+    ['}  ·  {', 'Next / previous section (Traits, Actions, Lore, headings…)'],
+    ['J  ·  K', 'Next / previous item: each trait, action, feature or subheading'],
+    ['g  ·  G', 'Top / bottom of the entry'],
+    ['↓ ↑  ·  Space', 'Scroll'],
   ]],
   ['Open entry', [
     ['f', 'Favourite / unfavourite'],
@@ -6155,6 +6193,12 @@ function wireEvents() {
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === 'Backspace' && App.backStack.length) { e.preventDefault(); App.goBack(); return; }
     if (e.key === '\\') { e.preventDefault(); setListHidden(!document.body.classList.contains('list-hidden')); return; }
+    // Inside the open entry: } { sections, J K items, g G top / bottom
+    if (App.currentId && (document.body.classList.contains('show-detail') || App.isWide())) {
+      const nav = { '}': ['section', 1], '{': ['section', -1], J: ['item', 1], K: ['item', -1] }[e.key];
+      if (nav) { e.preventDefault(); EntryNav.go(...nav); return; }
+      if (e.key === 'g' || e.key === 'G') { e.preventDefault(); EntryNav.edge(e.key === 'g' ? -1 : 1); return; }
+    }
     // Arrow keys are left alone so they scroll the entry you're reading; j / k move through results.
     const tabKeys = ['', 'fav', ...categoryTabs()];
     if (e.key === 'f' && App.currentId) App.toggleFav(App.currentId);

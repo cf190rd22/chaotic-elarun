@@ -151,6 +151,7 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .hl-tohit { color: hsl(172 75% var(--hl-d)); background: hsl(172 60% 45% / .16); }
 .hl-hit { font-weight: 600; }
 .hl-save { color: hsl(328 62% var(--hl-l)); }
+.hl-save a.xref { color: inherit; } /* links inside a check keep their underline but read as one phrase */
 .hl-cond { color: hsl(290 45% var(--hl-l)); }
 .hl-dice { color: var(--text); }
 .hl-dmg { color: hsl(var(--dh, 0) var(--ds, 0%) var(--hl-d)); background: hsl(var(--dh, 0) var(--ds, 0%) 50% / .16); }
@@ -3009,8 +3010,20 @@ function gameTerms(text) {
 /** Bold + colour damage, saves/DCs, attack rolls and conditions. Works on escaped HTML, outside tags only. */
 function emphasise(html, { allTypes = false } = {}) {
   const dmg = new RegExp(`(\\b\\d+\\s*\\(\\s*\\d+d\\d+(?:\\s*[+-]\\s*\\d+)?\\s*\\)\\s*|\\b\\d+d\\d+(?:\\s*[+-]\\s*\\d+)?\\s+)?\\b(${DAMAGE_TYPES})\\b(\\s+damage)?`, 'gi');
+  // Checks and saving throws first, across links: "DC 15 <a>Dexterity</a> (<a>Stealth</a>) check" is one phrase
+  // (the word "check" / "saving throw" decides it). The links stay inside the highlight.
+  const A = '(?:<a\\b[^>]*>)?', Z = '(?:</a>)?';
+  html = html.replace(new RegExp(`(?<![A-Za-z>])(?:DC\\s*\\d+\\s+)?${A}(?:${ABILITY_NAMES})${Z}(?:\\s*\\(${A}[A-Z][A-Za-z ]{2,20}${Z}\\))?\\s+checks?\\b`
+    + `|(?<![A-Za-z>])(?:DC\\s*\\d+\\s+)?${A}(?:${ABILITY_NAMES})${Z}\\s+saving throws?\\b(?:\\s*:\\s*DC\\s*\\d+)?`, 'gi'),
+    (m) => (/<a\b/.test(m) ? `<b class="hl-save">${m}</b>` : m)); // plain-text phrases are handled below as before
+  let inPhrase = 0;
   return html.split(/(<[^>]+>)/).map((seg) => {
-    if (seg.startsWith('<')) return seg;
+    if (seg.startsWith('<')) {
+      if (seg === '<b class="hl-save">') inPhrase++;
+      else if (seg === '</b>' && inPhrase) inPhrase--;
+      return seg;
+    }
+    if (inPhrase) return seg;
     return seg
       .replace(/\b((?:Melee|Ranged)(?: or Ranged)?(?: Weapon| Spell)? Attack(?: Roll)?:)(\s*)([+-]?\d+(?: to hit)?)?/g,
         (m, a, sp, b) => (b ? `<b class="hl-atk">${a}</b> <b class="hl-tohit">${b}</b>` : `<b class="hl-atk">${a}</b>${sp}`))
@@ -5076,7 +5089,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.2'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.3'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 4;
 const Tidy = {

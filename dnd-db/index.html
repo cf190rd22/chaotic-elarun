@@ -400,6 +400,38 @@ body.tool-open #listPane { display: none; }
   #toolPane .tr-note { flex-basis: 100%; }
   #toolPane .tr-init { width: 40px; } #toolPane .tr-n { width: 44px; }
 }
+/* tracker v2 */
+.tr-dmg { display: inline-flex; align-items: center; gap: 2px; }
+.tr-dmg .tr-dn { width: 50px; text-align: center; }
+.tr-dmg button { padding: 2px 9px; font-weight: 700; }
+.tr-hpv { font-size: 15px; color: var(--text); min-width: 22px; text-align: right; }
+.tr-acl { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.tr-hide { border: 0; background: none; color: var(--muted); padding: 0 4px; font-size: 15px; }
+.tr-setup { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
+.tr-encs { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
+.tr-enc { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.tr-enc .hint { flex: 1 1 160px; }
+.tr-noteb { display: none; border: 0; background: none; color: var(--muted); padding: 0 4px; font-size: 15px; }
+@media (max-width: 720px) {
+  #toolPane .tr-row .tr-note:placeholder-shown { display: none; }
+  #toolPane .tr-row.noting .tr-note { display: block; }
+  #toolPane .tr-noteb { display: inline-block; }
+  #toolPane .tr-row.noting .tr-noteb { display: none; }
+  #toolPane .tr-row .tr-note { order: 10; }
+  #toolPane .tr-row.mem { flex-wrap: wrap; }
+  #toolPane .tr-row:has(.tr-note:not(:placeholder-shown)) .tr-noteb { display: none; }
+  #toolPane .tr-n, #toolPane .tr-dmg .tr-dn { width: 42px; padding-left: 2px; padding-right: 2px; }
+  #toolPane .tr-dmg button { padding: 2px 7px; }
+  #toolPane .tr-row.mem .tr-mname { min-width: 62px; }
+  #toolPane .tr-init { width: 38px; }
+}
+/* phone: the header icons fit on the screen */
+@media (max-width: 480px) {
+  .brand #homeBtn span { display: none; }
+  .bar-row .actions { gap: 4px; }
+  .bar-row .actions button { padding: 6px 8px; }
+  #toolPane .rr-top { row-gap: 8px; }
+}
 /* pinned: list | entry | roller */
 .rr-pin { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
 .rr-pin.on { background: var(--amber-dim); color: var(--amber); border-color: var(--amber-border); }
@@ -5531,7 +5563,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6100,15 +6132,23 @@ const Roller = {
    initiative; every creature has its own HP and max HP (changing it never touches the stat block).
    Lair actions at the initiative you choose (they lose ties); monsters can arrive in a later round. */
 const Tracker = {
-  st: { round: 1, turn: null, list: [], collapsed: {} },
+  st: { round: 1, turn: null, list: [], collapsed: {}, setup: true },
   async load() {
     const m = await Store.getMeta('tracker');
     if (m) Object.assign(this.st, m);
+    // Earlier versions kept a separate initiative per PC and a "from round"; neither is used now.
+    for (const c of this.st.list) { if (c.kind === 'mon') c.join = 1; }
+    // The party's "Init" used to be read as a bonus; it is the initiative number itself.
+    let moved = false;
+    for (const t of Roller.st.party) if (t.initb !== undefined && t.init === undefined) { t.init = this.num(t.initb); delete t.initb; moved = true; }
+    if (moved) Roller.save();
+    this.encounters = (await Store.getMeta('encounters')) || [];
     this.syncParty();
   },
   save() { Store.setMeta('tracker', this.st).catch(() => {}); },
+  saveEncounters() { Store.setMeta('encounters', this.encounters).catch(() => {}); },
   syncParty() {
-    for (const t of Roller.st.party) if (!this.st.list.some((c) => c.kind === 'pc' && c.pid === t.id)) this.st.list.push({ cid: uid(), kind: 'pc', pid: t.id, init: '' });
+    for (const t of Roller.st.party) if (!this.st.list.some((c) => c.kind === 'pc' && c.pid === t.id)) this.st.list.push({ cid: uid(), kind: 'pc', pid: t.id });
     this.st.list = this.st.list.filter((c) => c.kind !== 'pc' || Roller.st.party.some((t) => t.id === c.pid));
   },
   pc(c) { return Roller.st.party.find((t) => t.id === c.pid) || {}; },
@@ -6120,7 +6160,8 @@ const Tracker = {
     const d = e.abilities && e.abilities.DEX;
     return d ? (Number.isFinite(this.num(d.mod)) ? this.num(d.mod) : Math.floor((d.score - 10) / 2)) : 0;
   },
-  add(eid, n = 1, join = 0) {
+  /** Add n of a creature. More than 3 split into groups of up to 3, each with its own initiative roll. */
+  add(eid, n = 1, { quiet = false } = {}) {
     const e = App.entries.get(eid);
     if (!e || e.type !== 'monster' || isMonGroup(e)) return;
     n = Math.max(1, Math.min(60, n | 0));
@@ -6132,14 +6173,14 @@ const Tracker = {
       const gid = uid(), init = rollDie(20) + bonus;
       for (let i = 0; i < Math.min(3, left); i++) {
         k++;
-        this.st.list.push({ cid: uid(), kind: 'mon', eid, gid, name: total > 1 ? `${e.name} ${k}` : e.name, init, bonus, ac, base, max: base, hp: base, notes: '', join: Math.max(1, join || this.st.round) });
+        this.st.list.push({ cid: uid(), kind: 'mon', eid, gid, name: total > 1 ? `${e.name} ${k}` : e.name, init, bonus, ac, base, max: base, hp: base, notes: '' });
       }
     }
     this.save();
-    toast(`${n} × ${e.name} added to initiative${n > 3 ? ` in ${Math.ceil(n / 3)} groups` : ''}`, 'ok', 2500);
+    if (!quiet) toast(`${n} × ${e.name} added${n > 3 ? ` in ${Math.ceil(n / 3)} groups` : ''}`, 'ok', 2500);
     this.render();
   },
-  /* One turn per PC, per monster group (all its members act together) and per lair action. */
+  /** One turn per PC, per monster group (its members act together) and per lair action. */
   slots() {
     const out = [], seen = new Map();
     for (const c of this.st.list) {
@@ -6149,21 +6190,22 @@ const Tracker = {
         g.items.push(c);
       } else out.push({ key: c.cid, kind: c.kind, items: [c] });
     }
-    const initOf = (sl) => { const v = this.num(sl.items[0].init); return Number.isFinite(v) ? v : -Infinity; };
-    const bonusOf = (sl) => (sl.kind === 'pc' ? this.num(this.pc(sl.items[0]).initb) || 0 : sl.kind === 'grp' ? sl.items[0].bonus || 0 : -99);
-    // letters for groups of the same creature: Goblins A, B, C
     const per = new Map();
     for (const sl of out) if (sl.kind === 'grp') { const n = (per.get(sl.eid) || 0) + 1; per.set(sl.eid, n); sl.letter = String.fromCharCode(64 + n); }
     for (const sl of out) if (sl.kind === 'grp' && per.get(sl.eid) === 1) sl.letter = '';
-    return out.map((sl, i) => ({ ...sl, i })).sort((a, b) => initOf(b) - initOf(a) || (a.kind === 'lair') - (b.kind === 'lair') || bonusOf(b) - bonusOf(a) || a.i - b.i);
+    const initOf = (sl) => { const v = this.initOf(sl); return Number.isFinite(v) ? v : -Infinity; };
+    const tie = (sl) => (sl.kind === 'grp' ? sl.items[0].bonus || 0 : sl.kind === 'pc' ? 0 : -99);
+    return out.map((sl, i) => ({ ...sl, i })).sort((a, b) => initOf(b) - initOf(a) || (a.kind === 'lair') - (b.kind === 'lair') || tie(b) - tie(a) || a.i - b.i);
   },
-  arrived(sl) { return sl.kind !== 'grp' || (sl.items[0].join || 1) <= this.st.round; },
-  live(sl) { return this.arrived(sl) && (sl.kind !== 'grp' || sl.items.some((c) => c.hp > 0)); },
+  /** A PC's initiative is just the number in their Init box. */
+  initOf(sl) { return sl.kind === 'pc' ? this.num(this.pc(sl.items[0]).init) : this.num(sl.items[0].init); },
+  hiddenSl(sl) { return sl.items.every((c) => c.hidden); },
+  live(sl) { return !this.hiddenSl(sl) && (sl.kind !== 'grp' || sl.items.some((c) => c.hp > 0)); },
   step(dir) {
     let list = this.slots().filter((sl) => this.live(sl));
     if (!list.length) return;
-    let i = list.findIndex((sl) => sl.key === this.st.turn);
-    if (i < 0) { this.st.turn = list[0].key; }
+    const i = list.findIndex((sl) => sl.key === this.st.turn);
+    if (i < 0) this.st.turn = list[0].key;
     else if (dir > 0) {
       if (i + 1 < list.length) this.st.turn = list[i + 1].key;
       else { this.st.round++; list = this.slots().filter((sl) => this.live(sl)); this.st.turn = list[0].key; }
@@ -6172,69 +6214,86 @@ const Tracker = {
     this.save(); this.render();
     $('#toolPane .tr-cur')?.scrollIntoView({ block: 'nearest' });
   },
-  hpCell(cur, max, attrs) {
-    return `<span class="tr-hp${cur <= 0 ? ' down' : cur <= max / 2 ? ' bloodied' : ''}">HP <input class="tr-n" ${attrs} data-tr-hp value="${cur}" inputmode="text" title="Type a number, or −7 / +5 to change it"> / <span>${max}</span></span>`;
+  /* ----- markup ----- */
+  dmgHtml(attr, all = false) {
+    return `<span class="tr-dmg"><input class="tr-dn" ${attr} data-tr-dmgin inputmode="numeric" placeholder="${all ? 'all' : 'dmg'}" aria-label="${all ? 'Damage to every creature in the group' : 'Damage or healing'}">`
+      + `<button data-tr="dmg" ${attr} title="${all ? 'Damage every creature in the group' : 'Take this much damage'}">−</button>`
+      + (all ? '' : `<button data-tr="heal" ${attr} title="Heal this much">+</button>`) + '</span>';
+  },
+  hpHtml(c) {
+    return `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><b class="tr-hpv">${c.hp}</b> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight (the stat block says ${c.base})" aria-label="Max HP"></span>`;
   },
   rowHtml(sl) {
     const cur = sl.key === this.st.turn ? ' tr-cur' : '', mark = `<span class="tr-mark">${cur ? '▶' : ''}</span>`;
     const init = (v, attrs) => `<input class="tr-init" ${attrs} data-tr-init value="${esc(v ?? '')}" inputmode="numeric" placeholder="–" aria-label="Initiative">`;
+    const hideBtn = (attr) => `<button class="tr-hide" data-tr="hide" ${attr} title="Hide from the turn order (it can be shown again)" aria-label="Hide">◌</button>`;
     if (sl.kind === 'pc') {
-      const c = sl.items[0], t = this.pc(c), max = this.num(t.hp) || 0, hp = Number.isFinite(this.num(t.hpCur)) ? this.num(t.hpCur) : max;
-      return `<div class="tr-row pc${cur}">${mark}${init(c.init, `data-cid="${c.cid}"`)}<span class="tr-name">${esc(t.name || 'Unnamed')}</span><span class="tr-ac">AC ${Roller.acOf(t)}</span>`
-        + this.hpCell(hp, max, `data-pid="${t.id}"`) + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"></div>`;
+      const c = sl.items[0], t = this.pc(c);
+      return `<div class="tr-row pc${cur}">${mark}${init(t.init, `data-pid="${t.id}"`)}<span class="tr-name">${esc(t.name || 'Unnamed')}</span>`
+        + `<label class="tr-acl">AC <input class="tr-n" data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC"></label>`
+        + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"><button class="tr-noteb" data-tr="note" title="Notes" aria-label="Notes">✎</button></div>`;
     }
     if (sl.kind === 'lair') {
       const c = sl.items[0];
       return `<div class="tr-row lair${cur}">${mark}${init(c.init, `data-cid="${c.cid}"`)}<span class="tr-name">Lair action</span><input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens"><button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button></div>`;
     }
-    const first = sl.items[0], e = App.entries.get(first.eid), open = !this.st.collapsed[sl.key];
-    const hp = sl.items.reduce((a, c) => a + Math.max(0, c.hp), 0), max = sl.items.reduce((a, c) => a + c.max, 0);
+    const first = sl.items[0], e = App.entries.get(first.eid);
     const name = (e ? e.name : first.name.replace(/ \d+$/, '')) + (sl.letter ? ` ${sl.letter}` : '');
-    if (sl.items.length === 1) { // a lone creature: one row with its own HP boxes
+    if (sl.items.length === 1) {
       const c = first;
-      return `<div class="tr-row grp${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-gid="${sl.key}"`)}<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(c.name)}</a><span class="tr-ac">AC ${esc(c.ac || '?')}</span>`
-        + `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}">HP <input class="tr-n" data-cid="${c.cid}" data-tr-hp value="${c.hp}" title="Type a number, or −7 / +5 to change it"> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" title="Max HP for this fight (the stat block says ${c.base})"></span>`
-        + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes"><button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove">×</button></div>`;
+      return `<div class="tr-row grp one${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-gid="${sl.key}"`)}<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(c.name)}</a><span class="tr-ac">AC ${esc(c.ac || '?')}</span>`
+        + this.hpHtml(c) + this.dmgHtml(`data-cid="${c.cid}"`)
+        + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes"><button class="tr-noteb" data-tr="note" title="Notes" aria-label="Notes">✎</button>${hideBtn(`data-gid="${sl.key}"`)}${this.st.setup !== false ? `<button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove">×</button>` : ''}</div>`;
     }
+    const open = !this.st.collapsed[sl.key];
+    const hp = sl.items.reduce((a, c) => a + Math.max(0, c.hp), 0), max = sl.items.reduce((a, c) => a + c.max, 0);
     const head = `<div class="tr-row grp${cur}${hp <= 0 ? ' down' : ''}">${mark}${init(first.init, `data-gid="${sl.key}"`)}`
       + `<button class="tr-fold" data-tr="fold" data-gid="${sl.key}" aria-expanded="${open}" title="${open ? 'Collapse' : 'Expand'}">${open ? '▾' : '▸'}</button>`
-      + `<a href="#" class="tr-name" data-open="${esc(first.eid)}">${esc(name)}</a>${sl.items.length > 1 ? `<span class="tr-cnt">×${sl.items.length}</span>` : ''}<span class="tr-ac">AC ${esc(first.ac || '?')}</span>`
-      + `<span class="tr-sum">HP ${hp} / ${max}</span><span class="tr-pct" title="Change max HP for this group by a percentage of the stat block's HP"><input data-tr-gpct data-gid="${sl.key}" inputmode="numeric" placeholder="±%" aria-label="Max HP change %"></span>`
-      + `<button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove group">×</button></div>`;
+      + `<a href="#" class="tr-name" data-open="${esc(first.eid)}">${esc(name)}</a><span class="tr-cnt">×${sl.items.length}</span><span class="tr-ac">AC ${esc(first.ac || '?')}</span>`
+      + `<span class="tr-sum">HP ${hp} / ${max}</span>${this.dmgHtml(`data-gid="${sl.key}"`, true)}`
+      + (this.st.setup !== false ? `<span class="tr-pct" title="Change max HP for this group by a percentage of the stat block's HP"><input data-tr-gpct data-gid="${sl.key}" inputmode="numeric" placeholder="±%" aria-label="Max HP change %"></span>` : '')
+      + `${hideBtn(`data-gid="${sl.key}"`)}${this.st.setup !== false ? `<button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove group">×</button>` : ''}</div>`;
     if (!open) return head;
-    return head + sl.items.map((c) => `<div class="tr-row mem${c.hp <= 0 ? ' down' : ''}"><span class="tr-mark"></span><span class="tr-mname">${esc(c.name)}</span>`
-      + `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}">HP <input class="tr-n" data-cid="${c.cid}" data-tr-hp value="${c.hp}" title="Type a number, or −7 / +5 to change it"> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" title="Max HP for this fight (the stat block says ${c.base})"></span>`
-      + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes"><button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button></div>`).join('');
+    return head + sl.items.map((c) => `<div class="tr-row mem${c.hp <= 0 ? ' down' : ''}"><span class="tr-mark"></span><span class="tr-mname">${esc(c.name)}</span>${this.hpHtml(c)}${this.dmgHtml(`data-cid="${c.cid}"`)}`
+      + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes"><button class="tr-noteb" data-tr="note" title="Notes" aria-label="Notes">✎</button>${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>`).join('');
   },
   partyHtml() {
     return Roller.st.party.map((t) => `<div class="tr-prow"><input data-pc="name" data-tid="${t.id}" value="${esc(t.name || '')}" placeholder="Name">`
       + `<label>AC <input data-pc="ac" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.ac ?? '')}"></label>`
-      + `<label>HP <input data-pc="hp" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.hp ?? '')}"></label>`
-      + `<label title="Initiative bonus">Init <input data-pc="initb" data-tid="${t.id}" inputmode="numeric" value="${esc(t.initb ?? '')}" placeholder="+0"></label>`
+      + `<label title="Initiative: the number used in the turn order">Init <input data-pc="init" data-tid="${t.id}" inputmode="numeric" value="${esc(t.init ?? '')}"></label>`
       + `<input data-pc="notes" data-tid="${t.id}" value="${esc(t.notes || '')}" placeholder="Notes" class="tr-pnote"><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('')
       + '<button data-rr="pcadd" class="rr-add">+ Add a party member</button>';
+  },
+  encountersHtml() {
+    const list = this.encounters || [];
+    const summary = (enc) => enc.items.map((x) => `${x.n} × ${App.entries.get(x.eid)?.name || '?'}`).join(', ') + (enc.lairs?.length ? `, ${enc.lairs.length} lair action${enc.lairs.length === 1 ? '' : 's'}` : '');
+    return '<div class="tr-encs">' + (list.length ? list.map((enc) => `<div class="tr-enc"><b>${esc(enc.name)}</b><span class="hint">${esc(summary(enc))}</span><button data-tr="encload" data-id="${enc.id}">Add to fight</button><button class="rr-x" data-tr="encdel" data-id="${enc.id}" aria-label="Delete saved encounter">×</button></div>`).join('')
+      : '<p class="hint">Save the monsters (and lair actions) in the current fight to load them again later.</p>')
+      + (this.monsters().length ? '<button data-tr="encsave">Save current monsters as an encounter…</button>' : '') + '</div>';
   },
   render() {
     const pane = $('#toolPane');
     if (!pane || Tools.current !== 'tracker') return;
     this.syncParty();
-    // keep focus where it was (rows are rebuilt)
     const a = document.activeElement, keep = pane.contains(a) && a.matches('input') ? [...a.attributes].filter((x) => x.name.startsWith('data-')).map((x) => `[${x.name}="${CSS.escape(x.value)}"]`).join('') : '';
     const keepScroll = pane.querySelector('.rr-scroll')?.scrollTop || 0;
-    const all = this.slots(), now = all.filter((sl) => this.arrived(sl)), later = all.filter((sl) => !this.arrived(sl));
-    const fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0);
+    const all = this.slots(), shown = all.filter((sl) => !this.hiddenSl(sl)), hidden = all.filter((sl) => this.hiddenSl(sl));
+    const fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0), setup = this.st.setup !== false;
     pane.innerHTML = `<div class="rr-top"><h2>Initiative</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
+      + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}" title="${setup ? 'Hide the party, monster and encounter controls' : 'Show the party, monster and encounter controls'}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
-      + `<div class="rr-scroll"><details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
-      + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name…" autocomplete="off">`
-      + `<label>× <input id="trCount" type="number" min="1" max="60" value="1" inputmode="numeric" aria-label="How many"></label><label title="Round they join the fight">from round <input id="trJoin" type="number" min="1" inputmode="numeric" placeholder="${this.st.round}"></label><div id="trHits"></div></div>`
-      + `<div class="tr-btns">${fromRoller ? `<button data-tr="fromroller">Add the roller’s ${fromRoller} monster${fromRoller === 1 ? '' : 's'}</button>` : ''}<button data-tr="lair">+ Lair action</button>`
-      + `<span class="tr-pct" title="Change every monster's max HP by a percentage of its stat block HP"><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pctall">Max HP for all</button></span>`
-      + `<button data-tr="foldall">${this.monsters().some((c) => !this.st.collapsed[c.gid]) ? 'Collapse monsters' : 'Expand monsters'}</button>`
-      + `<button data-tr="rollpcs" title="Roll for party members with no initiative yet">Roll party initiative</button><button data-tr="reset" class="danger">New fight</button></div></div>`
-      + `<div class="tr-list">${now.map((sl) => this.rowHtml(sl)).join('') || '<p class="hint">Add your party above and monsters to start.</p>'}</div>`
-      + (later.length ? `<h3 class="tr-h">Arriving later</h3>${later.map((sl) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc((App.entries.get(sl.items[0].eid)?.name || sl.items[0].name) + (sl.letter ? ' ' + sl.letter : ''))}</span><span class="tr-cnt">×${sl.items.length}</span><span class="hint">round ${sl.items[0].join}</span><button data-tr="now" data-gid="${sl.key}">Bring in now</button><button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove">×</button></div>`).join('')}` : '')
+      + '<div class="rr-scroll">'
+      + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
+        + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name…" autocomplete="off">`
+        + `<label>× <input id="trCount" type="number" min="1" max="60" value="1" inputmode="numeric" aria-label="How many"></label><div id="trHits"></div></div>`
+        + `<div class="tr-btns">${fromRoller ? `<button data-tr="fromroller">Add the roller’s ${fromRoller} monster${fromRoller === 1 ? '' : 's'}</button>` : ''}<button data-tr="lair">+ Lair action</button>`
+        + `<span class="tr-pct" title="Change every monster's max HP by a percentage of its stat block HP"><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pctall">Max HP for all</button></span>`
+        + `<button data-tr="foldall">${this.monsters().some((c) => !this.st.collapsed[c.gid]) ? 'Collapse monsters' : 'Expand monsters'}</button>`
+        + '<button data-tr="reset" class="danger">New fight</button></div></div>'
+        + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
+      + `<div class="tr-list">${shown.map((sl) => this.rowHtml(sl)).join('') || '<p class="hint">Add your party and monsters to start.</p>'}</div>`
+      + (hidden.length ? `<h3 class="tr-h">Hidden</h3>${hidden.map((sl) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc((App.entries.get(sl.items[0].eid)?.name || sl.items[0].name) + (sl.letter ? ' ' + sl.letter : ''))}</span>${sl.items.length > 1 ? `<span class="tr-cnt">×${sl.items.length}</span>` : ''}<button data-tr="show" data-gid="${sl.key}">Show</button><button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove">×</button></div>`).join('')}` : '')
       + '</div>';
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
     if (keep) pane.querySelector(keep)?.focus();
@@ -6248,6 +6307,15 @@ const Tracker = {
   setPct(members, pct) {
     for (const c of members) { const nm = Math.max(1, Math.round(c.base * (1 + pct / 100))); c.hp = Math.max(0, c.hp + (nm - c.max)); c.max = nm; }
   },
+  /** Damage (or healing) from the box beside the − / + buttons. */
+  hurt(el, sign) {
+    const d = el.dataset, box = el.closest('.tr-dmg')?.querySelector('[data-tr-dmgin]');
+    const n = Math.abs(this.num(box?.value));
+    if (!Number.isFinite(n) || !n) { box?.focus(); return; }
+    const targets = d.gid ? this.st.list.filter((c) => c.gid === d.gid && c.hp > 0) : this.st.list.filter((c) => c.cid === d.cid);
+    for (const c of targets) c.hp = Math.max(0, Math.min(sign > 0 ? Math.max(c.max, c.hp) : c.hp, c.hp + sign * n));
+    this.save(); this.render();
+  },
   async onClick(ev) {
     const t = ev.target.closest('[data-tr]');
     if (!t) return;
@@ -6256,46 +6324,62 @@ const Tracker = {
     if (a === 'pin') return Tools.togglePin();
     if (a === 'next') return this.step(1);
     if (a === 'prev') return this.step(-1);
+    if (a === 'setup') { st.setup = st.setup === false; this.save(); this.render(); const sc = $('#toolPane .rr-scroll'); if (sc) sc.scrollTop = 0; return; }
+    if (a === 'note') { const row = t.closest('.tr-row'); row.classList.add('noting'); row.querySelector('.tr-note')?.focus(); return; }
+    if (a === 'dmg') return this.hurt(t, -1);
+    if (a === 'heal') return this.hurt(t, 1);
     if (a === 'add') {
-      const n = parseInt($('#trCount')?.value, 10) || 1, join = parseInt($('#trJoin')?.value, 10) || 0;
-      this.add(t.dataset.id, n, join);
+      this.add(t.dataset.id, parseInt($('#trCount')?.value, 10) || 1);
       const s = $('#trSearch'); if (s) { s.value = ''; s.focus(); }
       return;
     }
-    if (a === 'fromroller') { for (const b of Roller.st.board) this.add(b.id, b.count); return; }
+    if (a === 'fromroller') { for (const b of Roller.st.board) this.add(b.id, b.count, { quiet: true }); toast('Added the roller’s monsters', 'ok'); return; }
     if (a === 'lair') { st.list.push({ cid: uid(), kind: 'lair', init: 20, notes: '' }); this.save(); return this.render(); }
     if (a === 'fold') { st.collapsed[t.dataset.gid] = !st.collapsed[t.dataset.gid]; this.save(); return this.render(); }
     if (a === 'foldall') { const any = this.monsters().some((c) => !st.collapsed[c.gid]); for (const c of this.monsters()) st.collapsed[c.gid] = any; this.save(); return this.render(); }
+    if (a === 'hide' || a === 'show') { for (const c of st.list) if (c.gid === t.dataset.gid) c.hidden = a === 'hide'; if (a === 'hide' && st.turn === t.dataset.gid) this.step(1); this.save(); return this.render(); }
     if (a === 'pctall') { const p = parseFloat(String($('#trPct')?.value || '').replace('%', '')); if (Number.isFinite(p)) { this.setPct(this.monsters(), p); this.save(); this.render(); toast(`Every monster's max HP is now the stat block ${p >= 0 ? '+' : ''}${p}%`, 'ok'); } return; }
     if (a === 'rm') { st.list = st.list.filter((c) => c.cid !== t.dataset.cid); this.save(); return this.render(); }
     if (a === 'rmgrp') { st.list = st.list.filter((c) => c.gid !== t.dataset.gid); this.save(); return this.render(); }
-    if (a === 'now') { for (const c of st.list) if (c.gid === t.dataset.gid) c.join = st.round; this.save(); return this.render(); }
-    if (a === 'rollpcs') { for (const c of st.list) if (c.kind === 'pc' && !Number.isFinite(this.num(c.init))) c.init = rollDie(20) + (this.num(this.pc(c).initb) || 0); this.save(); return this.render(); }
-    if (a === 'reset') {
-      const v = await ask('New fight?', '<p>Removes every monster and lair action and goes back to round 1. Your party stays.</p>',
-        [{ label: 'Cancel', value: null }, { label: 'New fight, party at full HP', value: 'heal' }, { label: 'New fight', value: 'keep', kind: 'primary' }]);
-      if (!v) return;
-      st.list = st.list.filter((c) => c.kind === 'pc').map((c) => ({ ...c, init: '' }));
-      st.round = 1; st.turn = null; st.collapsed = {};
-      if (v === 'heal') for (const p of Roller.st.party) p.hpCur = p.hp;
-      Roller.save(); this.save(); this.render();
+    if (a === 'encsave') {
+      const name = await ask('Save this encounter', '<p>Saves the monsters (and lair actions) in this fight, so you can add them to a fight again later.</p><input id="encName" style="width:100%" placeholder="e.g. Goblin ambush">',
+        [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]) && ($('#encName').value.trim() || 'Encounter');
+      if (!name) return;
+      const counts = new Map();
+      for (const c of this.monsters()) counts.set(c.eid, (counts.get(c.eid) || 0) + 1);
+      this.encounters = [...(this.encounters || []), { id: uid(), name, items: [...counts].map(([eid, n]) => ({ eid, n })), lairs: st.list.filter((c) => c.kind === 'lair').map((c) => ({ init: c.init, notes: c.notes })) }];
+      this.saveEncounters(); this.encOpen = true; toast(`Saved “${name}”`, 'ok'); return this.render();
     }
-  },
-  /** HP boxes take a number, or -7 / +5 to change the current value. */
-  applyHp(cur, raw) {
-    const v = String(raw).trim().replace('−', '-');
-    if (/^[+-]\s*\d+$/.test(v)) return Math.max(0, cur + parseInt(v.replace(/\s/g, ''), 10));
-    const n = parseInt(v, 10);
-    return Number.isFinite(n) ? Math.max(0, n) : cur;
+    if (a === 'encload') {
+      const enc = (this.encounters || []).find((x) => x.id === t.dataset.id);
+      if (!enc) return;
+      for (const x of enc.items) this.add(x.eid, x.n, { quiet: true });
+      for (const l of enc.lairs || []) st.list.push({ cid: uid(), kind: 'lair', init: l.init, notes: l.notes });
+      this.save(); this.render(); toast(`Added “${enc.name}” to the fight`, 'ok');
+      return;
+    }
+    if (a === 'encdel') {
+      const enc = (this.encounters || []).find((x) => x.id === t.dataset.id);
+      if (enc && await ask('Delete saved encounter?', `<p>Delete “${esc(enc.name)}”? Monsters already in the fight stay.</p>`, [{ label: 'Cancel', value: null }, { label: 'Delete', value: true, kind: 'primary' }])) {
+        this.encounters = this.encounters.filter((x) => x !== enc); this.saveEncounters(); this.render();
+      }
+      return;
+    }
+    if (a === 'reset') {
+      if (!await ask('New fight?', '<p>Removes every monster and lair action and goes back to round 1. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'New fight', value: true, kind: 'primary' }])) return;
+      st.list = st.list.filter((c) => c.kind === 'pc');
+      st.round = 1; st.turn = null; st.collapsed = {}; st.setup = true;
+      this.save(); this.render();
+    }
   },
   onChange(ev) {
     const el = ev.target, d = el.dataset, st = this.st;
     if ('trInit' in d) {
-      const v = el.value.trim();
-      for (const c of st.list) if ((d.cid && c.cid === d.cid) || (d.gid && c.gid === d.gid)) c.init = v === '' ? '' : this.num(v);
-    } else if ('trHp' in d) {
-      if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { const max = this.num(t.hp) || 0; t.hpCur = this.applyHp(Number.isFinite(this.num(t.hpCur)) ? this.num(t.hpCur) : max, el.value); Roller.save(); } }
-      else { const c = st.list.find((x) => x.cid === d.cid); if (c) c.hp = this.applyHp(c.hp, el.value); }
+      const v = el.value.trim(), n = v === '' ? '' : this.num(v);
+      if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.init = n; Roller.save(); } }
+      else for (const c of st.list) if ((d.cid && c.cid === d.cid) || (d.gid && c.gid === d.gid)) c.init = n;
+    } else if ('trAc' in d) {
+      const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.ac = el.value.trim(); Roller.save(); }
     } else if ('trMax' in d) {
       const c = st.list.find((x) => x.cid === d.cid), n = this.num(el.value);
       if (c && n > 0) { c.hp = Math.max(0, c.hp + (n - c.max)); c.max = n; }
@@ -7356,10 +7440,12 @@ async function boot() {
   $('#toolPane').addEventListener('toggle', (ev) => {
     if (ev.target.matches('.rr-diff-more')) Roller.diffOpen = ev.target.open;
     if (ev.target.matches('.tr-partysec')) Tracker.partyOpen = ev.target.open;
+    if (ev.target.matches('.tr-encsec')) Tracker.encOpen = ev.target.open;
   }, true);
   $('#toolPane').addEventListener('keydown', (ev) => {
     if (ev.target.id === 'rrSearch' && ev.key === 'Enter') { ev.preventDefault(); $('#rrHits .rr-hit')?.click(); }
     if (ev.target.id === 'trSearch' && ev.key === 'Enter') { ev.preventDefault(); $('#trHits .rr-hit')?.click(); }
+    if (ev.target.matches('[data-tr-dmgin]') && ev.key === 'Enter') { ev.preventDefault(); ev.target.closest('.tr-dmg').querySelector('[data-tr="dmg"]').click(); }
   });
   $('#toolPane').addEventListener('focusout', (ev) => {
     if (ev.target.matches('[data-pc]')) setTimeout(() => { if (!$('#toolPane').contains(document.activeElement) || !document.activeElement.matches('[data-pc]')) Tools.render(); }, 0);

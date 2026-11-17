@@ -335,6 +335,22 @@ body.tool-open #listPane { display: none; }
   #toolPane .rr-pc label { font-size: 12px; gap: 2px; }
   #toolPane .rr-eff { min-width: 28px; font-size: 13px; }
 }
+/* encounter difficulty */
+.rr-diff { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin: 0 0 12px; background: var(--bg); }
+.rr-diff-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.rr-badge { font: 700 11.5px var(--serif); letter-spacing: .06em; text-transform: uppercase; padding: 1px 8px; border-radius: 10px; }
+.rr-badge.low, .rr-bar .fill.low { background: hsl(140 45% 45% / .22); color: hsl(140 50% var(--hl-d)); }
+.rr-badge.mod, .rr-bar .fill.mod { background: hsl(45 85% 50% / .25); color: hsl(35 85% var(--hl-d)); }
+.rr-badge.high, .rr-bar .fill.high { background: hsl(20 85% 55% / .25); color: hsl(15 80% var(--hl-d)); }
+.rr-badge.over, .rr-bar .fill.over { background: hsl(355 70% 55% / .25); color: hsl(355 65% var(--hl-d)); }
+.rr-bar { position: relative; height: 10px; border-radius: 5px; background: var(--panel-2); margin: 10px 0 18px; }
+.rr-bar .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
+.rr-bar .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--muted); }
+.rr-bar .mark i { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font: 600 10.5px system-ui; font-style: normal; color: var(--muted); white-space: nowrap; }
+.rr-diff-more summary { cursor: pointer; font-size: 12.5px; color: var(--muted); }
+.rr-diff-more p { font-size: 13px; margin: 6px 0; }
+#toolPane .rr-pc input[data-pc="level"] { width: 46px; }
+@media (max-width: 720px) { #toolPane .rr-pc input[data-pc="level"] { width: 38px; } }
 /* pinned: list | entry | roller */
 .rr-pin { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
 .rr-pin.on { background: var(--amber-dim); color: var(--amber); border-color: var(--amber-border); }
@@ -5465,7 +5481,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.13'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.15'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5671,6 +5687,46 @@ function parseDice(expr) {
   const f = /^\s*(\d+)\s*$/.exec(expr || '');
   return f ? { count: 0, sides: 0, bonus: +f[1] } : null;
 }
+/* Encounter difficulty: Mike Shea's encounter calculator (5e Artisanal Database, CC0), method unchanged.
+   2024: budget per character at the party's average level (rounded) x number of characters.
+   2014: per-character thresholds summed at each character's level; XP x his monster-count multiplier.
+   Lazy Encounter Benchmark: total monster CR against total character levels, plus a single-monster check. */
+const XP_2024 = { 1: [50, 75, 100], 2: [100, 150, 200], 3: [150, 225, 400], 4: [250, 375, 500], 5: [500, 750, 1100], 6: [600, 1000, 1400], 7: [750, 1300, 1700],
+  8: [1000, 1700, 2100], 9: [1300, 2000, 2600], 10: [1600, 2300, 3100], 11: [1900, 2900, 4100], 12: [2200, 3700, 4700], 13: [2600, 4200, 5400], 14: [2900, 4900, 6200],
+  15: [3300, 5400, 7800], 16: [3800, 6100, 9800], 17: [4500, 7200, 11700], 18: [5000, 8700, 14200], 19: [5500, 10700, 17200], 20: [6400, 13200, 22000] };
+const XP_2014 = { 1: [25, 50, 75, 100], 2: [50, 100, 150, 200], 3: [75, 150, 225, 400], 4: [125, 250, 375, 500], 5: [250, 500, 750, 1100], 6: [300, 600, 900, 1400],
+  7: [350, 750, 1100, 1700], 8: [450, 900, 1400, 2100], 9: [550, 1100, 1600, 2400], 10: [600, 1200, 1900, 2800], 11: [800, 1600, 2400, 3600], 12: [1000, 2000, 3000, 4500],
+  13: [1100, 2200, 3400, 5100], 14: [1250, 2500, 3800, 5700], 15: [1400, 2800, 4300, 6400], 16: [1600, 3200, 4800, 7200], 17: [2000, 3900, 5900, 8800],
+  18: [2100, 4200, 6300, 9500], 19: [2400, 4900, 7300, 10900], 20: [2800, 5700, 8500, 12700] };
+const CR_XP = { 0: 10, 0.125: 25, 0.25: 50, 0.5: 100, 1: 200, 2: 450, 3: 700, 4: 1100, 5: 1800, 6: 2300, 7: 2900, 8: 3900, 9: 5000, 10: 5900, 11: 7200, 12: 8400,
+  13: 10000, 14: 11500, 15: 13000, 16: 15000, 17: 18000, 18: 20000, 19: 22000, 20: 25000, 21: 33000, 22: 41000, 23: 50000, 24: 62000, 25: 75000, 26: 90000,
+  27: 105000, 28: 120000, 29: 135000, 30: 155000 };
+const MULT_2014 = { 1: 1, 2: 1.5, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2.5, 8: 2.5, 9: 2.5, 10: 2.5, 11: 3, 12: 3, 13: 3, 14: 3 }; // 15+: x4
+function crValue(cr) {
+  const t = String(cr || '').trim().split(/[\s(]/)[0];
+  if (!t) return null;
+  if (/^\d+\/\d+$/.test(t)) { const [a, b] = t.split('/'); return +a / +b; }
+  const n = parseFloat(t);
+  return isNaN(n) ? null : n;
+}
+function rateEncounter(levels, monsters) {
+  const lv = levels.map((l) => Math.max(1, Math.min(20, l | 0)));
+  let xp = 0, n = 0, crSum = 0, crMax = 0;
+  for (const m of monsters) { const c = crValue(m.cr); if (c === null) continue; xp += (CR_XP[c] ?? 0) * m.count; n += m.count; crSum += c * m.count; crMax = Math.max(crMax, c); }
+  const totalLv = lv.reduce((a, b) => a + b, 0), avg = lv.length ? Math.round(totalLv / lv.length) : 0;
+  const base = XP_2024[avg] || XP_2024[20];
+  const b24 = base.map((v) => v * lv.length);
+  const t14 = [0, 1, 2, 3].map((k) => lv.reduce((a, l) => a + XP_2014[l][k], 0));
+  const mult = n >= 15 ? 4 : MULT_2014[n] || 4, adj = Math.round(xp * mult);
+  const lazyLow = Math.round(totalLv * (avg >= 5 ? 0.5 : 0.25)), lazyHigh = avg >= 17 ? totalLv : avg >= 11 ? Math.round(totalLv * 0.75) : lazyLow;
+  const single = Math.round(avg >= 5 ? avg * 1.5 : avg);
+  return {
+    xp, n, crSum, crMax, b24, t14, mult, adj, totalLv, avg, lazyLow, lazyHigh, single,
+    r24: xp < b24[0] ? 'Low' : xp < b24[1] ? 'Moderate' : xp <= b24[2] ? 'High' : 'Above High',
+    r14: adj < t14[1] ? 'Easy' : adj < t14[2] ? 'Medium' : adj < t14[3] ? 'Hard' : 'Deadly',
+    lazy: crMax >= single || crSum >= lazyHigh ? 'Potentially deadly' : crSum >= lazyLow ? 'Potentially deadly (low threshold)' : 'Not potentially deadly',
+  };
+}
 const AB_FULL = { STR: 'Strength', DEX: 'Dexterity', CON: 'Constitution', INT: 'Intelligence', WIS: 'Wisdom', CHA: 'Charisma' };
 const Roller = {
   st: { party: [], activeId: null, board: [], mode: 'normal', crit: 'double' },
@@ -5871,8 +5927,26 @@ const Roller = {
   partyHtml() {
     const rows = this.st.party.map((t) => `<div class="rr-pc${t.id === this.st.activeId ? ' on' : ''}"><button class="rr-tgt" data-rr="target" data-tid="${t.id}" title="Roll attacks against ${esc(t.name || 'this target')}">${t.id === this.st.activeId ? '◉' : '○'}</button>`
       + `<input data-pc="name" data-tid="${t.id}" value="${esc(t.name || '')}" placeholder="Name"><label>AC <input data-pc="ac" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.ac ?? '')}"></label>`
-      + `<label title="Temporary AC change (Shield, cover…)">± <input data-pc="acAdj" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.acAdj || '')}"></label><span class="rr-eff">= ${this.acOf(t)}</span><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('');
+      + `<label title="Temporary AC change (Shield, cover…)">± <input data-pc="acAdj" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.acAdj || '')}"></label><span class="rr-eff">= ${this.acOf(t)}</span>`
+      + `<label title="Character level, for encounter difficulty (leave empty for NPCs)">Lv <input data-pc="level" data-tid="${t.id}" type="number" inputmode="numeric" min="1" max="20" value="${esc(t.level || '')}"></label><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('');
     return rows + `<button data-rr="pcadd" class="rr-add">+ Add a target</button>${this.st.activeId ? ' <button data-rr="target" data-tid="" class="linkish">No target</button>' : ''}`;
+  },
+  difficultyHtml() {
+    const levels = this.st.party.map((t) => parseInt(t.level, 10)).filter((l) => l >= 1 && l <= 20);
+    const mons = this.st.board.map((b) => ({ cr: App.entries.get(b.id)?.fields.CR, count: b.count })).filter((m) => crValue(m.cr) !== null);
+    if (!mons.length) return '';
+    if (!levels.length) return '<div class="rr-diff"><span class="hint">Give your targets a level (Lv) to rate this encounter.</span></div>';
+    const r = rateEncounter(levels, mons), f = (n) => n.toLocaleString('en-GB');
+    const max = Math.max(r.b24[2] * 1.25, r.xp * 1.05), pct = (v) => Math.min(100, (v / max) * 100).toFixed(1);
+    const cls = { Low: 'low', Moderate: 'mod', High: 'high', 'Above High': 'over' }[r.r24];
+    const lvTxt = levels.length === 1 ? `1 character, level ${levels[0]}` : `${levels.length} characters, level${new Set(levels).size > 1 ? 's ' + levels.join(', ') : ' ' + levels[0]}`;
+    return `<div class="rr-diff"><div class="rr-diff-h"><b>Difficulty</b> <span class="rr-badge ${cls}">${r.r24}</span><span class="hint">${lvTxt} · ${r.n} monster${r.n === 1 ? '' : 's'}, ${f(r.xp)} XP</span></div>`
+      + `<div class="rr-bar" title="2024 XP budget"><span class="fill ${cls}" style="width:${pct(r.xp)}%"></span>${r.b24.map((v, k) => `<span class="mark" style="left:${pct(v)}%"><i>${['Low', 'Moderate', 'High'][k]}</i></span>`).join('')}</div>`
+      + `<details class="rr-diff-more"${this.diffOpen ? ' open' : ''}><summary>2024 ${f(r.b24[0])} / ${f(r.b24[1])} / ${f(r.b24[2])} XP · 2014: ${r.r14} · Lazy: ${r.lazy.replace(' (low threshold)', '*')}</summary>`
+      + `<p><b>D&amp;D 2024 method</b>: level ${r.avg} budget × ${levels.length} character${levels.length === 1 ? '' : 's'}: Low ${f(r.b24[0])}, Moderate ${f(r.b24[1])}, High ${f(r.b24[2])}; monsters ${f(r.xp)} XP → <b>${r.r24}</b>.</p>`
+      + `<p><b>D&amp;D 2014 method</b>: ${f(r.xp)} XP × ${r.mult} for ${r.n} monster${r.n === 1 ? '' : 's'} = ${f(r.adj)}. Easy ${f(r.t14[0])}, Medium ${f(r.t14[1])}, Hard ${f(r.t14[2])}, Deadly ${f(r.t14[3])} → <b>${r.r14}</b>.</p>`
+      + `<p><b>Lazy Encounter Benchmark</b>: total CR ${+r.crSum.toFixed(2)} against ${r.totalLv} character levels; potentially deadly if total CR ≥ ${r.lazyLow}${r.lazyHigh !== r.lazyLow ? `–${r.lazyHigh}` : ''} or one monster is CR ${r.single}+ → <b>${r.lazy}</b>.</p>`
+      + '<p class="hint">Mike Shea’s encounter calculator (5e Artisanal Database). A guide, not a verdict.</p></details></div>';
   },
   render() {
     const pane = $('#toolPane');
@@ -5885,6 +5959,7 @@ const Roller = {
       + `<button class="rr-pin${this.pinned ? ' on' : ''}" data-rr="pin" title="${this.pinned ? 'Unpin: take the results list’s place again' : 'Pin to the right, so the list and entries stay usable during a fight'}" aria-pressed="${this.pinned}">${this.pinned ? 'Unpin' : 'Pin'}</button>`
       + `<button class="rr-x" data-rr="close" title="Close (r)" aria-label="Close the roller">×</button></div>`
       + `<div class="rr-scroll"><details class="rr-sec" open><summary>Targets</summary><div class="rr-party">${this.partyHtml()}</div></details>`
+      + this.difficultyHtml()
       + `<div class="rr-sec"><div class="rr-addbox"><input id="rrSearch" type="search" placeholder="Add a monster: type a name…" autocomplete="off"><div id="rrHits"></div></div>`
       + (this.st.board.length ? this.st.board.map((b) => this.cardHtml(b)).join('') + '<button data-rr="clearboard" class="linkish">Clear the encounter</button>'
         : '<p class="hint">Add monsters here, or with “+ Encounter” on any monster page.</p>') + '</div>'
@@ -6959,12 +7034,17 @@ async function boot() {
   $('#toolPane').addEventListener('input', (ev) => {
     if (ev.target.id === 'rrSearch') return Roller.hits(ev.target.value);
     const pc = ev.target.dataset.pc;
-    if (pc) { const t = Roller.st.party.find((x) => x.id === ev.target.dataset.tid); if (t) { t[pc] = ev.target.value; Roller.save(); const eff = ev.target.closest('.rr-pc')?.querySelector('.rr-eff'); if (eff) eff.textContent = '= ' + Roller.acOf(t); } }
+    if (pc) {
+      const t = Roller.st.party.find((x) => x.id === ev.target.dataset.tid);
+      if (t) { t[pc] = ev.target.value; Roller.save(); const eff = ev.target.closest('.rr-pc')?.querySelector('.rr-eff'); if (eff) eff.textContent = '= ' + Roller.acOf(t); }
+      if (pc === 'level') { const d = $('#toolPane .rr-diff'), html = Roller.difficultyHtml(); if (d) d.outerHTML = html || '<div class="rr-diff" hidden></div>'; }
+    }
   });
   $('#toolPane').addEventListener('change', (ev) => {
     if (ev.target.matches('[data-rr-crit]')) { Roller.st.crit = ev.target.value; Roller.save(); }
     if (ev.target.matches('.rr-retarget') && ev.target.value) Roller.retarget(ev.target.dataset.rid, ev.target.value);
   });
+  $('#toolPane').addEventListener('toggle', (ev) => { if (ev.target.matches('.rr-diff-more')) Roller.diffOpen = ev.target.open; }, true);
   $('#toolPane').addEventListener('keydown', (ev) => { if (ev.target.id === 'rrSearch' && ev.key === 'Enter') { ev.preventDefault(); $('#rrHits .rr-hit')?.click(); } });
   $('#toolPane').addEventListener('focusout', (ev) => { if (ev.target.matches('[data-pc]')) setTimeout(() => Roller.render(), 0); });
   $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));

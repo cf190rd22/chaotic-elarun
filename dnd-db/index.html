@@ -5330,7 +5330,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.9'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.10'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5380,7 +5380,7 @@ const Tidy = {
 
 /* ---------- Moving around inside an entry ----------
    } / { : next / previous section (Traits, Actions, Lore, article headings, Referenced in)
-   J / K : next / previous item (every trait, action, feature, option card or subheading)
+   K / J : next (down) / previous (up) item (every trait, action, feature, option card or subheading)
    g / G : top / bottom. Works from wherever you have scrolled to. */
 const EntryNav = {
   offset() {
@@ -5436,7 +5436,7 @@ const SHORTCUTS = [
   ]],
   ['Inside an entry', [
     ['}  ·  {', 'Next / previous section (Traits, Actions, Lore, headings…)'],
-    ['J  ·  K', 'Next / previous item: each trait, action, feature or subheading'],
+    ['K  ·  J', 'Next (down) / previous (up) item: each trait, action, feature or subheading'],
     ['g  ·  G', 'Top / bottom of the entry'],
     ['↓ ↑  ·  Space', 'Scroll'],
   ]],
@@ -6195,7 +6195,7 @@ function wireEvents() {
     if (e.key === '\\') { e.preventDefault(); setListHidden(!document.body.classList.contains('list-hidden')); return; }
     // Inside the open entry: } { sections, J K items, g G top / bottom
     if (App.currentId && (document.body.classList.contains('show-detail') || App.isWide())) {
-      const nav = { '}': ['section', 1], '{': ['section', -1], J: ['item', 1], K: ['item', -1] }[e.key];
+      const nav = { '}': ['section', 1], '{': ['section', -1], K: ['item', 1], J: ['item', -1] }[e.key];
       if (nav) { e.preventDefault(); EntryNav.go(...nav); return; }
       if (e.key === 'g' || e.key === 'G') { e.preventDefault(); EntryNav.edge(e.key === 'g' ? -1 : 1); return; }
     }

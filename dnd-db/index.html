@@ -695,6 +695,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
           <button id="tidyUndoBtn">Undo last tidy-up</button>
         </div>
         <p class="hint" id="storageInfo"></p>
+        <p class="hint">App version <b id="appVersion"></b></p>
       </fieldset>
 
       <fieldset>
@@ -1142,6 +1143,7 @@ function makeEntry(p = {}) {
     text: String(p.text || ''),
     raw: String(p.raw || ''),
     fav: !!p.fav,
+    ...(p.edited !== undefined ? { edited: !!p.edited } : {}), // true once saved from the editor (stars don't count)
     created: p.created || nowIso(),
     updated: p.updated || nowIso(),
   };
@@ -2392,13 +2394,15 @@ const Parsers = (() => {
   const sameJSON = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
   /** null = nothing to change; otherwise the entries that replace e (the first keeps e's id). */
-  function tidyEntry(e) {
+  /** Entries without the flag (older imports) fall back to "changed a while after it was created". */
+  const isEdited = (e) => (e.edited !== undefined ? e.edited : Date.parse(e.updated) - Date.parse(e.created) > 5000);
+  function tidyEntry(e, { includeEdited = false } = {}) {
     if (e.type === 'monster') {
       // 2025 stat blocks: "AC 16 Initiative +3 (13)" and the "Ability Score Mod Save" grid stopped
       // the old parser early, losing Skills/Senses/Languages/CR. Re-parse unedited ones.
       const spilled = (e.sections || []).some((sc) => /^(saving throws|skills|senses|languages|challenge|cr)\b/im.test(sc.intro || ''));
       if (!/\sInitiative\s/i.test(e.fields.AC || '') && !spilled) return null;
-      const edited = Date.parse(e.updated) - Date.parse(e.created) > 5000;
+      const edited = !includeEdited && isEdited(e);
       if (e.raw && !edited) {
         const n = monster.parse(toLines(normalise(e.raw)));
         return [{ ...n, id: e.id, raw: e.raw, fav: e.fav, created: e.created, updated: e.updated, name: e.name, type: 'monster',
@@ -2411,7 +2415,7 @@ const Parsers = (() => {
       c.fields.Initiative = c.fields.Initiative || ini.trim();
       return [c];
     }
-    const edited = Date.parse(e.updated) - Date.parse(e.created) > 5000;
+    const edited = !includeEdited && isEdited(e);
     if (e.raw && ['background', 'species', 'rule', 'other'].includes(e.type) && !edited) {
       const lines = dropCreditLines(toLines(normalise(e.raw)));
       const p = registry.find((x) => x.type === e.type);
@@ -2572,7 +2576,7 @@ const Parsers = (() => {
       const r = applyExtra(parser.parse(lines, forcedType), lines.extra);
       const warnings = r.warnings || [];
       delete r.warnings;
-      return { entry: makeEntry({ ...r, raw }), parser: parser.label, confidence: score, warnings };
+      return { entry: makeEntry({ ...r, raw, edited: false }), parser: parser.label, confidence: score, warnings };
     } catch (err) {
       logError('Parser failed:', parser.type, err);
       const r = generic.parse(lines, forcedType);
@@ -4650,6 +4654,7 @@ const Editor = {
       sections: textToSections($('#edSections').value),
       text: $('#edText').value,
       updated: nowIso(),
+      edited: true,
     });
   },
 
@@ -4887,6 +4892,7 @@ const Settings = {
     this.renderIcons();
     this.renderDiag();
     $('#shortcutGuide').innerHTML = shortcutsHtml();
+    $('#appVersion').textContent = APP_VERSION;
     Sources.render();
     this.storageInfo();
     $('#settingsDlg').showModal();
@@ -5070,15 +5076,25 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
+const APP_VERSION = '2026-11-17.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 4;
 const Tidy = {
   async run({ manual = false } = {}) {
+    let includeEdited = false;
+    if (manual) {
+      const choice = await ask('Tidy imported entries',
+        '<p>Rebuilds entries from their original paste with the latest import rules, and cleans copied links and art credits.</p>'
+        + '<p><b>Entries you have edited</b> are normally left alone. Including them replaces your edits with a fresh read of the original paste. Favourites are kept either way, and you can undo the whole tidy-up in Settings → Data.</p>',
+        [{ label: 'Cancel', value: null }, { label: 'Include edited entries', value: 'all' }, { label: 'Tidy unedited entries', value: 'safe', kind: 'primary' }]);
+      if (!choice) return;
+      includeEdited = choice === 'all';
+    }
     const olds = [], news = [];
     let split = 0;
     for (const e of App.entries.values()) {
       let r = null;
-      try { r = Parsers.tidyEntry(e); } catch (err) { logWarn('Tidy skipped', e.name, err); }
+      try { r = Parsers.tidyEntry(e, { includeEdited }); } catch (err) { logWarn('Tidy skipped', e.name, err); }
       if (!r) continue;
       olds.push(e);
       if (r.length > 1) split++;

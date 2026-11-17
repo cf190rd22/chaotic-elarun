@@ -282,6 +282,34 @@ blockquote.quote cite { display: block; font-size: 13px; color: var(--muted); fo
 /* grid columns may shrink below their content, so dialogs never scroll sideways on phones */
 .import-grid > * { min-width: 0; }
 .paste-src > * { min-width: 0; }
+/* favourite collections */
+.head-acts { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.col-btn { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: var(--muted); white-space: nowrap; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; }
+.col-btn.in { color: var(--amber); border-color: var(--amber-border); background: var(--amber-dim); }
+.fip-bar { flex-wrap: wrap; }
+.fip-bar .tray { flex-basis: 100%; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.fip-bar.tray-only { margin: 0 0 10px; }
+.tray-sel { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; white-space: nowrap; color: var(--amber); border-color: var(--amber-border); background: var(--amber-dim); flex: none; }
+.tray-sel.quiet { color: var(--muted); background: transparent; border-color: var(--border); }
+.tray-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; min-width: 0; padding: 2px 0; }
+.tray-chip { flex: none; font-size: 13px; padding: 2px 10px; border-radius: 14px; border: 1px solid hsl(var(--h) 45% 50% / .45); background: hsl(var(--h) 45% 50% / .1); color: var(--text); text-decoration: none; white-space: nowrap; }
+.tray-chip:hover { border-color: var(--accent); }
+.tray-chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.tray-empty { font-size: 12.5px; color: var(--muted); }
+.col-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px 4px; }
+.col-chip { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
+.col-chip .count { margin-left: 6px; opacity: .7; font-size: 11px; }
+.col-chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.col-menu { position: fixed; z-index: 1001; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 28px rgb(0 0 0 / .3); padding: 6px; }
+.col-menu .cm-h { font: 700 11px var(--serif); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: 4px 8px 6px; }
+.col-menu .cm-i { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; background: none; padding: 8px; border-radius: 6px; font-size: 14px; }
+.col-menu .cm-i:hover { background: var(--panel-2); }
+.col-menu .cm-i .count { margin-left: auto; color: var(--muted); font-size: 12px; }
+.col-menu .cm-box { width: 18px; height: 18px; border: 1px solid var(--border); border-radius: 4px; display: inline-grid; place-items: center; color: var(--accent); font-weight: 700; flex: none; }
+.col-menu .cm-new { display: flex; gap: 6px; padding: 6px 4px 2px; border-top: 1px solid var(--border); margin-top: 4px; }
+.col-menu .cm-new input { flex: 1; min-width: 0; }
+.cm-row { display: flex; gap: 10px; align-items: center; margin: 6px 0; } .cm-row > input { flex: 1; min-width: 0; }
+@media (pointer: coarse) { .col-menu .cm-i { padding: 11px 8px; font-size: 15px; } .tray-chip { padding: 5px 12px; font-size: 14px; } }
 /* swipe back/forward hint */
 .swipe-hint { position: fixed; top: 45%; z-index: 60; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
   font: 700 28px/1 var(--serif); background: var(--panel-2); color: var(--muted); border: 1px solid var(--border); box-shadow: 0 4px 14px rgb(0 0 0 / .25); pointer-events: none; }
@@ -592,6 +620,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
     <div class="list-search" id="listSearch" hidden>
       <span class="clearable"><input id="listQ" type="search" autocomplete="off" spellcheck="false" placeholder="Filter…" aria-label="Filter this tab" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span>
     </div>
+    <div id="colChips" class="col-chips" hidden></div>
     <div id="resultMeta"></div>
     <div id="facetBar" class="facet-bar" hidden></div>
     <div id="suggest" hidden></div>
@@ -1160,6 +1189,7 @@ function makeEntry(p = {}) {
     raw: String(p.raw || ''),
     fav: !!p.fav,
     ...(p.edited !== undefined ? { edited: !!p.edited } : {}), // true once saved from the editor (stars don't count)
+    ...(Array.isArray(p.cols) && p.cols.length ? { cols: [...new Set(p.cols.map(String).map((c) => c.trim()).filter(Boolean))] } : {}), // favourite collections
     created: p.created || nowIso(),
     updated: p.updated || nowIso(),
   };
@@ -1174,7 +1204,8 @@ function readImportPayload(json) {
   else throw new Error('Unrecognised JSON: expected { entries: [...] }, an array of entries, or a single entry.');
   const entries = list.filter((o) => o && typeof o === 'object' && typeof o.name === 'string').map(makeEntry);
   const icons = json && json.settings && json.settings.icons ? json.settings.icons : null;
-  return { entries, types, icons };
+  const collections = json && json.settings && Array.isArray(json.settings.collections) ? json.settings.collections : [];
+  return { entries, types, icons, collections };
 }
 
 function exportPayload(entries) {
@@ -1183,7 +1214,7 @@ function exportPayload(entries) {
     version: 1,
     exportedAt: nowIso(),
     types: Types.list,
-    settings: { icons: IconOverrides },   // your pasted icons travel with exports and GitHub backups
+    settings: { icons: IconOverrides, collections: Cols.order },   // pasted icons and collection names travel with exports and GitHub backups
     entries,
   };
 }
@@ -4065,6 +4096,11 @@ const App = {
     const e = this.entries.get(id);
     if (!e) return;
     e.fav = !e.fav;
+    if (!e.fav && e.cols && e.cols.length) {
+      toast(`Removed from Favourites and ${e.cols.length === 1 ? e.cols[0] : e.cols.length + ' collections'}`, 'info', 5000);
+      delete e.cols;
+      Cols.changed();
+    }
     e.updated = nowIso();
     await Store.putEntries([e]);
     this.index.setFav(id, e.fav);
@@ -4128,6 +4164,7 @@ const App = {
     if (tab !== '' && carryQuery && this.query.trim()) this.viewState().q = this.query;
     const ls = $('#listSearch'), lq = $('#listQ');
     ls.hidden = tab === '';
+    Cols.renderChips();
     lq.value = tab === '' ? '' : (this.viewState().q || '');
     lq.placeholder = tab === 'fav' ? 'Filter favourites…' : tab ? `Filter ${tabLabel(tab).toLowerCase()}…` : '';
     document.body.classList.remove('show-detail');
@@ -4160,7 +4197,7 @@ const App = {
   },
 
   /* ---------- search / list ---------- */
-  refresh() { this.renderTabs(); this.runSearch({ keepCursor: true }); if (this.currentId) this.showDetail(this.currentId, { fromSearch: true }); },
+  refresh() { this.renderTabs(); Cols.renderChips(); this.runSearch({ keepCursor: true }); if (this.currentId) this.showDetail(this.currentId, { fromSearch: true }); },
 
   runSearch({ keepCursor = false } = {}) {
     const home = this.isHome();
@@ -4178,6 +4215,7 @@ const App = {
     const vs = this.viewState(), defs = FACETS[this.tab] || [];
     const active = defs.filter((d) => vs.facets[d.key]);
     if (active.length) ids = ids.filter((id) => { const e = this.entries.get(id); return active.every((d) => facetValues(d, e).includes(vs.facets[d.key])); });
+    if (this.tab === 'fav' && Cols.filter) ids = ids.filter((id) => Cols.has(this.entries.get(id), Cols.filter));
     // Sort: chosen order, or relevance when searching, or the tab's natural order when browsing
     const chosen = SORTS[vs.sort] && SORTS[vs.sort].fn;
     const sorter = chosen || (!this.parsedQuery().text.trim() && TAB_SORT[this.tab]);
@@ -4466,7 +4504,7 @@ const App = {
   showDetail(id, { fromSearch = false } = {}) {
     const e = this.entries.get(id);
     const el = $('#detail');
-    if (!e) { el.innerHTML = '<div class="empty">Select an entry, or press <span class="kbd">/</span> to search.</div>'; return; }
+    if (!e) { el.innerHTML = (Cols.active ? `<div class="fip-bar tray-only">${Cols.trayHtml(null)}</div>` : '') + '<div class="empty">Select an entry, or press <span class="kbd">/</span> to search.</div>'; return; }
     this.currentId = id;
     const t = Types.get(e.type);
     Linker.begin(e.id, featureAnchors(e));
@@ -4478,11 +4516,12 @@ const App = {
         <span class="fip-count"></span>
         <button class="icon-btn" data-act="fip-prev" title="Previous (Shift+Enter)" aria-label="Previous match">↑</button>
         <button class="icon-btn" data-act="fip-next" title="Next (Enter)" aria-label="Next match">↓</button>
+        ${Cols.trayHtml(id)}
       </div>
       <div class="d-top">${prev ? `<button class="nav-back" data-act="nav-back" title="Back (Alt+←)">← ${esc(prev.name)}</button>` : ''}<button class="back-btn" data-act="back">☰ List</button></div>
       <div class="d-head">
         <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}${spellIcons(e)}</h2>
-        <button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button>
+        <span class="head-acts">${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
       </div>
       <div class="d-sub">${subtitleHtml(e, t)}</div>
       ${headChips(e, t.hue)}
@@ -4500,6 +4539,8 @@ const App = {
       <div class="d-refs" data-for="${esc(e.id)}"></div>`;
     if (!fromSearch) el.scrollTop = 0;
     Tables.enhance(el, e.id);
+    const onChip = el.querySelector('.tray-chip.on'); // keep the entry you're on visible in the tray
+    if (onChip) onChip.parentElement.scrollLeft = Math.max(0, onChip.offsetLeft - onChip.parentElement.offsetLeft - 40);
     VList.paint(true);
     // Backlinks can touch many entries, so fill them in after the page has painted.
     setTimeout(() => {
@@ -4928,6 +4969,7 @@ const Importer = {
     catch (err) { toast('Import failed: ' + err.message, 'err', 8000); return; }
     for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
     const nIcons = await importIconOverrides(payload.icons, false);
+    await Cols.adopt(payload.collections);
     const r = await App.merge(payload.entries);
     toast(`Imported: ${r.added} new, ${r.updated} updated, ${r.kept} unchanged${nIcons ? `, ${nIcons} custom icons` : ''}.`, 'ok', 6000);
   },
@@ -5134,7 +5176,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.4'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.5'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 4;
 const Tidy = {
@@ -5213,6 +5255,7 @@ const SHORTCUTS = [
     ['f', 'Favourite / unfavourite'],
     ['e', 'Edit'],
     ['y', 'Copy the entry as text'],
+    ['b', 'Add to a collection (or right-click / long-press a star)'],
   ]],
   ['App', [
     ['n', 'New entry'],
@@ -5234,6 +5277,167 @@ function shortcutsHtml() {
 function showShortcuts() {
   ask('Keyboard shortcuts', `<div class="sc-wrap">${shortcutsHtml()}</div><p class="hint">Single keys only work when you're not typing in a box. Also in Settings.</p>`, [{ label: 'Close', value: null, kind: 'primary' }]);
 }
+
+/* ---------- Favourite collections ----------
+   Named groups of favourites ("Tonight", "Lich fight", "My Warlock"); an entry can be in several.
+   Each entry keeps the names it belongs to (e.cols), so collections travel with exports and
+   backups; the order of names and the active tray are kept in settings. */
+const Cols = {
+  order: [],        // collection names, in the order created
+  active: '',       // collection shown in the tray at the top of the entry pane
+  filter: '',       // collection chosen in the Favourites tab ('' = all favourites)
+  async load() {
+    const m = (await Store.getMeta('collections')) || {};
+    this.order = Array.isArray(m.order) ? m.order : [];
+    this.active = m.active || '';
+    this.sync();
+  },
+  save() { return Store.setMeta('collections', { order: this.order, active: this.active }).catch(() => {}); },
+  key: (n) => fold(n).trim(),
+  find(n) { const k = this.key(n); return this.order.find((x) => this.key(x) === k); },
+  /** Pick up names found on entries (imports, other devices). */
+  sync() {
+    let added = false;
+    for (const e of App.entries.values()) for (const c of e.cols || []) if (!this.find(c)) { this.order.push(c); added = true; }
+    if (this.active && !this.find(this.active)) this.active = '';
+    if (this.filter && !this.find(this.filter)) this.filter = '';
+    if (added) this.save();
+  },
+  async adopt(names) { for (const n of names || []) if (typeof n === 'string' && n.trim() && !this.find(n)) this.order.push(n.trim()); this.sync(); await this.save(); this.renderChips(); },
+  has(e, n) { const k = this.key(n); return !!(e && e.cols && e.cols.some((c) => this.key(c) === k)); },
+  members(n) {
+    return [...App.entries.values()].filter((e) => this.has(e, n))
+      .sort((a, b) => App.typeOrder(a.type) - App.typeOrder(b.type) || a.name.localeCompare(b.name));
+  },
+  count(n) { let k = 0; for (const e of App.entries.values()) if (this.has(e, n)) k++; return k; },
+  changed() { this.renderChips(); },
+  async toggle(id, n) {
+    const e = App.entries.get(id);
+    if (!e) return;
+    const name = this.find(n) || n.trim();
+    if (!this.find(name)) { this.order.push(name); await this.save(); }
+    if (this.has(e, name)) e.cols = e.cols.filter((c) => this.key(c) !== this.key(name));
+    else { e.cols = [...(e.cols || []), name]; e.fav = true; } // in a collection means favourited
+    if (!e.cols.length) delete e.cols;
+    e.updated = nowIso();
+    await App.upsert([e], { quiet: true });
+  },
+  async rename(old, nu) {
+    nu = nu.trim();
+    if (!nu || this.key(old) === this.key(nu) && old === nu) return;
+    const touched = [];
+    for (const e of App.entries.values()) if (this.has(e, old)) { e.cols = [...new Set(e.cols.map((c) => (this.key(c) === this.key(old) ? nu : c)))]; e.updated = nowIso(); touched.push(e); }
+    this.order = this.order.map((x) => (this.key(x) === this.key(old) ? nu : x)).filter((x, i, a) => a.findIndex((y) => this.key(y) === this.key(x)) === i);
+    if (this.key(this.active) === this.key(old)) this.active = nu;
+    if (this.key(this.filter) === this.key(old)) this.filter = nu;
+    await this.save();
+    if (touched.length) await App.upsert(touched, { quiet: true }); else App.refresh();
+  },
+  async remove(n) {
+    const touched = [];
+    for (const e of App.entries.values()) if (this.has(e, n)) { e.cols = e.cols.filter((c) => this.key(c) !== this.key(n)); if (!e.cols.length) delete e.cols; e.updated = nowIso(); touched.push(e); }
+    this.order = this.order.filter((x) => this.key(x) !== this.key(n));
+    if (this.key(this.active) === this.key(n)) this.active = '';
+    if (this.key(this.filter) === this.key(n)) this.filter = '';
+    await this.save();
+    if (touched.length) await App.upsert(touched, { quiet: true }); else App.refresh();
+  },
+  setActive(n) { this.active = n ? this.find(n) || '' : ''; this.save(); App.showDetail(App.currentId, { fromSearch: true }); },
+
+  /* ----- markup ----- */
+  buttonHtml(e) {
+    const mine = this.order.filter((n) => this.has(e, n));
+    const label = mine.length ? esc(mine[0]) + (mine.length > 1 ? ` +${mine.length - 1}` : '') : '+ Collection';
+    return `<button class="col-btn${mine.length ? ' in' : ''}" data-act="cols" title="Add to a collection (b)" aria-label="Collections">${label}</button>`;
+  },
+  trayHtml(curId) {
+    if (!this.order.length) return '';
+    if (!this.active) return `<button class="tray-sel quiet" data-act="tray-menu" title="Show a collection here for one-tap jumping">★ ▾</button>`;
+    const items = this.members(this.active);
+    return `<div class="tray"><button class="tray-sel" data-act="tray-menu" title="Change the collection shown here">★ ${esc(this.active)} ▾</button>`
+      + `<div class="tray-chips">${items.length ? items.map((e) => `<a href="#/e/${encodeURIComponent(e.id)}" class="tray-chip${e.id === curId ? ' on' : ''}" data-open="${esc(e.id)}" style="--h:${Types.get(e.type).hue}">${esc(e.name)}</a>`).join('')
+        : '<span class="tray-empty">Empty: add entries with “+ Collection”</span>'}</div></div>`;
+  },
+  renderChips() {
+    const box = $('#colChips');
+    if (!box) return;
+    const show = App.tab === 'fav' && this.order.length > 0;
+    box.hidden = !show;
+    if (!show) return;
+    const chip = (n, label, cnt) => `<button class="col-chip${this.key(this.filter) === this.key(n) ? ' on' : ''}" data-colf="${esc(n)}">${esc(label)}<span class="count">${cnt}</span></button>`;
+    box.innerHTML = chip('', 'All', App.counts().fav) + this.order.map((n) => chip(n, n, this.count(n))).join('')
+      + '<button class="col-chip manage" data-act="cols-manage" title="Rename or delete collections">⋯</button>';
+  },
+
+  /* ----- menus ----- */
+  menu: null,
+  openMenu(anchor, html, onPick) {
+    this.closeMenu();
+    const m = document.createElement('div');
+    m.className = 'col-menu';
+    m.innerHTML = html;
+    document.body.appendChild(m);
+    const r = anchor.getBoundingClientRect();
+    const w = Math.min(280, innerWidth - 12);
+    m.style.width = w + 'px';
+    m.style.left = Math.max(6, Math.min(r.right - w, innerWidth - w - 6)) + 'px';
+    const below = innerHeight - r.bottom;
+    if (below < 240 && r.top > below) { m.style.bottom = innerHeight - r.top + 4 + 'px'; m.style.maxHeight = r.top - 16 + 'px'; }
+    else { m.style.top = r.bottom + 4 + 'px'; m.style.maxHeight = below - 16 + 'px'; }
+    m.addEventListener('click', (ev) => { const it = ev.target.closest('[data-pick]'); if (it) onPick(it.dataset.pick, it); });
+    const inp = m.querySelector('input');
+    if (inp) inp.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && inp.value.trim()) { ev.preventDefault(); onPick('new:' + inp.value.trim()); } });
+    setTimeout(() => {
+      this.outside = (ev) => { if (!m.contains(ev.target) && ev.target !== anchor) this.closeMenu(); };
+      document.addEventListener('pointerdown', this.outside, true);
+    }, 0);
+    this.esc = (ev) => { if (ev.key === 'Escape') { ev.stopPropagation(); this.closeMenu(); } };
+    document.addEventListener('keydown', this.esc, true);
+    this.menu = m;
+    return m;
+  },
+  closeMenu() {
+    if (!this.menu) return;
+    this.menu.remove(); this.menu = null;
+    document.removeEventListener('pointerdown', this.outside, true);
+    document.removeEventListener('keydown', this.esc, true);
+  },
+  /** "Add to collection" checklist for entry `id`. Stays open so you can tick several. */
+  pickFor(id, anchor) {
+    const render = () => {
+      const e = App.entries.get(id);
+      return `<div class="cm-h">Add “${esc(e.name)}” to</div>`
+        + this.order.map((n) => `<button class="cm-i" data-pick="${esc(n)}"><span class="cm-box">${this.has(e, n) ? '✓' : ''}</span>${esc(n)}<span class="count">${this.count(n)}</span></button>`).join('')
+        + `<div class="cm-new"><input type="text" placeholder="New collection…" aria-label="New collection name" enterkeyhint="done"><button class="cm-add" data-pick="new:">Add</button></div>`;
+    };
+    const m = this.openMenu(anchor, render(), async (v, el) => {
+      let name = v;
+      if (v.startsWith('new:')) { name = v.slice(4) || m.querySelector('input').value.trim(); if (!name) { m.querySelector('input').focus(); return; } }
+      await this.toggle(id, name);
+      if (v.startsWith('new:') && !this.active) this.setActive(name); // first collection: show it in the tray straight away
+      if (this.menu) { this.menu.innerHTML = render(); this.menu.querySelector('input').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.value.trim()) { ev.preventDefault(); this.menu.querySelector('.cm-add').click(); } }); }
+    });
+    if (!this.order.length || matchMedia('(pointer: fine)').matches) m.querySelector('input').focus();
+  },
+  pickActive(anchor) {
+    this.openMenu(anchor, '<div class="cm-h">Show in the top strip</div>'
+      + this.order.map((n) => `<button class="cm-i" data-pick="${esc(n)}"><span class="cm-box">${this.key(n) === this.key(this.active) ? '●' : ''}</span>${esc(n)}<span class="count">${this.count(n)}</span></button>`).join('')
+      + `<button class="cm-i" data-pick=""><span class="cm-box">${this.active ? '' : '●'}</span>None (hide the tray)</button>`,
+    (v) => { this.closeMenu(); this.setActive(v); });
+  },
+  async manage() {
+    if (!this.order.length) return;
+    const rows = this.order.map((n, i) => `<div class="cm-row"><input data-col-i="${i}" value="${esc(n)}" aria-label="Collection name"><label class="hint"><input type="checkbox" data-col-del="${i}"> Delete</label></div>`).join('');
+    const ok = await ask('Collections', `<p class="hint">Rename or delete. Deleting a collection keeps its entries as favourites.</p>${rows}`,
+      [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
+    if (!ok) return;
+    const names = [...this.order];
+    const dels = names.filter((_, i) => $(`#askBody [data-col-del="${i}"]`)?.checked);
+    const ren = names.map((n, i) => [n, ($(`#askBody [data-col-i="${i}"]`)?.value || n).trim()]);
+    for (const n of dels) await this.remove(n);
+    for (const [o, nu] of ren) if (!dels.includes(o) && nu && nu !== o) await this.rename(o, nu);
+  },
+};
 
 /* ---------- Swipe back / forward (touch) ----------
    Right = back, left = forward. Ignored when it starts on something that scrolls sideways
@@ -5478,7 +5682,7 @@ function wireEvents() {
     if (head) { App.toggleGroup(head.dataset.group); return; }
     const row = e.target.closest('.row');
     if (!row) return;
-    if (e.target.closest('[data-act="fav"]')) { App.toggleFav(row.dataset.id); return; }
+    if (e.target.closest('[data-act="fav"]')) { if (Cols.skipClick) { Cols.skipClick = false; return; } App.toggleFav(row.dataset.id); return; }
     App.open(row.dataset.id);
   };
   $('#list').addEventListener('click', onRowClick);
@@ -5506,6 +5710,9 @@ function wireEvents() {
     const srcEl = ev.target.closest('[data-source]');
     if (srcEl) { App.setSource(srcEl.dataset.source, { toSearch: true }); return; }
     const act = ev.target.closest('[data-act]')?.dataset.act;
+    if (act === 'fav' && Cols.skipClick) { Cols.skipClick = false; return; }
+    if (act === 'cols' && App.currentId) { Cols.pickFor(App.currentId, ev.target.closest('[data-act]')); return; }
+    if (act === 'tray-menu') { Cols.pickActive(ev.target.closest('[data-act]')); return; }
     const e = App.entries.get(App.currentId);
     if (!act) return;
     if (act === 'back') { App.backStack = []; document.body.classList.remove('show-detail'); setUrlHash(''); return; }
@@ -5649,6 +5856,7 @@ function wireEvents() {
     if (!mode) return 'Restore cancelled.';
     for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
     await importIconOverrides(payload.icons, mode === 'replace');
+    await Cols.adopt(payload.collections);
     let msg;
     if (mode === 'replace') { await App.replaceAll(payload.entries); msg = `Replaced with ${payload.entries.length} entries from GitHub.`; }
     else { const r = await App.merge(payload.entries); msg = `Merged: ${r.added} new, ${r.updated} updated, ${r.kept} kept.`; }
@@ -5749,6 +5957,7 @@ function wireEvents() {
     if (e.key === 'f' && App.currentId) App.toggleFav(App.currentId);
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
     else if (e.key === 'y' && App.currentId) $('#detail [data-act="copy"]')?.click();
+    else if (e.key === 'b' && App.currentId) { e.preventDefault(); $('#detail [data-act="cols"]')?.click(); }
     else if (e.key === 'j') { e.preventDefault(); App.moveCursor(1); }
     else if (e.key === 'k') { e.preventDefault(); App.moveCursor(-1); }
     else if (e.key === 'Enter') { const r = App.rows[App.cursor]; if (!r || r.k !== 'e' || e.target.closest('button, a')) return; App.open(r.id); }
@@ -6028,6 +6237,27 @@ async function boot() {
   Peek.init();
   Swipe.init();
   SourcePicker.init();
+  await Cols.load();
+  // Collections: right-click or long-press a star; chips in the Favourites tab; buttons in the entry pane.
+  const starOf = (t) => t.closest && t.closest('.row [data-act="fav"], .d-head [data-act="fav"]');
+  document.addEventListener('contextmenu', (ev) => {
+    const st = starOf(ev.target); if (!st) return;
+    ev.preventDefault();
+    const id = st.closest('.row')?.dataset.id || App.currentId;
+    if (id) Cols.pickFor(id, st);
+  });
+  let lp = null;
+  document.addEventListener('touchstart', (ev) => {
+    const st = starOf(ev.target); if (!st) return;
+    clearTimeout(lp);
+    lp = setTimeout(() => { const id = st.closest('.row')?.dataset.id || App.currentId; if (id) { Cols.skipClick = true; Cols.pickFor(id, st); } }, 480);
+  }, { passive: true });
+  for (const t of ['touchend', 'touchmove', 'touchcancel']) document.addEventListener(t, () => clearTimeout(lp), { passive: true });
+  $('#colChips').addEventListener('click', (ev) => {
+    const c = ev.target.closest('[data-colf]');
+    if (c) { Cols.filter = c.dataset.colf; Cols.renderChips(); App.runSearch(); return; }
+    if (ev.target.closest('[data-act="cols-manage"]')) Cols.manage();
+  });
   if (safeLocal.get('dndref.listHidden')) setListHidden(true);
   wireEvents();
   App.setTab('');

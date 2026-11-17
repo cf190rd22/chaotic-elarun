@@ -318,6 +318,85 @@ blockquote.quote cite { display: block; font-size: 13px; color: var(--muted); fo
 .bulk-src label { display: inline-flex; gap: 6px; align-items: center; }
 .bulk-src select, .bulk-src input { max-width: 100%; }
 button.linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; }
+/* encounter roller */
+#toolPane { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); background: var(--panel); }
+#toolPane[hidden] { display: none !important; }
+body.tool-open #listPane { display: none; }
+@media (min-width: 721px) { body.tool-open .layout { grid-template-columns: minmax(460px, 52%) minmax(0, 1fr); } }
+@media (max-width: 720px) {
+  #toolPane .rr-top { gap: 6px; padding: 8px 10px; }
+  #toolPane .rr-top h2 { flex: 1 1 auto; }
+  #toolPane .rr-top .rr-x { order: 1; }
+  #toolPane .rr-top .rr-seg { order: 2; } #toolPane .rr-top label { order: 3; }
+  #toolPane .rr-seg button { padding: 4px 8px; font-size: 12.5px; }
+  #toolPane .rr-pc { flex-wrap: nowrap; gap: 4px; padding: 4px 2px; }
+  #toolPane .rr-pc input[data-pc="name"] { flex: 1 1 auto; width: 0; }
+  #toolPane .rr-pc input[type="number"] { width: 44px; padding-left: 4px; padding-right: 2px; }
+  #toolPane .rr-pc label { font-size: 12px; gap: 2px; }
+  #toolPane .rr-eff { min-width: 28px; font-size: 13px; }
+}
+/* pinned: list | entry | roller */
+.rr-pin { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
+.rr-pin.on { background: var(--amber-dim); color: var(--amber); border-color: var(--amber-border); }
+@media (max-width: 999px) { .rr-pin { display: none; } }
+@media (min-width: 1000px) {
+  body.tool-pinned .layout { grid-template-columns: var(--list-w) minmax(0, 1fr) minmax(380px, 31%); }
+  body.tool-pinned.list-hidden .layout { grid-template-columns: minmax(0, 1fr) minmax(380px, 34%); }
+  body.tool-pinned #listPane { display: flex; grid-column: 1; grid-row: 1; }
+  body.tool-pinned.list-hidden #listPane { display: none; }
+  body.tool-pinned #detail { grid-column: 2; grid-row: 1; }
+  body.tool-pinned.list-hidden #detail { grid-column: 1; }
+  body.tool-pinned #toolPane { grid-column: 3; grid-row: 1; border-right: 0; border-left: 1px solid var(--border); }
+  body.tool-pinned.list-hidden #toolPane { grid-column: 2; }
+}
+@media (max-width: 720px) { body.tool-open.show-detail #toolPane { display: none !important; } body.tool-open .tabs { display: none; } }
+.rr-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.rr-top h2 { font: 700 17px var(--serif); margin: 0 auto 0 0; }
+.rr-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.rr-seg button { border: 0; border-radius: 0; padding: 4px 10px; font-size: 13px; background: transparent; }
+.rr-seg button.on { background: var(--accent); color: var(--accent-text); }
+.rr-scroll { overflow: auto; padding: 8px 12px 40px; flex: 1; min-height: 0; }
+.rr-sec { margin: 6px 0 14px; }
+.rr-sec > summary { font: 700 11px var(--serif); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); cursor: pointer; padding: 4px 0; }
+.rr-pc { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 8px; }
+.rr-pc.on { background: var(--panel-2); outline: 1px solid var(--accent-border); }
+.rr-pc input[data-pc="name"] { flex: 1 1 120px; min-width: 0; }
+.rr-pc input[type="number"] { width: 58px; }
+.rr-pc label { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); }
+.rr-eff { font-weight: 700; min-width: 34px; }
+.rr-tgt { border: 0; background: none; font-size: 18px; color: var(--accent); padding: 0 4px; }
+.rr-x { border: 0; background: none; color: var(--muted); font-size: 18px; padding: 0 6px; line-height: 1; }
+.rr-add { margin-top: 6px; }
+.rr-addbox { position: relative; margin-bottom: 10px; }
+.rr-addbox input { width: 100%; }
+#rrHits { display: flex; flex-direction: column; }
+.rr-hit { text-align: left; border-radius: 0; border-width: 0 0 1px; }
+.rr-mon { border: 1px solid var(--border); border-left: 3px solid var(--amber-border); border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; background: var(--bg); }
+.rr-mh { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 6px; }
+.rr-name { font-weight: 700; font-size: 15px; }
+.rr-stats { color: var(--muted); font-size: 12.5px; margin-right: auto; }
+.rr-count { display: inline-flex; align-items: center; gap: 6px; } .rr-count button { padding: 0 9px; }
+.rr-row { display: flex; align-items: baseline; gap: 8px; margin: 3px 0; flex-wrap: wrap; }
+.rr-roll { font-weight: 600; font-size: 13px; padding: 3px 10px; }
+.rr-sum { color: var(--muted); font-size: 12.5px; }
+.rr-saves { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.rr-sv { font: 700 11px var(--serif); text-transform: uppercase; padding: 2px 7px; } .rr-sv small { font: 600 11px system-ui; margin-left: 3px; text-transform: none; color: var(--muted); }
+.rr-logh { display: flex; align-items: baseline; gap: 10px; } .rr-logh h3 { margin: 0; font: 700 11px var(--serif); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.rr-card { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; margin: 6px 0; font-size: 13.5px; }
+.rr-card.new { border-color: var(--accent); box-shadow: 0 0 0 2px hsl(215 80% 55% / .15); }
+.rr-head { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; margin-bottom: 3px; }
+.rr-retarget { margin-left: auto; font-size: 12px; padding: 1px 4px; }
+.rr-inst { display: flex; gap: 8px; } .rr-n { color: var(--muted); font-size: 12px; min-width: 22px; }
+.rr-line { margin: 2px 0; } .rr-act { font-style: italic; font-weight: 600; margin-right: 4px; }
+.rr-tot { font-size: 15px; } .rr-d20s s { opacity: .5; }
+.rr-res { font: 700 11px var(--serif); letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; margin: 0 2px; }
+.rr-res.hit { background: hsl(140 50% 45% / .18); color: hsl(140 55% calc(var(--hl-d))); } .rr-res.miss { background: var(--panel-2); color: var(--muted); }
+.rr-res.crit { background: hsl(45 90% 50% / .25); color: hsl(35 90% var(--hl-d)); }
+.rr-vs, .rr-dice, .rr-note, .rr-mode { color: var(--muted); font-size: 12px; }
+.rr-dmg { font-weight: 700; padding: 0 5px; border-radius: 5px; color: hsl(var(--dh, 0) var(--ds, 0%) var(--hl-d)); background: hsl(var(--dh, 0) var(--ds, 0%) 50% / .16); margin-left: 4px; }
+.rr-total { margin-top: 4px; font-size: 13px; }
+#detail .d-body .hl-tohit, #detail .d-body .hl-dmg { cursor: pointer; }
+#quickRoll { position: fixed; z-index: 1002; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; box-shadow: 0 8px 22px rgb(0 0 0 / .28); font-size: 14px; max-width: 300px; }
 /* swipe back/forward hint */
 .swipe-hint { position: fixed; top: 45%; z-index: 60; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
   font: 700 28px/1 var(--serif); background: var(--panel-2); color: var(--muted); border: 1px solid var(--border); box-shadow: 0 4px 14px rgb(0 0 0 / .25); pointer-events: none; }
@@ -615,6 +694,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
     <div class="actions">
       <button id="importBtn" title="Paste text from D&amp;D Beyond or import JSON" aria-label="Import"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg><span class="lbl">Import</span></button>
       <button id="newBtn" title="Create a new entry" aria-label="New entry"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">New</span></button>
+      <button id="toolsBtn" title="Tools: encounter roller and your own links (r)" aria-label="Tools"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg><span class="lbl">Tools</span></button>
       <button id="settingsBtn" class="icon-btn" title="Settings, export &amp; GitHub backup" aria-label="Settings"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
       <button id="themeBtn" class="icon-btn" title="Toggle dark / light" aria-label="Toggle theme"><svg class="ui-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
     </div>
@@ -624,6 +704,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 <div id="banner" class="banner" hidden></div>
 
 <main class="layout">
+  <section id="toolPane" aria-label="Encounter roller" hidden></section>
   <section id="listPane" aria-label="Results">
     <div class="list-search" id="listSearch" hidden>
       <span class="clearable"><input id="listQ" type="search" autocomplete="off" spellcheck="false" placeholder="Filter…" aria-label="Filter this tab" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span>
@@ -750,6 +831,13 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
         </div>
         <p class="hint" id="storageInfo"></p>
         <p class="hint">App version <b id="appVersion"></b></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tools</legend>
+        <label class="hint">Links in the Tools menu, one per line as <code>Name | https://…</code></label>
+        <textarea id="toolLinks" rows="4" style="width:100%" placeholder="Character sheet | https://example.github.io/sheet.html"></textarea>
+        <label class="hint"><input type="checkbox" id="tapRoll"> Tap a “+5 to hit” or damage highlight in any stat block to roll it</label>
       </fieldset>
 
       <fieldset>
@@ -4573,7 +4661,8 @@ const App = {
     Find.run(needle);
   },
   navigate(id) {
-    if (!this.entries.has(id) || id === this.currentId) return;
+    if (!this.entries.has(id)) return;
+    if (id === this.currentId) { document.body.classList.add('show-detail'); return; }
     const scroll = $('#detail').scrollTop;
     if (this.currentId) {
       this.backStack.push({ id: this.currentId, scroll }); // remember exactly where you were on the page
@@ -4647,7 +4736,7 @@ const App = {
       <div class="d-top">${prev ? `<button class="nav-back" data-act="nav-back" title="Back (Alt+←)">← ${esc(prev.name)}</button>` : ''}<button class="back-btn" data-act="back">☰ List</button></div>
       <div class="d-head">
         <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}${spellIcons(e)}</h2>
-        <span class="head-acts">${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
+        <span class="head-acts">${e.type === 'monster' && !isMonGroup(e) ? `<button class="col-btn${Roller.countOf(e.id) ? ' in' : ''}" data-act="enc-add" title="Add to the encounter roller">${Roller.countOf(e.id) ? `Encounter ×${Roller.countOf(e.id)}` : '+ Encounter'}</button>` : ''}${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
       </div>
       <div class="d-sub">${subtitleHtml(e, t)}</div>
       ${headChips(e, t.hue)}
@@ -5159,6 +5248,8 @@ const Settings = {
     this.renderDiag();
     $('#shortcutGuide').innerHTML = shortcutsHtml();
     $('#appVersion').textContent = APP_VERSION;
+    $('#toolLinks').value = safeLocal.get('dndref.toolLinks') || '';
+    $('#tapRoll').checked = safeLocal.get('dndref.tapRoll') !== '0';
     Sources.render();
     this.storageInfo();
     $('#settingsDlg').showModal();
@@ -5374,7 +5465,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.12'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.13'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5491,6 +5582,7 @@ const SHORTCUTS = [
     ['b', 'Add to a collection (or right-click / long-press a star)'],
   ]],
   ['App', [
+    ['r', 'Open / close the encounter roller'],
     ['n', 'New entry'],
     ['i', 'Import / paste'],
     [',', 'Settings'],
@@ -5558,6 +5650,329 @@ const GitFolders = {
     };
     await Promise.all(Array.from({ length: 8 }, worker));
     return out;
+  },
+};
+
+/* =====================================================================
+   ENCOUNTER ROLLER (ported from the stand-alone Encounter Roller)
+   Monsters come from the database: their attacks, save effects and multiattacks are
+   read from the stat block when shown, so there is no separate library to maintain.
+   Party members are targets (AC + adjustment); attacks roll against the active one.
+   Crits: double dice, or "Perkins" (max dice + a roll). d20s use crypto randomness. */
+function rollDie(sides) {
+  const buf = new Uint32Array(1), limit = 0x100000000 - (0x100000000 % sides);
+  let x;
+  do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= limit); // no modulo bias
+  return 1 + (x % sides);
+}
+function parseDice(expr) {
+  const m = /(\d+)\s*d\s*(\d+)\s*(?:([+\-−])\s*(\d+))?/i.exec(expr || '');
+  if (m) return { count: +m[1], sides: +m[2], bonus: m[4] ? (m[3] === '+' ? +m[4] : -m[4]) : 0 };
+  const f = /^\s*(\d+)\s*$/.exec(expr || '');
+  return f ? { count: 0, sides: 0, bonus: +f[1] } : null;
+}
+const AB_FULL = { STR: 'Strength', DEX: 'Dexterity', CON: 'Constitution', INT: 'Intelligence', WIS: 'Wisdom', CHA: 'Charisma' };
+const Roller = {
+  st: { party: [], activeId: null, board: [], mode: 'normal', crit: 'double' },
+  log: [],
+  open: false,
+  pinned: safeLocal.get('dndref.toolPinned') === '1',
+  async load() {
+    const m = await Store.getMeta('roller');
+    if (m) Object.assign(this.st, m);
+    this.log = (await Store.getMeta('rollerLog')) || [];
+  },
+  save() { Store.setMeta('roller', this.st).catch(() => {}); },
+  saveLog() { this.log = this.log.slice(0, 80); Store.setMeta('rollerLog', this.log).catch(() => {}); },
+
+  /* ----- dice ----- */
+  d20() {
+    const a = rollDie(20);
+    if (this.st.mode === 'normal') return { rolls: [a], chosen: a };
+    const b = rollDie(20);
+    return { rolls: [a, b], chosen: this.st.mode === 'adv' ? Math.max(a, b) : Math.min(a, b) };
+  },
+  damage(comp, crit) {
+    const d = parseDice(comp.dice);
+    if (!d) return { dice: comp.dice, type: comp.type, rolls: [], total: 0 };
+    const n = d.count * (crit && this.st.crit === 'double' ? 2 : 1);
+    const rolls = Array.from({ length: n }, () => rollDie(d.sides));
+    const max = crit && this.st.crit === 'perkins' ? d.count * d.sides : 0;
+    return { dice: comp.dice, type: comp.type, rolls, bonus: d.bonus, max, total: Math.max(0, rolls.reduce((a, b) => a + b, 0) + d.bonus + max) };
+  },
+
+  /* ----- reading a stat block ----- */
+  actionsOf(e) {
+    const SECT = { traits: 'Traits', actions: 'Actions', 'bonus actions': 'Bonus Actions', reactions: 'Reactions', 'legendary actions': 'Legendary Actions', 'mythic actions': 'Mythic Actions' };
+    const out = [];
+    e.sections.forEach((s, si) => {
+      const sec = SECT[s.heading.toLowerCase()];
+      if (sec) s.items.forEach((it, ii) => out.push({ key: `${si}-${ii}`, sec, ...this.readAction(it.name, String(it.text || '').replace(/<br\s*\/?>/gi, ' ')) }));
+    });
+    // Multiattack: "makes two Wind Staff attacks", "one Bite attack and two Slam attacks", "two with its claws"
+    const attacks = out.filter((a) => a.kind === 'attack');
+    const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
+    const sing = (x) => fold(x).replace(/\b(\w+?)(es|s)\b/g, '$1').trim();
+    for (const a of out) {
+      if (!/^multiattack/i.test(a.name)) continue;
+      a.kind = 'multi'; a.parts = [];
+      const re = /\b(one|two|three|four|five|six|seven|eight|\d)\b\s+(?:(?:with\s+(?:its|their|a|an)\s+)?([A-Za-z][A-Za-z '’-]{1,30}?))(?:\s+attacks?\b|(?=[,.;]|\s+and\b|\s+or\b))/gi;
+      let m;
+      while ((m = re.exec(a.text))) {
+        const n = NUM[m[1].toLowerCase()] || +m[1], label = sing(m[2] || '');
+        const hit = attacks.find((x) => sing(x.name).includes(label) || (label && label.includes(sing(x.name))));
+        if (hit && n && !a.parts.some((pp) => pp.key === hit.key)) a.parts.push({ key: hit.key, n });
+      }
+      if (!a.parts.length) a.kind = 'note';
+    }
+    return out;
+  },
+  readAction(name, text) {
+    const a = { name, text, kind: 'note', dmg: [] };
+    const hit = /(?:Melee|Ranged)(?:\s+or\s+Ranged)?(?:\s+(?:Weapon|Spell))?\s+Attack(?:\s+Roll)?:?\s*([+\-−]\s*\d+)/i.exec(text) || /([+\-−]\s*\d+)\s+to\s+hit\b/i.exec(text);
+    const types = DAMAGE_TYPES;
+    let m;
+    const re1 = new RegExp(`(\\d+)\\s*\\(\\s*([0-9dD+\\-−\\s]+?)\\s*\\)\\s*(${types})\\b`, 'gi');
+    while ((m = re1.exec(text))) a.dmg.push({ avg: +m[1], dice: m[2].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[3].toLowerCase()) });
+    if (!a.dmg.length) {
+      const re2 = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?)\\s+(${types})\\b`, 'gi');
+      while ((m = re2.exec(text))) a.dmg.push({ dice: m[1].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[2].toLowerCase()) });
+    }
+    const AB = '(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)';
+    const sv = new RegExp(`DC\\s*(\\d+)\\s*${AB}\\w*(?:[\\s\\S]{0,25}?(?:saving throw|save))?`, 'i').exec(text)
+      || new RegExp(`${AB}\\s+Saving Throw:\\s*DC\\s*(\\d+)`, 'i').exec(text);
+    const save = sv && (/^\d/.test(sv[1]) ? { dc: +sv[1], ab: sv[2].slice(0, 3).toUpperCase() } : { dc: +sv[2], ab: sv[1].slice(0, 3).toUpperCase() });
+    const half = /half\s+(?:as\s+much\s+)?damage|success:\s*half/i.test(text);
+    if (hit) { a.kind = 'attack'; a.toHit = parseInt(hit[1].replace(/[\s−]/g, (c) => (c === '−' ? '-' : '')), 10); if (save) a.extraSave = save; }
+    else if (save && a.dmg.length) { a.kind = 'save'; a.save = save; a.half = half; }
+    else if (save) { a.kind = 'savefx'; a.save = save; }
+    const rc = /\(Recharge (\d)(?:[-–](\d))?\)/i.exec(name);
+    if (rc) a.recharge = +rc[1];
+    return a;
+  },
+  saveMod(e, k) {
+    const a = e.abilities && e.abilities[k];
+    if (!a) return 0;
+    const v = a.save !== undefined && a.save !== '' ? a.save : a.mod;
+    return parseInt(String(v ?? Math.floor((a.score - 10) / 2)).replace('−', '-'), 10) || 0;
+  },
+
+  /* ----- board and party ----- */
+  add(id, n = 1) {
+    const e = App.entries.get(id);
+    if (!e || e.type !== 'monster' || isMonGroup(e)) return;
+    const b = this.st.board.find((x) => x.id === id);
+    if (b) b.count += n; else this.st.board.push({ bid: uid(), id, count: n });
+    this.save();
+    toast(`${e.name} added to the encounter${b ? ` (×${b.count})` : ''}`, 'ok', 2500);
+    this.render();
+  },
+  countOf(id) { const b = this.st.board.find((x) => x.id === id); return b ? b.count : 0; },
+  target() { return this.st.party.find((t) => t.id === this.st.activeId) || null; },
+  acOf(t) { return (+t.ac || 0) + (+t.acAdj || 0); },
+
+  /* ----- rolling ----- */
+  rollAttack(a, tgt) {
+    const d = this.d20(), crit = d.chosen === 20, fumble = d.chosen === 1;
+    const total = d.chosen + (a.toHit || 0);
+    const dmg = a.dmg.map((c) => this.damage(c, crit));
+    const vs = tgt ? { id: tgt.id, name: tgt.name || 'Target', ac: this.acOf(tgt), hit: !fumble && (crit || total >= this.acOf(tgt)) } : null;
+    return { kind: 'attack', name: a.name, d20: d.rolls, chosen: d.chosen, toHit: a.toHit, total, crit, fumble, dmg, sum: dmg.reduce((x, y) => x + y.total, 0), vs, extraSave: a.extraSave };
+  },
+  rollSaveFx(a) {
+    const dmg = a.dmg.map((c) => this.damage(c, false)), sum = dmg.reduce((x, y) => x + y.total, 0);
+    return { kind: 'save', name: a.name, dc: a.save.dc, ab: a.save.ab, half: a.half, dmg, sum };
+  },
+  roll(bid, key) {
+    const b = this.st.board.find((x) => x.bid === bid), e = b && App.entries.get(b.id);
+    if (!e) return;
+    const acts = this.actionsOf(e), a = acts.find((x) => x.key === key);
+    if (!a) return;
+    const tgt = this.target(), inst = [];
+    for (let i = 0; i < b.count; i++) {
+      if (a.kind === 'attack') inst.push([this.rollAttack(a, tgt)]);
+      else if (a.kind === 'save') inst.push([this.rollSaveFx(a)]);
+      else if (a.kind === 'multi') {
+        const subs = [];
+        for (const pp of a.parts) { const sub = acts.find((x) => x.key === pp.key); for (let j = 0; j < pp.n; j++) subs.push(sub.kind === 'save' ? this.rollSaveFx(sub) : this.rollAttack(sub, tgt)); }
+        inst.push(subs);
+      } else inst.push([{ kind: 'note', name: a.name, text: a.text, save: a.save }]);
+      if (a.kind === 'save' || a.kind === 'savefx') break; // one area effect, however many creatures
+    }
+    this.push({ who: e.name, eid: e.id, what: a.name, inst, recharge: a.recharge ? rollDie(6) : 0, rechargeOn: a.recharge || 0 });
+  },
+  rollSave(bid, k) {
+    const b = this.st.board.find((x) => x.bid === bid), e = b && App.entries.get(b.id);
+    if (!e) return;
+    const mod = this.saveMod(e, k), inst = [];
+    for (let i = 0; i < b.count; i++) { const d = this.d20(); inst.push([{ kind: 'throw', d20: d.rolls, chosen: d.chosen, mod, total: d.chosen + mod }]); }
+    this.push({ who: e.name, eid: e.id, what: `${AB_FULL[k]} save`, inst });
+  },
+  push(r) {
+    r.id = uid(); r.at = Date.now(); r.mode = this.st.mode;
+    this.log.unshift(r); this.saveLog();
+    this.last = r.id;
+    this.render();
+  },
+  retarget(rid, tid) {
+    const r = this.log.find((x) => x.id === rid), t = this.st.party.find((x) => x.id === tid);
+    if (!r) return;
+    for (const subs of r.inst) for (const x of subs) if (x.kind === 'attack') x.vs = t ? { id: t.id, name: t.name || 'Target', ac: this.acOf(t), hit: !x.fumble && (x.crit || x.total >= this.acOf(t)) } : null;
+    this.saveLog(); this.render();
+  },
+
+  /* ----- markup ----- */
+  diceHtml(c) {
+    const rolls = c.rolls.length ? `[${c.rolls.join(', ')}]` : '';
+    return `<span class="rr-dmg dmg-${esc(fold(c.type))}" title="${esc(c.dice)}${c.max ? ' crit: max dice + roll' : ''}">${c.total} ${esc(c.type)}</span><span class="rr-dice">${esc(c.dice)} ${rolls}${c.max ? ` +${c.max}` : ''}</span>`;
+  },
+  instHtml(x) {
+    if (x.kind === 'attack') {
+      const d = x.d20.length > 1 ? `<span class="rr-d20s">${x.d20.map((v) => (v === x.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ')}</span>` : `<b>${x.chosen}</b>`;
+      const res = x.crit ? '<span class="rr-res crit">CRIT</span>' : x.fumble ? '<span class="rr-res miss">MISS (1)</span>'
+        : x.vs ? `<span class="rr-res ${x.vs.hit ? 'hit' : 'miss'}">${x.vs.hit ? 'HIT' : 'MISS'}</span>` : '';
+      const vs = x.vs ? `<span class="rr-vs">vs ${esc(x.vs.name)} AC ${x.vs.ac}</span>` : '';
+      const dmg = x.vs && !x.vs.hit && !x.crit ? `<span class="rr-dice">would have dealt ${x.sum}</span>` : x.dmg.map((c) => this.diceHtml(c)).join(' ');
+      return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> d20 ${d} ${x.toHit >= 0 ? '+' : '−'}${Math.abs(x.toHit)} = <b class="rr-tot">${x.total}</b> ${vs} ${res} ${dmg}${x.extraSave ? ` <span class="rr-note">+ DC ${x.extraSave.dc} ${x.extraSave.ab} save</span>` : ''}</div>`;
+    }
+    if (x.kind === 'save') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <b class="hl-save">DC ${x.dc} ${x.ab}</b> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">fail ${x.sum}${x.half ? ` · save ${Math.floor(x.sum / 2)}` : ''}</span></div>`;
+    if (x.kind === 'throw') return `<div class="rr-line">d20 ${x.d20.length > 1 ? x.d20.map((v) => (v === x.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ') : `<b>${x.chosen}</b>`} ${x.mod >= 0 ? '+' : '−'}${Math.abs(x.mod)} = <b class="rr-tot">${x.total}</b></div>`;
+    return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <span class="rr-note">${x.save ? `DC ${x.save.dc} ${x.save.ab} save · ` : ''}no roll: see the stat block</span></div>`;
+  },
+  resultHtml(r, full = true) {
+    const totals = new Map();
+    for (const subs of r.inst) for (const x of subs) if (x.kind === 'attack' && x.vs && (x.vs.hit || x.crit)) totals.set(x.vs.name, (totals.get(x.vs.name) || 0) + x.sum);
+    const many = r.inst.length > 1;
+    const body = r.inst.map((subs, i) => `<div class="rr-inst">${many ? `<span class="rr-n">#${i + 1}</span>` : ''}<div>${subs.map((x) => this.instHtml(x)).join('')}</div></div>`).join('');
+    const tsel = r.inst.some((subs) => subs.some((x) => x.kind === 'attack')) && this.st.party.length
+      ? `<select class="rr-retarget" data-rid="${r.id}" title="Check these rolls against another target"><option value="">against…</option>${this.st.party.map((t) => `<option value="${t.id}">${esc(t.name || 'Target')} (AC ${this.acOf(t)})</option>`).join('')}</select>` : '';
+    return `<div class="rr-card${r.id === this.last ? ' new' : ''}"><div class="rr-head"><a href="#" data-open="${esc(r.eid || '')}">${esc(r.who)}</a>${many ? ` ×${r.inst.length}` : ''} · <b>${esc(r.what)}</b>${r.mode !== 'normal' ? ` <span class="rr-mode">${r.mode === 'adv' ? 'advantage' : 'disadvantage'}</span>` : ''}${tsel}</div>${body}`
+      + (totals.size ? `<div class="rr-total">${[...totals].map(([n, v]) => `${esc(n)} takes <b>${v}</b>`).join(' · ')}</div>` : '')
+      + (r.rechargeOn ? `<div class="rr-note">Recharge d6: <b>${r.recharge}</b> (${r.recharge >= r.rechargeOn ? 'recharged' : 'not yet'})</div>` : '') + '</div>';
+  },
+  actSummary(a) {
+    if (a.kind === 'attack') return `${a.toHit >= 0 ? '+' : ''}${a.toHit} · ${a.dmg.map((c) => `${c.dice} ${c.type}`).join(' + ') || 'no damage'}`;
+    if (a.kind === 'save') return `DC ${a.save.dc} ${a.save.ab} · ${a.dmg.map((c) => `${c.dice} ${c.type}`).join(' + ')}${a.half ? ' (half on save)' : ''}`;
+    if (a.kind === 'multi') return a.parts.length ? 'rolls all its attacks' : '';
+    return '';
+  },
+  cardHtml(b) {
+    const e = App.entries.get(b.id);
+    if (!e) return `<div class="rr-mon gone">Missing entry <button data-rr="rm" data-bid="${b.bid}">Remove</button></div>`;
+    const acts = this.actionsOf(e).filter((a) => a.kind !== 'note' || /^multiattack/i.test(a.name));
+    const rows = acts.filter((a) => a.kind !== 'note').map((a) => `<div class="rr-row"><button class="rr-roll" data-rr="roll" data-bid="${b.bid}" data-key="${a.key}" title="Roll for ${b.count > 1 ? 'each of the ' + b.count : 'it'}">${esc(a.name)}</button><span class="rr-sum">${esc(this.actSummary(a))}${a.sec !== 'Actions' ? ` · ${esc(a.sec.replace(/ Actions$/, ''))}` : ''}</span></div>`).join('');
+    const saves = ABILS.map((k) => `<button class="rr-sv" data-rr="save" data-bid="${b.bid}" data-k="${k}" title="${AB_FULL[k]} saving throw">${k}<small>${(this.saveMod(e, k) >= 0 ? '+' : '') + this.saveMod(e, k)}</small></button>`).join('');
+    const f = e.fields;
+    return `<div class="rr-mon"><div class="rr-mh"><a href="#" data-open="${esc(e.id)}" class="rr-name">${esc(e.name)}</a>`
+      + `<span class="rr-stats">${f.CR ? `CR ${esc(String(f.CR).split(/[\s(]/)[0])} · ` : ''}AC ${esc(String(f.AC || '?').split(/[\s(]/)[0])} · HP ${esc(String(f.HP || '?').split(/[\s(]/)[0])}</span>`
+      + `<span class="rr-count"><button data-rr="dec" data-bid="${b.bid}" aria-label="One fewer">−</button><b>${b.count}</b><button data-rr="inc" data-bid="${b.bid}" aria-label="One more">+</button></span><button class="rr-x" data-rr="rm" data-bid="${b.bid}" aria-label="Remove from encounter">×</button></div>`
+      + (rows || '<div class="rr-note">No attacks or save effects found in this stat block.</div>') + `<div class="rr-saves">${saves}</div></div>`;
+  },
+  partyHtml() {
+    const rows = this.st.party.map((t) => `<div class="rr-pc${t.id === this.st.activeId ? ' on' : ''}"><button class="rr-tgt" data-rr="target" data-tid="${t.id}" title="Roll attacks against ${esc(t.name || 'this target')}">${t.id === this.st.activeId ? '◉' : '○'}</button>`
+      + `<input data-pc="name" data-tid="${t.id}" value="${esc(t.name || '')}" placeholder="Name"><label>AC <input data-pc="ac" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.ac ?? '')}"></label>`
+      + `<label title="Temporary AC change (Shield, cover…)">± <input data-pc="acAdj" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.acAdj || '')}"></label><span class="rr-eff">= ${this.acOf(t)}</span><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('');
+    return rows + `<button data-rr="pcadd" class="rr-add">+ Add a target</button>${this.st.activeId ? ' <button data-rr="target" data-tid="" class="linkish">No target</button>' : ''}`;
+  },
+  render() {
+    const pane = $('#toolPane');
+    if (!pane || !this.open) return;
+    if (pane.contains(document.activeElement) && document.activeElement.matches('[data-pc]')) return; // don't pull focus while typing a name/AC
+    const keepScroll = pane.querySelector('.rr-scroll')?.scrollTop || 0;
+    const mode = (k, l) => `<button data-rr="mode" data-m="${k}" class="${this.st.mode === k ? 'on' : ''}">${l}</button>`;
+    pane.innerHTML = `<div class="rr-top"><h2>Encounter roller</h2><span class="rr-seg">${mode('normal', 'Normal')}${mode('adv', 'Advantage')}${mode('dis', 'Disadvantage')}</span>`
+      + `<label class="hint" title="Critical hits"><select data-rr-crit><option value="double"${this.st.crit === 'double' ? ' selected' : ''}>Crit: double dice</option><option value="perkins"${this.st.crit === 'perkins' ? ' selected' : ''}>Crit: max + roll</option></select></label>`
+      + `<button class="rr-pin${this.pinned ? ' on' : ''}" data-rr="pin" title="${this.pinned ? 'Unpin: take the results list’s place again' : 'Pin to the right, so the list and entries stay usable during a fight'}" aria-pressed="${this.pinned}">${this.pinned ? 'Unpin' : 'Pin'}</button>`
+      + `<button class="rr-x" data-rr="close" title="Close (r)" aria-label="Close the roller">×</button></div>`
+      + `<div class="rr-scroll"><details class="rr-sec" open><summary>Targets</summary><div class="rr-party">${this.partyHtml()}</div></details>`
+      + `<div class="rr-sec"><div class="rr-addbox"><input id="rrSearch" type="search" placeholder="Add a monster: type a name…" autocomplete="off"><div id="rrHits"></div></div>`
+      + (this.st.board.length ? this.st.board.map((b) => this.cardHtml(b)).join('') + '<button data-rr="clearboard" class="linkish">Clear the encounter</button>'
+        : '<p class="hint">Add monsters here, or with “+ Encounter” on any monster page.</p>') + '</div>'
+      + `<div class="rr-sec"><div class="rr-logh"><h3>Rolls</h3>${this.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</div>${this.log.slice(0, 40).map((r) => this.resultHtml(r)).join('') || '<p class="hint">Results appear here.</p>'}</div></div>`;
+    pane.querySelector('.rr-scroll').scrollTop = keepScroll;
+    for (const sel of pane.querySelectorAll('.rr-retarget')) sel.value = '';
+  },
+  hits(q) {
+    const box = $('#rrHits');
+    if (!box) return;
+    const ids = q.trim() ? App.index.search(q, { type: 'monster' }).slice(0, 30).filter((id) => !isMonGroup(App.entries.get(id))).slice(0, 8) : [];
+    box.innerHTML = ids.map((id) => { const e = App.entries.get(id); return `<button class="rr-hit" data-rr="add" data-id="${id}">${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} ${esc(e.source || '')}</span></button>`; }).join('');
+  },
+  toggle(on = !this.open) {
+    this.open = on;
+    $('#toolPane').hidden = !on;
+    document.body.classList.toggle('tool-open', on);
+    document.body.classList.toggle('tool-pinned', on && this.pinned);
+    if (on) { document.body.classList.remove('show-detail'); this.render(); }
+    if (App.currentId) App.showDetail(App.currentId, { fromSearch: true }); // update "+ Encounter" buttons
+  },
+  async onClick(ev) {
+    const t = ev.target.closest('[data-rr]');
+    if (!t) return;
+    const a = t.dataset.rr, b = this.st.board.find((x) => x.bid === t.dataset.bid);
+    if (a === 'close') return this.toggle(false);
+    if (a === 'pin') { this.pinned = !this.pinned; safeLocal.set('dndref.toolPinned', this.pinned ? '1' : '0'); document.body.classList.toggle('tool-pinned', this.pinned); return this.render(); }
+    if (a === 'mode') { this.st.mode = t.dataset.m; this.save(); return this.render(); }
+    if (a === 'roll') return this.roll(t.dataset.bid, t.dataset.key);
+    if (a === 'save') return this.rollSave(t.dataset.bid, t.dataset.k);
+    if (a === 'inc' && b) { b.count = Math.min(30, b.count + 1); this.save(); return this.render(); }
+    if (a === 'dec' && b) { b.count = Math.max(1, b.count - 1); this.save(); return this.render(); }
+    if (a === 'rm') { this.st.board = this.st.board.filter((x) => x.bid !== t.dataset.bid); this.save(); return this.render(); }
+    if (a === 'add') { this.add(t.dataset.id); const s = $('#rrSearch'); if (s) { s.value = ''; s.focus(); } return; }
+    if (a === 'target') { this.st.activeId = t.dataset.tid || null; this.save(); return this.render(); }
+    if (a === 'pcadd') { const id = uid(); this.st.party.push({ id, name: '', ac: '', acAdj: '' }); if (!this.st.activeId) this.st.activeId = id; this.save(); this.render(); $(`#toolPane [data-pc="name"][data-tid="${id}"]`)?.focus(); return; }
+    if (a === 'pcdel') { this.st.party = this.st.party.filter((x) => x.id !== t.dataset.tid); if (this.st.activeId === t.dataset.tid) this.st.activeId = null; this.save(); return this.render(); }
+    if (a === 'clearlog') { this.log = []; this.saveLog(); return this.render(); }
+    if (a === 'clearboard') { if (await ask('Clear the encounter?', '<p>Removes every monster from the roller. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'Clear', value: true, kind: 'primary' }])) { this.st.board = []; this.save(); this.render(); } }
+  },
+
+  /* ----- tap a highlight in any stat block to roll it ----- */
+  quick(el) {
+    let html = '', rec;
+    if (el.classList.contains('hl-tohit')) {
+      const bonus = parseInt(el.textContent.replace('−', '-').replace(/\s/g, ''), 10) || 0, d = this.d20();
+      const show = d.rolls.length > 1 ? d.rolls.map((v) => (v === d.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ') : `<b>${d.chosen}</b>`;
+      const tot = d.chosen + bonus, tgt = this.target();
+      const res = d.chosen === 20 ? ' <span class="rr-res crit">CRIT</span>' : d.chosen === 1 ? ' <span class="rr-res miss">MISS</span>'
+        : tgt ? ` <span class="rr-res ${tot >= this.acOf(tgt) ? 'hit' : 'miss'}">${tot >= this.acOf(tgt) ? 'HIT' : 'MISS'}</span> vs ${esc(tgt.name || 'target')} AC ${this.acOf(tgt)}` : '';
+      html = `d20 ${show} ${bonus >= 0 ? '+' : '−'}${Math.abs(bonus)} = <b class="rr-tot">${tot}</b>${res}`;
+      rec = { kind: 'attack', name: 'To hit', d20: d.rolls, chosen: d.chosen, toHit: bonus, total: tot, crit: d.chosen === 20, fumble: d.chosen === 1, dmg: [], sum: 0, vs: tgt ? { id: tgt.id, name: tgt.name || 'Target', ac: this.acOf(tgt), hit: d.chosen !== 1 && (d.chosen === 20 || tot >= this.acOf(tgt)) } : null };
+    } else {
+      const m = /\(?\s*(\d+d\d+(?:\s*[+\-−]\s*\d+)?)\s*\)?\s*([A-Za-z]+)?/.exec(el.textContent);
+      if (!m) return;
+      const c = this.damage({ dice: m[1].replace(/\s+/g, '').replace('−', '-'), type: m[2] ? cap(m[2].toLowerCase()) : '' }, false);
+      html = this.diceHtml(c);
+      rec = { kind: 'save', name: 'Damage', dc: '', ab: '', dmg: [c], sum: c.total, half: false };
+    }
+    const e = App.entries.get(App.currentId);
+    this.push({ who: e ? e.name : 'Roll', eid: e ? e.id : '', what: el.closest('.sb-item, .feat, p')?.querySelector('b i, i b, h4')?.textContent.replace(/\.$/, '') || 'Roll', inst: [[rec]] });
+    const pop = $('#quickRoll') || Object.assign(document.createElement('div'), { id: 'quickRoll' });
+    document.body.appendChild(pop);
+    pop.innerHTML = html;
+    const r = el.getBoundingClientRect();
+    pop.style.left = Math.max(6, Math.min(r.left, innerWidth - 300)) + 'px';
+    pop.style.top = (r.top > 60 ? r.top - 40 : r.bottom + 6) + 'px';
+    pop.hidden = false;
+    clearTimeout(this.popT); this.popT = setTimeout(() => { pop.hidden = true; }, 4000);
+  },
+};
+
+/* ---------- Tools menu: the roller, then your own links ---------- */
+const Tools = {
+  links() {
+    return String(safeLocal.get('dndref.toolLinks') || '').split('\n').map((l) => l.split('|').map((x) => x.trim())).filter(([n, u]) => n && /^https?:\/\//i.test(u || ''));
+  },
+  open(anchor) {
+    const links = this.links();
+    Cols.openMenu(anchor, `<div class="cm-h">Tools</div><button class="cm-i" data-pick="roller"><span class="cm-box">⚔</span>Encounter roller${Roller.st.board.length ? `<span class="count">${Roller.st.board.length}</span>` : ''}</button>`
+      + links.map(([n, u], i) => `<button class="cm-i" data-pick="link:${i}"><span class="cm-box">↗</span>${esc(n)}</button>`).join('')
+      + `<button class="cm-i" data-pick="edit"><span class="cm-box">✎</span>${links.length ? 'Edit links…' : 'Add your own links…'}</button>`,
+    (v) => {
+      Cols.closeMenu();
+      if (v === 'roller') Roller.toggle(true);
+      else if (v === 'edit') { $('#settingsBtn').click(); setTimeout(() => $('#toolLinks')?.focus(), 150); }
+      else if (v.startsWith('link:')) window.open(links[+v.slice(5)][1], '_blank', 'noopener');
+    });
   },
 };
 
@@ -5981,6 +6396,8 @@ function wireEvents() {
       if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.navigate(linkRow.dataset.id);
       return;
     }
+    const hl = safeLocal.get('dndref.tapRoll') !== '0' && ev.target.closest('#detail .d-body .hl-tohit, #detail .d-body .hl-dmg');
+    if (hl) { Roller.quick(hl); return; }
     const openEl = ev.target.closest('[data-open]');
     if (openEl) {
       ev.preventDefault(); if (Peek.el) Peek.el.hidden = true;
@@ -5993,6 +6410,7 @@ function wireEvents() {
     if (srcEl) { App.setSource(srcEl.dataset.source, { toSearch: true }); return; }
     const act = ev.target.closest('[data-act]')?.dataset.act;
     if (act === 'fav' && Cols.skipClick) { Cols.skipClick = false; return; }
+    if (act === 'enc-add' && App.currentId) { Roller.add(App.currentId); App.showDetail(App.currentId, { fromSearch: true }); return; }
     if (act === 'cols' && App.currentId) { Cols.pickFor(App.currentId, ev.target.closest('[data-act]')); return; }
     if (act === 'tray-menu') { Cols.pickActive(ev.target.closest('[data-act]')); return; }
     const e = App.entries.get(App.currentId);
@@ -6250,6 +6668,7 @@ function wireEvents() {
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
     else if (e.key === 'y' && App.currentId) $('#detail [data-act="copy"]')?.click();
     else if (e.key === 'b' && App.currentId) { e.preventDefault(); $('#detail [data-act="cols"]')?.click(); }
+    else if (e.key === 'r') { e.preventDefault(); Roller.toggle(); }
     else if (e.key === 'k') { e.preventDefault(); App.moveCursor(1); }  // k down, j up (same as K / J inside an entry)
     else if (e.key === 'j') { e.preventDefault(); App.moveCursor(-1); }
     else if (e.key === 'Enter') { const r = App.rows[App.cursor]; if (!r || r.k !== 'e' || e.target.closest('button, a')) return; App.open(r.id); }
@@ -6530,6 +6949,26 @@ async function boot() {
   Swipe.init();
   SourcePicker.init();
   await Cols.load();
+  await Roller.load();
+  $('#toolsBtn').addEventListener('click', (ev) => Tools.open(ev.currentTarget));
+  $('#toolPane').addEventListener('click', (ev) => {
+    const o = ev.target.closest('[data-open]');
+    if (o && o.dataset.open) { ev.preventDefault(); App.navigate(o.dataset.open); return; }
+    Roller.onClick(ev).catch((err) => logError('Roller', err));
+  });
+  $('#toolPane').addEventListener('input', (ev) => {
+    if (ev.target.id === 'rrSearch') return Roller.hits(ev.target.value);
+    const pc = ev.target.dataset.pc;
+    if (pc) { const t = Roller.st.party.find((x) => x.id === ev.target.dataset.tid); if (t) { t[pc] = ev.target.value; Roller.save(); const eff = ev.target.closest('.rr-pc')?.querySelector('.rr-eff'); if (eff) eff.textContent = '= ' + Roller.acOf(t); } }
+  });
+  $('#toolPane').addEventListener('change', (ev) => {
+    if (ev.target.matches('[data-rr-crit]')) { Roller.st.crit = ev.target.value; Roller.save(); }
+    if (ev.target.matches('.rr-retarget') && ev.target.value) Roller.retarget(ev.target.dataset.rid, ev.target.value);
+  });
+  $('#toolPane').addEventListener('keydown', (ev) => { if (ev.target.id === 'rrSearch' && ev.key === 'Enter') { ev.preventDefault(); $('#rrHits .rr-hit')?.click(); } });
+  $('#toolPane').addEventListener('focusout', (ev) => { if (ev.target.matches('[data-pc]')) setTimeout(() => Roller.render(), 0); });
+  $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
+  $('#tapRoll').addEventListener('change', (ev) => safeLocal.set('dndref.tapRoll', ev.target.checked ? '1' : '0'));
   // Collections: right-click or long-press a star; chips in the Favourites tab; buttons in the entry pane.
   const starOf = (t) => t.closest && t.closest('.row [data-act="fav"], .d-head [data-act="fav"]');
   document.addEventListener('contextmenu', (ev) => {

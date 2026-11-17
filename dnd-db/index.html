@@ -313,6 +313,11 @@ blockquote.quote cite { display: block; font-size: 13px; color: var(--muted); fo
 /* in-entry navigation flash */
 @keyframes navhit { from { background: hsl(215 80% 55% / .22); box-shadow: 0 0 0 6px hsl(215 80% 55% / .22); } to { background: transparent; box-shadow: 0 0 0 6px transparent; } }
 .nav-hit { animation: navhit 1s ease-out; border-radius: 4px; }
+/* settings: bulk source tool */
+.bulk-src { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.bulk-src label { display: inline-flex; gap: 6px; align-items: center; }
+.bulk-src select, .bulk-src input { max-width: 100%; }
+button.linkish { border: 0; background: none; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; }
 /* swipe back/forward hint */
 .swipe-hint { position: fixed; top: 45%; z-index: 60; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
   font: 700 28px/1 var(--serif); background: var(--panel-2); color: var(--muted); border: 1px solid var(--border); box-shadow: 0 4px 14px rgb(0 0 0 / .25); pointer-events: none; }
@@ -755,8 +760,16 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 
       <fieldset>
         <legend>Sources</legend>
-        <p class="hint">Rename a source (every entry updates; renaming to an existing source merges them), give entries without a source a book, show a source's entries, or delete them.</p>
+        <p class="hint">Rename a source (every entry updates; renaming to an existing source asks before merging them), give entries without a source a book, show a source's entries, or delete them. Every source change can be undone.</p>
         <div id="sourceAdmin"></div>
+        <h4 class="sc-h">Change the source of many entries</h4>
+        <div class="bulk-src">
+          <label>Entries from <select id="bsFrom"></select></label>
+          <label>in <select id="bsType"></select></label>
+          <label>get the source <input id="bsTo" placeholder="Pick or type a book" autocomplete="off"></label>
+          <button id="bsGo">Review…</button>
+        </div>
+        <p class="hint">You see exactly which entries change before anything happens. <button id="bsUndo" class="linkish" hidden>Undo the last source change</button></p>
       </fieldset>
 
       <fieldset>
@@ -4444,7 +4457,6 @@ const App = {
       html += sel(d.key, d.label, opts, vs.facets[d.key] || '', 'data-facet');
     }
     html += this.activeFilterCount() ? '<button data-act="clear-filters">Clear filters</button>' : '';
-    if (this.ids.length) html += `<button data-act="bulk-source" title="Give every entry listed here the same source">Set source for these ${this.ids.length}…</button>`;
     bar.innerHTML = html || '<span class="hint">No filters for this tab yet.</span>';
   },
 
@@ -5264,6 +5276,7 @@ const Sources = {
         <button data-src-show="${esc(g.key)}">Show</button>
         <button class="danger" data-src-del="${esc(g.key)}">Delete…</button>
       </div>`).join('') : '<p class="hint">No entries yet.</p>';
+    this.renderBulk();
   },
 
   /** Rename / assign / clear a source on every entry in group `key`. */
@@ -5278,6 +5291,11 @@ const Sources = {
       if (!ok) { this.render(); return; }
     }
     const merging = name && this.list().some((x) => x.key === fold(name).trim() && x.key !== key);
+    if (merging) {
+      const ok = await ask('Merge sources?', `<p>“${esc(name)}” already exists. Move all <b>${g.ids.length}</b> entries from “${esc(g.label || '(No source)')}” into it?</p><p class="hint">You can undo this afterwards.</p>`,
+        [{ label: 'Cancel', value: null }, { label: 'Merge', value: true, kind: 'primary' }]);
+      if (!ok) { this.render(); return; }
+    }
     await this.apply(g.ids, name);
     toast(merging ? `Merged ${g.ids.length} entries into “${name}”.` : name ? `${g.ids.length} entries now use “${name}”.` : 'Source removed.', 'ok');
     this.render();
@@ -5285,20 +5303,46 @@ const Sources = {
 
   async apply(ids, name) {
     const at = nowIso();
+    await Store.setMeta('sourceUndo', { at, changes: ids.map((id) => [id, App.entries.get(id)?.source || '']).filter(([id]) => App.entries.has(id)) });
     const list = ids.map((id) => App.entries.get(id)).filter(Boolean).map((e) => ({ ...e, source: name, updated: at }));
     await App.upsert(list, { quiet: true });
   },
 
-  /** "Set source for these N…": the entries currently listed (after search and filters). */
-  async bulkSet(ids) {
-    if (!ids.length) return;
-    const v = await ask(`Set source for ${ids.length} entries`,
-      `<p>Every entry currently listed gets this source.</p><input id="bulkSrcIn" list="sourceList" style="width:100%" placeholder="Pick an existing book or type a new one">`,
-      [{ label: 'Cancel', value: null }, { label: 'Apply', value: true, kind: 'primary' }]);
-    const name = v ? Importer.canonicalSource($('#bulkSrcIn').value) : '';
-    if (!v || !name) return;
-    await this.apply(ids, name);
-    toast(`${ids.length} entries now use “${name}”.`, 'ok');
+  /** Settings tool: entries from one source (optionally one category) get a new source, after review. */
+  renderBulk() {
+    const from = $('#bsFrom'), type = $('#bsType');
+    if (!from) return;
+    const keep = [from.value, type.value];
+    from.innerHTML = '<option value="">Choose a source…</option>' + this.list().map((g) => `<option value="${esc(g.key)}">${esc(g.label || '(No source)')} (${g.ids.length})</option>`).join('');
+    type.innerHTML = '<option value="">any category</option>' + Types.list.map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`).join('');
+    from.value = keep[0]; type.value = keep[1];
+    Store.getMeta('sourceUndo').then((u) => { $('#bsUndo').hidden = !u; });
+  },
+  async bulkReview() {
+    const g = this.list().find((x) => x.key === $('#bsFrom').value);
+    const type = $('#bsType').value, to = Importer.canonicalSource($('#bsTo').value);
+    if (!g) { toast('Choose which source to change first', 'warn'); $('#bsFrom').focus(); return; }
+    if (!to) { toast('Type or pick the new source', 'warn'); $('#bsTo').focus(); return; }
+    const ids = g.ids.filter((id) => !type || App.entries.get(id)?.type === type);
+    if (!ids.length) { toast('No entries match', 'warn'); return; }
+    const names = ids.slice(0, 8).map((id) => esc(App.entries.get(id).name));
+    const ok = await ask('Change source?',
+      `<p><b>${ids.length}</b> entr${ids.length === 1 ? 'y' : 'ies'} from <b>${esc(g.label || '(No source)')}</b>${type ? ` (${esc(Types.get(type).label)} only)` : ''} will get the source <b>${esc(to)}</b>:</p>`
+      + `<p class="hint">${names.join(', ')}${ids.length > 8 ? `, and ${ids.length - 8} more` : ''}</p><p class="hint">You can undo this afterwards.</p>`,
+      [{ label: 'Cancel', value: null }, { label: `Change ${ids.length}`, value: true, kind: 'primary' }]);
+    if (!ok) return;
+    await this.apply(ids, to);
+    toast(`${ids.length} entries now use “${to}”. Undo in Settings → Sources.`, 'ok', 7000);
+    this.render();
+  },
+  async undo() {
+    const u = await Store.getMeta('sourceUndo');
+    if (!u) return;
+    const list = u.changes.map(([id, src]) => App.entries.get(id) && { ...App.entries.get(id), source: src, updated: nowIso() }).filter(Boolean);
+    await App.upsert(list, { quiet: true });
+    await Store.setMeta('sourceUndo', null);
+    toast(`Restored the previous source on ${list.length} entries.`, 'ok');
+    this.render();
   },
 
   async remove(key) {
@@ -5330,7 +5374,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-17.11'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-17.12'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5739,7 +5783,7 @@ const SourcePicker = {
     const list = [v, ...this.recent().filter((x) => fold(x).trim() !== k)].slice(0, 12);
     safeLocal.set(this.KEY, JSON.stringify(list));
   },
-  matches(el) { return el && el.matches && el.matches('#edSource, #pasteSource, #bulkSrcIn, input[data-act="src"], input[data-src]'); },
+  matches(el) { return el && el.matches && el.matches('#edSource, #pasteSource, #bsTo, input[data-act="src"]'); },
   init() {
     this.box = document.createElement('div');
     this.box.className = 'src-pick';
@@ -5908,7 +5952,6 @@ function wireEvents() {
     App.viewState().facets = {}; App.source = ''; App.runSearch();
   };
   $('#facetBar').addEventListener('click', clearFilters);
-  $('#facetBar').addEventListener('click', (e) => { if (e.target.closest('[data-act="bulk-source"]')) Sources.bulkSet(App.ids.slice()); });
   $('#list').addEventListener('click', clearFilters);
   $('#list').addEventListener('click', (e) => { if (e.target.closest('[data-act="clear-source"]')) App.setSource(''); });
 
@@ -6033,6 +6076,8 @@ function wireEvents() {
 
   // Settings: sources
   $('#sourceAdmin').addEventListener('change', (e) => { const k = e.target.dataset.src; if (k) Sources.rename(k, e.target.value); });
+  $('#bsGo').addEventListener('click', () => Sources.bulkReview().catch((err) => logError('Bulk source', err)));
+  $('#bsUndo').addEventListener('click', () => Sources.undo().catch((err) => logError('Source undo', err)));
   $('#sourceAdmin').addEventListener('click', (e) => {
     const show = e.target.dataset.srcShow, del = e.target.dataset.srcDel;
     if (show) { $('#settingsDlg').close(); App.facetOpen = true; App.setSource(show, { toSearch: true }); }

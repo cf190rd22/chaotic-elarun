@@ -453,6 +453,39 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; }
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
+/* fight view on the stat block page */
+.fv-bar { margin: 8px 0 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--accent, #3b6fd8) 6%, var(--panel)); display: flex; flex-direction: column; gap: 8px; }
+.fv-bar.fv-tip { padding: 6px 10px; background: transparent; border-style: dashed; }
+.fv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fv-who { border-radius: 999px; padding: 6px 12px; min-height: 36px; font-size: 13.5px; }
+.fv-who.on { background: var(--accent, #3b6fd8); color: #fff; border-color: transparent; }
+.fv-who.down { opacity: .55; text-decoration: line-through; }
+.fv-who small { opacity: .8; margin-left: 4px; }
+.fv-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.fv-ctl .linkish { min-height: 36px; }
+.fv-bar > .fv-tip { margin: 0; font-size: 12px; }
+.fv-act { cursor: pointer; border-bottom: 2px dotted color-mix(in srgb, var(--accent, #3b6fd8) 70%, transparent); }
+.fv-act:hover, .fv-act:focus-visible { background: color-mix(in srgb, var(--accent, #3b6fd8) 14%, transparent); border-radius: 3px; outline: none; }
+.fv-uses { display: inline-flex; gap: 4px; vertical-align: middle; margin: 0 4px; }
+.fv-use { width: 22px; height: 22px; min-height: 0; padding: 0; border-radius: 5px; border: 2px solid var(--muted); background: transparent; }
+.fv-use.on { background: var(--muted); }
+.fv-use.on::after { content: '✓'; color: var(--panel); font-size: 13px; line-height: 18px; display: block; text-align: center; }
+@media (pointer: coarse) { .fv-use { width: 28px; height: 28px; } .fv-use.on::after { line-height: 24px; } }
+.fv-last { position: sticky; bottom: 0; z-index: 3; margin-top: 10px; box-shadow: 0 -6px 16px rgb(0 0 0 / .12); border-radius: 10px; background: var(--panel); max-height: 32vh; overflow: auto; }
+.fv-last .rr-card { margin: 0; }
+.tr-lab { min-height: 0; height: 26px; align-self: center; padding: 0 8px; font-size: 12.5px; font-weight: 600; border-radius: 6px; margin-left: 4px; line-height: 1; }
+.tr-modtag { align-self: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border-radius: 999px; background: color-mix(in srgb, #c2410c 18%, transparent); }
+.tr-lab.empty { opacity: .35; font-weight: 400; }
+.tr-hitrow { display: flex; align-items: stretch; gap: 6px; }
+.tr-hitrow .rr-hit { flex: 1; }
+.tr-step { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--border); border-radius: 8px; padding: 0 2px; }
+.tr-step button { min-width: 36px; min-height: 36px; border: 0; background: transparent; font-size: 18px; }
+.tr-step b { min-width: 22px; text-align: center; }
+.tr-step.on b { color: var(--accent, #3b6fd8); }
+.tr-recent > summary, .rr-logsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 6px 0; }
+.rr-logsec > summary.rr-logh { display: flex; align-items: center; gap: 10px; list-style: none; }
+.rr-logsec > summary.rr-logh::before { content: '▸'; } .rr-logsec[open] > summary.rr-logh::before { content: '▾'; }
+.rr-logsec > summary h3 { margin: 0; }
 .rr-xc { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; margin-left: auto; }
 .rr-xc .rr-fight { font-size: 10px; }
 .tr-row.mon { background: var(--bg); }
@@ -4882,6 +4915,7 @@ const App = {
           + (Tools.current === 'tracker' ? `<button class="col-btn" data-act="init-add" title="Add one to the initiative tracker">+ Initiative</button>` : '') : ''}${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
       </div>
       <div class="d-sub">${subtitleHtml(e, t)}</div>
+      ${e.type === 'monster' && !isMonGroup(e) ? FightView.barHtml(e) : ''}
       ${headChips(e, t.hue)}
       ${renderToc(e)}
       <div class="d-body">${renderEntryBody(e)}</div>
@@ -4897,6 +4931,7 @@ const App = {
       <div class="d-refs" data-for="${esc(e.id)}"></div>`;
     if (!fromSearch) el.scrollTop = 0;
     Tables.enhance(el, e.id);
+    if (e.type === 'monster' && !isMonGroup(e)) FightView.enhance(el, e);
     const onChip = el.querySelector('.tray-chip.on'); // keep the entry you're on visible in the tray
     if (onChip) onChip.parentElement.scrollLeft = Math.max(0, onChip.offsetLeft - onChip.parentElement.offsetLeft - 40);
     VList.paint(true);
@@ -5608,7 +5643,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.7'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.8'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5898,7 +5933,7 @@ const Roller = {
   },
 
   /* ----- reading a stat block ----- */
-  actionsOf(e) {
+  actionsOf(e, cid = null) {
     const SECT = { traits: 'Traits', actions: 'Actions', 'bonus actions': 'Bonus Actions', reactions: 'Reactions', 'legendary actions': 'Legendary Actions', 'mythic actions': 'Mythic Actions' };
     const out = [];
     e.sections.forEach((s, si) => {
@@ -5906,7 +5941,8 @@ const Roller = {
       if (sec) s.items.forEach((it, ii) => out.push({ key: `${si}-${ii}`, sec, ...this.readAction(it.name, String(it.text || '').replace(/<br\s*\/?>/gi, ' ')) }));
     });
     // abilities added for this fight
-    for (const x of (this.st.extras && this.st.extras[e.id]) || []) out.push({ key: 'x-' + x.id, sec: x.sec || 'Actions', extra: x.id, ref: x.ref, ...this.readAction(x.name, x.text) });
+    for (const x of (this.st.extras && this.st.extras[e.id]) || []) out.push({ key: 'x-' + x.id, sec: x.sec || 'Actions', extra: x.id, xkey: e.id, ref: x.ref, ...this.readAction(x.name, x.text) });
+    for (const x of (cid && this.st.extras && this.st.extras['c:' + cid]) || []) out.push({ key: 'x-' + x.id, sec: x.sec || 'Actions', extra: x.id, xkey: 'c:' + cid, one: true, ref: x.ref, ...this.readAction(x.name, x.text) });
     // Multiattack: "makes two Wind Staff attacks", "one Bite attack and two Slam attacks", "two with its claws"
     const attacks = out.filter((a) => a.kind === 'attack');
     const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
@@ -6033,6 +6069,16 @@ const Roller = {
     this.saveLog(); this.render();
   },
 
+  /** Roll one action for one creature and log it. Recharge is rolled at the start of its turn (tracker), not here. */
+  rollAction(e, acts, a, { who, cid = '', mode = 'normal' } = {}) {
+    const tgt = this.target();
+    let subs;
+    if (a.kind === 'attack') subs = [this.rollAttack(a, tgt, mode)];
+    else if (a.kind === 'save' || a.kind === 'damage') subs = [this.rollSaveFx(a)];
+    else if (a.kind === 'multi') { subs = []; for (const pp of a.parts) { const sub = acts.find((x) => x.key === pp.key); for (let j = 0; j < pp.n; j++) subs.push(sub.kind === 'save' ? this.rollSaveFx(sub) : this.rollAttack(sub, tgt, mode)); } }
+    else subs = [{ kind: 'note', name: a.name, text: a.text, save: a.save }];
+    this.push({ who: who || e.name, eid: e.id && !String(e.id).startsWith('custom:') ? e.id : '', cid, what: a.name, inst: [subs], mode: a.kind === 'attack' || a.kind === 'multi' ? mode : 'normal' });
+  },
   /* ----- markup ----- */
   diceHtml(c) {
     const rolls = c.rolls.length ? `[${c.rolls.join(', ')}]` : '';
@@ -6077,7 +6123,7 @@ const Roller = {
     if (!e) return `<div class="rr-mon gone">Missing entry <button data-rr="rm" data-bid="${b.bid}">Remove</button></div>`;
     const acts = this.actionsOf(e).filter((a) => a.kind !== 'note' || /^multiattack/i.test(a.name));
     const rows = this.actionsOf(e).filter((a) => a.kind !== 'note' || a.extra).map((a) => `<div class="rr-row"><button class="rr-roll" data-rr="roll" data-bid="${b.bid}" data-key="${a.key}" title="Roll for ${b.count > 1 ? 'each of the ' + b.count : 'it'}">${esc(a.name)}</button><span class="rr-sum">${esc(this.actSummary(a))}${a.sec !== 'Actions' ? ` · ${esc(a.sec.replace(/ Actions$/, ''))}` : ''}${Abilities.refHtml(a)}</span>`
-      + (a.extra ? `<span class="rr-xc"><span class="rr-fight" title="Added for this fight">this fight</span><button class="linkish" data-rr="xkeep" data-key="${esc(e.id)}" data-xid="${a.extra}" title="Save it to the stat block permanently">Keep</button><button class="rr-x" data-rr="xdel" data-key="${esc(e.id)}" data-xid="${a.extra}" aria-label="Remove">×</button></span>` : '') + '</div>').join('');
+      + (a.extra ? FightView.extraCtl(a, null, 'data-rr') : '') + '</div>').join('');
     const saves = ABILS.map((k) => `<button class="rr-sv" data-rr="save" data-bid="${b.bid}" data-k="${k}" title="${AB_FULL[k]} saving throw">${k}<small>${(this.saveMod(e, k) >= 0 ? '+' : '') + this.saveMod(e, k)}</small></button>`).join('');
     const f = e.fields;
     return `<div class="rr-mon"><div class="rr-mh"><a href="#" data-open="${esc(e.id)}" class="rr-name">${esc(e.name)}</a>`
@@ -6143,7 +6189,7 @@ const Roller = {
       + `<div class="rr-sec"><div class="rr-addbox"><input id="rrSearch" type="search" placeholder="Add a monster: type a name…" autocomplete="off"><div id="rrHits"></div></div>`
       + (this.st.board.length ? this.st.board.map((b) => this.cardHtml(b)).join('') + '<button data-rr="clearboard" class="linkish">Clear the encounter</button>'
         : '<p class="hint">Add monsters here, or with “+ Encounter” on any monster page.</p>') + '</div>'
-      + `<div class="rr-sec"><div class="rr-logh"><h3>Rolls</h3>${this.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</div>${this.log.slice(0, 40).map((r) => this.resultHtml(r)).join('') || '<p class="hint">Results appear here.</p>'}</div></div>`;
+      + `<details class="rr-sec rr-logsec" data-keep="rrLog"${Keep.open('rrLog', true) ? ' open' : ''}><summary class="rr-logh"><h3>Rolls${this.log.length ? ` (${this.log.length})` : ''}</h3>${this.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</summary>${this.log.slice(0, 40).map((r) => this.resultHtml(r)).join('') || '<p class="hint">Results appear here.</p>'}</details></div>`;
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
     for (const sel of pane.querySelectorAll('.rr-retarget')) sel.value = '';
   },
@@ -6169,7 +6215,7 @@ const Roller = {
     if (a === 'add') { this.add(t.dataset.id); const s = $('#rrSearch'); if (s) { s.value = ''; s.focus(); } return; }
     if (a === 'target') { this.st.activeId = t.dataset.tid || null; this.save(); return this.render(); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); return this.render(); }
-    if (a === 'xkeep') { await Abilities.keep(t.dataset.key, t.dataset.xid); return this.render(); }
+    if (a === 'xkeep') { await FightView.keep(t.dataset.key, t.dataset.xid); return this.render(); }
     if (a === 'genadd') { this.st.gen = [...(this.st.gen || []), { n: 1, cr: '1' }]; this.save(); return this.render(); }
     if (a === 'gendel') { this.st.gen.splice(+t.dataset.i, 1); this.save(); return this.render(); }
     if (a === 'baladd') { this.st.bal = [...(this.st.bal || []), { n: 1, lv: (this.st.bal?.[this.st.bal.length - 1]?.lv) || 1 }]; this.save(); return this.render(); }
@@ -6364,8 +6410,8 @@ const Abilities = {
     after && after();
   },
   remove(key, id) { Roller.st.extras[key] = this.list(key).filter((x) => x.id !== id); Roller.save(); },
-  async keep(key, id) {
-    const e = App.entries.get(key), x = this.list(key).find((y) => y.id === id);
+  async keep(key, id, { into = null, quiet = false } = {}) {
+    const e = into || App.entries.get(key), x = this.list(key).find((y) => y.id === id);
     if (!e || !x) return;
     const c = JSON.parse(JSON.stringify(e));
     let s = c.sections.find((sc) => sc.heading.toLowerCase() === x.sec.toLowerCase());
@@ -6374,7 +6420,7 @@ const Abilities = {
     c.updated = nowIso(); c.edited = true;
     await App.upsert([makeEntry(c)], { quiet: true });
     this.remove(key, id);
-    toast(`Saved “${x.name}” to ${e.name}’s stat block`, 'ok');
+    if (!quiet) toast(`Saved “${x.name}” to ${e.name}’s stat block`, 'ok');
   },
 };
 
@@ -6417,6 +6463,202 @@ const QuickStats = {
   },
 };
 
+/** Remembers which <details data-keep="…"> are open. */
+const Keep = {
+  open(k, dflt = false) { const v = safeLocal.get('dndref.open.' + k); return v === null || v === undefined ? dflt : v === '1'; },
+  init() { document.addEventListener('toggle', (ev) => { const k = ev.target?.dataset?.keep; if (k) safeLocal.set('dndref.open.' + k, ev.target.open ? '1' : '0'); }, true); },
+};
+
+/* Limited uses: "(3/Day)", "Legendary Resistance (3/Day, or 4/Day in Lair)", "Legendary Action Uses: 3",
+   "1/Day each: …" spell lines, and "(Recharge 5–6)" (one box, rolled again at the start of its turn). */
+const Uses = {
+  spec(name, text = '') {
+    const n = String(name || '');
+    const rc = /\(Recharge (\d)(?:[-–]\d)?\)/i.exec(n);
+    if (rc) return { of: 1, rc: +rc[1] };
+    const d = /\b(\d+)\/(?:Day|Long Rest|Short Rest|Rest|Encounter|Turn|Round)\b/i.exec(n) || /\bUses:\s*(\d+)/i.exec(n) || /^Legendary Action Uses:?\s*(\d+)/i.exec(n + ' ' + String(text).slice(0, 40));
+    return d ? { of: Math.min(+d[1], 9) } : null;
+  },
+  owner(e) {
+    const c = FightView.focusFor(e);
+    return c ? c.cid : 'e:' + e.id;
+  },
+  get(owner, k) { return ((Tracker.st.uses || {})[owner] || {})[k] || { used: 0 }; },
+  set(owner, k, v) {
+    Tracker.st.uses = Tracker.st.uses || {};
+    const m = (Tracker.st.uses[owner] = Tracker.st.uses[owner] || {});
+    if (!v.used) delete m[k]; else m[k] = v;
+    Tracker.save();
+  },
+  boxes(owner, k, sp, title = '') {
+    const u = this.get(owner, k).used || 0;
+    const lab = sp.rc ? `Recharge ${sp.rc}–6: ${u ? 'spent' : 'ready'}` : `${sp.of - u} of ${sp.of} left`;
+    return `<span class="fv-uses" title="${esc(title || lab)}">${Array.from({ length: sp.of }, (_, i) => `<button type="button" class="fv-use${i < u ? ' on' : ''}" data-fv="use" data-ukey="${esc(k)}" data-of="${sp.of}"${sp.rc ? ` data-rc="${sp.rc}"` : ''} aria-label="${esc(lab)}" aria-pressed="${i < u}"></button>`).join('')}</span>`;
+  },
+  toggle(owner, k, el) {
+    const cur = this.get(owner, k), of = +el.dataset.of || 1, on = el.classList.contains('on');
+    const used = Math.max(0, Math.min(of, (cur.used || 0) + (on ? -1 : 1)));
+    this.set(owner, k, { used, of, ...(el.dataset.rc ? { rc: +el.dataset.rc } : {}) });
+    return { used, of };
+  },
+  /** Rolling an action with limited uses spends one. */
+  spendFor(c, a) {
+    const sp = this.spec(a.name, a.text);
+    if (!sp || !c) return;
+    const k = a.name, cur = this.get(c.cid, k);
+    if ((cur.used || 0) >= sp.of) { toast(`${a.name}: no uses left`, 'warn'); return; }
+    this.set(c.cid, k, { used: (cur.used || 0) + 1, of: sp.of, ...(sp.rc ? { rc: sp.rc } : {}) });
+    if (!sp.rc) toast(`${a.name}: ${sp.of - (cur.used || 0) - 1} of ${sp.of} left`, 'ok', 1800);
+  },
+  /** Start of a creature's turn: roll for each spent recharge. */
+  rechargeAtTurn(c) {
+    const m = (Tracker.st.uses || {})[c.cid];
+    if (!m) return;
+    for (const [k, v] of Object.entries(m)) {
+      if (!v.rc || !v.used) continue;
+      const r = rollDie(6);
+      if (r >= v.rc) { delete m[k]; toast(`${Tracker.nameOf(c)}: ${k.replace(/\s*\(Recharge[^)]*\)/i, '')} recharged (rolled ${r})`, 'ok', 3500); }
+      else toast(`${Tracker.nameOf(c)}: ${k.replace(/\s*\(Recharge[^)]*\)/i, '')} not recharged (rolled ${r})`, 'warn', 2500);
+    }
+    Tracker.save();
+  },
+};
+
+/* The stat block page during a fight: pick which individual, add abilities for it or for all of its kind,
+   tap action names to roll, tick off limited uses. */
+const FightView = {
+  scope: 'one',
+  members(e) { return Tracker.monsters().filter((c) => c.eid === e.id); },
+  focusFor(e) {
+    const ms = this.members(e);
+    if (!ms.length) return null;
+    return ms.find((c) => c.cid === Tracker.focus) || ms.find((c) => c.cid === Tracker.st.turn) || ms.find((c) => c.hp > 0 && !c.hidden) || ms[0];
+  },
+  refresh() {
+    const e = App.entries.get(App.currentId);
+    if (e && e.type === 'monster' && !isMonGroup(e) && $('#detail .d-head')) App.showDetail(e.id, { fromSearch: true });
+  },
+  scopeHtml(c, attr) {
+    const kind = Tracker.baseName(c), one = this.scope !== 'all';
+    return `<span class="rr-seg rr-mini fv-scope" role="group" aria-label="Add abilities for"><button ${attr}="scope" data-v="one" class="${one ? 'on' : ''}">Just ${esc(Tracker.nameOf(c))}</button><button ${attr}="scope" data-v="all" class="${one ? '' : 'on'}">All ${esc(kind)}</button></span>`;
+  },
+  extraCtl(a, c, attr) {
+    const tag = a.one ? 'just this one' : 'this fight';
+    return `<span class="rr-xc"><span class="rr-fight" title="Added for this fight only">${tag}</span>`
+      + (!String(a.xkey).startsWith('custom:') ? `<button class="linkish" ${attr}="xkeep" data-key="${esc(a.xkey)}" data-xid="${a.extra}"${c ? ` data-cid="${c.cid}"` : ''} title="Save it permanently">Keep</button>` : '')
+      + `<button class="rr-x" ${attr}="xdel" data-key="${esc(a.xkey)}" data-xid="${a.extra}" aria-label="Remove">×</button></span>`;
+  },
+  addFor(c, link) {
+    const key = this.scope === 'all' || !c.eid ? Abilities.key(c.eid, c.bname) : 'c:' + c.cid;
+    const label = this.scope === 'all' || !c.eid ? `all ${Tracker.baseName(c)}` : Tracker.nameOf(c);
+    return Abilities.add(key, label, () => { Tracker.render(); this.refresh(); }, { eid: c.eid, cr: !c.eid && c.cr !== undefined ? c.cr : null, link });
+  },
+  /** Keep: update the original stat block, or save a copy flagged as modified (the creature(s) then use the copy). */
+  async keep(key, xid, cid) {
+    const one = String(key).startsWith('c:'), c = one ? Tracker.st.list.find((x) => x.cid === key.slice(2)) : (cid ? Tracker.st.list.find((x) => x.cid === cid) : null);
+    const eid = one ? c && c.eid : key, e = eid && App.entries.get(eid), x = Abilities.list(key).find((y) => y.id === xid);
+    if (!e || !x) return;
+    const users = one ? [c] : this.members(e);
+    const how = await ask(`Keep “${x.name}”`, `<p>Save it permanently, either into <b>${esc(e.name)}</b> itself or into a copy marked as modified.</p>`
+      + (users.length ? `<p class="hint">With a copy, ${one ? esc(Tracker.nameOf(c)) : `the ${users.length} ${esc(e.name)} in this fight`} switch to it; the original stays as it is.</p>` : ''),
+      [{ label: 'Cancel', value: null }, { label: 'Modified copy', value: 'copy' }, { label: `Update ${e.name}`, value: 'orig', kind: 'primary' }]);
+    if (!how) return;
+    if (how === 'orig') { await Abilities.keep(key, xid, { into: e }); return; }
+    const base = e.fields.Modified ? e : null;
+    let copy = base || [...App.entries.values()].find((y) => y.type === 'monster' && y.fields['Based on'] === e.name && y.fields.Modified && (y.source || '') === (e.source || ''));
+    if (!copy) {
+      const d = JSON.parse(JSON.stringify(e));
+      copy = makeEntry({ ...d, id: uid(), name: `${e.name} (modified)`, tags: [...new Set([...(d.tags || []), 'modified'])], fields: { ...d.fields, 'Based on': e.name, Modified: 'Yes' }, edited: true, raw: '', fav: false, cols: d.cols, created: nowIso(), updated: nowIso() });
+      await App.upsert([copy], { quiet: true });
+    }
+    await Abilities.keep(key, xid, { into: copy, quiet: true });
+    for (const u of users) if (u) { u.eid = copy.id; }
+    Tracker.save();
+    toast(`Saved into “${copy.name}”${users.length ? ` · ${users.length === 1 ? Tracker.nameOf(users[0]) + ' uses' : users.length + ' use'} it now` : ''}`, 'ok', 3000);
+    App.showDetail(copy.id);
+  },
+  lastHtml(e) {
+    const c = this.focusFor(e);
+    const r = Roller.log.find((x) => (c ? x.cid === c.cid : x.eid === e.id && !x.cid));
+    return r ? `<div class="fv-last" data-keep="fvLast">${Roller.resultHtml(r)}</div>` : '';
+  },
+  barHtml(e) {
+    const ms = this.members(e), c = this.focusFor(e);
+    if (!ms.length) return `<div class="fv-bar fv-tip hint">Tap an action name to roll it.${Tools.current === 'tracker' ? '' : ' Open the initiative tracker (Shift+I) to track it in a fight.'}</div>`;
+    const lab = Tracker.labels();
+    const chips = ms.map((m) => `<button class="fv-who${m === c ? ' on' : ''}${m.hp <= 0 ? ' down' : ''}" data-fv="focus" data-cid="${m.cid}" title="${m.cid === Tracker.st.turn ? 'Its turn now' : 'Show this one'}">${m.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(m, lab))} <small>${m.hp}/${m.max}</small></button>`).join('');
+    const acts = Roller.actionsOf(e, c.cid).filter((a) => a.extra);
+    const rows = acts.map((a) => `<div class="rr-row"><button class="rr-roll" data-fv="roll" data-key="${a.key}">${esc(a.name)}</button><span class="rr-sum">${esc(Roller.actSummary(a))}${Abilities.refHtml(a)}</span>${this.extraCtl(a, c, 'data-fv')}</div>`).join('');
+    return `<div class="fv-bar"><div class="fv-chips">${chips}</div>`
+      + `<div class="fv-ctl">${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xlink">+ Spell, feat, item or power</button><button class="linkish" data-fv="xadd">+ Custom</button></div>`
+      + (rows ? `<div class="fv-extras">${rows}</div>` : '') + '<p class="hint fv-tip">Tap an action name to roll it for this one; tap a box to use one.</p></div>';
+  },
+  /** Make action names rollable and add use boxes. */
+  enhance(el, e) {
+    const c = this.focusFor(e), acts = Roller.actionsOf(e, c ? c.cid : null), owner = c ? c.cid : 'e:' + e.id;
+    const SECT = { traits: 'Traits', actions: 'Actions', 'bonus actions': 'Bonus Actions', reactions: 'Reactions', 'legendary actions': 'Legendary Actions', 'mythic actions': 'Mythic Actions' };
+    for (const b of el.querySelectorAll('.statblock .sb-item > b:first-child')) {
+      const name = b.textContent.trim().replace(/\.$/, '');
+      let h = b.closest('.sb-item').previousElementSibling;
+      while (h && h.tagName !== 'H3') h = h.previousElementSibling;
+      const sec = h ? SECT[h.textContent.trim().toLowerCase()] : null;
+      const a = acts.find((x) => x.name === name && (!sec || x.sec === sec)) || acts.find((x) => x.name === name);
+      if (a && (a.kind !== 'note' || /^multiattack/i.test(a.name))) {
+        b.classList.add('fv-act'); b.dataset.fv = 'roll'; b.dataset.key = a.key; b.setAttribute('role', 'button'); b.tabIndex = 0; b.title = `Roll ${name}${c ? ' for ' + Tracker.nameOf(c) : ''}`;
+      }
+      const sp = Uses.spec(name, b.closest('.sb-item').textContent.slice(name.length + 1, name.length + 60));
+      if (sp) b.insertAdjacentHTML('afterend', ' ' + Uses.boxes(owner, name, sp));
+    }
+    // spell lines: "2/Day each: …" or "1/Day: …"
+    const walker = document.createTreeWalker(el.querySelector('.statblock') || el, NodeFilter.SHOW_TEXT);
+    const hits = [];
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) if (/\b\d+\/Day(?: each)?:/i.test(n.nodeValue) && !n.parentElement.closest('b, .fv-uses')) hits.push(n);
+    for (const n of hits) {
+      const m = /\b(\d+)\/Day( each)?:/i.exec(n.nodeValue), of = Math.min(+m[1], 9);
+      const head = n.nodeValue.slice(0, m.index + m[0].length), tail = n.nodeValue.slice(m.index + m[0].length);
+      if (m[2]) {
+        // each spell has its own uses: boxes after each linked spell on this line
+        let sib = n.nextSibling, any = false;
+        while (sib && !(sib.nodeName === 'BR') && !(sib.nodeType === 3 && /\n/.test(sib.nodeValue))) {
+          if (sib.nodeType === 1 && sib.matches('a')) { sib.insertAdjacentHTML('afterend', Uses.boxes(owner, `${sib.textContent} (${of}/Day)`, { of })); any = true; sib = sib.nextSibling; }
+          sib = sib && sib.nextSibling;
+        }
+        if (any) continue;
+      }
+      const span = document.createElement('span'); span.innerHTML = esc(head) + ' ' + Uses.boxes(owner, `${head.trim()} ${tail.slice(0, 30).trim()}`, { of }) + esc(tail);
+      n.replaceWith(...span.childNodes);
+    }
+    const last = this.lastHtml(e);
+    if (last) el.querySelector('.d-body')?.insertAdjacentHTML('afterend', last);
+  },
+  async onClick(t) {
+    const e = App.entries.get(App.currentId);
+    if (!e) return;
+    const a = t.dataset.fv, c = this.focusFor(e);
+    if (a === 'focus') { Tracker.focus = t.dataset.cid; return this.refresh(); }
+    if (a === 'scope') { this.scope = t.dataset.v; Tracker.render(); return this.refresh(); }
+    if (a === 'mode' && c) { c.mode = t.dataset.m === 'normal' ? undefined : t.dataset.m; Tracker.save(); Tracker.render(); return this.refresh(); }
+    if ((a === 'xlink' || a === 'xadd') && c) return this.addFor(c, a === 'xlink');
+    if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); Tracker.render(); return this.refresh(); }
+    if (a === 'xkeep') { await this.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); Tracker.render(); return this.refresh(); }
+    if (a === 'use') {
+      const owner = c ? c.cid : 'e:' + e.id, r = Uses.toggle(owner, t.dataset.ukey, t);
+      t.closest('.fv-uses').outerHTML = Uses.boxes(owner, t.dataset.ukey, { of: r.of, rc: t.dataset.rc ? +t.dataset.rc : undefined });
+      return;
+    }
+    if (a === 'roll') {
+      if (c) return Tracker.roll(c.cid, t.dataset.key);
+      const acts = Roller.actionsOf(e), act = acts.find((x) => x.key === t.dataset.key);
+      if (!act) return;
+      const b = Roller.st.board.find((x) => x.id === e.id);
+      Roller.rollAction(e, acts, act, { mode: (b && b.mode) || 'normal' });
+      const sp = Uses.spec(act.name, act.text);
+      if (sp) { const k = act.name, cur = Uses.get('e:' + e.id, k); Uses.set('e:' + e.id, k, { used: Math.min(sp.of, (cur.used || 0) + 1), of: sp.of, ...(sp.rc ? { rc: sp.rc } : {}) }); }
+      return this.refresh();
+    }
+  },
+};
+
 const Tracker = {
   st: { round: 1, turn: null, list: [], setup: true, labels: 'abc', follow: true },
   hist: new Set(),
@@ -6439,7 +6681,8 @@ const Tracker = {
   pc(c) { return Roller.st.party.find((t) => t.id === c.pid) || {}; },
   monsters() { return this.st.list.filter((c) => c.kind === 'mon'); },
   num: (v) => parseInt(String(v ?? '').replace('−', '-'), 10),
-  baseName(c) { return (c.eid && App.entries.get(c.eid)?.name) || c.bname || 'Creature'; },
+  baseName(c) { const e = c.eid && App.entries.get(c.eid); return (e && (e.fields.Modified && e.fields['Based on'] ? e.fields['Based on'] : e.name)) || c.bname || 'Creature'; },
+  isModified(c) { const e = c.eid && App.entries.get(c.eid); return !!(e && e.fields.Modified); },
   initBonus(e) {
     const m = /([+\-−]\s*\d+)/.exec(e.fields.Initiative || '');
     if (m) return this.num(m[1].replace(/\s/g, ''));
@@ -6479,15 +6722,40 @@ const Tracker = {
   },
   /** Labels follow the turn order: the first Goblin to act is Goblin A (or 1). */
   labels() {
-    const counts = new Map(), seen = new Map(), out = new Map();
-    for (const c of this.monsters()) counts.set(this.baseName(c), (counts.get(this.baseName(c)) || 0) + 1);
+    const counts = new Map(), seen = new Map(), out = new Map(), taken = new Map();
+    for (const c of this.monsters()) {
+      const b = this.baseName(c);
+      counts.set(b, (counts.get(b) || 0) + 1);
+      if (c.label) (taken.get(b) || taken.set(b, new Set()).get(b)).add(String(c.label).toUpperCase());
+    }
+    const style = (b) => (this.st.labelStyle && this.st.labelStyle[b]) || this.st.labels;
+    const auto = (n, b) => (style(b) === '123' ? String(n) : n <= 26 ? String.fromCharCode(64 + n) : 'A' + String.fromCharCode(64 + n - 26));
     for (const c of this.sorted()) {
-      if (c.kind !== 'mon' || counts.get(this.baseName(c)) < 2) continue;
-      const n = (seen.get(this.baseName(c)) || 0) + 1;
-      seen.set(this.baseName(c), n);
-      out.set(c.cid, this.st.labels === '123' ? String(n) : n <= 26 ? String.fromCharCode(64 + n) : 'A' + String.fromCharCode(64 + n - 26));
+      if (c.kind !== 'mon') continue;
+      const b = this.baseName(c);
+      if (c.label) { out.set(c.cid, String(c.label)); continue; }
+      if (counts.get(b) < 2) continue;
+      let n = seen.get(b) || 0, v;
+      do { n++; v = auto(n, b); } while (taken.get(b)?.has(v.toUpperCase()));
+      seen.set(b, n);
+      out.set(c.cid, v);
     }
     return out;
+  },
+  async editLabel(c) {
+    const b = this.baseName(c), cur = this.labels().get(c.cid) || '', style = (this.st.labelStyle && this.st.labelStyle[b]) || '';
+    const opt = (v, l) => `<label><input type="radio" name="lbStyle" value="${v}"${style === v ? ' checked' : ''}> ${l}</label>`;
+    const ok = await ask(`Label: ${esc(b)} ${esc(cur)}`,
+      `<div class="abf"><label class="abf-wide">This one <input id="lbVal" value="${esc(c.label || '')}" placeholder="${esc(cur || 'automatic')}" autocomplete="off"></label>`
+      + `<div class="abf-kind abf-wide"><span class="hint">All ${esc(b)}s:</span>${opt('', 'as the tracker')}${opt('abc', 'A B C')}${opt('123', '1 2 3')}</div></div>`
+      + '<p class="hint">Leave it blank to follow the turn order. A label you type stays put; the others skip it.</p>',
+      [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
+    if (!ok) return;
+    const v = ($('#lbVal')?.value || '').trim().slice(0, 12), sv = document.querySelector('#askBody [name="lbStyle"]:checked')?.value || '';
+    c.label = v || undefined;
+    this.st.labelStyle = this.st.labelStyle || {};
+    if (sv) this.st.labelStyle[b] = sv; else delete this.st.labelStyle[b];
+    this.save(); this.render(); FightView.refresh();
   },
   nameOf(c, lab = this.labels()) { return c.kind === 'pc' ? this.pc(c).name || 'Unnamed' : c.kind === 'lair' ? 'Lair action' : this.baseName(c) + (lab.get(c.cid) ? ' ' + lab.get(c.cid) : ''); },
   live(c) { return !c.hidden && (c.kind !== 'mon' || c.hp > 0); },
@@ -6504,7 +6772,9 @@ const Tracker = {
     this.save(); this.render();
     $('#toolPane .tr-cur')?.scrollIntoView({ block: 'nearest' });
     const cur = this.st.list.find((c) => c.cid === this.st.turn);
-    if (this.st.follow && cur && cur.eid && App.isWide() && App.currentId !== cur.eid) App.showDetail(cur.eid); // stat block follows the turn
+    if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); }
+    if (this.st.follow && cur && cur.eid && App.isWide()) App.showDetail(cur.eid, { fromSearch: App.currentId === cur.eid }); // stat block follows the turn
+    else FightView.refresh();
   },
   /** "7", "5+12", "=5+12-3" -> a number; anything else -> null */
   calc(v) {
@@ -6527,16 +6797,11 @@ const Tracker = {
   roll(cid, key) {
     const c = this.st.list.find((x) => x.cid === cid), e = c && this.pseudo(c);
     if (!e) return;
-    const acts = Roller.actionsOf(e), a = acts.find((x) => x.key === key);
+    const acts = Roller.actionsOf(e, cid), a = acts.find((x) => x.key === key);
     if (!a) return;
-    const tgt = Roller.target(), mode = c.mode || 'normal';
-    let subs;
-    if (a.kind === 'attack') subs = [Roller.rollAttack(a, tgt, mode)];
-    else if (a.kind === 'save' || a.kind === 'damage') subs = [Roller.rollSaveFx(a)];
-    else if (a.kind === 'multi') { subs = []; for (const pp of a.parts) { const sub = acts.find((x) => x.key === pp.key); for (let j = 0; j < pp.n; j++) subs.push(sub.kind === 'save' ? Roller.rollSaveFx(sub) : Roller.rollAttack(sub, tgt, mode)); } }
-    else subs = [{ kind: 'note', name: a.name, text: a.text, save: a.save }];
-    Roller.push({ who: this.nameOf(c), eid: c.eid || '', cid, what: a.name, inst: [subs], mode: a.kind === 'attack' || a.kind === 'multi' ? mode : 'normal', recharge: a.recharge ? rollDie(6) : 0, rechargeOn: a.recharge || 0 });
-    this.render();
+    Roller.rollAction(e, acts, a, { who: this.nameOf(c), cid, mode: c.mode || 'normal' });
+    Uses.spendFor(c, a);
+    this.render(); FightView.refresh();
   },
   rollSave(cid, k) {
     const c = this.st.list.find((x) => x.cid === cid), e = c && c.eid && App.entries.get(c.eid);
@@ -6547,15 +6812,16 @@ const Tracker = {
   },
   activeHtml(c) {
     const e = this.pseudo(c), key = Abilities.key(c.eid, c.bname);
-    const acts = Roller.actionsOf(e).filter((a) => a.kind !== 'note' || a.extra);
+    const acts = Roller.actionsOf(e, c.cid).filter((a) => a.kind !== 'note' || a.extra);
     const tsel = Roller.st.party.length ? `<select data-tr-target aria-label="Target"><option value="">no target</option>${Roller.st.party.map((t) => `<option value="${t.id}"${t.id === Roller.st.activeId ? ' selected' : ''}>${esc(t.name || 'Unnamed')} (AC ${Roller.acOf(t)})</option>`).join('')}</select>` : '';
     const rows = acts.map((a) => `<div class="rr-row"><button class="rr-roll" data-tr="roll" data-cid="${c.cid}" data-key="${a.key}">${esc(a.name)}</button><span class="rr-sum">${esc(Roller.actSummary(a))}${a.sec !== 'Actions' ? ` · ${esc(a.sec.replace(/ Actions$/, ''))}` : ''}${Abilities.refHtml(a)}</span>`
-      + (a.extra ? `<span class="rr-xc"><span class="rr-fight" title="Added for this fight">this fight</span>${c.eid ? `<button class="linkish" data-tr="xkeep" data-key="${esc(key)}" data-xid="${a.extra}" title="Save it to the stat block permanently">Keep</button>` : ''}<button class="rr-x" data-tr="xdel" data-key="${esc(key)}" data-xid="${a.extra}" aria-label="Remove">×</button></span>` : '') + '</div>').join('');
+      + (a.extra ? FightView.extraCtl(a, c, 'data-tr') : '') + '</div>').join('');
     const saves = c.eid ? `<div class="rr-saves">${ABILS.map((k) => `<button class="rr-sv" data-tr="save" data-cid="${c.cid}" data-k="${k}">${k}<small>${(Roller.saveMod(e, k) >= 0 ? '+' : '') + Roller.saveMod(e, k)}</small></button>`).join('')}</div>` : '';
-    const recent = Roller.log.filter((r) => r.cid === c.cid).slice(0, 3).map((r) => Roller.resultHtml(r)).join('');
+    const mine = Roller.log.filter((r) => r.cid === c.cid);
+    const recent = mine.length ? `<details class="tr-recent" data-keep="trRecent"${Keep.open('trRecent', true) ? ' open' : ''}><summary>Rolls this fight (${mine.length})</summary>${mine.slice(0, 3).map((r) => Roller.resultHtml(r)).join('')}</details>` : '';
     return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}</div>`
       + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>') + saves
-      + `<div class="tr-addab"><button class="linkish" data-tr="xlink" data-key="${esc(key)}" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat, item or power</button><button class="linkish" data-tr="xadd" data-key="${esc(key)}" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
+      + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xlink" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat, item or power</button><button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
   },
   /* ----- markup ----- */
   rowHtml(c, lab) {
@@ -6575,7 +6841,9 @@ const Tracker = {
     const name = this.nameOf(c, lab), open = this.hist.has(c.cid);
     const hist = open ? `<div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div>` : '';
     return `<div class="tr-row mon${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-cid="${c.cid}"`)}`
-      + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(name)}</a>` : `<span class="tr-name">${esc(name)}</span>`)
+      + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Open its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`)
+      + `<button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button>`
+      + (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">modified</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}" title="${c.mode === 'adv' ? 'Rolls with advantage' : 'Rolls with disadvantage'}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '')
       + `<span class="tr-ac">AC ${this.num(c.acAdj) && Number.isFinite(this.num(c.ac)) ? `<b class="tr-eff" title="${esc(c.ac)} ${this.num(c.acAdj) > 0 ? '+' : '−'} ${Math.abs(this.num(c.acAdj))}">${this.num(c.ac) + this.num(c.acAdj)}</b>` : esc(c.ac || '?')}</span>`
       + `<label class="tr-acl" title="Temporary AC change: Shield, cover…">± <input class="tr-n tr-adj" data-cid="${c.cid}" data-tr-acadj value="${esc(c.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>`
@@ -6637,7 +6905,8 @@ const Tracker = {
     const ids = q.trim() ? App.index.search(q, { type: 'monster' }).slice(0, 30).filter((id) => !isMonGroup(App.entries.get(id))).slice(0, 8) : [];
     box.innerHTML = ids.map((id) => {
       const e = App.entries.get(id), n = this.monsters().filter((c) => c.eid === id).length;
-      return `<button class="rr-hit" data-tr="add" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])}${n ? ` · <b>${n} in the fight</b>` : ''}</span></button>`;
+      return `<div class="tr-hitrow"><button class="rr-hit" data-tr="add" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])}</span></button>`
+        + `<span class="tr-step${n ? ' on' : ''}"><button data-tr="sub" data-id="${id}" aria-label="One fewer"${n ? '' : ' disabled'}>−</button><b title="In the fight">${n}</b><button data-tr="add" data-id="${id}" aria-label="One more">+</button></span></div>`;
     }).join('');
   },
   setPct(members, pct) {
@@ -6658,9 +6927,12 @@ const Tracker = {
     if (a === 'roll') return this.roll(t.dataset.cid, t.dataset.key);
     if (a === 'save') return this.rollSave(t.dataset.cid, t.dataset.k);
     if (a === 'mode') { const c = find(); if (c) { c.mode = t.dataset.m === 'normal' ? undefined : t.dataset.m; this.save(); } return this.render(); }
-    if (a === 'xadd' || a === 'xlink') { const c = find(); return Abilities.add(t.dataset.key, t.dataset.name, () => this.render(), { eid: c && c.eid, cr: c && !c.eid && c.cr !== undefined ? c.cr : null, link: a === 'xlink' }); }
-    if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); return this.render(); }
-    if (a === 'xkeep') { await Abilities.keep(t.dataset.key, t.dataset.xid); return this.render(); }
+    if (a === 'xadd' || a === 'xlink') { const c = find(); return c && FightView.addFor(c, a === 'xlink'); }
+    if (a === 'scope') { FightView.scope = t.dataset.v; return this.render(); }
+    if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); this.render(); return FightView.refresh(); }
+    if (a === 'xkeep') { await FightView.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); this.render(); return FightView.refresh(); }
+    if (a === 'label') { const c = find(); return c && this.editLabel(c); }
+    if (a === 'sub') { const list = this.monsters().filter((c) => c.eid === t.dataset.id); const last = list[list.length - 1]; if (last) { st.list = st.list.filter((c) => c !== last); if (st.turn === last.cid) st.turn = null; this.save(); this.render(); } return; }
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
@@ -6700,7 +6972,7 @@ const Tracker = {
     if (a === 'reset') {
       if (!await ask('New fight?', '<p>Removes every monster and lair action, clears abilities added for this fight, and goes back to round 1. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'New fight', value: true, kind: 'primary' }])) return;
       st.list = st.list.filter((c) => c.kind === 'pc');
-      st.round = 1; st.turn = null; st.setup = true; this.hist.clear();
+      st.round = 1; st.turn = null; st.setup = true; st.uses = {}; this.hist.clear(); this.focus = null;
       Roller.st.extras = {}; Roller.save();
       this.save(); this.render();
     }
@@ -7200,6 +7472,8 @@ function wireEvents() {
       if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.navigate(linkRow.dataset.id);
       return;
     }
+    const fv = ev.target.closest('#detail [data-fv]');
+    if (fv) { ev.preventDefault(); FightView.onClick(fv).catch((err) => logError('Fight', err)); return; }
     const hl = safeLocal.get('dndref.tapRoll') !== '0' && ev.target.closest('#detail .d-body .hl-tohit, #detail .d-body .hl-dmg');
     if (hl) { Roller.quick(hl); return; }
     const openEl = ev.target.closest('[data-open]');
@@ -7760,7 +8034,7 @@ async function boot() {
   $('#toolsBtn').addEventListener('click', (ev) => Tools.open(ev.currentTarget));
   $('#toolPane').addEventListener('click', (ev) => {
     const o = ev.target.closest('[data-open]');
-    if (o && o.dataset.open) { ev.preventDefault(); App.navigate(o.dataset.open); return; }
+    if (o && o.dataset.open) { ev.preventDefault(); if (o.dataset.cid) Tracker.focus = o.dataset.cid; App.navigate(o.dataset.open); if (o.dataset.cid) FightView.refresh(); return; }
     if (Tools.current === 'tracker' && !ev.target.closest('[data-rr="pcadd"], [data-rr="pcdel"]')) { Tracker.onClick(ev).catch((err) => logError('Tracker', err)); return; }
     Roller.onClick(ev).then(() => { if (Tools.current === 'tracker') Tracker.render(); }).catch((err) => logError('Roller', err));
   });
@@ -7806,6 +8080,7 @@ async function boot() {
     if (ev.target.matches('[data-bal], [data-gen]')) setTimeout(() => { const d = $('#toolPane .rr-diff'); if (d && !d.contains(document.activeElement)) d.outerHTML = Roller.difficultyHtml(); }, 0);
   });
   $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
+  Keep.init();
   $('#tapRoll').addEventListener('change', (ev) => safeLocal.set('dndref.tapRoll', ev.target.checked ? '1' : '0'));
   // Collections: right-click or long-press a star; chips in the Favourites tab; buttons in the entry pane.
   const starOf = (t) => t.closest && t.closest('.row [data-act="fav"], .d-head [data-act="fav"]');

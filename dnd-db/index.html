@@ -322,7 +322,18 @@ button.linkish { border: 0; background: none; padding: 0; color: var(--accent); 
 #toolPane { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); background: var(--panel); }
 #toolPane[hidden] { display: none !important; }
 body.tool-open #listPane { display: none; }
-@media (min-width: 721px) { body.tool-open .layout { grid-template-columns: minmax(460px, 52%) minmax(0, 1fr); } }
+@media (min-width: 721px) {
+  body.tool-open .layout { --combat-w: 52%; grid-template-columns: minmax(360px, var(--combat-w)) 7px minmax(0, 1fr); }
+  body.tool-open #toolPane { grid-column: 1; grid-row: 1; }
+  body.tool-open #toolSplit { display: block; grid-column: 2; grid-row: 1; }
+  body.tool-open #detail { grid-column: 3; grid-row: 1; }
+  body.tool-open.tool-list .layout { grid-template-columns: minmax(360px, var(--combat-w)) 7px var(--list-w) minmax(0, 1fr); }
+  body.tool-open.tool-list #listPane { display: flex; grid-column: 3; grid-row: 1; }
+  body.tool-open.tool-list #detail { grid-column: 4; }
+}
+#toolSplit { display: none; cursor: col-resize; background: var(--border); touch-action: none; position: relative; }
+#toolSplit:hover, #toolSplit.drag { background: var(--accent); }
+#toolSplit::after { content: ''; position: absolute; inset: 0 -5px; }
 @media (max-width: 720px) {
   #toolPane .rr-top { gap: 6px; padding: 8px 10px; }
   #toolPane .rr-top h2 { flex: 1 1 auto; }
@@ -466,6 +477,27 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
 .tr-tablewrap { border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
+/* first four columns stay put when the table scrolls sideways */
+.tr-table th:nth-child(-n+4), .tr-table tr:not(.tr-activerow):not(.tr-histrow) > td:nth-child(-n+4) { position: sticky; z-index: 2; }
+.tr-table th:nth-child(1), .tr-table tr > td.c-init { left: 0; width: 40px; min-width: 40px; max-width: 40px; }
+.tr-table th:nth-child(2), .tr-table tr > td.c-name { left: 40px; width: 150px; min-width: 110px; max-width: 150px; }
+.tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 190px; width: 36px; min-width: 36px; max-width: 36px; }
+.tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 226px; width: 54px; min-width: 54px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
+.tr-table tr.lair > td.c-name { max-width: 186px; }
+.tr-table tr.tr-cur > td { background: color-mix(in srgb, var(--accent) 13%, var(--bg)); }
+.tr-table tr.lair > td { background: color-mix(in srgb, hsl(275 40% 50%) 8%, var(--bg)); }
+.tr-table tr.tr-cur > td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
+.tr-table tr.h50 > td:first-child { box-shadow: inset 4px 0 0 #f59e0b; }
+.tr-table tr.h20 > td:first-child { box-shadow: inset 4px 0 0 #ec4899; }
+.tr-table tr.h10 > td:first-child { box-shadow: inset 4px 0 0 #dc2626; }
+.tr-table tr.h50 .tr-hpv { color: #b45309; } .tr-table tr.h20 .tr-hpv { color: #be185d; } .tr-table tr.h10 .tr-hpv { color: #b91c1c; }
+.tr-table .c-max .tr-maxv { font-size: 12px; color: var(--muted); border-style: dashed; min-width: 34px; height: 26px; }
+.tr-dl { display: flex; flex-direction: column; gap: 2px; font-size: 13px; max-height: 260px; overflow: auto; }
+.tr-dl .neg { color: #b91c1c; font-weight: 600; } .tr-dl .pos { color: #15803d; font-weight: 600; }
+.tr-dmglog > summary, .tr-deadsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+.tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: #b91c1c; }
+.mark-note { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.tr-diffstrip .rr-bar.crowded { margin-bottom: 2px; }
 .tr-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .tr-table th { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 600; text-align: left; padding: 5px 4px; white-space: nowrap; background: var(--panel); }
 .tr-table td { padding: 2px 4px; border-top: 1px solid var(--border); vertical-align: middle; white-space: nowrap; background: var(--bg); }
@@ -942,6 +974,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 
 <main class="layout">
   <section id="toolPane" aria-label="Combat" hidden></section>
+  <div id="toolSplit" role="separator" aria-orientation="vertical" aria-label="Drag to resize" title="Drag to resize" hidden></div>
   <section id="listPane" aria-label="Results">
     <div class="list-search" id="listSearch" hidden>
       <span class="clearable"><input id="listQ" type="search" autocomplete="off" spellcheck="false" placeholder="Filter…" aria-label="Filter this tab" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span>
@@ -4307,6 +4340,7 @@ function jumpTo(anchor) {
 
 /** Collapse/expand the results list on wide screens; remembered between visits. */
 function setListHidden(hidden) {
+  if (Tools.current && App.isWide()) { document.body.classList.toggle('tool-list', !hidden); return; }
   document.body.classList.toggle('list-hidden', hidden);
   const b = $('#listToggle');
   if (b) b.setAttribute('aria-pressed', String(hidden));
@@ -5708,7 +5742,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-19.2'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-19.3'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6236,9 +6270,12 @@ const Roller = {
   barHtml(r) {
     const cls = { Low: 'low', Moderate: 'mod', High: 'high', 'Above High': 'over' }[r.r24];
     const max = Math.max(r.b24[2] * 1.25, r.xp * 1.05), pct = (v) => Math.min(100, (v / max) * 100);
+    const ps = r.b24.map(pct), crowded = ps[2] - ps[0] < 22;
     let last = -100;
-    const marks = r.b24.map((v, k) => { const p = pct(v), show = p - last >= 11; if (show) last = p; return `<span class="mark" style="left:${p.toFixed(1)}%" title="${['Low', 'Moderate', 'High'][k]}: ${v} XP">${show || k === 2 ? `<i>${['Low', 'Mod', 'High'][k]}</i>` : ''}</span>`; }).join('');
-    return `<span class="rr-bar"><span class="fill ${cls}" style="width:${pct(r.xp).toFixed(1)}%"></span>${marks}</span>`;
+    const marks = r.b24.map((v, k) => { const p = ps[k], show = !crowded && p - last >= 11; if (show) last = p; return `<span class="mark" style="left:${p.toFixed(1)}%" title="${['Low', 'Moderate', 'High'][k]}: ${v} XP">${show ? `<i>${['Low', 'Mod', 'High'][k]}</i>` : ''}</span>`; }).join('')
+    ;
+    return `<span class="rr-bar${crowded ? ' crowded' : ''}"><span class="fill ${cls}" style="width:${pct(r.xp).toFixed(1)}%"></span>${marks}</span>`
+      + (crowded ? `<span class="mark-note">Low ${r.b24[0]} · Mod ${r.b24[1]} · High ${r.b24[2]} XP</span>` : '');
   },
   difficultyHtml() {
     const CRS = ['0', '1/8', '1/4', '1/2', ...Array.from({ length: 30 }, (_, i) => String(i + 1))];
@@ -6499,8 +6536,10 @@ const Abilities = {
     const known = this.known(opts.eid);
     this._ref = null;
     const pw = [...App.entries.values()].filter((x) => this.isPower(x));
-    const themes = [...new Set(pw.map((x) => x.fields.Theme || 'Other'))];
-    const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers by theme…</option>${themes.map((t) => `<optgroup label="${esc(t)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`).join('')}</select></label>` : '';
+    const TYPES = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
+    const groupOf = (t) => (/ role$/i.test(t) ? [0, 'Role', t.replace(/ role$/i, '')] : TYPES.includes(t) ? [1, 'Creature type', t] : /^common$/i.test(t) ? [3, 'Common', 'Any monster'] : [2, 'Theme', t]);
+    const themes = [...new Set(pw.map((x) => x.fields.Theme || 'Other'))].sort((a, b) => { const A = groupOf(a), B = groupOf(b); return A[0] - B[0] || A[2].localeCompare(B[2]); });
+    const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers: roles, creature types, themes…</option>${themes.map((t) => { const [, g, n] = groupOf(t); return `<optgroup label="${esc(g === 'Common' ? 'Common · any monster' : `${g} · ${n}`)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`; }).join('')}</select></label>` : '';
     const lists = this.spellLists();
     const listSel = lists.length ? `<label>Spell lists <select id="abList"><option value="">Add several spells from a list…</option>${lists.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} (${l.table.rows.length})</option>`).join('')}</select></label><div id="abListBox"></div>` : '';
     const link = `<div class="abf-wide abf-link"><label>From your database <input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"></label>${browse}${listSel}`
@@ -6985,7 +7024,12 @@ const Tracker = {
     const before = c.hp;
     c.hp = Math.max(0, sign < 0 ? c.hp - n : Math.min(Math.max(c.max, c.hp), c.hp + n));
     c.log = c.log || [];
-    c.log.push({ r: this.st.round, d: c.hp - before, x: /[+\-]/.test(raw.replace(/^\s*=?\s*[+\-]?/, '')) ? raw.replace(/^\s*=/, '').trim() : '' });
+    c.log.push({ r: this.st.round, d: c.hp - before, x: /[+\-]/.test(raw.replace(/^\s*=?\s*[+\-]?/, '')) ? raw.replace(/^\s*=/, '').trim() : '', t: Date.now(), hp: c.hp });
+    if (c.hp <= 0 && before > 0 && this.st.hideDead !== false) {
+      c.hidden = true; c.dead = true;
+      if (this.st.turn === c.cid) this.step(1);
+      toast(`${this.nameOf(c)} is down: moved to Defeated`, 'ok', 2500);
+    }
     this.save(); this.render();
   },
   /* ----- rolling from the tracker (uses the roller's dice, targets and log) ----- */
@@ -7028,6 +7072,12 @@ const Tracker = {
   },
   /* ----- markup ----- */
   /** Wide screen with the stat block beside the list: the turn's details live on the stat block instead. */
+  damageLogHtml(lab) {
+    const rows = this.monsters().flatMap((c) => (c.log || []).map((h, i) => ({ c, h, i }))).sort((a, b) => (b.h.t || b.h.r * 1e12 + b.i) - (a.h.t || a.h.r * 1e12 + a.i));
+    if (!rows.length) return '';
+    return `<details class="rr-sec tr-dmglog" data-keep="trDmgLog"${Keep.open('trDmgLog', false) ? ' open' : ''}><summary>Damage log (${rows.length})</summary><div class="tr-dl">`
+      + rows.slice(0, 80).map(({ c, h }) => `<div><span class="hint">R${h.r}</span> <b>${esc(this.nameOf(c, lab))}</b> <span class="${h.d < 0 ? 'neg' : 'pos'}">${h.d < 0 ? '−' + -h.d : '+' + h.d}</span>${h.x ? ` <span class="hint">(${esc(h.x)})</span>` : ''}${h.hp !== undefined ? ` <span class="hint">→ ${h.hp}</span>` : ''}</div>`).join('') + '</div></details>';
+  },
   sideBySide() { return App.isWide() && this.st.follow !== false; },
   rowHtml(c, lab) {
     const cur = c.cid === this.st.turn ? ' tr-cur' : '';
@@ -7049,13 +7099,14 @@ const Tracker = {
     const open = this.hist.has(c.cid), has = !!this.num(c.acAdj), eff = has && Number.isFinite(this.num(c.ac)) ? this.num(c.ac) + this.num(c.acAdj) : null;
     const tags = (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">mod</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '');
-    const row = `<tr class="mon${cur}${c.hp <= 0 ? ' down' : ''}">${init(c.init, `data-cid="${c.cid}"`)}`
+    const pct = c.max ? c.hp / c.max : 1, hcls = c.hp <= 0 ? ' down' : pct <= 0.1 ? ' h10' : pct <= 0.2 ? ' h20' : pct <= 0.5 ? ' h50' : '';
+    const row = `<tr class="mon${cur}${hcls}">${init(c.init, `data-cid="${c.cid}"`)}`
       + `<td class="c-name">${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${tags}</td>`
       + `<td class="c-lab"><button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button></td>`
       + `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
       + adj(c.acAdj, `data-cid="${c.cid}"`, has)
       + `<td class="c-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button></td>`
-      + `<td class="c-max"><input data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP"></td>`
+      + `<td class="c-max"><button class="tr-maxv" data-tr="maxedit" data-cid="${c.cid}" title="Change max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP ${c.max}">${c.max}</button></td>`
       + `<td class="c-dmg"><input data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"></td>`
       + `<td class="c-pm"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage" aria-label="Take damage">−</button></td><td class="c-pm"><button data-tr="heal" data-cid="${c.cid}" title="Heal" aria-label="Heal">+</button></td>`
       + `<td class="c-note"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></td>${tail(c)}</tr>`;
@@ -7091,6 +7142,7 @@ const Tracker = {
     pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
+      + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">New fight</button>'
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
       + `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`
       + '<div class="rr-scroll">'
@@ -7104,10 +7156,12 @@ const Tracker = {
         + `<label class="hint"><input type="checkbox" data-tr-follow${this.st.follow ? ' checked' : ''}> Stat block follows the turn</label>`
         + `<label class="hint"><select data-rr-crit aria-label="Critical hits"><option value="double"${Roller.st.crit !== 'perkins' ? ' selected' : ''}>Crit: double dice</option><option value="perkins"${Roller.st.crit === 'perkins' ? ' selected' : ''}>Crit: max + roll</option></select></label>`
         + (anyAdj ? '<button data-tr="acclearall" title="Clear every AC ± change">Clear all AC ±</button>' : '')
-        + '<button data-tr="reset" class="danger">New fight</button></div></div>'
+        + `<label class="hint"><input type="checkbox" data-tr="deadtoggle"${this.st.hideDead !== false ? ' checked' : ''}> Move defeated monsters out of the order</label></div></div>`
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
       + (shown.length ? `<div class="tr-tablewrap"><table class="tr-table"><thead><tr><th class="c-init" title="Initiative">Init</th><th>Name</th><th></th><th>AC</th><th title="AC change">±</th><th>HP</th><th>Max</th><th>Damage</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}</tbody></table></div>` : '<p class="hint">Add your party and monsters to start.</p>')
-      + (hidden.length ? `<h3 class="tr-h">Hidden</h3>${hidden.map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
+      + (hidden.filter((c) => !c.dead).length ? `<h3 class="tr-h">Hidden</h3>${hidden.filter((c) => !c.dead).map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
+      + (hidden.filter((c) => c.dead).length ? `<details class="rr-sec tr-deadsec" data-keep="trDead"${Keep.open('trDead', true) ? ' open' : ''}><summary>Defeated (${hidden.filter((c) => c.dead).length})</summary>${hidden.filter((c) => c.dead).map((c) => `<div class="tr-row later"><span class="tr-name">${esc(this.nameOf(c, lab))}</span><span class="hint">${c.hp}/${c.max} HP</span><button data-tr="revive" data-cid="${c.cid}" title="Put it back in the turn order">Reinstate</button></div>`).join('')}</details>` : '')
+      + this.damageLogHtml(lab)
       + `<details class="rr-sec rr-logsec" data-keep="rrLog"${Keep.open('rrLog', false) ? ' open' : ''}><summary class="rr-logh"><h3>Roll log${Roller.log.length ? ` (${Roller.log.length})` : ''}</h3>${Roller.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</summary>${Roller.log.slice(0, 40).map((r) => Roller.resultHtml(r)).join('') || '<p class="hint">Every roll is kept here.</p>'}</details>`
       + '</div>';
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
@@ -7124,6 +7178,28 @@ const Tracker = {
       return `<div class="tr-hitrow"><button class="rr-hit" data-tr="add" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])}</span></button>`
         + `<span class="tr-step${n ? ' on' : ''}"><button data-tr="sub" data-id="${id}" aria-label="One fewer"${n ? '' : ' disabled'}>−</button><b title="In the fight">${n}</b><button data-tr="add" data-id="${id}" aria-label="One more">+</button></span></div>`;
     }).join('');
+  },
+  /** "60" sets it, "+10" / "-10" adds, "50%" is half the stat block's HP, "+20%" adds a fifth of it. */
+  maxFrom(v, c) {
+    const m = /^\s*([+\-−]?)\s*(\d+(?:\.\d+)?)\s*(%?)\s*$/.exec(String(v || ''));
+    if (!m) return null;
+    const sign = m[1] ? (m[1] === '+' ? 1 : -1) : 0, n = +m[2], base = c.base || c.max;
+    const amt = m[3] ? Math.round(base * n / 100) : n;
+    return Math.max(1, Math.round(sign ? c.max + sign * amt : amt));
+  },
+  async editMax(c) {
+    const kind = this.monsters().filter((x) => this.baseName(x) === this.baseName(c));
+    const ok = await ask(`Max HP: ${esc(this.nameOf(c))}`,
+      `<div class="abf"><label class="abf-wide">New max HP <input id="mxVal" value="${c.max}" autocomplete="off" inputmode="text"></label>`
+      + `<p class="hint abf-wide">Type a number (60), a change (+10, −10) or a percentage of the stat block’s ${c.base} HP (50%, +20%). Current HP moves by the same amount.</p>`
+      + (kind.length > 1 ? `<label class="abf-wide"><input type="checkbox" id="mxAll"> All ${kind.length} ${esc(this.baseName(c))}</label>` : '') + '</div>',
+      [{ label: 'Cancel', value: null }, { label: 'Set', value: true, kind: 'primary' }]);
+    if (!ok) return;
+    const v = $('#mxVal')?.value, who = $('#mxAll')?.checked ? kind : [c];
+    let n = 0;
+    for (const x of who) { const nm = this.maxFrom(v, x); if (nm === null) continue; x.hp = Math.max(0, x.hp + (nm - x.max)); x.max = nm; n++; }
+    if (!n) { toast('Use a number like 60, +10 or 50%', 'warn'); return; }
+    this.save(); this.render();
   },
   setPct(members, pct) {
     for (const c of members) { const nm = Math.max(1, Math.round(c.base * (1 + pct / 100))); c.hp = Math.max(0, c.hp + (nm - c.max)); c.max = nm; }
@@ -7152,6 +7228,9 @@ const Tracker = {
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
+    if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
+    if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; } this.save(); return this.render(); }
+    if (a === 'deadtoggle') { st.hideDead = st.hideDead === false; this.save(); return this.render(); }
     if (a === 'reroll') { const seen = new Map(); for (const c of this.monsters()) { if (!seen.has(c.gid)) seen.set(c.gid, rollDie(20) + (c.bonus || 0)); c.init = seen.get(c.gid); } this.save(); return this.render(); }
     if (a === 'diff') { this.diffOpen = !this.diffOpen; return this.render(); }
     if (a === 'acclear') { if (t.dataset.pid) { const p = Roller.st.party.find((x) => x.id === t.dataset.pid); if (p) { p.acAdj = ''; Roller.save(); } } else { const c = find(); if (c) c.acAdj = ''; } this.save(); return this.render(); }
@@ -7191,7 +7270,11 @@ const Tracker = {
       return;
     }
     if (a === 'reset') {
-      if (!await ask('New fight?', '<p>Removes every monster and lair action, clears abilities added for this fight, and goes back to round 1. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'New fight', value: true, kind: 'primary' }])) return;
+      const how = await ask('New fight?', '<p>Removes every monster and lair action, clears abilities added for this fight and limited uses, and goes back to round 1. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'Keep the roll log', value: 'keep' }, { label: 'Clear everything', value: 'all', kind: 'primary' }]);
+      if (!how) return;
+      if (how === 'all') { Roller.log = []; Roller.saveLog(); RollPop.close(); }
+      for (const p of Roller.st.party) p.init = '';
+      Roller.save();
       st.list = st.list.filter((c) => c.kind === 'pc');
       st.round = 1; st.turn = null; st.setup = true; st.uses = {}; this.hist.clear(); this.focus = null;
       Roller.st.extras = {}; Roller.save();
@@ -7244,8 +7327,12 @@ const Tools = {
   pinned: safeLocal.get('dndref.toolPinned') === '1',
   show(name) {
     if (name === 'roller') name = 'tracker'; // one Combat tool
+    this.pinned = false;
     this.current = name || null;
     $('#toolPane').hidden = !name;
+    $('#toolSplit').hidden = !name;
+    if (!name) document.body.classList.remove('tool-list');
+    const w = safeLocal.get('dndref.combatW'); if (w) document.querySelector('.layout').style.setProperty('--combat-w', w + 'px');
     document.body.classList.toggle('tool-open', !!name);
     document.body.classList.toggle('tool-pinned', !!name && this.pinned);
     if (name) { document.body.classList.remove('show-detail'); this.render(); }
@@ -7259,6 +7346,7 @@ const Tools = {
     this.render();
   },
   pinHtml(attr) {
+    if (attr) return ''; // Combat always sits on the left on wide screens now
     return `<button class="rr-pin${this.pinned ? ' on' : ''}" ${attr} title="${this.pinned ? 'Unpin: take the results list’s place again' : 'Pin to the right, so the list and entries stay usable during a fight'}" aria-pressed="${this.pinned}">${this.pinned ? 'Unpin' : 'Pin'}</button>`;
   },
   links() {
@@ -7612,6 +7700,7 @@ function wireEvents() {
     const t = e.target.closest('[data-tab]');
     if (!t || t.closest('dialog')) return;
     e.preventDefault();
+    if (Tools.current && App.isWide()) document.body.classList.add('tool-list');
     App.setTab(t.dataset.tab, { carryQuery: t.classList.contains('go') });
   });
   // × in any search box: clear it and let the box's own input handler update results / highlights
@@ -8298,7 +8387,7 @@ async function boot() {
     const done = () => { ev.preventDefault(); ev.stopPropagation(); };
     if (ev.target.id === 'rrSearch') { done(); $('#rrHits .rr-hit')?.click(); }
     else if (ev.target.id === 'trSearch') { done(); $('#trHits .rr-hit')?.click(); }
-    else if (ev.target.matches('[data-tr-dmgin]')) { done(); ev.target.closest('.tr-dmg').querySelector('[data-tr="dmg"]').click(); }
+    else if (ev.target.matches('[data-tr-dmgin]')) { done(); Tracker.hurt(ev.target.dataset.cid, ev.shiftKey ? 1 : -1); }
     else if (['tcName', 'tcAc', 'tcHp', 'tcInit', 'tcCr'].includes(ev.target.id)) { done(); $('#toolPane [data-tr="custom"]')?.click(); }
     else if (ev.target.matches('#toolPane input')) ev.stopPropagation(); // any other box: Enter is just Enter
   });
@@ -8312,6 +8401,15 @@ async function boot() {
   });
   $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
   Keep.init();
+  // drag the bar between Combat and the page to resize (remembered)
+  $('#toolSplit').addEventListener('pointerdown', (ev) => {
+    const bar = ev.currentTarget, lay = document.querySelector('.layout'), box = lay.getBoundingClientRect();
+    bar.setPointerCapture(ev.pointerId); bar.classList.add('drag');
+    const move = (e2) => { const w = Math.max(360, Math.min(box.width - 360, e2.clientX - box.left)); lay.style.setProperty('--combat-w', Math.round(w) + 'px'); };
+    const up = () => { bar.classList.remove('drag'); bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); const w = parseInt(lay.style.getPropertyValue('--combat-w'), 10); if (w) safeLocal.set('dndref.combatW', String(w)); };
+    bar.addEventListener('pointermove', move); bar.addEventListener('pointerup', up);
+  });
+  $('#toolSplit').addEventListener('dblclick', () => { document.querySelector('.layout').style.removeProperty('--combat-w'); safeLocal.set('dndref.combatW', ''); });
   $('#detail').addEventListener('change', (ev) => { if (ev.target.matches('[data-fv-target]')) { Roller.st.activeId = ev.target.value || null; Roller.save(); Tracker.render(); } });
   $('#tapRoll').addEventListener('change', (ev) => safeLocal.set('dndref.tapRoll', ev.target.checked ? '1' : '0'));
   // Collections: right-click or long-press a star; chips in the Favourites tab; buttons in the entry pane.

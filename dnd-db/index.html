@@ -406,6 +406,7 @@ body.tool-open #listPane { display: none; }
 .tr-dmg button { padding: 2px 9px; font-weight: 700; }
 .tr-hpv { font-size: 15px; color: var(--text); min-width: 22px; text-align: right; }
 .tr-acl { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.tr-acl .tr-adj { width: 40px; } .tr-eff { color: var(--accent); font-size: 14px; }
 .tr-hide { border: 0; background: none; color: var(--muted); padding: 0 4px; font-size: 15px; }
 .tr-setup { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
 .tr-encs { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
@@ -5586,7 +5587,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.3'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.4'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6366,6 +6367,8 @@ const Tracker = {
       const t = this.pc(c);
       return `<div class="tr-row pc${cur}">${mark}${init(t.init, `data-pid="${t.id}"`)}<span class="tr-name">${esc(t.name || 'Unnamed')}</span>`
         + `<label class="tr-acl">AC <input class="tr-n" data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC"></label>`
+        + `<label class="tr-acl" title="Temporary AC change: Shield, cover, Haste…">± <input class="tr-n tr-adj" data-pid="${t.id}" data-tr-acadj value="${esc(t.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>`
+        + (this.num(t.acAdj) ? `<b class="tr-eff" title="AC with the adjustment">= ${Roller.acOf(t)}</b>` : '')
         + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"></div>`;
     }
     if (c.kind === 'lair') {
@@ -6374,7 +6377,9 @@ const Tracker = {
     const name = this.nameOf(c, lab), open = this.hist.has(c.cid);
     const hist = open ? `<div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div>` : '';
     return `<div class="tr-row mon${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-cid="${c.cid}"`)}`
-      + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(name)}</a>` : `<span class="tr-name">${esc(name)}</span>`) + `<span class="tr-ac">AC ${esc(c.ac || '?')}</span>`
+      + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(name)}</a>` : `<span class="tr-name">${esc(name)}</span>`)
+      + `<span class="tr-ac">AC ${this.num(c.acAdj) && Number.isFinite(this.num(c.ac)) ? `<b class="tr-eff" title="${esc(c.ac)} ${this.num(c.acAdj) > 0 ? '+' : '−'} ${Math.abs(this.num(c.acAdj))}">${this.num(c.ac) + this.num(c.acAdj)}</b>` : esc(c.ac || '?')}</span>`
+      + `<label class="tr-acl" title="Temporary AC change: Shield, cover…">± <input class="tr-n tr-adj" data-cid="${c.cid}" data-tr-acadj value="${esc(c.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>`
       + `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP"></span>`
       + `<span class="tr-dmg"><input class="tr-dn" data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage">−</button><button data-tr="heal" data-cid="${c.cid}" title="Heal">+</button></span>`
       + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes">`
@@ -6509,6 +6514,10 @@ const Tracker = {
       else { const c = st.list.find((x) => x.cid === d.cid); if (c) c.init = n; }
     } else if ('trAc' in d) {
       const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.ac = el.value.trim(); Roller.save(); }
+    } else if ('trAcadj' in d) {
+      const v = this.num(el.value), n = Number.isFinite(v) ? v : '';
+      if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.acAdj = n; Roller.save(); } }
+      else { const c = st.list.find((x) => x.cid === d.cid); if (c) c.acAdj = n; }
     } else if ('trMax' in d) {
       const c = st.list.find((x) => x.cid === d.cid), n = this.num(el.value);
       if (c && n > 0) { c.hp = Math.max(0, c.hp + (n - c.max)); c.max = n; }

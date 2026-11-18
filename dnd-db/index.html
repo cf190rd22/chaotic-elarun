@@ -413,13 +413,7 @@ body.tool-open #listPane { display: none; }
 .tr-enc .hint { flex: 1 1 160px; }
 .tr-noteb { display: none; border: 0; background: none; color: var(--muted); padding: 0 4px; font-size: 15px; }
 @media (max-width: 720px) {
-  #toolPane .tr-row .tr-note:placeholder-shown { display: none; }
-  #toolPane .tr-row.noting .tr-note { display: block; }
-  #toolPane .tr-noteb { display: inline-block; }
-  #toolPane .tr-row.noting .tr-noteb { display: none; }
-  #toolPane .tr-row .tr-note { order: 10; }
   #toolPane .tr-row.mem { flex-wrap: wrap; }
-  #toolPane .tr-row:has(.tr-note:not(:placeholder-shown)) .tr-noteb { display: none; }
   #toolPane .tr-n, #toolPane .tr-dmg .tr-dn { width: 42px; padding-left: 2px; padding-right: 2px; }
   #toolPane .tr-dmg button { padding: 2px 7px; }
   #toolPane .tr-row.mem .tr-mname { min-width: 62px; }
@@ -431,6 +425,35 @@ body.tool-open #listPane { display: none; }
   .bar-row .actions { gap: 4px; }
   .bar-row .actions button { padding: 6px 8px; }
   #toolPane .rr-top { row-gap: 8px; }
+}
+/* round 3: fight abilities, tracker rows, active creature */
+.rr-fight { font: 600 10.5px system-ui; text-transform: uppercase; letter-spacing: .05em; color: var(--amber); border: 1px solid var(--amber-border); border-radius: 8px; padding: 0 6px; }
+details.rr-diff > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+details.rr-diff > summary::-webkit-details-marker { display: none; }
+details.rr-diff > summary::before { content: '▸'; color: var(--muted); } details.rr-diff[open] > summary::before { content: '▾'; }
+.abf { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+.abf label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--muted); }
+.abf .abf-kind, .abf .abf-wide, .abf .abf-dmg { grid-column: 1 / -1; }
+.abf .abf-kind { display: flex; flex-wrap: wrap; gap: 6px 16px; } .abf .abf-kind label, .abf label:has(input[type=checkbox]) { flex-direction: row; align-items: center; gap: 6px; }
+#askDlg:has(.abf .abf-kind input[value="attack"]:checked) .abf-sv, #askDlg:has(.abf .abf-kind input[value="save"]:checked) .abf-atk,
+#askDlg:has(.abf .abf-kind input[value="other"]:checked) .abf-sv, #askDlg:has(.abf .abf-kind input[value="other"]:checked) .abf-atk, #askDlg:has(.abf .abf-kind input[value="other"]:checked) .abf-dmg { display: none; }
+.tr-row.mon { background: var(--bg); }
+.tr-row .tr-note { flex: 1 1 110px; }
+.tr-hpv { border: 0; background: none; padding: 0 2px; font-weight: 700; font-size: 15px; color: var(--text); text-decoration: underline dotted; cursor: pointer; }
+.tr-hist { padding: 4px 10px 6px 40px; font-size: 12.5px; background: var(--panel); border-top: 1px dashed var(--border); }
+.tr-hist .neg { color: hsl(355 65% var(--hl-d)); } .tr-hist .pos { color: hsl(140 55% var(--hl-d)); }
+.tr-active { margin: 0; padding: 8px 10px 10px 30px; background: hsl(215 80% 55% / .06); border-top: 1px solid var(--accent-border); }
+.tr-ah { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-bottom: 6px; }
+.tr-ah select { font-size: 13px; padding: 2px 6px; }
+.tr-active .rr-card { margin: 6px 0 0; }
+.tr-custom summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 6px 0; }
+.tr-cform { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tr-cform #tcName { flex: 1 1 140px; } .tr-cform label { display: inline-flex; gap: 4px; align-items: center; font-size: 12.5px; color: var(--muted); } .tr-cform label input { width: 56px; }
+#trHits .rr-hit b:first-child { color: var(--accent); margin-right: 4px; }
+@media (max-width: 720px) {
+  #toolPane .tr-row .tr-note { order: 10; flex-basis: 100%; }
+  #toolPane .tr-active { padding-left: 12px; }
+  .abf { grid-template-columns: 1fr; }
 }
 /* pinned: list | entry | roller */
 .rr-pin { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
@@ -5563,7 +5586,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.2'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.3'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5847,6 +5870,8 @@ const Roller = {
       const sec = SECT[s.heading.toLowerCase()];
       if (sec) s.items.forEach((it, ii) => out.push({ key: `${si}-${ii}`, sec, ...this.readAction(it.name, String(it.text || '').replace(/<br\s*\/?>/gi, ' ')) }));
     });
+    // abilities added for this fight
+    for (const x of (this.st.extras && this.st.extras[e.id]) || []) out.push({ key: 'x-' + x.id, sec: x.sec || 'Actions', extra: x.id, ...this.readAction(x.name, x.text) });
     // Multiattack: "makes two Wind Staff attacks", "one Bite attack and two Slam attacks", "two with its claws"
     const attacks = out.filter((a) => a.kind === 'attack');
     const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
@@ -5998,13 +6023,15 @@ const Roller = {
     const e = App.entries.get(b.id);
     if (!e) return `<div class="rr-mon gone">Missing entry <button data-rr="rm" data-bid="${b.bid}">Remove</button></div>`;
     const acts = this.actionsOf(e).filter((a) => a.kind !== 'note' || /^multiattack/i.test(a.name));
-    const rows = acts.filter((a) => a.kind !== 'note').map((a) => `<div class="rr-row"><button class="rr-roll" data-rr="roll" data-bid="${b.bid}" data-key="${a.key}" title="Roll for ${b.count > 1 ? 'each of the ' + b.count : 'it'}">${esc(a.name)}</button><span class="rr-sum">${esc(this.actSummary(a))}${a.sec !== 'Actions' ? ` · ${esc(a.sec.replace(/ Actions$/, ''))}` : ''}</span></div>`).join('');
+    const rows = this.actionsOf(e).filter((a) => a.kind !== 'note' || a.extra).map((a) => `<div class="rr-row"><button class="rr-roll" data-rr="roll" data-bid="${b.bid}" data-key="${a.key}" title="Roll for ${b.count > 1 ? 'each of the ' + b.count : 'it'}">${esc(a.name)}</button><span class="rr-sum">${esc(this.actSummary(a))}${a.sec !== 'Actions' ? ` · ${esc(a.sec.replace(/ Actions$/, ''))}` : ''}</span>`
+      + (a.extra ? `<span class="rr-fight" title="Added for this fight">this fight</span><button class="linkish" data-rr="xkeep" data-key="${esc(e.id)}" data-xid="${a.extra}">Save to stat block</button><button class="rr-x" data-rr="xdel" data-key="${esc(e.id)}" data-xid="${a.extra}" aria-label="Remove">×</button>` : '') + '</div>').join('');
     const saves = ABILS.map((k) => `<button class="rr-sv" data-rr="save" data-bid="${b.bid}" data-k="${k}" title="${AB_FULL[k]} saving throw">${k}<small>${(this.saveMod(e, k) >= 0 ? '+' : '') + this.saveMod(e, k)}</small></button>`).join('');
     const f = e.fields;
     return `<div class="rr-mon"><div class="rr-mh"><a href="#" data-open="${esc(e.id)}" class="rr-name">${esc(e.name)}</a>`
       + `<span class="rr-stats">${f.CR ? `CR ${esc(String(f.CR).split(/[\s(]/)[0])} · ` : ''}AC ${esc(String(f.AC || '?').split(/[\s(]/)[0])} · HP ${esc(String(f.HP || '?').split(/[\s(]/)[0])}</span>`
       + `<span class="rr-count"><button data-rr="dec" data-bid="${b.bid}" aria-label="One fewer">−</button><b>${b.count}</b><button data-rr="inc" data-bid="${b.bid}" aria-label="One more">+</button></span><button class="rr-x" data-rr="rm" data-bid="${b.bid}" aria-label="Remove from encounter">×</button></div>`
-      + (rows || '<div class="rr-note">No attacks or save effects found in this stat block.</div>') + `<div class="rr-saves">${saves}</div></div>`;
+      + (rows || '<div class="rr-note">No attacks or save effects found in this stat block.</div>') + `<div class="rr-saves">${saves}</div>`
+      + `<button class="linkish" data-rr="xadd" data-key="${esc(e.id)}" data-name="${esc(e.name)}">+ Ability for this fight</button></div>`;
   },
   partyHtml() {
     const rows = this.st.party.map((t) => `<div class="rr-pc${t.id === this.st.activeId ? ' on' : ''}"><button class="rr-tgt" data-rr="target" data-tid="${t.id}" title="Roll attacks against ${esc(t.name || 'this target')}">${t.id === this.st.activeId ? '◉' : '○'}</button>`
@@ -6021,9 +6048,14 @@ const Roller = {
   difficultyHtml() {
     if (!this.st.bal || !this.st.bal.length) this.st.bal = [{ n: 4, lv: 1 }];
     const levels = this.st.bal.flatMap((g) => Array.from({ length: Math.max(0, Math.min(12, g.n | 0)) }, () => Math.max(1, Math.min(20, g.lv | 0))));
-    const mons = this.st.board.map((b) => ({ cr: App.entries.get(b.id)?.fields.CR, count: b.count })).filter((m) => crValue(m.cr) !== null);
-    const head = `<div class="rr-diff"><div class="rr-diff-h"><b>Encounter difficulty</b></div>${this.balHtml()}`;
-    if (!mons.length || !levels.length) return head + '<p class="hint">Add monsters below to rate the encounter.</p></div>';
+    const gen = (this.st.gen || []).map((g) => ({ cr: g.cr, count: Math.max(0, g.n | 0) }));
+    const mons = [...this.st.board.map((b) => ({ cr: App.entries.get(b.id)?.fields.CR, count: b.count })), ...gen].filter((m) => crValue(m.cr) !== null && m.count > 0);
+    const CRS = ['0', '1/8', '1/4', '1/2', ...Array.from({ length: 30 }, (_, i) => String(i + 1))];
+    const genHtml = '<div class="rr-bal">' + (this.st.gen || []).map((g, i) => `<span class="rr-balrow"><input data-gen="n" data-i="${i}" type="number" min="0" max="60" inputmode="numeric" value="${g.n}" aria-label="How many"> monsters of CR <select data-gen="cr" data-i="${i}" aria-label="Challenge rating">${CRS.map((c) => `<option${c === String(g.cr) ? ' selected' : ''}>${c}</option>`).join('')}</select><button class="rr-x" data-rr="gendel" data-i="${i}" aria-label="Remove">×</button></span>`).join('')
+      + '<button class="linkish" data-rr="genadd" title="Monsters you have no stat block for">+ monsters by CR</button></div>';
+    const open = this.diffOpen !== false;
+    const head = (badge) => `<details class="rr-diff"${open ? ' open' : ''}><summary class="rr-diff-h"><b>Encounter difficulty</b>${badge}</summary>${this.balHtml()}${genHtml}`;
+    if (!mons.length || !levels.length) return head('') + '<p class="hint">Add monsters below (or by CR above) to rate the encounter.</p></details>';
     const r = rateEncounter(levels, mons), f = (n) => String(n);
     const max = Math.max(r.b24[2] * 1.25, r.xp * 1.05), pct = (v) => Math.min(100, (v / max) * 100).toFixed(1);
     const cls = { Low: 'low', Moderate: 'mod', High: 'high', 'Above High': 'over' }[r.r24];
@@ -6035,22 +6067,20 @@ const Roller = {
       : (deadly ? ['POTENTIALLY DEADLY', 'deadly'] : ['NOT POTENTIALLY DEADLY', 'easy']);
     const tag = ([t, c]) => `<span class="sh-${c}">${t}</span>`;
     const base = XP_2024[r.avg] || XP_2024[20], crTot = +r.crSum.toFixed(3);
-    return head + `<div class="rr-diff-h"><span class="rr-badge ${cls}">${r.r24}</span><span class="hint">${r.n} monster${r.n === 1 ? '' : 's'}, ${r.xp.toLocaleString('en-GB')} XP</span></div>`
+    return head(` <span class="rr-badge ${cls}">${r.r24}</span><span class="hint">${r.n} monster${r.n === 1 ? '' : 's'}, ${r.xp.toLocaleString('en-GB')} XP</span>`)
       + `<div class="rr-bar" title="2024 XP budget"><span class="fill ${cls}" style="width:${pct(r.xp)}%"></span>${r.b24.map((v, k) => `<span class="mark" style="left:${pct(v)}%"><i>${['Low', 'Moderate', 'High'][k]}</i></span>`).join('')}</div>`
-      + `<details class="rr-diff-more"${this.diffOpen !== false ? ' open' : ''}><summary>Encounter Assessment</summary><div class="sh">`
+      + `<details class="rr-diff-more"${this.assessOpen !== false ? ' open' : ''}><summary>Encounter Assessment</summary><div class="sh">`
       + `<p><b>Base Monster XP:</b> ${f(r.xp)}<br><b>Party:</b> ${levels.length} characters, average level ${r.avg}</p>`
       + `<p><b>Lazy Encounter Benchmark</b><br>Total Character Levels: ${r.totalLv} | Total Monster CR: ${crTot}<br>`
       + `Potentially deadly if total monster CR ≥ ${r.lazyLow}${r.avg >= 11 ? ` to ${r.lazyHigh}` : ''}<br>Potentially deadly single monster if CR ≥ ${r.single}<br>Assessment: ${tag(LZ)}</p>`
       + `<p><b>D&amp;D 2024 Method</b><br>Base Thresholds (level ${r.avg}): Low ${base[0]} | Moderate ${base[1]} | High ${base[2]}<br>`
       + `Party Thresholds (×${levels.length} characters): Low ${r.b24[0]} | Moderate ${r.b24[1]} | High ${r.b24[2]}<br>Base Monster XP: ${f(r.xp)} | ${tag(L24)}</p>`
-      + `<p><b>D&amp;D 2014 Method</b><br>Thresholds: Easy ${r.t14[0]} | Medium ${r.t14[1]} | Hard ${r.t14[2]} | Deadly ${r.t14[3]}<br>`
-      + `Multiplier (${r.n} monsters): ×${r.mult} | Adjusted XP: ${f(r.adj)} | ${tag(L14)}</p>`
-      + '<p class="hint">Mike Shea’s encounter calculator (5e Artisanal Database).</p></div></details></div>';
+      + '<p class="hint">Mike Shea’s encounter calculator (5e Artisanal Database).</p></div></details></details>';
   },
   render() {
     const pane = $('#toolPane');
     if (!pane || !this.open) return;
-    if (pane.contains(document.activeElement) && document.activeElement.matches('[data-pc], [data-bal]')) return; // don't pull focus while typing
+    if (pane.contains(document.activeElement) && document.activeElement.matches('[data-pc], [data-bal], input[data-gen]')) return; // don't pull focus while typing
     const keepScroll = pane.querySelector('.rr-scroll')?.scrollTop || 0;
     const mode = (k, l) => `<button data-rr="mode" data-m="${k}" class="${this.st.mode === k ? 'on' : ''}">${l}</button>`;
     pane.innerHTML = `<div class="rr-top"><h2>Encounter roller</h2><span class="rr-seg">${mode('normal', 'Normal')}${mode('adv', 'Advantage')}${mode('dis', 'Disadvantage')}</span>`
@@ -6086,12 +6116,17 @@ const Roller = {
     if (a === 'rm') { this.st.board = this.st.board.filter((x) => x.bid !== t.dataset.bid); this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); const s = $('#rrSearch'); if (s) { s.value = ''; s.focus(); } return; }
     if (a === 'target') { this.st.activeId = t.dataset.tid || null; this.save(); return this.render(); }
+    if (a === 'xadd') return Abilities.add(t.dataset.key, t.dataset.name, () => this.render());
+    if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); return this.render(); }
+    if (a === 'xkeep') { await Abilities.keep(t.dataset.key, t.dataset.xid); return this.render(); }
+    if (a === 'genadd') { this.st.gen = [...(this.st.gen || []), { n: 1, cr: '1' }]; this.save(); return this.render(); }
+    if (a === 'gendel') { this.st.gen.splice(+t.dataset.i, 1); this.save(); return this.render(); }
     if (a === 'baladd') { this.st.bal = [...(this.st.bal || []), { n: 1, lv: (this.st.bal?.[this.st.bal.length - 1]?.lv) || 1 }]; this.save(); return this.render(); }
     if (a === 'baldel') { this.st.bal.splice(+t.dataset.i, 1); this.save(); return this.render(); }
     if (a === 'pcadd') { const id = uid(); this.st.party.push({ id, name: '', ac: '', acAdj: '' }); if (!this.st.activeId) this.st.activeId = id; this.save(); this.render(); $(`#toolPane [data-pc="name"][data-tid="${id}"]`)?.focus(); return; }
     if (a === 'pcdel') { this.st.party = this.st.party.filter((x) => x.id !== t.dataset.tid); if (this.st.activeId === t.dataset.tid) this.st.activeId = null; this.save(); return this.render(); }
     if (a === 'clearlog') { this.log = []; this.saveLog(); return this.render(); }
-    if (a === 'clearboard') { if (await ask('Clear the encounter?', '<p>Removes every monster from the roller. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'Clear', value: true, kind: 'primary' }])) { this.st.board = []; this.save(); this.render(); } }
+    if (a === 'clearboard') { if (await ask('Clear the encounter?', '<p>Removes every monster from the roller, and abilities added for this fight. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'Clear', value: true, kind: 'primary' }])) { this.st.board = []; this.st.extras = {}; this.save(); this.render(); } }
   },
 
   /* ----- tap a highlight in any stat block to roll it ----- */
@@ -6126,22 +6161,74 @@ const Roller = {
 };
 
 /* =====================================================================
+   FIGHT ABILITIES: add an attack, save or note to a creature for this fight only
+   (kept with the roller and tracker until you clear them), or save it to the stat block. */
+const Abilities = {
+  key: (eid, name) => eid || 'custom:' + fold(name || ''),
+  list(key) { return (Roller.st.extras && Roller.st.extras[key]) || []; },
+  avg(dice) { const d = parseDice(dice); return d ? Math.floor((d.count * (d.sides + 1)) / 2) + d.bonus : 0; },
+  /** "2d6+3 slashing, 1d6 fire" -> "10 (2d6+3) Slashing damage plus 3 (1d6) Fire damage" */
+  dmgText(s) {
+    return String(s || '').split(/\s*(?:,|\bplus\b|\band\b)\s*/i).map((part) => {
+      const m = /^(\d+d\d+(?:\s*[+\-]\s*\d+)?|\d+)\s*([A-Za-z]+)?/.exec(part.trim());
+      if (!m) return '';
+      const dice = m[1].replace(/\s+/g, ''), type = m[2] ? cap(m[2].toLowerCase()) + ' ' : '';
+      return /d/.test(dice) ? `${this.avg(dice)} (${dice}) ${type}damage` : `${dice} ${type}damage`;
+    }).filter(Boolean).join(' plus ');
+  },
+  async add(key, label, after) {
+    const sec = ['Actions', 'Bonus Actions', 'Reactions', 'Legendary Actions', 'Traits'].map((x) => `<option>${x}</option>`).join('');
+    const ab = ABILS.map((k) => `<option value="${k}">${AB_FULL[k]}</option>`).join('');
+    const ok = await ask(`Add an ability: ${esc(label)}`,
+      `<div class="abf"><label>Name <input id="abName" placeholder="e.g. Fire Bolt"></label><label>Section <select id="abSec">${sec}</select></label>`
+      + `<div class="abf-kind"><label><input type="radio" name="abKind" value="attack" checked> Attack roll</label><label><input type="radio" name="abKind" value="save"> Saving throw</label><label><input type="radio" name="abKind" value="other"> Other</label></div>`
+      + `<label class="abf-atk">To hit <input id="abHit" inputmode="numeric" placeholder="+5"></label>`
+      + `<label class="abf-sv">DC <input id="abDc" inputmode="numeric" placeholder="13"></label><label class="abf-sv">Save <select id="abAb">${ab}</select></label><label class="abf-sv"><input type="checkbox" id="abHalf" checked> Half damage on a success</label>`
+      + `<label class="abf-dmg">Damage <input id="abDmg" placeholder="2d6+3 fire, 1d6 cold"></label>`
+      + `<label class="abf-wide">Description <textarea id="abText" rows="3" placeholder="Anything else it does"></textarea></label></div><p class="hint">For this fight only. Each one can be saved to the stat block later.</p>`,
+      [{ label: 'Cancel', value: null }, { label: 'Add', value: true, kind: 'primary' }]);
+    if (!ok) return;
+    const g = (id) => ($('#' + id)?.value || '').trim(), kind = document.querySelector('#askBody [name="abKind"]:checked')?.value || 'other';
+    const name = g('abName') || 'New ability', dmg = this.dmgText(g('abDmg')), desc = g('abText');
+    let text = desc;
+    if (kind === 'attack') { const hit = (g('abHit') || '+0').replace(/^(\d)/, '+$1'); text = `Melee or Ranged Attack Roll: ${hit}. Hit: ${dmg || 'no damage'}.${desc ? ' ' + desc : ''}`; }
+    if (kind === 'save') text = `${AB_FULL[g('abAb')]} Saving Throw: DC ${g('abDc') || '10'}. Failure: ${dmg || 'see the description'}.${$('#abHalf')?.checked ? ' Success: Half damage.' : ''}${desc ? ' ' + desc : ''}`;
+    Roller.st.extras = Roller.st.extras || {};
+    (Roller.st.extras[key] = Roller.st.extras[key] || []).push({ id: uid(), name, sec: g('abSec') || 'Actions', text });
+    Roller.save();
+    toast(`Added “${name}” for this fight`, 'ok');
+    after && after();
+  },
+  remove(key, id) { Roller.st.extras[key] = this.list(key).filter((x) => x.id !== id); Roller.save(); },
+  async keep(key, id) {
+    const e = App.entries.get(key), x = this.list(key).find((y) => y.id === id);
+    if (!e || !x) return;
+    const c = JSON.parse(JSON.stringify(e));
+    let s = c.sections.find((sc) => sc.heading.toLowerCase() === x.sec.toLowerCase());
+    if (!s) { s = { heading: x.sec, intro: '', items: [] }; const at = c.sections.findIndex((sc) => /^(lore|notes)$/i.test(sc.heading)); c.sections.splice(at < 0 ? c.sections.length : at, 0, s); }
+    s.items.push({ name: x.name, level: null, text: x.text });
+    c.updated = nowIso(); c.edited = true;
+    await App.upsert([makeEntry(c)], { quiet: true });
+    this.remove(key, id);
+    toast(`Saved “${x.name}” to ${e.name}’s stat block`, 'ok');
+  },
+};
+
+/* =====================================================================
    INITIATIVE TRACKER
-   Party members are shared with the roller's targets (name, AC, HP, initiative bonus, notes).
-   Monsters: add x of a creature; more than 3 split into groups of up to 3, each rolling its own
-   initiative; every creature has its own HP and max HP (changing it never touches the stat block).
-   Lair actions at the initiative you choose (they lose ties); monsters can arrive in a later round. */
+   Every creature is its own row. Creatures added together share an initiative in chunks of
+   up to 3. Labels (A B C or 1 2 3) follow the turn order, so A / 1 acts first. On a monster's
+   turn its actions can be rolled here, and its stat block follows the turn on wide screens. */
 const Tracker = {
-  st: { round: 1, turn: null, list: [], collapsed: {}, setup: true },
+  st: { round: 1, turn: null, list: [], setup: true, labels: 'abc', follow: true },
+  hist: new Set(),
   async load() {
     const m = await Store.getMeta('tracker');
     if (m) Object.assign(this.st, m);
-    // Earlier versions kept a separate initiative per PC and a "from round"; neither is used now.
-    for (const c of this.st.list) { if (c.kind === 'mon') c.join = 1; }
-    // The party's "Init" used to be read as a bonus; it is the initiative number itself.
     let moved = false;
     for (const t of Roller.st.party) if (t.initb !== undefined && t.init === undefined) { t.init = this.num(t.initb); delete t.initb; moved = true; }
     if (moved) Roller.save();
+    for (const c of this.st.list) if (c.kind === 'mon') { c.bname = c.bname || (App.entries.get(c.eid)?.name || String(c.name || '').replace(/ \d+$/, '')); c.log = c.log || []; }
     this.encounters = (await Store.getMeta('encounters')) || [];
     this.syncParty();
   },
@@ -6154,108 +6241,145 @@ const Tracker = {
   pc(c) { return Roller.st.party.find((t) => t.id === c.pid) || {}; },
   monsters() { return this.st.list.filter((c) => c.kind === 'mon'); },
   num: (v) => parseInt(String(v ?? '').replace('−', '-'), 10),
+  baseName(c) { return (c.eid && App.entries.get(c.eid)?.name) || c.bname || 'Creature'; },
   initBonus(e) {
     const m = /([+\-−]\s*\d+)/.exec(e.fields.Initiative || '');
     if (m) return this.num(m[1].replace(/\s/g, ''));
     const d = e.abilities && e.abilities.DEX;
     return d ? (Number.isFinite(this.num(d.mod)) ? this.num(d.mod) : Math.floor((d.score - 10) / 2)) : 0;
   },
-  /** Add n of a creature. More than 3 split into groups of up to 3, each with its own initiative roll. */
-  add(eid, n = 1, { quiet = false } = {}) {
+  /** Add one creature. It joins the latest initiative chunk of the same kind while that has fewer than 3. */
+  place(c, bonus) {
+    const same = this.monsters().filter((x) => (x.eid || 'custom:' + fold(x.bname)) === (c.eid || 'custom:' + fold(c.bname)));
+    const lastGid = same.length ? same[same.length - 1].gid : null, inChunk = same.filter((x) => x.gid === lastGid).length;
+    if (lastGid && inChunk < 3) { c.gid = lastGid; c.init = same.find((x) => x.gid === lastGid).init; }
+    else { c.gid = uid(); c.init = rollDie(20) + bonus; }
+    this.st.list.push(c);
+  },
+  add(eid, { quiet = false } = {}) {
     const e = App.entries.get(eid);
     if (!e || e.type !== 'monster' || isMonGroup(e)) return;
-    n = Math.max(1, Math.min(60, n | 0));
-    const bonus = this.initBonus(e), base = parseInt(String(e.fields.HP || '').trim(), 10) || 1, ac = String(e.fields.AC || '').split(/[\s(]/)[0];
-    let k = this.st.list.filter((c) => c.eid === eid).length;
-    const total = k + n;
-    if (k === 1 && total > 1) { const only = this.st.list.find((c) => c.eid === eid); if (only.name === e.name) only.name = e.name + ' 1'; }
-    for (let left = n; left > 0; left -= 3) {
-      const gid = uid(), init = rollDie(20) + bonus;
-      for (let i = 0; i < Math.min(3, left); i++) {
-        k++;
-        this.st.list.push({ cid: uid(), kind: 'mon', eid, gid, name: total > 1 ? `${e.name} ${k}` : e.name, init, bonus, ac, base, max: base, hp: base, notes: '' });
-      }
-    }
+    const bonus = this.initBonus(e), base = parseInt(String(e.fields.HP || '').trim(), 10) || 1;
+    this.place({ cid: uid(), kind: 'mon', eid, bname: e.name, bonus, ac: String(e.fields.AC || '').split(/[\s(]/)[0], base, max: base, hp: base, notes: '', log: [] }, bonus);
     this.save();
-    if (!quiet) toast(`${n} × ${e.name} added${n > 3 ? ` in ${Math.ceil(n / 3)} groups` : ''}`, 'ok', 2500);
+    if (!quiet) toast(`${e.name} added (${this.monsters().filter((x) => x.eid === eid).length} in the fight)`, 'ok', 1800);
     this.render();
   },
-  /** One turn per PC, per monster group (its members act together) and per lair action. */
-  slots() {
-    const out = [], seen = new Map();
-    for (const c of this.st.list) {
-      if (c.kind === 'mon') {
-        let g = seen.get(c.gid);
-        if (!g) { g = { key: c.gid, kind: 'grp', items: [], eid: c.eid }; seen.set(c.gid, g); out.push(g); }
-        g.items.push(c);
-      } else out.push({ key: c.cid, kind: c.kind, items: [c] });
-    }
-    const per = new Map();
-    for (const sl of out) if (sl.kind === 'grp') { const n = (per.get(sl.eid) || 0) + 1; per.set(sl.eid, n); sl.letter = String.fromCharCode(64 + n); }
-    for (const sl of out) if (sl.kind === 'grp' && per.get(sl.eid) === 1) sl.letter = '';
-    const initOf = (sl) => { const v = this.initOf(sl); return Number.isFinite(v) ? v : -Infinity; };
-    const tie = (sl) => (sl.kind === 'grp' ? sl.items[0].bonus || 0 : sl.kind === 'pc' ? 0 : -99);
-    return out.map((sl, i) => ({ ...sl, i })).sort((a, b) => initOf(b) - initOf(a) || (a.kind === 'lair') - (b.kind === 'lair') || tie(b) - tie(a) || a.i - b.i);
+  addCustom(name, ac, hp, bonus, { quiet = false } = {}) {
+    name = (name || '').trim() || 'Creature'; hp = Math.max(1, this.num(hp) || 1); bonus = this.num(bonus) || 0;
+    this.place({ cid: uid(), kind: 'mon', eid: null, bname: name, bonus, ac: String(ac || '?'), base: hp, max: hp, hp, notes: '', log: [] }, bonus);
+    this.save();
+    if (!quiet) toast(`${name} added`, 'ok', 1800);
+    this.render();
   },
-  /** A PC's initiative is just the number in their Init box. */
-  initOf(sl) { return sl.kind === 'pc' ? this.num(this.pc(sl.items[0]).init) : this.num(sl.items[0].init); },
-  hiddenSl(sl) { return sl.items.every((c) => c.hidden); },
-  live(sl) { return !this.hiddenSl(sl) && (sl.kind !== 'grp' || sl.items.some((c) => c.hp > 0)); },
+  sorted() {
+    const val = (c) => { const v = c.kind === 'pc' ? this.num(this.pc(c).init) : this.num(c.init); return Number.isFinite(v) ? v : -Infinity; };
+    const tie = (c) => (c.kind === 'mon' ? c.bonus || 0 : c.kind === 'pc' ? 0 : -99);
+    return this.st.list.map((c, i) => ({ c, i })).sort((a, b) => val(b.c) - val(a.c) || (a.c.kind === 'lair') - (b.c.kind === 'lair') || tie(b.c) - tie(a.c) || a.i - b.i).map((x) => x.c);
+  },
+  /** Labels follow the turn order: the first Goblin to act is Goblin A (or 1). */
+  labels() {
+    const counts = new Map(), seen = new Map(), out = new Map();
+    for (const c of this.monsters()) counts.set(this.baseName(c), (counts.get(this.baseName(c)) || 0) + 1);
+    for (const c of this.sorted()) {
+      if (c.kind !== 'mon' || counts.get(this.baseName(c)) < 2) continue;
+      const n = (seen.get(this.baseName(c)) || 0) + 1;
+      seen.set(this.baseName(c), n);
+      out.set(c.cid, this.st.labels === '123' ? String(n) : n <= 26 ? String.fromCharCode(64 + n) : 'A' + String.fromCharCode(64 + n - 26));
+    }
+    return out;
+  },
+  nameOf(c, lab = this.labels()) { return c.kind === 'pc' ? this.pc(c).name || 'Unnamed' : c.kind === 'lair' ? 'Lair action' : this.baseName(c) + (lab.get(c.cid) ? ' ' + lab.get(c.cid) : ''); },
+  live(c) { return !c.hidden && (c.kind !== 'mon' || c.hp > 0); },
   step(dir) {
-    let list = this.slots().filter((sl) => this.live(sl));
+    let list = this.sorted().filter((c) => this.live(c));
     if (!list.length) return;
-    const i = list.findIndex((sl) => sl.key === this.st.turn);
-    if (i < 0) this.st.turn = list[0].key;
+    const i = list.findIndex((c) => c.cid === this.st.turn);
+    if (i < 0) this.st.turn = list[0].cid;
     else if (dir > 0) {
-      if (i + 1 < list.length) this.st.turn = list[i + 1].key;
-      else { this.st.round++; list = this.slots().filter((sl) => this.live(sl)); this.st.turn = list[0].key; }
-    } else if (i > 0) this.st.turn = list[i - 1].key;
-    else if (this.st.round > 1) { this.st.round--; list = this.slots().filter((sl) => this.live(sl)); this.st.turn = list[list.length - 1].key; }
+      if (i + 1 < list.length) this.st.turn = list[i + 1].cid;
+      else { this.st.round++; list = this.sorted().filter((c) => this.live(c)); this.st.turn = list[0].cid; }
+    } else if (i > 0) this.st.turn = list[i - 1].cid;
+    else if (this.st.round > 1) { this.st.round--; list = this.sorted().filter((c) => this.live(c)); this.st.turn = list[list.length - 1].cid; }
     this.save(); this.render();
     $('#toolPane .tr-cur')?.scrollIntoView({ block: 'nearest' });
+    const cur = this.st.list.find((c) => c.cid === this.st.turn);
+    if (this.st.follow && cur && cur.eid && App.isWide() && App.currentId !== cur.eid) App.showDetail(cur.eid); // stat block follows the turn
+  },
+  /** "7", "5+12", "=5+12-3" -> a number; anything else -> null */
+  calc(v) {
+    const s = String(v || '').replace(/^\s*=/, '').replace(/\s+/g, '').replace(/−/g, '-');
+    if (!/^[+\-]?\d+(?:[+\-]\d+)*$/.test(s)) return null;
+    return s.match(/[+\-]?\d+/g).reduce((a, b) => a + parseInt(b, 10), 0);
+  },
+  hurt(cid, sign) {
+    const c = this.st.list.find((x) => x.cid === cid), box = $(`#toolPane [data-tr-dmgin][data-cid="${cid}"]`);
+    const raw = box?.value || '', n = this.calc(raw);
+    if (!c || n === null || n === 0) { box?.focus(); if (raw && n === null) toast('Use numbers with + and −, e.g. 5+12', 'warn'); return; }
+    const before = c.hp;
+    c.hp = Math.max(0, sign < 0 ? c.hp - n : Math.min(Math.max(c.max, c.hp), c.hp + n));
+    c.log = c.log || [];
+    c.log.push({ r: this.st.round, d: c.hp - before, x: /[+\-]/.test(raw.replace(/^\s*=?\s*[+\-]?/, '')) ? raw.replace(/^\s*=/, '').trim() : '' });
+    this.save(); this.render();
+  },
+  /* ----- rolling from the tracker (uses the roller's dice, targets and log) ----- */
+  pseudo(c) { return c.eid ? App.entries.get(c.eid) : { id: 'custom:' + fold(c.bname), name: c.bname, sections: [], fields: {} }; },
+  roll(cid, key) {
+    const c = this.st.list.find((x) => x.cid === cid), e = c && this.pseudo(c);
+    if (!e) return;
+    const acts = Roller.actionsOf(e), a = acts.find((x) => x.key === key);
+    if (!a) return;
+    const tgt = Roller.target();
+    let subs;
+    if (a.kind === 'attack') subs = [Roller.rollAttack(a, tgt)];
+    else if (a.kind === 'save') subs = [Roller.rollSaveFx(a)];
+    else if (a.kind === 'multi') { subs = []; for (const pp of a.parts) { const sub = acts.find((x) => x.key === pp.key); for (let j = 0; j < pp.n; j++) subs.push(sub.kind === 'save' ? Roller.rollSaveFx(sub) : Roller.rollAttack(sub, tgt)); } }
+    else subs = [{ kind: 'note', name: a.name, text: a.text, save: a.save }];
+    Roller.push({ who: this.nameOf(c), eid: c.eid || '', cid, what: a.name, inst: [subs], recharge: a.recharge ? rollDie(6) : 0, rechargeOn: a.recharge || 0 });
+    this.render();
+  },
+  rollSave(cid, k) {
+    const c = this.st.list.find((x) => x.cid === cid), e = c && c.eid && App.entries.get(c.eid);
+    if (!e) return;
+    const mod = Roller.saveMod(e, k), d = Roller.d20();
+    Roller.push({ who: this.nameOf(c), eid: e.id, cid, what: `${AB_FULL[k]} save`, inst: [[{ kind: 'throw', d20: d.rolls, chosen: d.chosen, mod, total: d.chosen + mod }]] });
+    this.render();
+  },
+  activeHtml(c) {
+    const e = this.pseudo(c), key = Abilities.key(c.eid, c.bname);
+    const acts = Roller.actionsOf(e).filter((a) => a.kind !== 'note' || a.extra);
+    const mode = (k, l) => `<button data-tr="mode" data-m="${k}" class="${Roller.st.mode === k ? 'on' : ''}">${l}</button>`;
+    const tsel = Roller.st.party.length ? `<select data-tr-target aria-label="Target"><option value="">no target</option>${Roller.st.party.map((t) => `<option value="${t.id}"${t.id === Roller.st.activeId ? ' selected' : ''}>${esc(t.name || 'Unnamed')} (AC ${Roller.acOf(t)})</option>`).join('')}</select>` : '';
+    const rows = acts.map((a) => `<div class="rr-row"><button class="rr-roll" data-tr="roll" data-cid="${c.cid}" data-key="${a.key}">${esc(a.name)}</button><span class="rr-sum">${esc(Roller.actSummary(a))}${a.sec !== 'Actions' ? ` · ${esc(a.sec.replace(/ Actions$/, ''))}` : ''}</span>`
+      + (a.extra ? `<span class="rr-fight" title="Added for this fight">this fight</span>${c.eid ? `<button class="linkish" data-tr="xkeep" data-key="${esc(key)}" data-xid="${a.extra}">Save to stat block</button>` : ''}<button class="rr-x" data-tr="xdel" data-key="${esc(key)}" data-xid="${a.extra}" aria-label="Remove">×</button>` : '') + '</div>').join('');
+    const saves = c.eid ? `<div class="rr-saves">${ABILS.map((k) => `<button class="rr-sv" data-tr="save" data-cid="${c.cid}" data-k="${k}">${k}<small>${(Roller.saveMod(e, k) >= 0 ? '+' : '') + Roller.saveMod(e, k)}</small></button>`).join('')}</div>` : '';
+    const recent = Roller.log.filter((r) => r.cid === c.cid).slice(0, 3).map((r) => Roller.resultHtml(r)).join('');
+    return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}<span class="rr-seg">${mode('normal', 'Normal')}${mode('adv', 'Adv')}${mode('dis', 'Dis')}</span></div>`
+      + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>') + saves
+      + `<button class="linkish" data-tr="xadd" data-key="${esc(key)}" data-name="${esc(c.bname)}">+ Ability for this fight</button>${recent}</div>`;
   },
   /* ----- markup ----- */
-  dmgHtml(attr, all = false) {
-    return `<span class="tr-dmg"><input class="tr-dn" ${attr} data-tr-dmgin inputmode="numeric" placeholder="${all ? 'all' : 'dmg'}" aria-label="${all ? 'Damage to every creature in the group' : 'Damage or healing'}">`
-      + `<button data-tr="dmg" ${attr} title="${all ? 'Damage every creature in the group' : 'Take this much damage'}">−</button>`
-      + (all ? '' : `<button data-tr="heal" ${attr} title="Heal this much">+</button>`) + '</span>';
-  },
-  hpHtml(c) {
-    return `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><b class="tr-hpv">${c.hp}</b> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight (the stat block says ${c.base})" aria-label="Max HP"></span>`;
-  },
-  rowHtml(sl) {
-    const cur = sl.key === this.st.turn ? ' tr-cur' : '', mark = `<span class="tr-mark">${cur ? '▶' : ''}</span>`;
+  rowHtml(c, lab) {
+    const cur = c.cid === this.st.turn ? ' tr-cur' : '', mark = `<span class="tr-mark">${cur ? '▶' : ''}</span>`;
     const init = (v, attrs) => `<input class="tr-init" ${attrs} data-tr-init value="${esc(v ?? '')}" inputmode="numeric" placeholder="–" aria-label="Initiative">`;
-    const hideBtn = (attr) => `<button class="tr-hide" data-tr="hide" ${attr} title="Hide from the turn order (it can be shown again)" aria-label="Hide">◌</button>`;
-    if (sl.kind === 'pc') {
-      const c = sl.items[0], t = this.pc(c);
+    if (c.kind === 'pc') {
+      const t = this.pc(c);
       return `<div class="tr-row pc${cur}">${mark}${init(t.init, `data-pid="${t.id}"`)}<span class="tr-name">${esc(t.name || 'Unnamed')}</span>`
         + `<label class="tr-acl">AC <input class="tr-n" data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC"></label>`
-        + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"><button class="tr-noteb" data-tr="note" title="Notes" aria-label="Notes">✎</button></div>`;
+        + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"></div>`;
     }
-    if (sl.kind === 'lair') {
-      const c = sl.items[0];
-      return `<div class="tr-row lair${cur}">${mark}${init(c.init, `data-cid="${c.cid}"`)}<span class="tr-name">Lair action</span><input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens"><button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button></div>`;
+    if (c.kind === 'lair') {
+      return `<div class="tr-row lair${cur}">${mark}${init(c.init, `data-cid="${c.cid}"`)}<span class="tr-name">Lair action</span><input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens">${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>`;
     }
-    const first = sl.items[0], e = App.entries.get(first.eid);
-    const name = (e ? e.name : first.name.replace(/ \d+$/, '')) + (sl.letter ? ` ${sl.letter}` : '');
-    if (sl.items.length === 1) {
-      const c = first;
-      return `<div class="tr-row grp one${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-gid="${sl.key}"`)}<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(c.name)}</a><span class="tr-ac">AC ${esc(c.ac || '?')}</span>`
-        + this.hpHtml(c) + this.dmgHtml(`data-cid="${c.cid}"`)
-        + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes"><button class="tr-noteb" data-tr="note" title="Notes" aria-label="Notes">✎</button>${hideBtn(`data-gid="${sl.key}"`)}${this.st.setup !== false ? `<button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove">×</button>` : ''}</div>`;
-    }
-    const open = !this.st.collapsed[sl.key];
-    const hp = sl.items.reduce((a, c) => a + Math.max(0, c.hp), 0), max = sl.items.reduce((a, c) => a + c.max, 0);
-    const head = `<div class="tr-row grp${cur}${hp <= 0 ? ' down' : ''}">${mark}${init(first.init, `data-gid="${sl.key}"`)}`
-      + `<button class="tr-fold" data-tr="fold" data-gid="${sl.key}" aria-expanded="${open}" title="${open ? 'Collapse' : 'Expand'}">${open ? '▾' : '▸'}</button>`
-      + `<a href="#" class="tr-name" data-open="${esc(first.eid)}">${esc(name)}</a><span class="tr-cnt">×${sl.items.length}</span><span class="tr-ac">AC ${esc(first.ac || '?')}</span>`
-      + `<span class="tr-sum">HP ${hp} / ${max}</span>${this.dmgHtml(`data-gid="${sl.key}"`, true)}`
-      + (this.st.setup !== false ? `<span class="tr-pct" title="Change max HP for this group by a percentage of the stat block's HP"><input data-tr-gpct data-gid="${sl.key}" inputmode="numeric" placeholder="±%" aria-label="Max HP change %"></span>` : '')
-      + `${hideBtn(`data-gid="${sl.key}"`)}${this.st.setup !== false ? `<button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove group">×</button>` : ''}</div>`;
-    if (!open) return head;
-    return head + sl.items.map((c) => `<div class="tr-row mem${c.hp <= 0 ? ' down' : ''}"><span class="tr-mark"></span><span class="tr-mname">${esc(c.name)}</span>${this.hpHtml(c)}${this.dmgHtml(`data-cid="${c.cid}"`)}`
-      + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes"><button class="tr-noteb" data-tr="note" title="Notes" aria-label="Notes">✎</button>${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>`).join('');
+    const name = this.nameOf(c, lab), open = this.hist.has(c.cid);
+    const hist = open ? `<div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div>` : '';
+    return `<div class="tr-row mon${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-cid="${c.cid}"`)}`
+      + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}">${esc(name)}</a>` : `<span class="tr-name">${esc(name)}</span>`) + `<span class="tr-ac">AC ${esc(c.ac || '?')}</span>`
+      + `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP"></span>`
+      + `<span class="tr-dmg"><input class="tr-dn" data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage">−</button><button data-tr="heal" data-cid="${c.cid}" title="Heal">+</button></span>`
+      + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes">`
+      + `<button class="tr-hide" data-tr="hide" data-cid="${c.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>${hist}`
+      + (cur && c.hp > 0 ? this.activeHtml(c) : '');
   },
   partyHtml() {
     return Roller.st.party.map((t) => `<div class="tr-prow"><input data-pc="name" data-tid="${t.id}" value="${esc(t.name || '')}" placeholder="Name">`
@@ -6266,7 +6390,8 @@ const Tracker = {
   },
   encountersHtml() {
     const list = this.encounters || [];
-    const summary = (enc) => enc.items.map((x) => `${x.n} × ${App.entries.get(x.eid)?.name || '?'}`).join(', ') + (enc.lairs?.length ? `, ${enc.lairs.length} lair action${enc.lairs.length === 1 ? '' : 's'}` : '');
+    const nm = (x) => (x.eid ? App.entries.get(x.eid)?.name || '?' : x.custom?.name || '?');
+    const summary = (enc) => enc.items.map((x) => `${x.n} × ${nm(x)}`).join(', ') + (enc.lairs?.length ? `, ${enc.lairs.length} lair action${enc.lairs.length === 1 ? '' : 's'}` : '');
     return '<div class="tr-encs">' + (list.length ? list.map((enc) => `<div class="tr-enc"><b>${esc(enc.name)}</b><span class="hint">${esc(summary(enc))}</span><button data-tr="encload" data-id="${enc.id}">Add to fight</button><button class="rr-x" data-tr="encdel" data-id="${enc.id}" aria-label="Delete saved encounter">×</button></div>`).join('')
       : '<p class="hint">Save the monsters (and lair actions) in the current fight to load them again later.</p>')
       + (this.monsters().length ? '<button data-tr="encsave">Save current monsters as an encounter…</button>' : '') + '</div>';
@@ -6275,85 +6400,88 @@ const Tracker = {
     const pane = $('#toolPane');
     if (!pane || Tools.current !== 'tracker') return;
     this.syncParty();
-    const a = document.activeElement, keep = pane.contains(a) && a.matches('input') ? [...a.attributes].filter((x) => x.name.startsWith('data-')).map((x) => `[${x.name}="${CSS.escape(x.value)}"]`).join('') : '';
+    const a = document.activeElement, keep = pane.contains(a) && a.matches('input, select, textarea') ? [...a.attributes].filter((x) => x.name.startsWith('data-') || x.name === 'id').map((x) => (x.name === 'id' ? `#${CSS.escape(x.value)}` : `[${x.name}="${CSS.escape(x.value)}"]`)).join('') : '';
     const keepScroll = pane.querySelector('.rr-scroll')?.scrollTop || 0;
-    const all = this.slots(), shown = all.filter((sl) => !this.hiddenSl(sl)), hidden = all.filter((sl) => this.hiddenSl(sl));
-    const fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0), setup = this.st.setup !== false;
+    const lab = this.labels(), all = this.sorted(), shown = all.filter((c) => !c.hidden), hidden = all.filter((c) => c.hidden);
+    const setup = this.st.setup !== false, fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0);
+    const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
     pane.innerHTML = `<div class="rr-top"><h2>Initiative</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
-      + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}" title="${setup ? 'Hide the party, monster and encounter controls' : 'Show the party, monster and encounter controls'}">${setup ? 'Hide setup' : 'Setup'}</button>`
+      + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
       + '<div class="rr-scroll">'
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
-        + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name…" autocomplete="off">`
-        + `<label>× <input id="trCount" type="number" min="1" max="60" value="1" inputmode="numeric" aria-label="How many"></label><div id="trHits"></div></div>`
+        + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><div id="trHits"></div></div>`
+        + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name"><label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div></details>`
         + `<div class="tr-btns">${fromRoller ? `<button data-tr="fromroller">Add the roller’s ${fromRoller} monster${fromRoller === 1 ? '' : 's'}</button>` : ''}<button data-tr="lair">+ Lair action</button>`
-        + `<span class="tr-pct" title="Change every monster's max HP by a percentage of its stat block HP"><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pctall">Max HP for all</button></span>`
-        + `<button data-tr="foldall">${this.monsters().some((c) => !this.st.collapsed[c.gid]) ? 'Collapse monsters' : 'Expand monsters'}</button>`
+        + `<span class="rr-seg" title="How creatures of the same kind are labelled (in turn order)"><button data-tr="labels" data-v="abc" class="${this.st.labels !== '123' ? 'on' : ''}">A B C</button><button data-tr="labels" data-v="123" class="${this.st.labels === '123' ? 'on' : ''}">1 2 3</button></span>`
+        + (kinds.length ? `<span class="tr-pct" title="Change max HP by a percentage of the stat block's HP"><select id="trPctWho" aria-label="Which monsters"><option value="">All monsters</option>${kinds.map((k) => `<option>${esc(k)}</option>`).join('')}</select><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pct">Max HP</button></span>` : '')
+        + `<label class="hint"><input type="checkbox" data-tr-follow${this.st.follow ? ' checked' : ''}> Stat block follows the turn</label>`
         + '<button data-tr="reset" class="danger">New fight</button></div></div>'
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
-      + `<div class="tr-list">${shown.map((sl) => this.rowHtml(sl)).join('') || '<p class="hint">Add your party and monsters to start.</p>'}</div>`
-      + (hidden.length ? `<h3 class="tr-h">Hidden</h3>${hidden.map((sl) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc((App.entries.get(sl.items[0].eid)?.name || sl.items[0].name) + (sl.letter ? ' ' + sl.letter : ''))}</span>${sl.items.length > 1 ? `<span class="tr-cnt">×${sl.items.length}</span>` : ''}<button data-tr="show" data-gid="${sl.key}">Show</button><button class="rr-x" data-tr="rmgrp" data-gid="${sl.key}" aria-label="Remove">×</button></div>`).join('')}` : '')
+      + `<div class="tr-list">${shown.map((c) => this.rowHtml(c, lab)).join('') || '<p class="hint">Add your party and monsters to start.</p>'}</div>`
+      + (hidden.length ? `<h3 class="tr-h">Hidden</h3>${hidden.map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
       + '</div>';
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
+    const sb = $('#trSearch'); if (sb && this.q) { sb.value = this.q; this.hits(this.q); } // keep the search (and its results) for repeated taps
     if (keep) pane.querySelector(keep)?.focus();
   },
   hits(q) {
+    this.q = q;
     const box = $('#trHits');
     if (!box) return;
     const ids = q.trim() ? App.index.search(q, { type: 'monster' }).slice(0, 30).filter((id) => !isMonGroup(App.entries.get(id))).slice(0, 8) : [];
-    box.innerHTML = ids.map((id) => { const e = App.entries.get(id); return `<button class="rr-hit" data-tr="add" data-id="${id}">${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])} ${esc(e.source || '')}</span></button>`; }).join('');
+    box.innerHTML = ids.map((id) => {
+      const e = App.entries.get(id), n = this.monsters().filter((c) => c.eid === id).length;
+      return `<button class="rr-hit" data-tr="add" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])}${n ? ` · <b>${n} in the fight</b>` : ''}</span></button>`;
+    }).join('');
   },
   setPct(members, pct) {
     for (const c of members) { const nm = Math.max(1, Math.round(c.base * (1 + pct / 100))); c.hp = Math.max(0, c.hp + (nm - c.max)); c.max = nm; }
   },
-  /** Damage (or healing) from the box beside the − / + buttons. */
-  hurt(el, sign) {
-    const d = el.dataset, box = el.closest('.tr-dmg')?.querySelector('[data-tr-dmgin]');
-    const n = Math.abs(this.num(box?.value));
-    if (!Number.isFinite(n) || !n) { box?.focus(); return; }
-    const targets = d.gid ? this.st.list.filter((c) => c.gid === d.gid && c.hp > 0) : this.st.list.filter((c) => c.cid === d.cid);
-    for (const c of targets) c.hp = Math.max(0, Math.min(sign > 0 ? Math.max(c.max, c.hp) : c.hp, c.hp + sign * n));
-    this.save(); this.render();
-  },
   async onClick(ev) {
     const t = ev.target.closest('[data-tr]');
     if (!t) return;
-    const a = t.dataset.tr, st = this.st;
+    const a = t.dataset.tr, st = this.st, find = () => st.list.find((c) => c.cid === t.dataset.cid);
     if (a === 'close') return Tools.show(null);
     if (a === 'pin') return Tools.togglePin();
     if (a === 'next') return this.step(1);
     if (a === 'prev') return this.step(-1);
     if (a === 'setup') { st.setup = st.setup === false; this.save(); this.render(); const sc = $('#toolPane .rr-scroll'); if (sc) sc.scrollTop = 0; return; }
-    if (a === 'note') { const row = t.closest('.tr-row'); row.classList.add('noting'); row.querySelector('.tr-note')?.focus(); return; }
-    if (a === 'dmg') return this.hurt(t, -1);
-    if (a === 'heal') return this.hurt(t, 1);
-    if (a === 'add') {
-      this.add(t.dataset.id, parseInt($('#trCount')?.value, 10) || 1);
-      const s = $('#trSearch'); if (s) { s.value = ''; s.focus(); }
+    if (a === 'dmg') return this.hurt(t.dataset.cid, -1);
+    if (a === 'heal') return this.hurt(t.dataset.cid, 1);
+    if (a === 'hist') { const id = t.dataset.cid; if (this.hist.has(id)) this.hist.delete(id); else this.hist.add(id); return this.render(); }
+    if (a === 'roll') return this.roll(t.dataset.cid, t.dataset.key);
+    if (a === 'save') return this.rollSave(t.dataset.cid, t.dataset.k);
+    if (a === 'mode') { Roller.st.mode = t.dataset.m; Roller.save(); return this.render(); }
+    if (a === 'xadd') return Abilities.add(t.dataset.key, t.dataset.name, () => this.render());
+    if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); return this.render(); }
+    if (a === 'xkeep') { await Abilities.keep(t.dataset.key, t.dataset.xid); return this.render(); }
+    if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
+    if (a === 'add') { this.add(t.dataset.id); return; }
+    if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value); return; }
+    if (a === 'fromroller') { for (const b of Roller.st.board) for (let i = 0; i < b.count; i++) this.add(b.id, { quiet: true }); toast('Added the roller’s monsters', 'ok'); return; }
+    if (a === 'lair') { st.list.push({ cid: uid(), kind: 'lair', init: 20, notes: '' }); this.save(); return this.render(); }
+    if (a === 'hide' || a === 'show') { const c = find(); if (c) { c.hidden = a === 'hide'; if (a === 'hide' && st.turn === c.cid) this.step(1); } this.save(); return this.render(); }
+    if (a === 'pct') {
+      const p = parseFloat(String($('#trPct')?.value || '').replace('%', '')), who = $('#trPctWho')?.value || '';
+      if (Number.isFinite(p)) { this.setPct(this.monsters().filter((c) => !who || this.baseName(c) === who), p); this.save(); this.render(); toast(`${who || 'Every monster'}: max HP is now the stat block ${p >= 0 ? '+' : ''}${p}%`, 'ok'); }
       return;
     }
-    if (a === 'fromroller') { for (const b of Roller.st.board) this.add(b.id, b.count, { quiet: true }); toast('Added the roller’s monsters', 'ok'); return; }
-    if (a === 'lair') { st.list.push({ cid: uid(), kind: 'lair', init: 20, notes: '' }); this.save(); return this.render(); }
-    if (a === 'fold') { st.collapsed[t.dataset.gid] = !st.collapsed[t.dataset.gid]; this.save(); return this.render(); }
-    if (a === 'foldall') { const any = this.monsters().some((c) => !st.collapsed[c.gid]); for (const c of this.monsters()) st.collapsed[c.gid] = any; this.save(); return this.render(); }
-    if (a === 'hide' || a === 'show') { for (const c of st.list) if (c.gid === t.dataset.gid) c.hidden = a === 'hide'; if (a === 'hide' && st.turn === t.dataset.gid) this.step(1); this.save(); return this.render(); }
-    if (a === 'pctall') { const p = parseFloat(String($('#trPct')?.value || '').replace('%', '')); if (Number.isFinite(p)) { this.setPct(this.monsters(), p); this.save(); this.render(); toast(`Every monster's max HP is now the stat block ${p >= 0 ? '+' : ''}${p}%`, 'ok'); } return; }
     if (a === 'rm') { st.list = st.list.filter((c) => c.cid !== t.dataset.cid); this.save(); return this.render(); }
-    if (a === 'rmgrp') { st.list = st.list.filter((c) => c.gid !== t.dataset.gid); this.save(); return this.render(); }
     if (a === 'encsave') {
       const name = await ask('Save this encounter', '<p>Saves the monsters (and lair actions) in this fight, so you can add them to a fight again later.</p><input id="encName" style="width:100%" placeholder="e.g. Goblin ambush">',
         [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]) && ($('#encName').value.trim() || 'Encounter');
       if (!name) return;
       const counts = new Map();
-      for (const c of this.monsters()) counts.set(c.eid, (counts.get(c.eid) || 0) + 1);
-      this.encounters = [...(this.encounters || []), { id: uid(), name, items: [...counts].map(([eid, n]) => ({ eid, n })), lairs: st.list.filter((c) => c.kind === 'lair').map((c) => ({ init: c.init, notes: c.notes })) }];
+      for (const c of this.monsters()) { const k = c.eid || 'custom:' + c.bname; const cur = counts.get(k) || { n: 0, ...(c.eid ? { eid: c.eid } : { custom: { name: c.bname, ac: c.ac, hp: c.base, bonus: c.bonus } }) }; cur.n++; counts.set(k, cur); }
+      this.encounters = [...(this.encounters || []), { id: uid(), name, items: [...counts.values()], lairs: st.list.filter((c) => c.kind === 'lair').map((c) => ({ init: c.init, notes: c.notes })) }];
       this.saveEncounters(); this.encOpen = true; toast(`Saved “${name}”`, 'ok'); return this.render();
     }
     if (a === 'encload') {
       const enc = (this.encounters || []).find((x) => x.id === t.dataset.id);
       if (!enc) return;
-      for (const x of enc.items) this.add(x.eid, x.n, { quiet: true });
+      for (const x of enc.items) for (let i = 0; i < x.n; i++) { if (x.eid) this.add(x.eid, { quiet: true }); else this.addCustom(x.custom.name, x.custom.ac, x.custom.hp, x.custom.bonus, { quiet: true }); }
       for (const l of enc.lairs || []) st.list.push({ cid: uid(), kind: 'lair', init: l.init, notes: l.notes });
       this.save(); this.render(); toast(`Added “${enc.name}” to the fight`, 'ok');
       return;
@@ -6366,9 +6494,10 @@ const Tracker = {
       return;
     }
     if (a === 'reset') {
-      if (!await ask('New fight?', '<p>Removes every monster and lair action and goes back to round 1. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'New fight', value: true, kind: 'primary' }])) return;
+      if (!await ask('New fight?', '<p>Removes every monster and lair action, clears abilities added for this fight, and goes back to round 1. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'New fight', value: true, kind: 'primary' }])) return;
       st.list = st.list.filter((c) => c.kind === 'pc');
-      st.round = 1; st.turn = null; st.collapsed = {}; st.setup = true;
+      st.round = 1; st.turn = null; st.setup = true; this.hist.clear();
+      Roller.st.extras = {}; Roller.save();
       this.save(); this.render();
     }
   },
@@ -6377,21 +6506,21 @@ const Tracker = {
     if ('trInit' in d) {
       const v = el.value.trim(), n = v === '' ? '' : this.num(v);
       if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.init = n; Roller.save(); } }
-      else for (const c of st.list) if ((d.cid && c.cid === d.cid) || (d.gid && c.gid === d.gid)) c.init = n;
+      else { const c = st.list.find((x) => x.cid === d.cid); if (c) c.init = n; }
     } else if ('trAc' in d) {
       const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.ac = el.value.trim(); Roller.save(); }
     } else if ('trMax' in d) {
       const c = st.list.find((x) => x.cid === d.cid), n = this.num(el.value);
       if (c && n > 0) { c.hp = Math.max(0, c.hp + (n - c.max)); c.max = n; }
-    } else if ('trGpct' in d) {
-      const p = parseFloat(el.value.replace('%', ''));
-      if (Number.isFinite(p)) this.setPct(st.list.filter((c) => c.gid === d.gid), p);
     } else if ('trNote' in d) {
       const c = st.list.find((x) => x.cid === d.cid); if (c) c.notes = el.value;
+      this.save(); return; // no redraw: keep typing
     } else if ('trPcnote' in d) {
       const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.notes = el.value; Roller.save(); }
       return;
-    } else return;
+    } else if ('trTarget' in d) { Roller.st.activeId = el.value || null; Roller.save(); return; }
+    else if ('trFollow' in d) { st.follow = el.checked; this.save(); return; }
+    else return;
     this.save(); this.render();
   },
 };
@@ -7424,32 +7553,43 @@ async function boot() {
   $('#toolPane').addEventListener('input', (ev) => {
     if (ev.target.id === 'rrSearch') return Roller.hits(ev.target.value);
     if (ev.target.id === 'trSearch') return Tracker.hits(ev.target.value);
+    if (Tools.current === 'tracker' && ev.target.matches('[data-tr-note], [data-tr-pcnote]')) Tracker.onChange(ev);
     const pc = ev.target.dataset.pc;
     if (pc) {
       const t = Roller.st.party.find((x) => x.id === ev.target.dataset.tid);
       if (t) { t[pc] = ev.target.value; Roller.save(); const eff = ev.target.closest('.rr-pc')?.querySelector('.rr-eff'); if (eff) eff.textContent = '= ' + Roller.acOf(t); }
     }
+    const gk = ev.target.dataset.gen;
+    if (gk) { const g = Roller.st.gen[+ev.target.dataset.i]; if (g) { g[gk] = gk === 'n' ? parseInt(ev.target.value, 10) || 0 : ev.target.value; Roller.save(); } }
     const bal = ev.target.dataset.bal;
     if (bal) { const g = Roller.st.bal[+ev.target.dataset.i]; if (g) { g[bal] = parseInt(ev.target.value, 10) || 1; Roller.save(); } }
   });
   $('#toolPane').addEventListener('change', (ev) => {
     if (ev.target.matches('[data-rr-crit]')) { Roller.st.crit = ev.target.value; Roller.save(); }
+    if (ev.target.matches('select[data-gen]')) { const d = $('#toolPane .rr-diff'); if (d) d.outerHTML = Roller.difficultyHtml(); }
     if (ev.target.matches('.rr-retarget') && ev.target.value) Roller.retarget(ev.target.dataset.rid, ev.target.value);
     if (Tools.current === 'tracker') Tracker.onChange(ev);
   });
   $('#toolPane').addEventListener('toggle', (ev) => {
-    if (ev.target.matches('.rr-diff-more')) Roller.diffOpen = ev.target.open;
+    if (ev.target.matches('details.rr-diff')) Roller.diffOpen = ev.target.open;
+    if (ev.target.matches('.rr-diff-more')) Roller.assessOpen = ev.target.open;
     if (ev.target.matches('.tr-partysec')) Tracker.partyOpen = ev.target.open;
     if (ev.target.matches('.tr-encsec')) Tracker.encOpen = ev.target.open;
   }, true);
   $('#toolPane').addEventListener('keydown', (ev) => {
-    if (ev.target.id === 'rrSearch' && ev.key === 'Enter') { ev.preventDefault(); $('#rrHits .rr-hit')?.click(); }
-    if (ev.target.id === 'trSearch' && ev.key === 'Enter') { ev.preventDefault(); $('#trHits .rr-hit')?.click(); }
-    if (ev.target.matches('[data-tr-dmgin]') && ev.key === 'Enter') { ev.preventDefault(); ev.target.closest('.tr-dmg').querySelector('[data-tr="dmg"]').click(); }
+    if (ev.key !== 'Enter') return;
+    // Handled here: stop it, so the app's "Enter opens the highlighted result" doesn't also fire
+    // (the redraw below moves focus off the box before that shortcut looks).
+    const done = () => { ev.preventDefault(); ev.stopPropagation(); };
+    if (ev.target.id === 'rrSearch') { done(); $('#rrHits .rr-hit')?.click(); }
+    else if (ev.target.id === 'trSearch') { done(); $('#trHits .rr-hit')?.click(); }
+    else if (ev.target.matches('[data-tr-dmgin]')) { done(); ev.target.closest('.tr-dmg').querySelector('[data-tr="dmg"]').click(); }
+    else if (['tcName', 'tcAc', 'tcHp', 'tcInit'].includes(ev.target.id)) { done(); $('#toolPane [data-tr="custom"]')?.click(); }
+    else if (ev.target.matches('#toolPane input')) ev.stopPropagation(); // any other box: Enter is just Enter
   });
   $('#toolPane').addEventListener('focusout', (ev) => {
     if (ev.target.matches('[data-pc]')) setTimeout(() => { if (!$('#toolPane').contains(document.activeElement) || !document.activeElement.matches('[data-pc]')) Tools.render(); }, 0);
-    if (ev.target.matches('[data-bal]')) setTimeout(() => { const d = $('#toolPane .rr-diff'); if (d && !d.contains(document.activeElement)) d.outerHTML = Roller.difficultyHtml(); }, 0);
+    if (ev.target.matches('[data-bal], [data-gen]')) setTimeout(() => { const d = $('#toolPane .rr-diff'); if (d && !d.contains(document.activeElement)) d.outerHTML = Roller.difficultyHtml(); }, 0);
   });
   $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
   $('#tapRoll').addEventListener('change', (ev) => safeLocal.set('dndref.tapRoll', ev.target.checked ? '1' : '0'));

@@ -465,6 +465,41 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; }
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
+.tr-tablewrap { border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
+.tr-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tr-table th { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 600; text-align: left; padding: 5px 4px; white-space: nowrap; background: var(--panel); }
+.tr-table td { padding: 2px 4px; border-top: 1px solid var(--border); vertical-align: middle; white-space: nowrap; background: var(--bg); }
+.tr-table input { height: 30px; min-height: 0; padding: 2px 5px; font-size: 13.5px; border-radius: 6px; }
+.tr-table button { min-height: 0; height: 30px; min-width: 30px; padding: 0 6px; border-radius: 6px; }
+.tr-table .c-init { width: 1%; position: relative; }
+.tr-table .c-init input { width: 34px; text-align: center; font-size: 12px; padding: 2px; }
+.tr-table .tr-mark { position: absolute; left: -1px; top: 50%; transform: translateY(-50%); font-size: 9px; color: var(--accent); }
+.tr-table .c-name { max-width: 170px; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.tr-table .c-name .tr-name { font-weight: 600; }
+.tr-table .c-lab { width: 1%; }
+.tr-table .c-ac input, .tr-table .c-adj input { width: 40px; text-align: center; }
+.tr-table .c-ac .tr-eff { margin-left: 4px; color: var(--accent); }
+.tr-table .c-adj .tr-acx { height: 22px; min-width: 22px; width: 22px; padding: 0; margin-left: 2px; border-radius: 50%; font-size: 13px; }
+.tr-table .c-hp .tr-hpv { font-weight: 700; min-width: 38px; }
+.tr-table .c-hp.bloodied .tr-hpv { color: #b45309; } .tr-table .c-hp.down .tr-hpv { color: #b91c1c; }
+.tr-table .c-max input { width: 46px; text-align: center; }
+.tr-table .c-dmg input { width: 58px; }
+.tr-table .c-pm { width: 1%; padding: 2px 1px; }
+.tr-table .c-note { width: 100%; }
+.tr-table .c-note input { width: 100%; min-width: 80px; }
+.tr-table .c-ctl { width: 1%; }
+.tr-table .c-ctl button { border: 0; background: transparent; min-width: 24px; padding: 0 3px; }
+.tr-table tr.tr-cur > td { background: hsl(215 80% 55% / .12); }
+.tr-table tr.tr-cur > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+.tr-table tr.lair > td { background: hsl(275 40% 50% / .07); }
+.tr-table tr.down > td { opacity: .55; } .tr-table tr.down .tr-name { text-decoration: line-through; }
+.tr-table tr.tr-activerow > td, .tr-table tr.tr-histrow > td { white-space: normal; border-top: 0; background: var(--panel); }
+.tr-table .tr-modtag, .tr-table .tr-mode { margin-left: 5px; font-size: 10px; }
+.fv-bar { margin: 16px 0 8px; }
+.fv-who { font-size: 14px; }
+.fv-extra { background: color-mix(in srgb, #b7791f 10%, transparent); border-radius: 6px; padding: 4px 6px; margin-left: -6px; margin-right: -6px; }
+.fv-extra .rr-fight { font-size: 10px; vertical-align: middle; white-space: nowrap; }
+.fv-extra .rr-x { min-height: 0; height: 24px; width: 24px; padding: 0; }
 #toolPane { container-type: inline-size; }
 .tr-diffwrap { padding: 0 12px 6px; border-bottom: 1px solid var(--border); }
 .tr-diffstrip { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 6px 8px; border-radius: 8px; background: transparent; min-height: 0; }
@@ -4945,10 +4980,10 @@ const App = {
         <span class="head-acts">${e.type === 'monster' && !isMonGroup(e) ? `<button class="col-btn${Tracker.countOf(e.id) ? ' in' : ''}" data-act="enc-add" title="Add one to the fight (Combat tool)">${Tracker.countOf(e.id) ? `In combat ×${Tracker.countOf(e.id)} · +1` : '+ Combat'}</button>` : ''}${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
       </div>
       <div class="d-sub">${subtitleHtml(e, t)}</div>
-      ${e.type === 'monster' && !isMonGroup(e) ? FightView.barHtml(e) : ''}
       ${headChips(e, t.hue)}
       ${renderToc(e)}
       <div class="d-body">${renderEntryBody(e)}</div>
+      ${e.type === 'monster' && !isMonGroup(e) ? FightView.barHtml(e) : ''}
       <div class="d-tools">
         <span class="badge" style="--h:${t.hue}">${esc(t.label)}</span>
         <button data-act="edit" title="Edit (e)">Edit</button>
@@ -5673,7 +5708,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-19.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-19.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6717,19 +6752,36 @@ const FightView = {
     return r ? `<div class="fv-last" data-keep="fvLast">${Roller.resultHtml(r)}</div>` : '';
   },
   barHtml(e) {
-    const ms = this.members(e), c = this.focusFor(e);
-    if (!ms.length) return `<div class="fv-bar fv-tip hint">Tap an action name to roll it.${Tools.current === 'tracker' ? '' : ' Open the initiative tracker (Shift+I) to track it in a fight.'}</div>`;
-    const lab = Tracker.labels();
-    const chips = ms.map((m) => `<button class="fv-who${m === c ? ' on' : ''}${m.hp <= 0 ? ' down' : ''}" data-fv="focus" data-cid="${m.cid}" title="${m.cid === Tracker.st.turn ? 'Its turn now' : 'Show this one'}">${m.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(m, lab))} <small>${m.hp}/${m.max}</small></button>`).join('');
-    const acts = Roller.actionsOf(e, c.cid).filter((a) => a.extra);
-    const rows = acts.map((a) => `<div class="rr-row"><button class="rr-roll" data-fv="roll" data-key="${a.key}">${esc(a.name)}</button><span class="rr-sum">${esc(Roller.actSummary(a))}${Abilities.refHtml(a)}</span>${this.extraCtl(a, c, 'data-fv')}</div>`).join('');
-    return `<div class="fv-bar"><div class="fv-chips">${chips}</div>`
-      + `<div class="fv-ctl">${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xlink">+ Spell, feat, item or power</button><button class="linkish" data-fv="xadd">+ Custom</button></div>`
-      + (rows ? `<div class="fv-extras">${rows}</div>` : '') + '<p class="hint fv-tip">Tap an action name to roll it for this one; tap a box to use one.</p></div>';
+    const c = this.focusFor(e);
+    if (!c) return '';
+    const tsel = Roller.st.party.length ? `<select data-fv-target aria-label="Target"><option value="">no target</option>${Roller.st.party.map((t) => `<option value="${t.id}"${t.id === Roller.st.activeId ? ' selected' : ''}>${esc(t.name || 'Unnamed')} (AC ${Roller.acOf(t)})</option>`).join('')}</select>` : '';
+    const grp = Tracker.chunk(c);
+    const grpSeg = grp.length > 1 && c.cid === Tracker.st.turn ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-fv="grp" data-v="one" class="${Tracker.st.groupRoll ? '' : 'on'}">This one</button><button data-fv="grp" data-v="all" class="${Tracker.st.groupRoll ? 'on' : ''}">All ${grp.length}</button></span>` : '';
+    return `<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
+      + `<div class="fv-ctl">${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xadd">+ Add an ability, spell or power</button></div></div>`;
+  },
+  /** Abilities added for this fight, written into the right section of the stat block. */
+  inject(el, e, c) {
+    const sb = el.querySelector('.statblock');
+    if (!sb) return;
+    const extras = Roller.actionsOf(e, c ? c.cid : null).filter((a) => a.extra);
+    for (const a of extras) {
+      let h = [...sb.querySelectorAll(':scope > h3')].find((x) => x.textContent.trim().toLowerCase() === a.sec.toLowerCase());
+      if (!h) { h = document.createElement('h3'); h.textContent = a.sec; sb.appendChild(h); }
+      let at = h;
+      while (at.nextElementSibling && at.nextElementSibling.tagName !== 'H3') at = at.nextElementSibling;
+      Fmt.sb = true;
+      let body;
+      try { body = rich(a.text); } finally { Fmt.sb = false; }
+      at.insertAdjacentHTML('afterend', `<p class="sb-item fv-extra"><b><i>${esc(a.name)}.</i></b> ${body} <span class="rr-fight" title="Added for this fight only">${a.one ? 'this fight · only this one' : 'this fight'}</span>`
+        + (!String(a.xkey).startsWith('custom:') ? ` <button class="linkish" data-fv="xkeep" data-key="${esc(a.xkey)}" data-xid="${a.extra}"${c ? ` data-cid="${c.cid}"` : ''}>Keep</button>` : '')
+        + ` <button class="rr-x" data-fv="xdel" data-key="${esc(a.xkey)}" data-xid="${a.extra}" aria-label="Remove ${esc(a.name)}">×</button></p>`);
+    }
   },
   /** Make action names rollable and add use boxes. */
   enhance(el, e) {
     const c = this.focusFor(e), acts = Roller.actionsOf(e, c ? c.cid : null), owner = c ? c.cid : 'e:' + e.id;
+    this.inject(el, e, c);
     const SECT = { traits: 'Traits', actions: 'Actions', 'bonus actions': 'Bonus Actions', reactions: 'Reactions', 'legendary actions': 'Legendary Actions', 'mythic actions': 'Mythic Actions' };
     for (const b of el.querySelectorAll('.statblock .sb-item > b:first-child')) {
       const name = b.textContent.trim().replace(/\.$/, '');
@@ -6771,7 +6823,8 @@ const FightView = {
     if (a === 'focus') { Tracker.focus = t.dataset.cid; return this.refresh(); }
     if (a === 'scope') { this.scope = t.dataset.v; Tracker.render(); return this.refresh(); }
     if (a === 'mode' && c) { c.mode = t.dataset.m === 'normal' ? undefined : t.dataset.m; Tracker.save(); Tracker.render(); return this.refresh(); }
-    if ((a === 'xlink' || a === 'xadd') && c) return this.addFor(c, a === 'xlink');
+    if ((a === 'xlink' || a === 'xadd') && c) return this.addFor(c, false);
+    if (a === 'grp') { Tracker.st.groupRoll = t.dataset.v === 'all'; Tracker.save(); Tracker.render(); return this.refresh(); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); Tracker.render(); return this.refresh(); }
     if (a === 'xkeep') { await this.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); Tracker.render(); return this.refresh(); }
     if (a === 'use') {
@@ -6837,7 +6890,7 @@ const Tracker = {
     const same = this.monsters().filter((x) => (x.eid || 'custom:' + fold(x.bname)) === (c.eid || 'custom:' + fold(c.bname)));
     const lastGid = same.length ? same[same.length - 1].gid : null, inChunk = same.filter((x) => x.gid === lastGid).length;
     if (lastGid && inChunk < 3) { const m = same.find((x) => x.gid === lastGid); c.gid = lastGid; c.d20 = m.d20; c.init = m.init; }
-    else { c.gid = uid(); c.d20 = rollDie(20); c.init = c.d20 + bonus; }
+    else { c.gid = uid(); c.init = ''; }
     this.st.list.push(c);
   },
   add(eid, { quiet = false, noRender = false } = {}) {
@@ -6971,43 +7024,44 @@ const Tracker = {
     const grpSeg = grp.length > 1 ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-tr="grp" data-v="one" class="${this.st.groupRoll ? '' : 'on'}">This one</button><button data-tr="grp" data-v="all" class="${this.st.groupRoll ? 'on' : ''}" title="Roll attacks for every ${esc(this.baseName(c))} on this initiative">All ${grp.length}</button></span>` : '';
     return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
       + saves + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>')
-      + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xlink" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat, item or power</button><button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
+      + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Add an ability, spell or power</button></div>${recent}</div>`;
   },
   /* ----- markup ----- */
+  /** Wide screen with the stat block beside the list: the turn's details live on the stat block instead. */
+  sideBySide() { return App.isWide() && this.st.follow !== false; },
   rowHtml(c, lab) {
-    const cur = c.cid === this.st.turn ? ' tr-cur' : '', mark = `<span class="tr-mark">${cur ? '▶' : ''}</span>`;
-    const init = (v, attrs) => `<input class="tr-init" ${attrs} data-tr-init value="${esc(v ?? '')}" inputmode="numeric" placeholder="–" aria-label="Initiative">`;
+    const cur = c.cid === this.st.turn ? ' tr-cur' : '';
+    const init = (v, attrs) => `<td class="c-init">${cur ? '<span class="tr-mark">▶</span>' : ''}<input ${attrs} data-tr-init value="${esc(v ?? '')}" inputmode="numeric" placeholder="–" aria-label="Initiative"></td>`;
+    const adj = (v, attrs, has) => `<td class="c-adj"><input class="tr-adj" ${attrs} data-tr-acadj value="${esc(v || '')}" inputmode="numeric" placeholder="±" aria-label="AC change (Shield, cover…)">${has ? `<button class="tr-acx" data-tr="acclear" ${attrs} title="Clear the AC change" aria-label="Clear the AC change">×</button>` : ''}</td>`;
+    const tail = (c2) => `<td class="c-ctl">${c2 && c2.kind === 'mon' ? `<button class="tr-hide" data-tr="hide" data-cid="${c2.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>` : ''}${c2 && c2.kind !== 'pc' && this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c2.cid}" aria-label="Remove">×</button>` : ''}</td>`;
     if (c.kind === 'pc') {
-      const t = this.pc(c);
-      return `<div class="tr-row pc${cur}">${mark}${init(t.init, `data-pid="${t.id}"`)}<span class="tr-name">${esc(t.name || 'Unnamed')}</span>`
-        + `<label class="tr-acl">AC <input class="tr-n" data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC"></label>`
-        + `<label class="tr-acl" title="Temporary AC change: Shield, cover, Haste…">± <input class="tr-n tr-adj" data-pid="${t.id}" data-tr-acadj value="${esc(t.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>`
-        + (this.num(t.acAdj) ? `<b class="tr-eff" title="AC with the adjustment">= ${Roller.acOf(t)}</b><button class="tr-acx" data-tr="acclear" data-pid="${t.id}" title="Clear the AC change" aria-label="Clear the AC change">×</button>` : '')
-        + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"></div>`;
-    }
-    if (c.kind === 'mon') {
-      // monsters: type the d20 (shared by its initiative chunk); the bonus is added
-      var initBox = `<span class="tr-initw" title="Type the d20 roll; ${c.bonus >= 0 ? '+' : '−'}${Math.abs(c.bonus || 0)} is added">`
-        + `<input class="tr-init tr-d20" data-cid="${c.cid}" data-tr-d20 value="${esc(c.d20 ?? '')}" inputmode="numeric" placeholder="d20" aria-label="d20 roll for initiative">`
-        + `<small>${c.bonus >= 0 ? '+' : '−'}${Math.abs(c.bonus || 0)} = <b>${esc(c.init ?? '?')}</b></small></span>`;
+      const t = this.pc(c), has = !!this.num(t.acAdj);
+      return `<tr class="pc${cur}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-name">${esc(t.name || 'Unnamed')}</span></td><td class="c-lab"></td>`
+        + `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>`
+        + adj(t.acAdj, `data-pid="${t.id}"`, has)
+        + `<td class="c-hp"></td><td class="c-max"></td><td class="c-dmg" colspan="3"></td>`
+        + `<td class="c-note"><input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></td>${tail(null)}</tr>`;
     }
     if (c.kind === 'lair') {
-      return `<div class="tr-row lair${cur}">${mark}${init(c.init, `data-cid="${c.cid}"`)}<span class="tr-name">Lair action</span><input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens">${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>`;
+      return `<tr class="lair${cur}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name" colspan="2"><span class="tr-name">Lair action</span></td>`
+        + `<td class="c-note" colspan="8"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens" aria-label="What happens"></td>${tail(c)}</tr>`;
     }
-    const name = this.nameOf(c, lab), open = this.hist.has(c.cid);
-    const hist = open ? `<div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div>` : '';
-    return `<div class="tr-row mon${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${initBox}`
-      + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Open its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`)
-      + `<button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button>`
-      + (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">modified</span>' : '')
-      + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}" title="${c.mode === 'adv' ? 'Rolls with advantage' : 'Rolls with disadvantage'}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '')
-      + `<span class="tr-ac">AC ${this.num(c.acAdj) && Number.isFinite(this.num(c.ac)) ? `<b class="tr-eff" title="${esc(c.ac)} ${this.num(c.acAdj) > 0 ? '+' : '−'} ${Math.abs(this.num(c.acAdj))}">${this.num(c.ac) + this.num(c.acAdj)}</b>` : esc(c.ac || '?')}</span>`
-      + `<label class="tr-acl" title="Temporary AC change: Shield, cover…">± <input class="tr-n tr-adj" data-cid="${c.cid}" data-tr-acadj value="${esc(c.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>${this.num(c.acAdj) ? `<button class="tr-acx" data-tr="acclear" data-cid="${c.cid}" title="Clear the AC change" aria-label="Clear the AC change">×</button>` : ''}`
-      + `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP"></span>`
-      + `<span class="tr-dmg"><input class="tr-dn" data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage">−</button><button data-tr="heal" data-cid="${c.cid}" title="Heal">+</button></span>`
-      + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes">`
-      + `<button class="tr-hide" data-tr="hide" data-cid="${c.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>${hist}`
-      + (cur && c.hp > 0 ? this.activeHtml(c) : '');
+    const open = this.hist.has(c.cid), has = !!this.num(c.acAdj), eff = has && Number.isFinite(this.num(c.ac)) ? this.num(c.ac) + this.num(c.acAdj) : null;
+    const tags = (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">mod</span>' : '')
+      + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '');
+    const row = `<tr class="mon${cur}${c.hp <= 0 ? ' down' : ''}">${init(c.init, `data-cid="${c.cid}"`)}`
+      + `<td class="c-name">${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${tags}</td>`
+      + `<td class="c-lab"><button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button></td>`
+      + `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
+      + adj(c.acAdj, `data-cid="${c.cid}"`, has)
+      + `<td class="c-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button></td>`
+      + `<td class="c-max"><input data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP"></td>`
+      + `<td class="c-dmg"><input data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"></td>`
+      + `<td class="c-pm"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage" aria-label="Take damage">−</button></td><td class="c-pm"><button data-tr="heal" data-cid="${c.cid}" title="Heal" aria-label="Heal">+</button></td>`
+      + `<td class="c-note"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></td>${tail(c)}</tr>`;
+    const hist = open ? `<tr class="tr-histrow"><td></td><td colspan="11"><div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div></td></tr>` : '';
+    const active = cur && c.hp > 0 && !this.sideBySide() ? `<tr class="tr-activerow"><td colspan="12">${this.activeHtml(c)}</td></tr>` : '';
+    return row + hist + active;
   },
   partyHtml() {
     return Roller.st.party.map((t) => `<div class="tr-prow"><input data-pc="name" data-tid="${t.id}" value="${esc(t.name || '')}" placeholder="Name">`
@@ -7044,7 +7098,7 @@ const Tracker = {
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
         + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><div id="trHits"></div></div>`
         + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name">${QuickStats.rows().length ? `<label title="Fill AC and HP and give it attacks from the Monster Statistics by Challenge Rating table">CR <select id="tcCr"><option value="">–</option>${QuickStats.rows().map((q) => `<option value="${esc(q.cr)}">${esc(q.cr)}</option>`).join('')}</select></label>` : ''}<label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div><div id="tcQuick" class="hint"></div></details>`
-        + `<div class="tr-btns">${this.monsters().length ? '<button data-tr="reroll" title="Roll a new d20 for every monster group">Roll monster initiative</button>' : ''}<button data-tr="lair">+ Lair action</button>`
+        + `<div class="tr-btns">${this.monsters().length ? '<button data-tr="reroll" title="Fills each monster group’s initiative with d20 + its initiative bonus. Or just type the numbers.">Roll monster initiative</button>' : ''}<button data-tr="lair">+ Lair action</button>`
         + `<span class="rr-seg" title="How creatures of the same kind are labelled (in turn order)"><button data-tr="labels" data-v="abc" class="${this.st.labels !== '123' ? 'on' : ''}">A B C</button><button data-tr="labels" data-v="123" class="${this.st.labels === '123' ? 'on' : ''}">1 2 3</button></span>`
         + (kinds.length ? `<span class="tr-pct" title="Change max HP by a percentage of the stat block's HP"><select id="trPctWho" aria-label="Which monsters"><option value="">All monsters</option>${kinds.map((k) => `<option>${esc(k)}</option>`).join('')}</select><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pct">Max HP</button></span>` : '')
         + `<label class="hint"><input type="checkbox" data-tr-follow${this.st.follow ? ' checked' : ''}> Stat block follows the turn</label>`
@@ -7052,7 +7106,7 @@ const Tracker = {
         + (anyAdj ? '<button data-tr="acclearall" title="Clear every AC ± change">Clear all AC ±</button>' : '')
         + '<button data-tr="reset" class="danger">New fight</button></div></div>'
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
-      + `<div class="tr-list">${shown.map((c) => this.rowHtml(c, lab)).join('') || '<p class="hint">Add your party and monsters to start.</p>'}</div>`
+      + (shown.length ? `<div class="tr-tablewrap"><table class="tr-table"><thead><tr><th class="c-init" title="Initiative">Init</th><th>Name</th><th></th><th>AC</th><th title="AC change">±</th><th>HP</th><th>Max</th><th>Damage</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}</tbody></table></div>` : '<p class="hint">Add your party and monsters to start.</p>')
       + (hidden.length ? `<h3 class="tr-h">Hidden</h3>${hidden.map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
       + `<details class="rr-sec rr-logsec" data-keep="rrLog"${Keep.open('rrLog', false) ? ' open' : ''}><summary class="rr-logh"><h3>Roll log${Roller.log.length ? ` (${Roller.log.length})` : ''}</h3>${Roller.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</summary>${Roller.log.slice(0, 40).map((r) => Roller.resultHtml(r)).join('') || '<p class="hint">Every roll is kept here.</p>'}</details>`
       + '</div>';
@@ -7089,7 +7143,7 @@ const Tracker = {
     if (a === 'roll') return this.roll(t.dataset.cid, t.dataset.key);
     if (a === 'save') return this.rollSave(t.dataset.cid, t.dataset.k);
     if (a === 'mode') { const c = find(); if (c) { c.mode = t.dataset.m === 'normal' ? undefined : t.dataset.m; this.save(); } return this.render(); }
-    if (a === 'xadd' || a === 'xlink') { const c = find(); return c && FightView.addFor(c, a === 'xlink'); }
+    if (a === 'xadd' || a === 'xlink') { const c = find(); return c && FightView.addFor(c, false); }
     if (a === 'scope') { FightView.scope = t.dataset.v; return this.render(); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); this.render(); return FightView.refresh(); }
     if (a === 'xkeep') { await FightView.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); this.render(); return FightView.refresh(); }
@@ -7098,7 +7152,7 @@ const Tracker = {
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
-    if (a === 'reroll') { const seen = new Map(); for (const c of this.monsters()) { if (!seen.has(c.gid)) seen.set(c.gid, rollDie(20)); c.d20 = seen.get(c.gid); c.init = c.d20 + (c.bonus || 0); } this.save(); return this.render(); }
+    if (a === 'reroll') { const seen = new Map(); for (const c of this.monsters()) { if (!seen.has(c.gid)) seen.set(c.gid, rollDie(20) + (c.bonus || 0)); c.init = seen.get(c.gid); } this.save(); return this.render(); }
     if (a === 'diff') { this.diffOpen = !this.diffOpen; return this.render(); }
     if (a === 'acclear') { if (t.dataset.pid) { const p = Roller.st.party.find((x) => x.id === t.dataset.pid); if (p) { p.acAdj = ''; Roller.save(); } } else { const c = find(); if (c) c.acAdj = ''; } this.save(); return this.render(); }
     if (a === 'acclearall') { for (const p of Roller.st.party) p.acAdj = ''; for (const c of this.monsters()) c.acAdj = ''; Roller.save(); this.save(); return this.render(); }
@@ -7144,8 +7198,10 @@ const Tracker = {
       this.save(); this.render();
     }
   },
+  later() { clearTimeout(this._lt); this._lt = setTimeout(() => this.render(), 0); },
   onChange(ev) {
     const el = ev.target, d = el.dataset, st = this.st;
+    const render = () => this.later();
     if (el.id === 'tcCr') {
       const q = el.value ? QuickStats.get(el.value) : null, ac = $('#tcAc'), hp = $('#tcHp'), box = $('#tcQuick');
       if (q) { if (ac) ac.value = q.ac; if (hp) hp.value = q.hp; }
@@ -7155,11 +7211,11 @@ const Tracker = {
     if ('trD20' in d) {
       const c = st.list.find((x) => x.cid === d.cid), v = this.num(el.value);
       if (c && Number.isFinite(v)) for (const m of st.list.filter((x) => x.gid && x.gid === c.gid)) { m.d20 = v; m.init = v + (m.bonus || 0); }
-      this.save(); this.render(); return;
+      this.save(); render(); return;
     } else if ('trInit' in d) {
       const v = el.value.trim(), n = v === '' ? '' : this.num(v);
       if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.init = n; Roller.save(); } }
-      else { const c = st.list.find((x) => x.cid === d.cid); if (c) c.init = n; }
+      else { const c = st.list.find((x) => x.cid === d.cid); if (c) { if (c.kind === 'mon' && c.gid) for (const m of st.list.filter((x) => x.gid === c.gid)) m.init = n; else c.init = n; } }
     } else if ('trAc' in d) {
       const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.ac = el.value.trim(); Roller.save(); }
     } else if ('trAcadj' in d) {
@@ -7178,7 +7234,7 @@ const Tracker = {
     } else if ('trTarget' in d) { Roller.st.activeId = el.value || null; Roller.save(); return; }
     else if ('trFollow' in d) { st.follow = el.checked; this.save(); return; }
     else return;
-    this.save(); this.render();
+    this.save(); render();
   },
 };
 
@@ -7643,7 +7699,7 @@ function wireEvents() {
       if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.navigate(linkRow.dataset.id);
       return;
     }
-    const fv = ev.target.closest('#detail [data-fv]');
+    const fv = ev.target.closest('#detail [data-fv]:not(select)');
     if (fv) { ev.preventDefault(); FightView.onClick(fv).catch((err) => logError('Fight', err)); return; }
     const hl = safeLocal.get('dndref.tapRoll') !== '0' && ev.target.closest('#detail .d-body .hl-tohit, #detail .d-body .hl-dmg');
     if (hl) { Roller.quick(hl); return; }
@@ -8246,12 +8302,17 @@ async function boot() {
     else if (['tcName', 'tcAc', 'tcHp', 'tcInit', 'tcCr'].includes(ev.target.id)) { done(); $('#toolPane [data-tr="custom"]')?.click(); }
     else if (ev.target.matches('#toolPane input')) ev.stopPropagation(); // any other box: Enter is just Enter
   });
+  // numbers in the table: focusing selects them, so you can just type over
+  $('#toolPane').addEventListener('focusin', (ev) => { const el = ev.target; if (el.matches('.tr-table input[inputmode="numeric"]')) { el.select(); el._fresh = true; } });
+  $('#toolPane').addEventListener('mouseup', (ev) => { const el = ev.target; if (el._fresh) { ev.preventDefault(); el.select(); } el._fresh = false; });
+  $('#toolPane').addEventListener('touchend', (ev) => { const el = ev.target; if (el._fresh) setTimeout(() => el.select(), 0); el._fresh = false; });
   $('#toolPane').addEventListener('focusout', (ev) => {
     if (ev.target.matches('[data-pc]')) setTimeout(() => { if (!$('#toolPane').contains(document.activeElement) || !document.activeElement.matches('[data-pc]')) Tools.render(); }, 0);
     if (ev.target.matches('[data-bal], [data-gen]')) Tracker.refreshDiff();
   });
   $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
   Keep.init();
+  $('#detail').addEventListener('change', (ev) => { if (ev.target.matches('[data-fv-target]')) { Roller.st.activeId = ev.target.value || null; Roller.save(); Tracker.render(); } });
   $('#tapRoll').addEventListener('change', (ev) => safeLocal.set('dndref.tapRoll', ev.target.checked ? '1' : '0'));
   // Collections: right-click or long-press a star; chips in the Favourites tab; buttons in the entry pane.
   const starOf = (t) => t.closest && t.closest('.row [data-act="fav"], .d-head [data-act="fav"]');

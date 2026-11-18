@@ -465,6 +465,25 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; }
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
+#toolPane { container-type: inline-size; }
+.tr-diffwrap { padding: 0 12px 6px; border-bottom: 1px solid var(--border); }
+.tr-diffstrip { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 6px 8px; border-radius: 8px; background: transparent; min-height: 0; }
+.tr-ds-h { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 13.5px; }
+.tr-ds-h .hint { font-size: 12px; }
+.tr-ds-chev { margin-left: auto; color: var(--muted); }
+.tr-diffstrip .rr-bar { margin: 2px 0 14px; display: block; }
+.rr-bar .mark i { white-space: nowrap; }
+.tr-initw { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
+.tr-initw small { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.tr-initw small b { color: var(--text, inherit); font-size: 12.5px; }
+.tr-acx { min-height: 0; height: 24px; width: 24px; padding: 0; border-radius: 50%; font-size: 14px; line-height: 1; align-self: center; }
+@container (max-width: 700px) { .tr-row .tr-note { flex: 1 1 100%; } }
+#rollPop { position: fixed; z-index: 1003; right: 14px; bottom: 14px; width: min(440px, calc(100vw - 28px)); max-height: 55vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px rgb(0 0 0 / .3); padding: 8px 10px 4px; }
+#rollPop .rr-card { margin: 0; border: 0; box-shadow: none; padding-right: 30px; }
+#rollPop .rp-x { position: absolute; top: 6px; right: 6px; width: 34px; height: 34px; min-height: 0; padding: 0; border-radius: 50%; font-size: 18px; }
+#rollPop.flash { animation: rpIn .18s ease-out; }
+@keyframes rpIn { from { transform: translateY(8px); opacity: .4; } to { transform: none; opacity: 1; } }
+@media (max-width: 640px) { #rollPop { left: 8px; right: 8px; bottom: 8px; width: auto; max-height: 50vh; } }
 /* fight view on the stat block page */
 .fv-bar { margin: 8px 0 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--accent, #3b6fd8) 6%, var(--panel)); display: flex; flex-direction: column; gap: 8px; }
 .fv-bar.fv-tip { padding: 6px 10px; background: transparent; border-style: dashed; }
@@ -485,9 +504,9 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 @media (pointer: coarse) { .fv-use { width: 28px; height: 28px; } .fv-use.on::after { line-height: 24px; } }
 .fv-last { position: sticky; bottom: 0; z-index: 3; margin-top: 10px; box-shadow: 0 -6px 16px rgb(0 0 0 / .12); border-radius: 10px; background: var(--panel); max-height: 32vh; overflow: auto; }
 .fv-last .rr-card { margin: 0; }
-.tr-lab { min-height: 0; height: 26px; align-self: center; padding: 0 8px; font-size: 12.5px; font-weight: 600; border-radius: 6px; margin-left: 4px; line-height: 1; }
+#toolPane .tr-row .tr-lab { min-height: 0; height: 26px; min-width: 0; width: auto; align-self: center; padding: 0 8px; font-size: 12.5px; font-weight: 600; border-radius: 6px; margin-left: 4px; line-height: 1; }
 .tr-modtag { align-self: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border-radius: 999px; background: color-mix(in srgb, #c2410c 18%, transparent); }
-.tr-lab.empty { opacity: .35; font-weight: 400; }
+#toolPane .tr-row .tr-lab.empty { opacity: .3; font-weight: 400; border-style: dashed; background: transparent; }
 .tr-hitrow { display: flex; align-items: stretch; gap: 6px; }
 .tr-hitrow .rr-hit { flex: 1; }
 .tr-step { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--border); border-radius: 8px; padding: 0 2px; }
@@ -887,7 +906,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 <div id="banner" class="banner" hidden></div>
 
 <main class="layout">
-  <section id="toolPane" aria-label="Encounter roller" hidden></section>
+  <section id="toolPane" aria-label="Combat" hidden></section>
   <section id="listPane" aria-label="Results">
     <div class="list-search" id="listSearch" hidden>
       <span class="clearable"><input id="listQ" type="search" autocomplete="off" spellcheck="false" placeholder="Filter…" aria-label="Filter this tab" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span>
@@ -4923,8 +4942,7 @@ const App = {
       <div class="d-top">${prev ? `<button class="nav-back" data-act="nav-back" title="Back (Alt+←)">← ${esc(prev.name)}</button>` : ''}<button class="back-btn" data-act="back">☰ List</button></div>
       <div class="d-head">
         <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}${spellIcons(e)}</h2>
-        <span class="head-acts">${e.type === 'monster' && !isMonGroup(e) ? `<button class="col-btn${Roller.countOf(e.id) ? ' in' : ''}" data-act="enc-add" title="Add to the encounter roller">${Roller.countOf(e.id) ? `Encounter ×${Roller.countOf(e.id)}` : '+ Encounter'}</button>`
-          + (Tools.current === 'tracker' ? `<button class="col-btn" data-act="init-add" title="Add one to the initiative tracker">+ Initiative</button>` : '') : ''}${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
+        <span class="head-acts">${e.type === 'monster' && !isMonGroup(e) ? `<button class="col-btn${Tracker.countOf(e.id) ? ' in' : ''}" data-act="enc-add" title="Add one to the fight (Combat tool)">${Tracker.countOf(e.id) ? `In combat ×${Tracker.countOf(e.id)} · +1` : '+ Combat'}</button>` : ''}${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
       </div>
       <div class="d-sub">${subtitleHtml(e, t)}</div>
       ${e.type === 'monster' && !isMonGroup(e) ? FightView.barHtml(e) : ''}
@@ -5655,7 +5673,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.9'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-19.1'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6072,7 +6090,7 @@ const Roller = {
     r.id = uid(); r.at = Date.now(); r.mode = r.mode || 'normal';
     this.log.unshift(r); this.saveLog();
     this.last = r.id;
-    this.render();
+    RollPop.show(r);
   },
   retarget(rid, tid) {
     const r = this.log.find((x) => x.id === rid), t = this.st.party.find((x) => x.id === tid);
@@ -6082,14 +6100,16 @@ const Roller = {
   },
 
   /** Roll one action for one creature and log it. Recharge is rolled at the start of its turn (tracker), not here. */
-  rollAction(e, acts, a, { who, cid = '', mode = 'normal' } = {}) {
+  rollAction(e, acts, a, { who, cid = '', mode = 'normal', many = null } = {}) {
     const tgt = this.target();
-    let subs;
-    if (a.kind === 'attack') subs = [this.rollAttack(a, tgt, mode)];
-    else if (a.kind === 'save' || a.kind === 'damage') subs = [this.rollSaveFx(a)];
-    else if (a.kind === 'multi') { subs = []; for (const pp of a.parts) { const sub = acts.find((x) => x.key === pp.key); for (let j = 0; j < pp.n; j++) subs.push(sub.kind === 'save' ? this.rollSaveFx(sub) : this.rollAttack(sub, tgt, mode)); } }
-    else subs = [{ kind: 'note', name: a.name, text: a.text, save: a.save }];
-    this.push({ who: who || e.name, eid: e.id && !String(e.id).startsWith('custom:') ? e.id : '', cid, what: a.name, inst: [subs], mode: a.kind === 'attack' || a.kind === 'multi' ? mode : 'normal' });
+    const one = (md) => {
+      if (a.kind === 'attack') return [this.rollAttack(a, tgt, md)];
+      if (a.kind === 'save' || a.kind === 'damage') return [this.rollSaveFx(a)];
+      if (a.kind === 'multi') { const subs = []; for (const pp of a.parts) { const sub = acts.find((x) => x.key === pp.key); for (let j = 0; j < pp.n; j++) subs.push(sub.kind === 'save' ? this.rollSaveFx(sub) : this.rollAttack(sub, tgt, md)); } return subs; }
+      return [{ kind: 'note', name: a.name, text: a.text, save: a.save }];
+    };
+    const inst = many ? many.map((m) => one(m.mode || 'normal')) : [one(mode)];
+    this.push({ who: who || e.name, eid: e.id && !String(e.id).startsWith('custom:') ? e.id : '', cid, what: a.name, inst, mode: a.kind === 'attack' || a.kind === 'multi' ? mode : 'normal' });
   },
   /* ----- markup ----- */
   diceHtml(c) {
@@ -6156,19 +6176,45 @@ const Roller = {
     return '<div class="rr-bal">' + rows.map((g, i) => `<span class="rr-balrow"><input data-bal="n" data-i="${i}" type="number" min="1" max="12" inputmode="numeric" value="${g.n}" aria-label="Number of characters"> characters of level <input data-bal="lv" data-i="${i}" type="number" min="1" max="20" inputmode="numeric" value="${g.lv}" aria-label="Level">${rows.length > 1 ? `<button class="rr-x" data-rr="baldel" data-i="${i}" aria-label="Remove">×</button>` : ''}</span>`).join('')
       + '<button class="linkish" data-rr="baladd">+ another level</button></div>';
   },
-  difficultyHtml() {
+  /** The party levels and the monsters being rated: every monster in the fight, plus "monsters by CR". */
+  rated() {
     if (!this.st.bal || !this.st.bal.length) this.st.bal = [{ n: 4, lv: 1 }];
+    // until you set the party size yourself, it is the number of players in the party list
+    if (!this.st.balSet && this.st.party.length && this.st.bal.length === 1) this.st.bal[0].n = this.st.party.length;
     const levels = this.st.bal.flatMap((g) => Array.from({ length: Math.max(0, Math.min(12, g.n | 0)) }, () => Math.max(1, Math.min(20, g.lv | 0))));
     const gen = (this.st.gen || []).map((g) => ({ cr: g.cr, count: Math.max(0, g.n | 0) }));
-    const mons = [...this.st.board.map((b) => ({ cr: App.entries.get(b.id)?.fields.CR, count: b.count })), ...gen].filter((m) => crValue(m.cr) !== null && m.count > 0);
+    const byCr = new Map();
+    for (const c of Tracker.monsters()) {
+      const cr = c.eid ? App.entries.get(c.eid)?.fields.CR : c.cr !== undefined ? crText(c.cr) : null;
+      const k = String(cr ?? '').split(/[\s(]/)[0];
+      if (crValue(k) !== null) byCr.set(k, (byCr.get(k) || 0) + 1);
+    }
+    const mons = [...[...byCr].map(([cr, count]) => ({ cr, count })), ...gen].filter((m) => crValue(m.cr) !== null && m.count > 0);
+    return { levels, mons, r: mons.length && levels.length ? rateEncounter(levels, mons) : null };
+  },
+  /** Always-visible strip: rating, bar, tap to open the details. */
+  diffStrip(open) {
+    const { r, levels } = this.rated();
+    const cls = r ? { Low: 'low', Moderate: 'mod', High: 'high', 'Above High': 'over' }[r.r24] : '';
+    return `<button class="tr-diffstrip" data-tr="diff" aria-expanded="${open}" title="Encounter difficulty (Mike Shea’s calculator)"><span class="tr-ds-h"><b>Difficulty</b>${r ? ` <span class="rr-badge ${cls}">${r.r24}</span><span class="hint">${r.n} monster${r.n === 1 ? '' : 's'} · ${r.xp.toLocaleString('en-GB')} XP · party of ${levels.length}, level ${r.avg}</span>` : ' <span class="hint">add monsters to rate the fight</span>'}<span class="tr-ds-chev">${open ? '▾' : '▸'}</span></span>${r ? this.barHtml(r) : ''}</button>`;
+  },
+  barHtml(r) {
+    const cls = { Low: 'low', Moderate: 'mod', High: 'high', 'Above High': 'over' }[r.r24];
+    const max = Math.max(r.b24[2] * 1.25, r.xp * 1.05), pct = (v) => Math.min(100, (v / max) * 100);
+    let last = -100;
+    const marks = r.b24.map((v, k) => { const p = pct(v), show = p - last >= 11; if (show) last = p; return `<span class="mark" style="left:${p.toFixed(1)}%" title="${['Low', 'Moderate', 'High'][k]}: ${v} XP">${show || k === 2 ? `<i>${['Low', 'Mod', 'High'][k]}</i>` : ''}</span>`; }).join('');
+    return `<span class="rr-bar"><span class="fill ${cls}" style="width:${pct(r.xp).toFixed(1)}%"></span>${marks}</span>`;
+  },
+  difficultyHtml() {
     const CRS = ['0', '1/8', '1/4', '1/2', ...Array.from({ length: 30 }, (_, i) => String(i + 1))];
     const genHtml = '<div class="rr-bal">' + (this.st.gen || []).map((g, i) => `<span class="rr-balrow"><input data-gen="n" data-i="${i}" type="number" min="0" max="60" inputmode="numeric" value="${g.n}" aria-label="How many"> monsters of CR <select data-gen="cr" data-i="${i}" aria-label="Challenge rating">${CRS.map((c) => `<option${c === String(g.cr) ? ' selected' : ''}>${c}</option>`).join('')}</select><button class="rr-x" data-rr="gendel" data-i="${i}" aria-label="Remove">×</button></span>`).join('')
-      + '<button class="linkish" data-rr="genadd" title="Monsters you have no stat block for">+ monsters by CR</button></div>';
-    const open = this.diffOpen !== false;
-    const head = (badge) => `<details class="rr-diff"${open ? ' open' : ''}><summary class="rr-diff-h"><b>Encounter difficulty</b>${badge}</summary>${this.balHtml()}${genHtml}`;
-    if (!mons.length || !levels.length) return head('') + '<p class="hint">Add monsters below (or by CR above) to rate the encounter.</p></details>';
-    const r = rateEncounter(levels, mons), f = (n) => String(n);
-    const max = Math.max(r.b24[2] * 1.25, r.xp * 1.05), pct = (v) => Math.min(100, (v / max) * 100).toFixed(1);
+      + '<button class="linkish" data-rr="genadd" title="Monsters you have no stat block for">+ monsters by CR (no stat block)</button></div>';
+    return `<div class="rr-diff">${this.balHtml()}${genHtml}<div class="rr-diff-out">${this.assessHtml()}</div></div>`;
+  },
+  assessHtml() {
+    const { levels, r } = this.rated();
+    if (!r) return '<p class="hint">Add monsters (or monsters by CR) to rate the encounter.</p>';
+    const f = (n) => String(n);
     const cls = { Low: 'low', Moderate: 'mod', High: 'high', 'Above High': 'over' }[r.r24];
     // His labels and colours, word for word
     const L24 = { Low: ['LOW', 'easy'], Moderate: ['MODERATE', 'medium'], High: ['HIGH', 'hard'], 'Above High': ['Above HIGH', 'deadly'] }[r.r24];
@@ -6178,15 +6224,13 @@ const Roller = {
       : (deadly ? ['POTENTIALLY DEADLY', 'deadly'] : ['NOT POTENTIALLY DEADLY', 'easy']);
     const tag = ([t, c]) => `<span class="sh-${c}">${t}</span>`;
     const base = XP_2024[r.avg] || XP_2024[20], crTot = +r.crSum.toFixed(3);
-    return head(` <span class="rr-badge ${cls}">${r.r24}</span><span class="hint">${r.n} monster${r.n === 1 ? '' : 's'}, ${r.xp.toLocaleString('en-GB')} XP</span>`)
-      + `<div class="rr-bar" title="2024 XP budget"><span class="fill ${cls}" style="width:${pct(r.xp)}%"></span>${r.b24.map((v, k) => `<span class="mark" style="left:${pct(v)}%"><i>${['Low', 'Moderate', 'High'][k]}</i></span>`).join('')}</div>`
-      + `<details class="rr-diff-more"${this.assessOpen !== false ? ' open' : ''}><summary>Encounter Assessment</summary><div class="sh">`
+    return `<details class="rr-diff-more"${this.assessOpen !== false ? ' open' : ''}><summary>Encounter Assessment</summary><div class="sh">`
       + `<p><b>Base Monster XP:</b> ${f(r.xp)}<br><b>Party:</b> ${levels.length} characters, average level ${r.avg}</p>`
       + `<p><b>Lazy Encounter Benchmark</b><br>Total Character Levels: ${r.totalLv} | Total Monster CR: ${crTot}<br>`
       + `Potentially deadly if total monster CR ≥ ${r.lazyLow}${r.avg >= 11 ? ` to ${r.lazyHigh}` : ''}<br>Potentially deadly single monster if CR ≥ ${r.single}<br>Assessment: ${tag(LZ)}</p>`
       + `<p><b>D&amp;D 2024 Method</b><br>Base Thresholds (level ${r.avg}): Low ${base[0]} | Moderate ${base[1]} | High ${base[2]}<br>`
       + `Party Thresholds (×${levels.length} characters): Low ${r.b24[0]} | Moderate ${r.b24[1]} | High ${r.b24[2]}<br>Base Monster XP: ${f(r.xp)} | ${tag(L24)}</p>`
-      + '<p class="hint">Mike Shea’s encounter calculator (5e Artisanal Database).</p></div></details></details>';
+      + '<p class="hint">Mike Shea’s encounter calculator (5e Artisanal Database).</p></div></details>';
   },
   render() {
     const pane = $('#toolPane');
@@ -6211,7 +6255,7 @@ const Roller = {
     const ids = q.trim() ? App.index.search(q, { type: 'monster' }).slice(0, 30).filter((id) => !isMonGroup(App.entries.get(id))).slice(0, 8) : [];
     box.innerHTML = ids.map((id) => { const e = App.entries.get(id); return `<button class="rr-hit" data-rr="add" data-id="${id}">${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} ${esc(e.source || '')}</span></button>`; }).join('');
   },
-  toggle(on = !this.open) { Tools.show(on ? 'roller' : null); },
+  toggle(on = Tools.current !== 'tracker') { Tools.show(on ? 'tracker' : null); },
   async onClick(ev) {
     const t = ev.target.closest('[data-rr]');
     if (!t) return;
@@ -6234,7 +6278,7 @@ const Roller = {
     if (a === 'baldel') { this.st.bal.splice(+t.dataset.i, 1); this.save(); return this.render(); }
     if (a === 'pcadd') { const id = uid(); this.st.party.push({ id, name: '', ac: '', acAdj: '' }); if (!this.st.activeId) this.st.activeId = id; this.save(); this.render(); $(`#toolPane [data-pc="name"][data-tid="${id}"]`)?.focus(); return; }
     if (a === 'pcdel') { this.st.party = this.st.party.filter((x) => x.id !== t.dataset.tid); if (this.st.activeId === t.dataset.tid) this.st.activeId = null; this.save(); return this.render(); }
-    if (a === 'clearlog') { this.log = []; this.saveLog(); return this.render(); }
+    if (a === 'clearlog') { ev.preventDefault(); this.log = []; this.saveLog(); RollPop.close(); return this.render(); }
     if (a === 'clearboard') { if (await ask('Clear the encounter?', '<p>Removes every monster from the roller, and abilities added for this fight. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'Clear', value: true, kind: 'primary' }])) { this.st.board = []; this.st.extras = {}; this.save(); this.render(); } }
   },
 
@@ -6257,15 +6301,8 @@ const Roller = {
       rec = { kind: 'save', name: 'Damage', dc: '', ab: '', dmg: [c], sum: c.total, half: false };
     }
     const e = App.entries.get(App.currentId);
-    this.push({ who: e ? e.name : 'Roll', eid: e ? e.id : '', what: el.closest('.sb-item, .feat, p')?.querySelector('b i, i b, h4')?.textContent.replace(/\.$/, '') || 'Roll', inst: [[rec]] });
-    const pop = $('#quickRoll') || Object.assign(document.createElement('div'), { id: 'quickRoll' });
-    document.body.appendChild(pop);
-    pop.innerHTML = html;
-    const r = el.getBoundingClientRect();
-    pop.style.left = Math.max(6, Math.min(r.left, innerWidth - 300)) + 'px';
-    pop.style.top = (r.top > 60 ? r.top - 40 : r.bottom + 6) + 'px';
-    pop.hidden = false;
-    clearTimeout(this.popT); this.popT = setTimeout(() => { pop.hidden = true; }, 4000);
+    void html;
+    this.push({ who: e ? e.name : 'Roll', eid: e ? e.id : '', what: el.closest('.sb-item, .feat, p')?.querySelector('b i, i b, h4')?.textContent.replace(/\.$/, '') || 'Roll', inst: [[rec]], mode: rec.d20 && rec.d20.length > 1 ? this.quickMode() : 'normal' });
   },
 };
 
@@ -6536,6 +6573,30 @@ const QuickStats = {
   },
 };
 
+/** The latest roll, shown straight away and kept until you close it (the roll log keeps them all). */
+const RollPop = {
+  show(r) {
+    let el = $('#rollPop');
+    if (!el) {
+      el = Object.assign(document.createElement('div'), { id: 'rollPop' });
+      el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+      el.addEventListener('click', (ev) => {
+        if (ev.target.closest('[data-rp="x"]')) { this.close(); return; }
+        const o = ev.target.closest('[data-open]'); if (o && o.dataset.open) { ev.preventDefault(); App.navigate(o.dataset.open); }
+      });
+      el.addEventListener('change', (ev) => { if (ev.target.matches('.rr-retarget') && ev.target.value) { Roller.retarget(ev.target.dataset.rid, ev.target.value); this.show(Roller.log.find((x) => x.id === ev.target.dataset.rid)); Tracker.render(); } });
+      document.body.appendChild(el);
+    }
+    if (!r) return;
+    el.innerHTML = `<button class="rp-x" data-rp="x" aria-label="Close the result" title="Close (Esc)">×</button>${Roller.resultHtml(r)}`;
+    el.hidden = false;
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    Tracker.render();
+  },
+  close() { const el = $('#rollPop'); if (el) el.hidden = true; },
+};
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#rollPop') && !$('#rollPop').hidden && !document.querySelector('dialog[open]')) RollPop.close(); });
+
 /** Remembers which <details data-keep="…"> are open. */
 const Keep = {
   open(k, dflt = false) { const v = safeLocal.get('dndref.open.' + k); return v === null || v === undefined ? dflt : v === '1'; },
@@ -6613,7 +6674,7 @@ const FightView = {
   },
   scopeHtml(c, attr) {
     const kind = Tracker.baseName(c), one = this.scope !== 'all';
-    return `<span class="rr-seg rr-mini fv-scope" role="group" aria-label="Add abilities for"><button ${attr}="scope" data-v="one" class="${one ? 'on' : ''}">Just ${esc(Tracker.nameOf(c))}</button><button ${attr}="scope" data-v="all" class="${one ? '' : 'on'}">All ${esc(kind)}</button></span>`;
+    return `<span class="rr-seg rr-mini fv-scope" role="group" aria-label="Add abilities for"><button ${attr}="scope" data-v="one" class="${one ? 'on' : ''}">Just ${esc(Tracker.nameOf(c))}</button><button ${attr}="scope" data-v="all" class="${one ? '' : 'on'}">Every ${esc(kind)}</button></span>`;
   },
   extraCtl(a, c, attr) {
     const tag = a.one ? 'just this one' : 'this fight';
@@ -6701,8 +6762,7 @@ const FightView = {
       const span = document.createElement('span'); span.innerHTML = esc(head) + ' ' + Uses.boxes(owner, `${head.trim()} ${tail.slice(0, 30).trim()}`, { of }) + esc(tail);
       n.replaceWith(...span.childNodes);
     }
-    const last = this.lastHtml(e);
-    if (last) el.querySelector('.d-body')?.insertAdjacentHTML('afterend', last);
+
   },
   async onClick(t) {
     const e = App.entries.get(App.currentId);
@@ -6744,6 +6804,11 @@ const Tracker = {
     for (const c of this.st.list) if (c.kind === 'mon') { c.bname = c.bname || (App.entries.get(c.eid)?.name || String(c.name || '').replace(/ \d+$/, '')); c.log = c.log || []; }
     this.encounters = (await Store.getMeta('encounters')) || [];
     this.syncParty();
+    for (const c of this.st.list) if (c.kind === 'mon' && c.d20 === undefined && Number.isFinite(this.num(c.init))) c.d20 = this.num(c.init) - (c.bonus || 0);
+    if (Roller.st.board && Roller.st.board.length) {
+      for (const b of Roller.st.board) { const e = App.entries.get(b.id); if (e && !this.countOf(b.id)) for (let i = 0; i < b.count; i++) this.add(b.id, { quiet: true, noRender: true }); }
+      Roller.st.board = []; Roller.save(); this.save();
+    }
   },
   save() { Store.setMeta('tracker', this.st).catch(() => {}); },
   saveEncounters() { Store.setMeta('encounters', this.encounters).catch(() => {}); },
@@ -6753,6 +6818,11 @@ const Tracker = {
   },
   pc(c) { return Roller.st.party.find((t) => t.id === c.pid) || {}; },
   monsters() { return this.st.list.filter((c) => c.kind === 'mon'); },
+  countOf(eid) { return this.monsters().filter((c) => c.eid === eid).length; },
+  refreshDiff() {
+    const strip = $('#toolPane .tr-diffstrip'); if (strip) strip.outerHTML = Roller.diffStrip(!!this.diffOpen);
+    const out = $('#toolPane .rr-diff-out'); if (out) out.innerHTML = Roller.assessHtml();
+  },
   num: (v) => parseInt(String(v ?? '').replace('−', '-'), 10),
   baseName(c) { const e = c.eid && App.entries.get(c.eid); return (e && (e.fields.Modified && e.fields['Based on'] ? e.fields['Based on'] : e.name)) || c.bname || 'Creature'; },
   isModified(c) { const e = c.eid && App.entries.get(c.eid); return !!(e && e.fields.Modified); },
@@ -6766,18 +6836,18 @@ const Tracker = {
   place(c, bonus) {
     const same = this.monsters().filter((x) => (x.eid || 'custom:' + fold(x.bname)) === (c.eid || 'custom:' + fold(c.bname)));
     const lastGid = same.length ? same[same.length - 1].gid : null, inChunk = same.filter((x) => x.gid === lastGid).length;
-    if (lastGid && inChunk < 3) { c.gid = lastGid; c.init = same.find((x) => x.gid === lastGid).init; }
-    else { c.gid = uid(); c.init = rollDie(20) + bonus; }
+    if (lastGid && inChunk < 3) { const m = same.find((x) => x.gid === lastGid); c.gid = lastGid; c.d20 = m.d20; c.init = m.init; }
+    else { c.gid = uid(); c.d20 = rollDie(20); c.init = c.d20 + bonus; }
     this.st.list.push(c);
   },
-  add(eid, { quiet = false } = {}) {
+  add(eid, { quiet = false, noRender = false } = {}) {
     const e = App.entries.get(eid);
     if (!e || e.type !== 'monster' || isMonGroup(e)) return;
     const bonus = this.initBonus(e), base = parseInt(String(e.fields.HP || '').trim(), 10) || 1;
     this.place({ cid: uid(), kind: 'mon', eid, bname: e.name, bonus, ac: String(e.fields.AC || '').split(/[\s(]/)[0], base, max: base, hp: base, notes: '', log: [] }, bonus);
     this.save();
     if (!quiet) toast(`${e.name} added (${this.monsters().filter((x) => x.eid === eid).length} in the fight)`, 'ok', 1800);
-    this.render();
+    if (!noRender) this.render();
   },
   addCustom(name, ac, hp, bonus, { quiet = false, cr = null } = {}) {
     name = (name || '').trim() || 'Creature'; hp = Math.max(1, this.num(hp) || 1); bonus = this.num(bonus) || 0;
@@ -6867,12 +6937,17 @@ const Tracker = {
   },
   /* ----- rolling from the tracker (uses the roller's dice, targets and log) ----- */
   pseudo(c) { return c.eid ? App.entries.get(c.eid) : { id: 'custom:' + fold(c.bname), name: c.bname, sections: [], fields: {} }; },
-  roll(cid, key) {
+  chunk(c) { return this.monsters().filter((x) => x.gid && x.gid === c.gid && x.hp > 0 && !x.hidden && x.eid === c.eid && x.bname === c.bname); },
+  roll(cid, key, { single = false } = {}) {
     const c = this.st.list.find((x) => x.cid === cid), e = c && this.pseudo(c);
     if (!e) return;
     const acts = Roller.actionsOf(e, cid), a = acts.find((x) => x.key === key);
     if (!a) return;
-    Roller.rollAction(e, acts, a, { who: this.nameOf(c), cid, mode: c.mode || 'normal' });
+    const group = !single && this.st.groupRoll && cid === this.st.turn ? this.chunk(c) : [c];
+    if (group.length > 1 && !a.one && a.kind !== 'save' && a.kind !== 'savefx') {
+      const lab = this.labels();
+      Roller.rollAction(e, acts, a, { who: `${this.baseName(c)} ${group.map((m) => lab.get(m.cid) || '').join(', ')}`.trim(), cid, mode: c.mode || 'normal', many: group });
+    } else Roller.rollAction(e, acts, a, { who: this.nameOf(c), cid, mode: c.mode || 'normal' });
     Uses.spendFor(c, a);
     this.render(); FightView.refresh();
   },
@@ -6892,7 +6967,9 @@ const Tracker = {
     const saves = c.eid ? `<div class="rr-saves">${ABILS.map((k) => `<button class="rr-sv" data-tr="save" data-cid="${c.cid}" data-k="${k}">${k}<small>${(Roller.saveMod(e, k) >= 0 ? '+' : '') + Roller.saveMod(e, k)}</small></button>`).join('')}</div>` : '';
     const mine = Roller.log.filter((r) => r.cid === c.cid);
     const recent = mine.length ? `<details class="tr-recent" data-keep="trRecent"${Keep.open('trRecent', true) ? ' open' : ''}><summary>Rolls this fight (${mine.length})</summary>${mine.slice(0, 3).map((r) => Roller.resultHtml(r)).join('')}</details>` : '';
-    return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}</div>`
+    const grp = this.chunk(c);
+    const grpSeg = grp.length > 1 ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-tr="grp" data-v="one" class="${this.st.groupRoll ? '' : 'on'}">This one</button><button data-tr="grp" data-v="all" class="${this.st.groupRoll ? 'on' : ''}" title="Roll attacks for every ${esc(this.baseName(c))} on this initiative">All ${grp.length}</button></span>` : '';
+    return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
       + saves + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>')
       + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xlink" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat, item or power</button><button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
   },
@@ -6905,21 +6982,27 @@ const Tracker = {
       return `<div class="tr-row pc${cur}">${mark}${init(t.init, `data-pid="${t.id}"`)}<span class="tr-name">${esc(t.name || 'Unnamed')}</span>`
         + `<label class="tr-acl">AC <input class="tr-n" data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC"></label>`
         + `<label class="tr-acl" title="Temporary AC change: Shield, cover, Haste…">± <input class="tr-n tr-adj" data-pid="${t.id}" data-tr-acadj value="${esc(t.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>`
-        + (this.num(t.acAdj) ? `<b class="tr-eff" title="AC with the adjustment">= ${Roller.acOf(t)}</b>` : '')
+        + (this.num(t.acAdj) ? `<b class="tr-eff" title="AC with the adjustment">= ${Roller.acOf(t)}</b><button class="tr-acx" data-tr="acclear" data-pid="${t.id}" title="Clear the AC change" aria-label="Clear the AC change">×</button>` : '')
         + `<input class="tr-note" data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes"></div>`;
+    }
+    if (c.kind === 'mon') {
+      // monsters: type the d20 (shared by its initiative chunk); the bonus is added
+      var initBox = `<span class="tr-initw" title="Type the d20 roll; ${c.bonus >= 0 ? '+' : '−'}${Math.abs(c.bonus || 0)} is added">`
+        + `<input class="tr-init tr-d20" data-cid="${c.cid}" data-tr-d20 value="${esc(c.d20 ?? '')}" inputmode="numeric" placeholder="d20" aria-label="d20 roll for initiative">`
+        + `<small>${c.bonus >= 0 ? '+' : '−'}${Math.abs(c.bonus || 0)} = <b>${esc(c.init ?? '?')}</b></small></span>`;
     }
     if (c.kind === 'lair') {
       return `<div class="tr-row lair${cur}">${mark}${init(c.init, `data-cid="${c.cid}"`)}<span class="tr-name">Lair action</span><input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens">${this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c.cid}" aria-label="Remove">×</button>` : ''}</div>`;
     }
     const name = this.nameOf(c, lab), open = this.hist.has(c.cid);
     const hist = open ? `<div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div>` : '';
-    return `<div class="tr-row mon${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${init(c.init, `data-cid="${c.cid}"`)}`
+    return `<div class="tr-row mon${cur}${c.hp <= 0 ? ' down' : ''}">${mark}${initBox}`
       + (c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Open its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`)
       + `<button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button>`
       + (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">modified</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}" title="${c.mode === 'adv' ? 'Rolls with advantage' : 'Rolls with disadvantage'}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '')
       + `<span class="tr-ac">AC ${this.num(c.acAdj) && Number.isFinite(this.num(c.ac)) ? `<b class="tr-eff" title="${esc(c.ac)} ${this.num(c.acAdj) > 0 ? '+' : '−'} ${Math.abs(this.num(c.acAdj))}">${this.num(c.ac) + this.num(c.acAdj)}</b>` : esc(c.ac || '?')}</span>`
-      + `<label class="tr-acl" title="Temporary AC change: Shield, cover…">± <input class="tr-n tr-adj" data-cid="${c.cid}" data-tr-acadj value="${esc(c.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>`
+      + `<label class="tr-acl" title="Temporary AC change: Shield, cover…">± <input class="tr-n tr-adj" data-cid="${c.cid}" data-tr-acadj value="${esc(c.acAdj || '')}" inputmode="numeric" placeholder="0" aria-label="AC adjustment"></label>${this.num(c.acAdj) ? `<button class="tr-acx" data-tr="acclear" data-cid="${c.cid}" title="Clear the AC change" aria-label="Clear the AC change">×</button>` : ''}`
       + `<span class="tr-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button> / <input class="tr-n" data-cid="${c.cid}" data-tr-max value="${c.max}" inputmode="numeric" title="Max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP"></span>`
       + `<span class="tr-dmg"><input class="tr-dn" data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage">−</button><button data-tr="heal" data-cid="${c.cid}" title="Heal">+</button></span>`
       + `<input class="tr-note" data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes">`
@@ -6950,22 +7033,28 @@ const Tracker = {
     const lab = this.labels(), all = this.sorted(), shown = all.filter((c) => !c.hidden), hidden = all.filter((c) => c.hidden);
     const setup = this.st.setup !== false, fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0);
     const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
-    pane.innerHTML = `<div class="rr-top"><h2>Initiative</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
+    const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
+    pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
+      + `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`
       + '<div class="rr-scroll">'
+      + (this.diffOpen ? Roller.difficultyHtml() : '')
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
         + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><div id="trHits"></div></div>`
         + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name">${QuickStats.rows().length ? `<label title="Fill AC and HP and give it attacks from the Monster Statistics by Challenge Rating table">CR <select id="tcCr"><option value="">–</option>${QuickStats.rows().map((q) => `<option value="${esc(q.cr)}">${esc(q.cr)}</option>`).join('')}</select></label>` : ''}<label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div><div id="tcQuick" class="hint"></div></details>`
-        + `<div class="tr-btns">${fromRoller ? `<button data-tr="fromroller">Add the roller’s ${fromRoller} monster${fromRoller === 1 ? '' : 's'}</button>` : ''}<button data-tr="lair">+ Lair action</button>`
+        + `<div class="tr-btns">${this.monsters().length ? '<button data-tr="reroll" title="Roll a new d20 for every monster group">Roll monster initiative</button>' : ''}<button data-tr="lair">+ Lair action</button>`
         + `<span class="rr-seg" title="How creatures of the same kind are labelled (in turn order)"><button data-tr="labels" data-v="abc" class="${this.st.labels !== '123' ? 'on' : ''}">A B C</button><button data-tr="labels" data-v="123" class="${this.st.labels === '123' ? 'on' : ''}">1 2 3</button></span>`
         + (kinds.length ? `<span class="tr-pct" title="Change max HP by a percentage of the stat block's HP"><select id="trPctWho" aria-label="Which monsters"><option value="">All monsters</option>${kinds.map((k) => `<option>${esc(k)}</option>`).join('')}</select><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pct">Max HP</button></span>` : '')
         + `<label class="hint"><input type="checkbox" data-tr-follow${this.st.follow ? ' checked' : ''}> Stat block follows the turn</label>`
+        + `<label class="hint"><select data-rr-crit aria-label="Critical hits"><option value="double"${Roller.st.crit !== 'perkins' ? ' selected' : ''}>Crit: double dice</option><option value="perkins"${Roller.st.crit === 'perkins' ? ' selected' : ''}>Crit: max + roll</option></select></label>`
+        + (anyAdj ? '<button data-tr="acclearall" title="Clear every AC ± change">Clear all AC ±</button>' : '')
         + '<button data-tr="reset" class="danger">New fight</button></div></div>'
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
       + `<div class="tr-list">${shown.map((c) => this.rowHtml(c, lab)).join('') || '<p class="hint">Add your party and monsters to start.</p>'}</div>`
       + (hidden.length ? `<h3 class="tr-h">Hidden</h3>${hidden.map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
+      + `<details class="rr-sec rr-logsec" data-keep="rrLog"${Keep.open('rrLog', false) ? ' open' : ''}><summary class="rr-logh"><h3>Roll log${Roller.log.length ? ` (${Roller.log.length})` : ''}</h3>${Roller.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</summary>${Roller.log.slice(0, 40).map((r) => Roller.resultHtml(r)).join('') || '<p class="hint">Every roll is kept here.</p>'}</details>`
       + '</div>';
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
     const sb = $('#trSearch'); if (sb && this.q) { sb.value = this.q; this.hits(this.q); } // keep the search (and its results) for repeated taps
@@ -7009,6 +7098,11 @@ const Tracker = {
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
+    if (a === 'reroll') { const seen = new Map(); for (const c of this.monsters()) { if (!seen.has(c.gid)) seen.set(c.gid, rollDie(20)); c.d20 = seen.get(c.gid); c.init = c.d20 + (c.bonus || 0); } this.save(); return this.render(); }
+    if (a === 'diff') { this.diffOpen = !this.diffOpen; return this.render(); }
+    if (a === 'acclear') { if (t.dataset.pid) { const p = Roller.st.party.find((x) => x.id === t.dataset.pid); if (p) { p.acAdj = ''; Roller.save(); } } else { const c = find(); if (c) c.acAdj = ''; } this.save(); return this.render(); }
+    if (a === 'acclearall') { for (const p of Roller.st.party) p.acAdj = ''; for (const c of this.monsters()) c.acAdj = ''; Roller.save(); this.save(); return this.render(); }
+    if (a === 'grp') { st.groupRoll = t.dataset.v === 'all'; this.save(); return this.render(); }
     if (a === 'fromroller') { for (const b of Roller.st.board) for (let i = 0; i < b.count; i++) this.add(b.id, { quiet: true }); toast('Added the roller’s monsters', 'ok'); return; }
     if (a === 'lair') { st.list.push({ cid: uid(), kind: 'lair', init: 20, notes: '' }); this.save(); return this.render(); }
     if (a === 'hide' || a === 'show') { const c = find(); if (c) { c.hidden = a === 'hide'; if (a === 'hide' && st.turn === c.cid) this.step(1); } this.save(); return this.render(); }
@@ -7058,7 +7152,11 @@ const Tracker = {
       if (box) box.textContent = q ? QuickStats.line(q) + (q.n > 1 ? ' · gets Multiattack and Attack to roll' : ' · gets an Attack to roll') : '';
       return;
     }
-    if ('trInit' in d) {
+    if ('trD20' in d) {
+      const c = st.list.find((x) => x.cid === d.cid), v = this.num(el.value);
+      if (c && Number.isFinite(v)) for (const m of st.list.filter((x) => x.gid && x.gid === c.gid)) { m.d20 = v; m.init = v + (m.bonus || 0); }
+      this.save(); this.render(); return;
+    } else if ('trInit' in d) {
       const v = el.value.trim(), n = v === '' ? '' : this.num(v);
       if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.init = n; Roller.save(); } }
       else { const c = st.list.find((x) => x.cid === d.cid); if (c) c.init = n; }
@@ -7089,6 +7187,7 @@ const Tools = {
   current: null,
   pinned: safeLocal.get('dndref.toolPinned') === '1',
   show(name) {
+    if (name === 'roller') name = 'tracker'; // one Combat tool
     this.current = name || null;
     $('#toolPane').hidden = !name;
     document.body.classList.toggle('tool-open', !!name);
@@ -7096,7 +7195,7 @@ const Tools = {
     if (name) { document.body.classList.remove('show-detail'); this.render(); }
     if (App.currentId) App.showDetail(App.currentId, { fromSearch: true }); // update "+ Encounter" / "+ Initiative" buttons
   },
-  render() { if (this.current === 'roller') Roller.render(); else if (this.current === 'tracker') Tracker.render(); },
+  render() { if (this.current === 'tracker') Tracker.render(); },
   togglePin() {
     this.pinned = !this.pinned;
     safeLocal.set('dndref.toolPinned', this.pinned ? '1' : '0');
@@ -7111,8 +7210,7 @@ const Tools = {
   },
   open(anchor) {
     const links = this.links();
-    Cols.openMenu(anchor, `<div class="cm-h">Tools</div><button class="cm-i" data-pick="roller"><span class="cm-box">⚔</span>Encounter roller${Roller.st.board.length ? `<span class="count">${Roller.st.board.length}</span>` : ''}</button>`
-      + `<button class="cm-i" data-pick="tracker"><span class="cm-box">⏱</span>Initiative tracker${Tracker.monsters().length ? `<span class="count">${Tracker.monsters().length}</span>` : ''}</button>`
+    Cols.openMenu(anchor, `<div class="cm-h">Tools</div><button class="cm-i" data-pick="tracker"><span class="cm-box">⚔</span>Combat${Tracker.monsters().length ? `<span class="count">${Tracker.monsters().length}</span>` : ''}</button>`
       + links.map(([n, u], i) => `<button class="cm-i" data-pick="link:${i}"><span class="cm-box">↗</span>${esc(n)}</button>`).join('')
       + `<button class="cm-i" data-pick="edit"><span class="cm-box">✎</span>${links.length ? 'Edit links…' : 'Add your own links…'}</button>`,
     (v) => {
@@ -7561,8 +7659,7 @@ function wireEvents() {
     if (srcEl) { App.setSource(srcEl.dataset.source, { toSearch: true }); return; }
     const act = ev.target.closest('[data-act]')?.dataset.act;
     if (act === 'fav' && Cols.skipClick) { Cols.skipClick = false; return; }
-    if (act === 'enc-add' && App.currentId) { Roller.add(App.currentId); App.showDetail(App.currentId, { fromSearch: true }); return; }
-    if (act === 'init-add' && App.currentId) { Tracker.add(App.currentId, 1); return; }
+    if (act === 'enc-add' && App.currentId) { Tracker.add(App.currentId); App.showDetail(App.currentId, { fromSearch: true }); return; }
     if (act === 'cols' && App.currentId) { Cols.pickFor(App.currentId, ev.target.closest('[data-act]')); return; }
     if (act === 'tray-menu') { Cols.pickActive(ev.target.closest('[data-act]')); return; }
     const e = App.entries.get(App.currentId);
@@ -7820,7 +7917,7 @@ function wireEvents() {
     else if (e.key === 'e' && App.currentId) $('#detail [data-act="edit"]')?.click();
     else if (e.key === 'y' && App.currentId) $('#detail [data-act="copy"]')?.click();
     else if (e.key === 'b' && App.currentId) { e.preventDefault(); $('#detail [data-act="cols"]')?.click(); }
-    else if (e.key === 'r') { e.preventDefault(); Roller.toggle(); }
+    else if (e.key === 'r') { e.preventDefault(); Tools.show(Tools.current === 'tracker' ? null : 'tracker'); }
     else if (e.key === 'I') { e.preventDefault(); Tools.show(Tools.current === 'tracker' ? null : 'tracker'); }
     else if (e.key === 'k') { e.preventDefault(); App.moveCursor(1); }  // k down, j up (same as K / J inside an entry)
     else if (e.key === 'j') { e.preventDefault(); App.moveCursor(-1); }
@@ -8108,7 +8205,7 @@ async function boot() {
   $('#toolPane').addEventListener('click', (ev) => {
     const o = ev.target.closest('[data-open]');
     if (o && o.dataset.open) { ev.preventDefault(); if (o.dataset.cid) Tracker.focus = o.dataset.cid; App.navigate(o.dataset.open); if (o.dataset.cid) FightView.refresh(); return; }
-    if (Tools.current === 'tracker' && !ev.target.closest('[data-rr="pcadd"], [data-rr="pcdel"]')) { Tracker.onClick(ev).catch((err) => logError('Tracker', err)); return; }
+    if (Tools.current === 'tracker' && !ev.target.closest('[data-rr]')) { Tracker.onClick(ev).catch((err) => logError('Tracker', err)); return; }
     Roller.onClick(ev).then(() => { if (Tools.current === 'tracker') Tracker.render(); }).catch((err) => logError('Roller', err));
   });
   $('#toolPane').addEventListener('input', (ev) => {
@@ -8123,11 +8220,12 @@ async function boot() {
     const gk = ev.target.dataset.gen;
     if (gk) { const g = Roller.st.gen[+ev.target.dataset.i]; if (g) { g[gk] = gk === 'n' ? parseInt(ev.target.value, 10) || 0 : ev.target.value; Roller.save(); } }
     const bal = ev.target.dataset.bal;
-    if (bal) { const g = Roller.st.bal[+ev.target.dataset.i]; if (g) { g[bal] = parseInt(ev.target.value, 10) || 1; Roller.save(); } }
+    if (bal) { const g = Roller.st.bal[+ev.target.dataset.i]; if (g) { g[bal] = parseInt(ev.target.value, 10) || 1; if (bal === 'n') Roller.st.balSet = true; Roller.save(); } }
+    if (gk || bal) Tracker.refreshDiff();
   });
   $('#toolPane').addEventListener('change', (ev) => {
     if (ev.target.matches('[data-rr-crit]')) { Roller.st.crit = ev.target.value; Roller.save(); }
-    if (ev.target.matches('select[data-gen]')) { const d = $('#toolPane .rr-diff'); if (d) d.outerHTML = Roller.difficultyHtml(); }
+    if (ev.target.matches('select[data-gen]')) Tracker.refreshDiff();
     if (ev.target.matches('.rr-retarget') && ev.target.value) Roller.retarget(ev.target.dataset.rid, ev.target.value);
     if (Tools.current === 'tracker') Tracker.onChange(ev);
   });
@@ -8150,7 +8248,7 @@ async function boot() {
   });
   $('#toolPane').addEventListener('focusout', (ev) => {
     if (ev.target.matches('[data-pc]')) setTimeout(() => { if (!$('#toolPane').contains(document.activeElement) || !document.activeElement.matches('[data-pc]')) Tools.render(); }, 0);
-    if (ev.target.matches('[data-bal], [data-gen]')) setTimeout(() => { const d = $('#toolPane .rr-diff'); if (d && !d.contains(document.activeElement)) d.outerHTML = Roller.difficultyHtml(); }, 0);
+    if (ev.target.matches('[data-bal], [data-gen]')) Tracker.refreshDiff();
   });
   $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
   Keep.init();

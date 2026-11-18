@@ -331,6 +331,13 @@ body.tool-open #listPane { display: none; }
   body.tool-open.tool-list #listPane { display: flex; grid-column: 3; grid-row: 1; }
   body.tool-open.tool-list #detail { grid-column: 4; }
 }
+@media (min-width: 721px) {
+  body.tool-open.combat-right .layout { grid-template-columns: minmax(0, 1fr) 7px minmax(360px, var(--combat-w)); }
+  body.tool-open.combat-right #detail { grid-column: 1; } body.tool-open.combat-right #toolSplit { grid-column: 2; } body.tool-open.combat-right #toolPane { grid-column: 3; }
+  body.tool-open.combat-right.tool-list .layout { grid-template-columns: var(--list-w) minmax(0, 1fr) 7px minmax(360px, var(--combat-w)); }
+  body.tool-open.combat-right.tool-list #listPane { grid-column: 1; } body.tool-open.combat-right.tool-list #detail { grid-column: 2; }
+  body.tool-open.combat-right.tool-list #toolSplit { grid-column: 3; } body.tool-open.combat-right.tool-list #toolPane { grid-column: 4; }
+}
 #toolSplit { display: none; cursor: col-resize; background: var(--border); touch-action: none; position: relative; }
 #toolSplit:hover, #toolSplit.drag { background: var(--accent); }
 #toolSplit::after { content: ''; position: absolute; inset: 0 -5px; }
@@ -477,12 +484,23 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
 .tr-tablewrap { border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
-.tr-table { table-layout: fixed; min-width: 860px; }
-.tr-table col.w-init { width: 44px; } .tr-table col.w-name { width: 150px; } .tr-table col.w-lab { width: 38px; } .tr-table col.w-ac { width: 52px; }
-.tr-table col.w-adj { width: 64px; } .tr-table col.w-hp { width: 48px; } .tr-table col.w-max { width: 48px; } .tr-table col.w-dmg { width: 64px; }
-.tr-table col.w-pm { width: 36px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 52px; }
-.tr-table.battle col.w-init { width: 30px; }
-.tr-table td, .tr-table th { overflow: hidden; text-overflow: ellipsis; }
+.tr-table { table-layout: fixed; min-width: 470px; }
+.tr-table col.w-init { width: 26px; } .tr-table col.w-name { width: 104px; } .tr-table col.w-lab { width: 28px; } .tr-table col.w-ac { width: 34px; }
+.tr-table col.w-adj { width: 34px; } .tr-table col.w-hp { width: 32px; } .tr-table col.w-max { width: 30px; } .tr-table col.w-dmg { width: 44px; }
+.tr-table col.w-pm { width: 24px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 36px; }
+.tr-table.battle col.w-ctl { width: 0; } .tr-table.battle td.c-ctl > *, .tr-table.battle th:last-child { display: none; }
+@container (min-width: 760px) { .tr-table col.w-name { width: 170px; } .tr-table col.w-dmg { width: 64px; } .tr-table col.w-pm { width: 34px; } .tr-table col.w-adj { width: 44px; } }
+.tr-table td { padding: 2px 2px; } .tr-table th { padding: 5px 2px; }
+.tr-table input { padding: 2px 4px; }
+.tr-table button { min-width: 0; width: 100%; padding: 0; }
+.tr-table .c-lab .tr-lab, .tr-table .c-hp .tr-hpv, .tr-table .c-max .tr-maxv { width: 100%; min-width: 0 !important; padding: 0; }
+.tr-table .c-adj input { width: 100% !important; }
+.tr-table .c-adj:has(.tr-acx) input { width: calc(100% - 20px) !important; }
+.tr-table .c-adj .tr-acx { width: 18px !important; min-width: 18px; height: 18px; }
+.tr-table .c-ac input { width: 100% !important; padding: 2px 1px; }
+.tr-table .c-ctl button { width: auto; }
+.tr-table td.c-name a, .tr-table td.c-name .tr-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tr-table td { overflow: hidden; text-overflow: ellipsis; } .tr-table th { overflow: visible; }
 .tr-table td.c-name { max-width: none !important; width: auto !important; min-width: 0 !important; }
 .tr-table .c-init input { width: 100%; }
 .tr-table.battle .c-init input { height: 22px; font-size: 10.5px; padding: 0; border-color: transparent; background: transparent; color: var(--muted); }
@@ -491,12 +509,10 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 /* the first four columns stay put when the table scrolls sideways; solid backgrounds so nothing shows through */
 .tr-table th:nth-child(-n+4), .tr-table tr:not(.tr-activerow):not(.tr-histrow):not(.tr-addrow):not(.lair) > td:nth-child(-n+4), .tr-table tr.lair > td:first-child, .tr-table tr.tr-addrow > td:first-child { position: sticky; z-index: 2; }
 .tr-table th:nth-child(1), .tr-table tr > td.c-init { left: 0; }
-.tr-table th:nth-child(2), .tr-table tr > td.c-name { left: 44px; }
-.tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 194px; }
-.tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 232px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
-.tr-table.battle th:nth-child(2), .tr-table.battle tr > td.c-name { left: 30px; }
-.tr-table.battle th:nth-child(3), .tr-table.battle tr > td.c-lab { left: 180px; }
-.tr-table.battle th:nth-child(4), .tr-table.battle tr > td.c-ac { left: 218px; }
+.tr-table th:nth-child(2), .tr-table tr > td.c-name { left: 26px; }
+.tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 130px; }
+.tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 158px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
+@container (min-width: 760px) { .tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 196px; } .tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 224px; } }
 .tr-table td { background: var(--panel); background-clip: padding-box; }
 .tr-table th { background: var(--panel); }
 .tr-table tr.tie > td.c-init { background: color-mix(in srgb, #8b5cf6 26%, var(--panel)); }
@@ -1603,16 +1619,42 @@ function readImportPayload(json) {
   const entries = list.filter((o) => o && typeof o === 'object' && typeof o.name === 'string').map(makeEntry);
   const icons = json && json.settings && json.settings.icons ? json.settings.icons : null;
   const collections = json && json.settings && Array.isArray(json.settings.collections) ? json.settings.collections : [];
-  return { entries, types, icons, collections };
+  const combat = json && json.settings && json.settings.combat && typeof json.settings.combat === 'object' ? json.settings.combat : null;
+  return { entries, types, icons, collections, combat };
+}
+/** Your party, party levels and saved encounters, for backups. */
+function combatSettings() {
+  return { party: Roller.st.party, activeId: Roller.st.activeId, bal: Roller.st.bal, balSet: Roller.st.balSet, crit: Roller.st.crit, encounters: Tracker.encounters || [], labels: Tracker.st.labels };
+}
+/** From a backup: the party comes back if this browser has none; saved encounters are merged. */
+async function adoptCombat(c) {
+  if (!c) return '';
+  const out = [];
+  if (Array.isArray(c.party) && c.party.length && !Roller.st.party.length) {
+    Roller.st.party = c.party.map((p) => ({ ...p })); Roller.st.activeId = c.activeId || Roller.st.party[0].id;
+    if (Array.isArray(c.bal) && c.bal.length) { Roller.st.bal = c.bal; Roller.st.balSet = !!c.balSet; }
+    if (c.crit) Roller.st.crit = c.crit;
+    Roller.save(); Tracker.syncParty(); Tracker.save();
+    out.push(`party of ${c.party.length}`);
+  }
+  if (Array.isArray(c.encounters) && c.encounters.length) {
+    Tracker.encounters = Tracker.encounters || [];
+    let n = 0;
+    for (const enc of c.encounters) if (enc && enc.id && !Tracker.encounters.some((x) => x.id === enc.id)) { Tracker.encounters.push(enc); n++; }
+    if (n) { Tracker.saveEncounters(); out.push(`${n} saved encounter${n === 1 ? '' : 's'}`); }
+  }
+  Tools.render();
+  return out.join(', ');
 }
 
-function exportPayload(entries) {
+function exportPayload(entries, { full = false } = {}) {
   return {
     format: 'dnd-reference-db',
     version: 1,
     exportedAt: nowIso(),
     types: Types.list,
-    settings: { icons: IconOverrides, collections: Cols.order },   // pasted icons and collection names travel with exports and GitHub backups
+    // pasted icons and collection names travel with exports and GitHub backups; full backups also carry your party
+    settings: { icons: IconOverrides, collections: Cols.order, ...(full ? { combat: combatSettings() } : {}) },
     entries,
   };
 }
@@ -4503,7 +4545,7 @@ const GitHub = {
         [{ label: 'Cancel', value: null }, { label: 'Overwrite', value: 'overwrite', kind: 'primary danger' }]);
       if (choice !== 'overwrite') return null;
     }
-    const json = JSON.stringify(exportPayload(entries));
+    const json = JSON.stringify(exportPayload(entries, { full: true }));
     const body = {
       message: `D&D reference backup: ${entries.length} entries (${nowIso()})`,
       content: await toBase64(json),
@@ -5526,7 +5568,8 @@ const Importer = {
     const nIcons = await importIconOverrides(payload.icons, false);
     await Cols.adopt(payload.collections);
     const r = await App.merge(payload.entries);
-    toast(`Imported: ${r.added} new, ${r.updated} updated, ${r.kept} unchanged${nIcons ? `, ${nIcons} custom icons` : ''}.`, 'ok', 6000);
+    const cb = await adoptCombat(payload.combat);
+    toast(`Imported: ${r.added} new, ${r.updated} updated, ${r.kept} unchanged${nIcons ? `, ${nIcons} custom icons` : ''}${cb ? `, ${cb}` : ''}.`, 'ok', 6000);
   },
 };
 
@@ -5765,7 +5808,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-19.4'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-19.5'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7212,7 +7255,7 @@ const Tracker = {
         + `<label class="hint"><input type="checkbox" data-tr="deadtoggle"${this.st.hideDead !== false ? ' checked' : ''}> Move defeated monsters out of the order</label></div></div>`
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
       + `<div class="tr-tablewrap"><table class="tr-table${battle ? ' battle' : ''}"><colgroup><col class="w-init"><col class="w-name"><col class="w-lab"><col class="w-ac"><col class="w-adj"><col class="w-hp"><col class="w-max"><col class="w-dmg"><col class="w-pm"><col class="w-pm"><col class="w-note"><col class="w-ctl"></colgroup>`
-      + `<thead><tr><th class="c-init" title="Initiative">${battle ? '#' : 'Init'}</th><th>Name</th><th></th><th>AC</th><th title="AC change">±</th><th>HP</th><th>Max</th><th>Damage</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}`
+      + `<thead><tr><th class="c-init" title="Initiative">#</th><th>Name</th><th></th><th>AC</th><th title="AC change (Shield, cover…)">±</th><th>HP</th><th>Max</th><th title="Type damage, e.g. 7 or 5+12, then − or Enter">Dmg</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}`
       + `<tr class="tr-addrow"><td class="c-init"></td><td colspan="11"><span class="tr-addin"><input id="trQuick" type="search" placeholder="+ Add a monster…" autocomplete="off" aria-label="Add a monster"><button data-tr="lair" title="Add a lair action row">+ Lair action</button></span><div id="trQuickHits"></div></td></tr>`
       + '</tbody></table></div>'
       + (hidden.filter((c) => !c.dead).length ? `<h3 class="tr-h">Hidden</h3>${hidden.filter((c) => !c.dead).map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
@@ -7301,6 +7344,7 @@ const Tracker = {
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
+    if (a === 'side') { const r = !document.body.classList.contains('combat-right'); document.body.classList.toggle('combat-right', r); safeLocal.set('dndref.combatRight', r ? '1' : ''); return this.render(); }
     if (a === 'qadd') { this.add(t.dataset.id, { quiet: true }); this.quickQ = $('#trQuick')?.value || ''; setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = this.quickQ; i.focus(); this.quickHits(this.quickQ); } }, 0); return; }
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
     if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; } this.save(); return this.render(); }
@@ -7407,6 +7451,7 @@ const Tools = {
     $('#toolSplit').hidden = !name;
     if (!name) document.body.classList.remove('tool-list');
     const w = safeLocal.get('dndref.combatW'); if (w) document.querySelector('.layout').style.setProperty('--combat-w', w + 'px');
+    document.body.classList.toggle('combat-right', safeLocal.get('dndref.combatRight') === '1');
     document.body.classList.toggle('tool-open', !!name);
     document.body.classList.toggle('tool-pinned', !!name && this.pinned);
     if (name) { document.body.classList.remove('show-detail'); this.render(); }
@@ -7420,7 +7465,7 @@ const Tools = {
     this.render();
   },
   pinHtml(attr) {
-    if (attr) return ''; // Combat always sits on the left on wide screens now
+    if (attr) { const right = document.body.classList.contains('combat-right'); return `<button class="rr-pin" data-tr="side" title="Move Combat to the ${right ? 'left' : 'right'} of the stat block" aria-label="Move Combat to the ${right ? 'left' : 'right'}">${right ? '◧ Left' : 'Right ◨'}</button>`; }
     return `<button class="rr-pin${this.pinned ? ' on' : ''}" ${attr} title="${this.pinned ? 'Unpin: take the results list’s place again' : 'Pin to the right, so the list and entries stay usable during a fight'}" aria-pressed="${this.pinned}">${this.pinned ? 'Unpin' : 'Pin'}</button>`;
   },
   links() {
@@ -7949,7 +7994,7 @@ function wireEvents() {
   // Settings: data
   $('#exportAllBtn').addEventListener('click', () => {
     const all = [...App.entries.values()];
-    download(`dnd-reference-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(exportPayload(all), null, 1));
+    download(`dnd-reference-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(exportPayload(all, { full: true }), null, 1));
   });
   $('#loadSamplesBtn').addEventListener('click', async () => { await App.upsert(SAMPLE_ENTRIES.map((s) => makeEntry(s))); });
   $('#clearDbBtn').addEventListener('click', async () => {
@@ -8031,6 +8076,8 @@ function wireEvents() {
     let msg;
     if (mode === 'replace') { await App.replaceAll(payload.entries); msg = `Replaced with ${payload.entries.length} entries from GitHub.`; }
     else { const r = await App.merge(payload.entries); msg = `Merged: ${r.added} new, ${r.updated} updated, ${r.kept} kept.`; }
+    const cb = await adoptCombat(payload.combat);
+    if (cb) msg += ` Restored your ${cb}.`;
     // Only a full replace means local == remote; after a merge the next push needs no confirmation either,
     // because the merge already incorporated the remote state.
     await Store.setMeta('githubSync', { sha, at: nowIso() });
@@ -8481,7 +8528,8 @@ async function boot() {
   $('#toolSplit').addEventListener('pointerdown', (ev) => {
     const bar = ev.currentTarget, lay = document.querySelector('.layout'), box = lay.getBoundingClientRect();
     bar.setPointerCapture(ev.pointerId); bar.classList.add('drag');
-    const move = (e2) => { const w = Math.max(360, Math.min(box.width - 360, e2.clientX - box.left)); lay.style.setProperty('--combat-w', Math.round(w) + 'px'); };
+    const right = document.body.classList.contains('combat-right');
+    const move = (e2) => { const w = Math.max(360, Math.min(box.width - 360, right ? box.right - e2.clientX : e2.clientX - box.left)); lay.style.setProperty('--combat-w', Math.round(w) + 'px'); };
     const up = () => { bar.classList.remove('drag'); bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); const w = parseInt(lay.style.getPropertyValue('--combat-w'), 10); if (w) safeLocal.set('dndref.combatW', String(w)); };
     bar.addEventListener('pointermove', move); bar.addEventListener('pointerup', up);
   });

@@ -477,15 +477,38 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
 .tr-tablewrap { border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
-/* first four columns stay put when the table scrolls sideways */
-.tr-table th:nth-child(-n+4), .tr-table tr:not(.tr-activerow):not(.tr-histrow) > td:nth-child(-n+4) { position: sticky; z-index: 2; }
-.tr-table th:nth-child(1), .tr-table tr > td.c-init { left: 0; width: 40px; min-width: 40px; max-width: 40px; }
-.tr-table th:nth-child(2), .tr-table tr > td.c-name { left: 40px; width: 150px; min-width: 110px; max-width: 150px; }
-.tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 190px; width: 36px; min-width: 36px; max-width: 36px; }
-.tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 226px; width: 54px; min-width: 54px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
+.tr-table { table-layout: fixed; min-width: 860px; }
+.tr-table col.w-init { width: 44px; } .tr-table col.w-name { width: 150px; } .tr-table col.w-lab { width: 38px; } .tr-table col.w-ac { width: 52px; }
+.tr-table col.w-adj { width: 64px; } .tr-table col.w-hp { width: 48px; } .tr-table col.w-max { width: 48px; } .tr-table col.w-dmg { width: 64px; }
+.tr-table col.w-pm { width: 36px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 52px; }
+.tr-table.battle col.w-init { width: 30px; }
+.tr-table td, .tr-table th { overflow: hidden; text-overflow: ellipsis; }
+.tr-table td.c-name { max-width: none !important; width: auto !important; min-width: 0 !important; }
+.tr-table .c-init input { width: 100%; }
+.tr-table.battle .c-init input { height: 22px; font-size: 10.5px; padding: 0; border-color: transparent; background: transparent; color: var(--muted); }
+.tr-table .c-note input { min-width: 0; }
+.tr-table .c-ctl { text-align: right; }
+/* the first four columns stay put when the table scrolls sideways; solid backgrounds so nothing shows through */
+.tr-table th:nth-child(-n+4), .tr-table tr:not(.tr-activerow):not(.tr-histrow):not(.tr-addrow):not(.lair) > td:nth-child(-n+4), .tr-table tr.lair > td:first-child, .tr-table tr.tr-addrow > td:first-child { position: sticky; z-index: 2; }
+.tr-table th:nth-child(1), .tr-table tr > td.c-init { left: 0; }
+.tr-table th:nth-child(2), .tr-table tr > td.c-name { left: 44px; }
+.tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 194px; }
+.tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 232px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
+.tr-table.battle th:nth-child(2), .tr-table.battle tr > td.c-name { left: 30px; }
+.tr-table.battle th:nth-child(3), .tr-table.battle tr > td.c-lab { left: 180px; }
+.tr-table.battle th:nth-child(4), .tr-table.battle tr > td.c-ac { left: 218px; }
+.tr-table td { background: var(--panel); background-clip: padding-box; }
+.tr-table th { background: var(--panel); }
+.tr-table tr.tie > td.c-init { background: color-mix(in srgb, #8b5cf6 26%, var(--panel)); }
+.tr-table tr.tie > td.c-init input { font-weight: 700; color: #6d28d9; }
+.tr-table tr.autoinit > td.c-init input { font-style: italic; }
+.tr-table tr[data-row] { cursor: pointer; }
+.tr-table tr.tr-addrow > td { background: var(--bg); white-space: normal; }
+.tr-addin { display: flex; gap: 6px; } .tr-addin input { flex: 1; }
+#trQuickHits { display: flex; flex-direction: column; }
 .tr-table tr.lair > td.c-name { max-width: 186px; }
-.tr-table tr.tr-cur > td { background: color-mix(in srgb, var(--accent) 13%, var(--bg)); }
-.tr-table tr.lair > td { background: color-mix(in srgb, hsl(275 40% 50%) 8%, var(--bg)); }
+.tr-table tr.tr-cur > td { background: color-mix(in srgb, var(--accent) 14%, var(--panel)); }
+.tr-table tr.lair > td { background: color-mix(in srgb, hsl(275 40% 50%) 9%, var(--panel)); }
 .tr-table tr.tr-cur > td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
 .tr-table tr.h50 > td:first-child { box-shadow: inset 4px 0 0 #f59e0b; }
 .tr-table tr.h20 > td:first-child { box-shadow: inset 4px 0 0 #ec4899; }
@@ -524,7 +547,7 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-table tr.tr-cur > td { background: hsl(215 80% 55% / .12); }
 .tr-table tr.tr-cur > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 .tr-table tr.lair > td { background: hsl(275 40% 50% / .07); }
-.tr-table tr.down > td { opacity: .55; } .tr-table tr.down .tr-name { text-decoration: line-through; }
+.tr-table tr.down > td { color: var(--muted); } .tr-table tr.down .tr-name { text-decoration: line-through; }
 .tr-table tr.tr-activerow > td, .tr-table tr.tr-histrow > td { white-space: normal; border-top: 0; background: var(--panel); }
 .tr-table .tr-modtag, .tr-table .tr-mode { margin-left: 5px; font-size: 10px; }
 .fv-bar { margin: 16px 0 8px; }
@@ -5742,7 +5765,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-19.3'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-19.4'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6964,7 +6987,9 @@ const Tracker = {
       if (c.label) (taken.get(b) || taken.set(b, new Set()).get(b)).add(String(c.label).toUpperCase());
     }
     const style = (b) => (this.st.labelStyle && this.st.labelStyle[b]) || this.st.labels;
-    const auto = (n, b) => (style(b) === '123' ? String(n) : n <= 26 ? String.fromCharCode(64 + n) : 'A' + String.fromCharCode(64 + n - 26));
+    // a start ("D" or "4") moves the whole kind along: Blood Zombie A-C, then spiders D-F
+    const start = (b) => { const v = String((this.st.labelStart || {})[b] || '').trim().toUpperCase(); if (!v) return 0; if (/^\d+$/.test(v)) return +v - 1; if (/^[A-Z]$/.test(v)) return v.charCodeAt(0) - 65; return 0; };
+    const auto = (n0, b) => { const n = n0 + start(b); return style(b) === '123' ? String(n) : n <= 26 ? String.fromCharCode(64 + n) : 'A' + String.fromCharCode(64 + n - 26); };
     for (const c of this.sorted()) {
       if (c.kind !== 'mon') continue;
       const b = this.baseName(c);
@@ -6982,7 +7007,8 @@ const Tracker = {
     const opt = (v, l) => `<label><input type="radio" name="lbStyle" value="${v}"${style === v ? ' checked' : ''}> ${l}</label>`;
     const ok = await ask(`Label: ${esc(b)} ${esc(cur)}`,
       `<div class="abf"><label class="abf-wide">This one <input id="lbVal" value="${esc(c.label || '')}" placeholder="${esc(cur || 'automatic')}" autocomplete="off"></label>`
-      + `<div class="abf-kind abf-wide"><span class="hint">All ${esc(b)}s:</span>${opt('', 'as the tracker')}${opt('abc', 'A B C')}${opt('123', '1 2 3')}</div></div>`
+      + `<div class="abf-kind abf-wide"><span class="hint">All ${esc(b)}s:</span>${opt('', 'as the tracker')}${opt('abc', 'A B C')}${opt('123', '1 2 3')}</div>`
+      + `<label class="abf-wide">All ${esc(b)}s start at <input id="lbStart" value="${esc((this.st.labelStart || {})[b] || '')}" placeholder="A or 1" maxlength="3" autocomplete="off"></label></div>`
       + '<p class="hint">Leave it blank to follow the turn order. A label you type stays put; the others skip it.</p>',
       [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
     if (!ok) return;
@@ -6990,6 +7016,9 @@ const Tracker = {
     c.label = v || undefined;
     this.st.labelStyle = this.st.labelStyle || {};
     if (sv) this.st.labelStyle[b] = sv; else delete this.st.labelStyle[b];
+    const stv = ($('#lbStart')?.value || '').trim();
+    this.st.labelStart = this.st.labelStart || {};
+    if (stv) { this.st.labelStart[b] = stv; if (!sv && /^\d+$/.test(stv)) this.st.labelStyle[b] = '123'; if (!sv && /^[a-z]$/i.test(stv)) this.st.labelStyle[b] = 'abc'; } else delete this.st.labelStart[b];
     this.save(); this.render(); FightView.refresh();
   },
   nameOf(c, lab = this.labels()) { return c.kind === 'pc' ? this.pc(c).name || 'Unnamed' : c.kind === 'lair' ? 'Lair action' : this.baseName(c) + (lab.get(c.cid) ? ' ' + lab.get(c.cid) : ''); },
@@ -7009,7 +7038,25 @@ const Tracker = {
     const cur = this.st.list.find((c) => c.cid === this.st.turn);
     if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); }
     if (this.st.follow && cur && cur.eid && App.isWide()) App.showDetail(cur.eid, { fromSearch: App.currentId === cur.eid }); // stat block follows the turn
+    else if (this.st.follow && cur && cur.kind === 'pc' && App.isWide()) { App.currentId = null; App.showDetail(null); }
     else FightView.refresh();
+  },
+  /** Several groups of one kind: the groups you haven't typed yet are spread evenly through the round from the one you typed. */
+  spread(c) {
+    const kind = (x) => x.kind === 'mon' && x.eid === c.eid && x.bname === c.bname;
+    const gids = [...new Set(this.monsters().filter(kind).map((x) => x.gid))];
+    if (gids.length < 2) return;
+    const typed = this.num(c.init), lo = 1, hi = Math.max(20, ...this.st.list.map((x) => this.num(x.kind === 'pc' ? this.pc(x).init : x.init)).filter(Number.isFinite));
+    const span = hi - lo + 1, step = span / gids.length;
+    const order = [c.gid, ...gids.filter((g) => g !== c.gid)];
+    order.forEach((g, i) => {
+      if (i === 0) return;
+      const ms = this.monsters().filter((x) => x.gid === g);
+      if (ms.some((x) => x.initAuto === false && x.init !== '' && x.init !== undefined)) return; // you typed this one
+      let v = Math.round(typed - i * step);
+      while (v < lo) v += span;
+      for (const m of ms) { m.init = v; m.initAuto = true; }
+    });
   },
   /** "7", "5+12", "=5+12-3" -> a number; anything else -> null */
   calc(v) {
@@ -7084,23 +7131,24 @@ const Tracker = {
     const init = (v, attrs) => `<td class="c-init">${cur ? '<span class="tr-mark">▶</span>' : ''}<input ${attrs} data-tr-init value="${esc(v ?? '')}" inputmode="numeric" placeholder="–" aria-label="Initiative"></td>`;
     const adj = (v, attrs, has) => `<td class="c-adj"><input class="tr-adj" ${attrs} data-tr-acadj value="${esc(v || '')}" inputmode="numeric" placeholder="±" aria-label="AC change (Shield, cover…)">${has ? `<button class="tr-acx" data-tr="acclear" ${attrs} title="Clear the AC change" aria-label="Clear the AC change">×</button>` : ''}</td>`;
     const tail = (c2) => `<td class="c-ctl">${c2 && c2.kind === 'mon' ? `<button class="tr-hide" data-tr="hide" data-cid="${c2.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>` : ''}${c2 && c2.kind !== 'pc' && this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c2.cid}" aria-label="Remove">×</button>` : ''}</td>`;
+    const tie = this.ties && this.ties.has(c.cid) ? ' tie' : '';
     if (c.kind === 'pc') {
       const t = this.pc(c), has = !!this.num(t.acAdj);
-      return `<tr class="pc${cur}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-name">${esc(t.name || 'Unnamed')}</span></td><td class="c-lab"></td>`
+      return `<tr class="pc${cur}${tie}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-name">${esc(t.name || 'Unnamed')}</span></td><td class="c-lab"></td>`
         + `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>`
         + adj(t.acAdj, `data-pid="${t.id}"`, has)
         + `<td class="c-hp"></td><td class="c-max"></td><td class="c-dmg" colspan="3"></td>`
         + `<td class="c-note"><input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></td>${tail(null)}</tr>`;
     }
     if (c.kind === 'lair') {
-      return `<tr class="lair${cur}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name" colspan="2"><span class="tr-name">Lair action</span></td>`
+      return `<tr class="lair${cur}${tie}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name" colspan="2"><span class="tr-name">Lair action</span></td>`
         + `<td class="c-note" colspan="8"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens" aria-label="What happens"></td>${tail(c)}</tr>`;
     }
     const open = this.hist.has(c.cid), has = !!this.num(c.acAdj), eff = has && Number.isFinite(this.num(c.ac)) ? this.num(c.ac) + this.num(c.acAdj) : null;
     const tags = (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">mod</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '');
     const pct = c.max ? c.hp / c.max : 1, hcls = c.hp <= 0 ? ' down' : pct <= 0.1 ? ' h10' : pct <= 0.2 ? ' h20' : pct <= 0.5 ? ' h50' : '';
-    const row = `<tr class="mon${cur}${hcls}">${init(c.init, `data-cid="${c.cid}"`)}`
+    const row = `<tr class="mon${cur}${hcls}${tie}${c.initAuto ? ' autoinit' : ''}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}`
       + `<td class="c-name">${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${tags}</td>`
       + `<td class="c-lab"><button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button></td>`
       + `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
@@ -7137,6 +7185,11 @@ const Tracker = {
     const keepScroll = pane.querySelector('.rr-scroll')?.scrollTop || 0;
     const lab = this.labels(), all = this.sorted(), shown = all.filter((c) => !c.hidden), hidden = all.filter((c) => c.hidden);
     const setup = this.st.setup !== false, fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0);
+    const battle = !!this.st.turn;
+    // same initiative, different creature: flag both
+    this.ties = new Set();
+    { const by = new Map(); for (const c of shown) { const v = this.num(c.kind === 'pc' ? this.pc(c).init : c.init); if (!Number.isFinite(v)) continue; (by.get(v) || by.set(v, []).get(v)).push(c); }
+      for (const g of by.values()) { const kinds = new Set(g.map((c) => (c.kind === 'pc' ? 'pc:' + c.pid : c.kind === 'lair' ? 'lair:' + c.cid : (c.eid || c.bname)))); if (kinds.size > 1) for (const c of g) this.ties.add(c.cid); } }
     const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
     const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
     pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
@@ -7144,9 +7197,9 @@ const Tracker = {
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">New fight</button>'
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
-      + `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`
+      + (battle ? '' : `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`)
       + '<div class="rr-scroll">'
-      + (this.diffOpen ? Roller.difficultyHtml() : '')
+      + (this.diffOpen && !battle ? Roller.difficultyHtml() : '')
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
         + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><div id="trHits"></div></div>`
         + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name">${QuickStats.rows().length ? `<label title="Fill AC and HP and give it attacks from the Monster Statistics by Challenge Rating table">CR <select id="tcCr"><option value="">–</option>${QuickStats.rows().map((q) => `<option value="${esc(q.cr)}">${esc(q.cr)}</option>`).join('')}</select></label>` : ''}<label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div><div id="tcQuick" class="hint"></div></details>`
@@ -7158,7 +7211,10 @@ const Tracker = {
         + (anyAdj ? '<button data-tr="acclearall" title="Clear every AC ± change">Clear all AC ±</button>' : '')
         + `<label class="hint"><input type="checkbox" data-tr="deadtoggle"${this.st.hideDead !== false ? ' checked' : ''}> Move defeated monsters out of the order</label></div></div>`
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
-      + (shown.length ? `<div class="tr-tablewrap"><table class="tr-table"><thead><tr><th class="c-init" title="Initiative">Init</th><th>Name</th><th></th><th>AC</th><th title="AC change">±</th><th>HP</th><th>Max</th><th>Damage</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}</tbody></table></div>` : '<p class="hint">Add your party and monsters to start.</p>')
+      + `<div class="tr-tablewrap"><table class="tr-table${battle ? ' battle' : ''}"><colgroup><col class="w-init"><col class="w-name"><col class="w-lab"><col class="w-ac"><col class="w-adj"><col class="w-hp"><col class="w-max"><col class="w-dmg"><col class="w-pm"><col class="w-pm"><col class="w-note"><col class="w-ctl"></colgroup>`
+      + `<thead><tr><th class="c-init" title="Initiative">${battle ? '#' : 'Init'}</th><th>Name</th><th></th><th>AC</th><th title="AC change">±</th><th>HP</th><th>Max</th><th>Damage</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}`
+      + `<tr class="tr-addrow"><td class="c-init"></td><td colspan="11"><span class="tr-addin"><input id="trQuick" type="search" placeholder="+ Add a monster…" autocomplete="off" aria-label="Add a monster"><button data-tr="lair" title="Add a lair action row">+ Lair action</button></span><div id="trQuickHits"></div></td></tr>`
+      + '</tbody></table></div>'
       + (hidden.filter((c) => !c.dead).length ? `<h3 class="tr-h">Hidden</h3>${hidden.filter((c) => !c.dead).map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
       + (hidden.filter((c) => c.dead).length ? `<details class="rr-sec tr-deadsec" data-keep="trDead"${Keep.open('trDead', true) ? ' open' : ''}><summary>Defeated (${hidden.filter((c) => c.dead).length})</summary>${hidden.filter((c) => c.dead).map((c) => `<div class="tr-row later"><span class="tr-name">${esc(this.nameOf(c, lab))}</span><span class="hint">${c.hp}/${c.max} HP</span><button data-tr="revive" data-cid="${c.cid}" title="Put it back in the turn order">Reinstate</button></div>`).join('')}</details>` : '')
       + this.damageLogHtml(lab)
@@ -7166,7 +7222,14 @@ const Tracker = {
       + '</div>';
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
     const sb = $('#trSearch'); if (sb && this.q) { sb.value = this.q; this.hits(this.q); } // keep the search (and its results) for repeated taps
+    const qb = $('#trQuick'); if (qb && this.quickQ) { qb.value = this.quickQ; this.quickHits(this.quickQ); }
     if (keep) pane.querySelector(keep)?.focus();
+  },
+  quickHits(q) {
+    const box = $('#trQuickHits');
+    if (!box) return;
+    const ids = q.trim() ? App.index.search(q, { type: 'monster' }).slice(0, 30).filter((id) => !isMonGroup(App.entries.get(id))).slice(0, 6) : [];
+    box.innerHTML = ids.map((id) => { const e = App.entries.get(id), n = this.countOf(id); return `<button class="rr-hit" data-tr="qadd" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''}${n ? ` · ${n} in the fight` : ''}</span></button>`; }).join('');
   },
   hits(q) {
     this.q = q;
@@ -7204,9 +7267,19 @@ const Tracker = {
   setPct(members, pct) {
     for (const c of members) { const nm = Math.max(1, Math.round(c.base * (1 + pct / 100))); c.hp = Math.max(0, c.hp + (nm - c.max)); c.max = nm; }
   },
+  jumpTo(cid) {
+    const c = this.st.list.find((x) => x.cid === cid);
+    if (!c) return;
+    this.st.turn = cid; this.focus = cid; this.save(); this.render();
+    if (this.st.follow && App.isWide()) { if (c.eid) App.showDetail(c.eid, { fromSearch: App.currentId === c.eid }); else if (c.kind === 'pc') { App.currentId = null; App.showDetail(null); } }
+  },
   async onClick(ev) {
     const t = ev.target.closest('[data-tr]');
-    if (!t) return;
+    if (!t) {
+      const row = ev.target.closest('.tr-table tr[data-row]');
+      if (row && !ev.target.closest('input, button, select, a, textarea, label')) this.jumpTo(row.dataset.row);
+      return;
+    }
     const a = t.dataset.tr, st = this.st, find = () => st.list.find((c) => c.cid === t.dataset.cid);
     if (a === 'close') return Tools.show(null);
     if (a === 'pin') return Tools.togglePin();
@@ -7228,6 +7301,7 @@ const Tracker = {
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
+    if (a === 'qadd') { this.add(t.dataset.id, { quiet: true }); this.quickQ = $('#trQuick')?.value || ''; setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = this.quickQ; i.focus(); this.quickHits(this.quickQ); } }, 0); return; }
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
     if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; } this.save(); return this.render(); }
     if (a === 'deadtoggle') { st.hideDead = st.hideDead === false; this.save(); return this.render(); }
@@ -7298,7 +7372,7 @@ const Tracker = {
     } else if ('trInit' in d) {
       const v = el.value.trim(), n = v === '' ? '' : this.num(v);
       if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.init = n; Roller.save(); } }
-      else { const c = st.list.find((x) => x.cid === d.cid); if (c) { if (c.kind === 'mon' && c.gid) for (const m of st.list.filter((x) => x.gid === c.gid)) m.init = n; else c.init = n; } }
+      else { const c = st.list.find((x) => x.cid === d.cid); if (c) { if (c.kind === 'mon' && c.gid) { for (const m of st.list.filter((x) => x.gid === c.gid)) { m.init = n; m.initAuto = false; } if (n !== '') this.spread(c); } else c.init = n; } }
     } else if ('trAc' in d) {
       const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.ac = el.value.trim(); Roller.save(); }
     } else if ('trAcadj' in d) {
@@ -8387,11 +8461,13 @@ async function boot() {
     const done = () => { ev.preventDefault(); ev.stopPropagation(); };
     if (ev.target.id === 'rrSearch') { done(); $('#rrHits .rr-hit')?.click(); }
     else if (ev.target.id === 'trSearch') { done(); $('#trHits .rr-hit')?.click(); }
+    else if (ev.target.id === 'trQuick') { done(); $('#trQuickHits .rr-hit')?.click(); }
     else if (ev.target.matches('[data-tr-dmgin]')) { done(); Tracker.hurt(ev.target.dataset.cid, ev.shiftKey ? 1 : -1); }
     else if (['tcName', 'tcAc', 'tcHp', 'tcInit', 'tcCr'].includes(ev.target.id)) { done(); $('#toolPane [data-tr="custom"]')?.click(); }
     else if (ev.target.matches('#toolPane input')) ev.stopPropagation(); // any other box: Enter is just Enter
   });
   // numbers in the table: focusing selects them, so you can just type over
+  $('#toolPane').addEventListener('input', (ev) => { if (ev.target.id === 'trQuick') { Tracker.quickQ = ev.target.value; Tracker.quickHits(ev.target.value); } });
   $('#toolPane').addEventListener('focusin', (ev) => { const el = ev.target; if (el.matches('.tr-table input[inputmode="numeric"]')) { el.select(); el._fresh = true; } });
   $('#toolPane').addEventListener('mouseup', (ev) => { const el = ev.target; if (el._fresh) { ev.preventDefault(); el.select(); } el._fresh = false; });
   $('#toolPane').addEventListener('touchend', (ev) => { const el = ev.target; if (el._fresh) setTimeout(() => el.select(), 0); el._fresh = false; });

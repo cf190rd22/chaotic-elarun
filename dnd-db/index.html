@@ -5608,7 +5608,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.6'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.7'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5939,6 +5939,12 @@ const Roller = {
       while ((m = re2.exec(scan))) a.dmg.push({ dice: m[1].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[2].toLowerCase()) });
     }
     const AB = '(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)';
+    if (!a.dmg.length && formMade) {
+      const re4 = /(\d+)\s*\(\s*(\d+d\d+(?:\s*[+\-−]\s*\d+)?)\s*\)\s*damage\b/gi;
+      while ((m = re4.exec(scan))) a.dmg.push({ avg: +m[1], dice: m[2].replace(/\s+/g, '').replace(/−/g, '-'), type: '' });
+      const re5 = /(?:Failure|Damage|Hit):\s*(\d+)\s+damage\b/i.exec(scan);
+      if (!a.dmg.length && re5) a.dmg.push({ dice: re5[1], type: '' });
+    }
     if (!a.dmg.length && /^(Damage:|\w+ Saving Throw: DC)/.test(text)) {
       const re3 = new RegExp(`\\b(\\d+)\\s+(${types})\\s+damage\\b`, 'gi');
       while ((m = re3.exec(scan))) a.dmg.push({ dice: m[1], type: cap(m[2].toLowerCase()) });
@@ -6058,7 +6064,7 @@ const Roller = {
       + (r.rechargeOn ? `<div class="rr-note">Recharge d6: <b>${r.recharge}</b> (${r.recharge >= r.rechargeOn ? 'recharged' : 'not yet'})</div>` : '') + '</div>';
   },
   actSummary(a) {
-    if (a.kind === 'attack') return `${a.toHit >= 0 ? '+' : ''}${a.toHit} · ${a.dmg.map((c) => `${c.dice} ${c.type}`).join(' + ') || 'no damage'}`;
+    if (a.kind === 'attack') return `${a.toHit >= 0 ? '+' : ''}${a.toHit} · ${a.dmg.map((c) => `${c.dice} ${c.type}`.trim()).join(' + ') || 'no damage'}`;
     if (a.kind === 'save') return `DC ${a.save.dc} ${a.save.ab} · ${a.dmg.map((c) => `${c.dice} ${c.type}`).join(' + ')}${a.half ? ' (half on save)' : ''}`;
     if (a.kind === 'multi') return a.parts.length ? 'rolls all its attacks' : '';
     if (a.kind === 'damage') return a.dmg.map((c) => `${c.dice} ${c.type}`).join(' + ');
@@ -6226,9 +6232,9 @@ const Abilities = {
     return r ? ` · <a href="#" data-open="${esc(r.id)}" class="rr-ref" title="Open ${esc(r.name)}">${this.isPower(r) ? 'power' : esc(Types.get(r.type).label.replace(/s$/, '').toLowerCase())}</a>` : '';
   },
   /** The creature's spell save DC and spell attack bonus, read from its spellcasting text. */
-  casting(eid) {
+  casting(eid, crOverride = null) {
     const e = eid && App.entries.get(eid);
-    if (!e) return {};
+    if (!e) return crOverride === null || crOverride === undefined ? {} : { dc: 10 + Math.floor(crOverride / 2), hit: 4 + Math.floor(crOverride / 2), byCr: true };
     const txt = e.sections.flatMap((sc) => sc.items.map((i) => `${i.name}. ${i.text || ''}`)).join(' ');
     const dc = /spell save DC\s*(\d+)/i.exec(txt), hit = /([+\-−]\s*\d+)\s+to hit with spell attacks/i.exec(txt);
     const out = {};
@@ -6264,13 +6270,14 @@ const Abilities = {
     return out.sort((a, b) => a.name.localeCompare(b.name)).slice(0, 24);
   },
   /** Fill the form from a database entry: a spell's attack or save and damage, a feat's text. */
-  fill(r, eid) {
+  fill(r, eid, crOverride = null) {
     const set = (id, v) => { const el = $('#' + id); if (el) el.value = v ?? ''; };
     const kind = (k) => { const el = document.querySelector(`#askBody [name="abKind"][value="${k}"]`); if (el) el.checked = true; };
-    const power = this.isPower(r), me = eid && App.entries.get(eid), cr = me ? crValue(me.fields.CR) : null;
+    const power = this.isPower(r), me = eid && App.entries.get(eid), cr = me ? crValue(me.fields.CR) : (crOverride ?? null);
+    const crLabel = me ? String(me.fields.CR || '').split(/[\s(]/)[0] : crText(crOverride);
     let text = String(r.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     if (power) text = this.atCr(text, cr);
-    const cast = this.casting(eid), f = r.fields || {};
+    const cast = this.casting(eid, crOverride), f = r.fields || {};
     set('abName', r.name);
     const ct = String(f['Casting Time'] || f.Usage || '');
     set('abSec', /bonus/i.test(ct) ? 'Bonus Actions' : /reaction/i.test(ct) ? 'Reactions' : /trait/i.test(ct) ? 'Traits' : 'Actions');
@@ -6279,15 +6286,16 @@ const Abilities = {
       const dm = [], re = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?|\\d+)\\s+(${DAMAGE_TYPES})\\s+damage\\b`, 'gi');
       let m;
       while ((m = re.exec(text)) && dm.length < 2) dm.push(`${m[1].replace(/\s+/g, '')} ${m[2].toLowerCase()}`);
+      if (!dm.length) { const u = /\b(?:taking|takes?|deals?|or take)\s+(\d+d\d+(?:\s*[+\-−]\s*\d+)?|\d+)\s+damage\b/i.exec(text); if (u) dm.push(u[1].replace(/\s+/g, '')); }
       const AB = '(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)';
-      const sv = new RegExp(`must (?:succeed on|make) an? ${AB} saving throw\\s*\\(DC\\s*(\\d+)\\)|must (?:succeed on|make) an? DC\\s*(\\d+)\\s+${AB} saving throw`, 'i').exec(text);
+      const sv = new RegExp(`must (?:succeed on|make) an? ${AB} saving throw[^.]{0,70}?\\(DC\\s*(\\d+)\\)|must (?:succeed on|make) an? DC\\s*(\\d+)\\s+${AB} saving throw`, 'i').exec(text);
       const rider = /\bextra \d+/i.test(text) || (sv && dm.length && !/\bor (?:take|be)\b|failed save|on a failure/i.test(text));
       set('abDmg', dm.join(', '));
       if (sv && !rider) { kind('save'); set('abDc', sv[2] || sv[3]); set('abAb', (sv[1] || sv[4]).slice(0, 3).toUpperCase()); const h = $('#abHalf'); if (h) h.checked = /half as much damage|half damage/i.test(text); }
       else kind('other');
       set('abText', text);
       const note = $('#abLinked');
-      if (note) note.innerHTML = `Monster power <b>${esc(r.name)}</b>${f.Theme ? ` (${esc(f.Theme)})` : ''}${/\bCR\b/.test(r.text || '') ? (cr !== null ? `. Worked out for CR ${esc(String(me.fields.CR).split(/[\s(]/)[0])}: check the numbers.` : '. No CR on this creature, so the CR maths is left as written.') : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
+      if (note) note.innerHTML = `Monster power <b>${esc(r.name)}</b>${f.Theme ? ` (${esc(f.Theme)})` : ''}${/\bCR\b/.test(r.text || '') ? (cr !== null ? `. Worked out for CR ${esc(crLabel)}: check the numbers.` : '. No CR on this creature, so the CR maths is left as written.') : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
       $('#abUnlink')?.addEventListener('click', () => { this._ref = null; note.innerHTML = ''; });
       this._ref = r.id;
       return;
@@ -6330,7 +6338,7 @@ const Abilities = {
       + `<label class="abf-wide">Description <textarea id="abText" rows="3" placeholder="Anything else it does"></textarea></label></div><p class="hint">For this fight only. Each one can be saved to the stat block later.</p>`,
       [{ label: 'Cancel', value: null }, { label: 'Add', value: true, kind: 'primary' }]);
     const body = $('#askBody'), hits = $('#abLinkHits'), q = $('#abLink');
-    const pick = (id) => { const r = App.entries.get(id); if (!r) return; this.fill(r, opts.eid); hits.innerHTML = ''; q.value = ''; body.classList.add('ab-picked'); };
+    const pick = (id) => { const r = App.entries.get(id); if (!r) return; this.fill(r, opts.eid, opts.cr); hits.innerHTML = ''; q.value = ''; body.classList.add('ab-picked'); };
     q.addEventListener('input', () => {
       const ids = q.value.trim() ? App.index.search(q.value).filter((id) => { const x = App.entries.get(id); return x && x.type !== 'monster'; }).slice(0, 8) : [];
       hits.innerHTML = ids.map((id) => { const x = App.entries.get(id); return `<button type="button" class="rr-hit" data-ab-ref="${esc(id)}">${esc(x.name)} <span class="hint">${esc(this.isPower(x) ? 'Power · ' + (x.fields.Theme || '') : Types.get(x.type).label)}${x.fields?.Level ? ' · ' + (x.fields.Level === 'Cantrip' ? 'cantrip' : 'level ' + esc(x.fields.Level)) : ''}</span></button>`; }).join('');
@@ -6375,6 +6383,40 @@ const Abilities = {
    Every creature is its own row. Creatures added together share an initiative in chunks of
    up to 3. Labels (A B C or 1 2 3) follow the turn order, so A / 1 acts first. On a monster's
    turn its actions can be rolled here, and its stat block follows the turn on wide screens. */
+function crText(v) { return v === null || v === undefined ? '' : v === 0.125 ? '1/8' : v === 0.25 ? '1/4' : v === 0.5 ? '1/2' : String(v); }
+/** The Monster Statistics by Challenge Rating table, if it has been imported (Forge of Foes). */
+const QuickStats = {
+  table() {
+    for (const e of App.entries.values()) {
+      const h = e.table && e.table.headers.map((x) => fold(x));
+      if (h && h.includes(fold('AC/DC')) && h.some((x) => /damage per attack/.test(x)) && h.some((x) => /hit points/.test(x))) return e;
+    }
+    return null;
+  },
+  rows() {
+    const e = this.table();
+    if (!e) return [];
+    const h = e.table.headers.map((x) => fold(x)), col = (re) => h.findIndex((x) => re.test(x));
+    const ci = { cr: col(/^cr$/), ac: col(/ac\/dc/), hp: col(/hit points/), prof: col(/proficient/), dpr: col(/per round/), n: col(/attacks$/), dmg: col(/per attack/) };
+    return e.table.rows.map((r) => {
+      const d = /(\d+)\s*\(([^)]+)\)/.exec(r[ci.dmg] || '');
+      return { cr: r[ci.cr], v: crValue(r[ci.cr]), ac: parseInt(r[ci.ac], 10), hp: parseInt(r[ci.hp], 10), prof: parseInt(String(r[ci.prof]).replace('−', '-'), 10), dpr: parseInt(r[ci.dpr], 10), n: parseInt(r[ci.n], 10) || 1, avg: d ? +d[1] : 0, dice: d ? d[2].replace(/\s+/g, '') : '', id: e.id };
+    }).filter((x) => x.v !== null && Number.isFinite(x.ac));
+  },
+  get(cr) { return this.rows().find((x) => x.v === crValue(cr)) || null; },
+  line(q) { return `CR ${q.cr}: AC ${q.ac} · HP ${q.hp} · +${q.prof} · ${q.n} × ${q.avg} (${q.dice}) · DC ${q.ac}`; },
+  /** Rollable attacks for a creature built from the table (for this fight; Keep is not offered for these). */
+  give(key, q) {
+    Roller.st.extras = Roller.st.extras || {};
+    if ((Roller.st.extras[key] || []).length) return;
+    const list = [];
+    if (q.n > 1) list.push({ id: uid(), name: 'Multiattack', sec: 'Actions', text: `The creature makes ${['', 'one', 'two', 'three', 'four', 'five'][q.n] || q.n} Attack attacks.` });
+    list.push({ id: uid(), name: 'Attack', sec: 'Actions', text: `Melee or Ranged Attack Roll: +${q.prof}. Hit: ${q.avg} (${q.dice}) damage.` });
+    Roller.st.extras[key] = list;
+    Roller.save();
+  },
+};
+
 const Tracker = {
   st: { round: 1, turn: null, list: [], setup: true, labels: 'abc', follow: true },
   hist: new Set(),
@@ -6421,9 +6463,11 @@ const Tracker = {
     if (!quiet) toast(`${e.name} added (${this.monsters().filter((x) => x.eid === eid).length} in the fight)`, 'ok', 1800);
     this.render();
   },
-  addCustom(name, ac, hp, bonus, { quiet = false } = {}) {
+  addCustom(name, ac, hp, bonus, { quiet = false, cr = null } = {}) {
     name = (name || '').trim() || 'Creature'; hp = Math.max(1, this.num(hp) || 1); bonus = this.num(bonus) || 0;
-    this.place({ cid: uid(), kind: 'mon', eid: null, bname: name, bonus, ac: String(ac || '?'), base: hp, max: hp, hp, notes: '', log: [] }, bonus);
+    const q = cr !== null && cr !== '' ? QuickStats.get(cr) : null;
+    if (q) QuickStats.give(Abilities.key(null, name), q);
+    this.place({ cid: uid(), kind: 'mon', eid: null, bname: name, bonus, ac: String(ac || '?'), base: hp, max: hp, hp, notes: '', log: [], ...(q ? { cr: q.v } : {}) }, bonus);
     this.save();
     if (!quiet) toast(`${name} added`, 'ok', 1800);
     this.render();
@@ -6572,7 +6616,7 @@ const Tracker = {
       + '<div class="rr-scroll">'
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
         + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><div id="trHits"></div></div>`
-        + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name"><label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div></details>`
+        + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name">${QuickStats.rows().length ? `<label title="Fill AC and HP and give it attacks from the Monster Statistics by Challenge Rating table">CR <select id="tcCr"><option value="">–</option>${QuickStats.rows().map((q) => `<option value="${esc(q.cr)}">${esc(q.cr)}</option>`).join('')}</select></label>` : ''}<label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div><div id="tcQuick" class="hint"></div></details>`
         + `<div class="tr-btns">${fromRoller ? `<button data-tr="fromroller">Add the roller’s ${fromRoller} monster${fromRoller === 1 ? '' : 's'}</button>` : ''}<button data-tr="lair">+ Lair action</button>`
         + `<span class="rr-seg" title="How creatures of the same kind are labelled (in turn order)"><button data-tr="labels" data-v="abc" class="${this.st.labels !== '123' ? 'on' : ''}">A B C</button><button data-tr="labels" data-v="123" class="${this.st.labels === '123' ? 'on' : ''}">1 2 3</button></span>`
         + (kinds.length ? `<span class="tr-pct" title="Change max HP by a percentage of the stat block's HP"><select id="trPctWho" aria-label="Which monsters"><option value="">All monsters</option>${kinds.map((k) => `<option>${esc(k)}</option>`).join('')}</select><input id="trPct" inputmode="numeric" placeholder="±%"><button data-tr="pct">Max HP</button></span>` : '')
@@ -6614,12 +6658,12 @@ const Tracker = {
     if (a === 'roll') return this.roll(t.dataset.cid, t.dataset.key);
     if (a === 'save') return this.rollSave(t.dataset.cid, t.dataset.k);
     if (a === 'mode') { const c = find(); if (c) { c.mode = t.dataset.m === 'normal' ? undefined : t.dataset.m; this.save(); } return this.render(); }
-    if (a === 'xadd' || a === 'xlink') { const c = find(); return Abilities.add(t.dataset.key, t.dataset.name, () => this.render(), { eid: c && c.eid, link: a === 'xlink' }); }
+    if (a === 'xadd' || a === 'xlink') { const c = find(); return Abilities.add(t.dataset.key, t.dataset.name, () => this.render(), { eid: c && c.eid, cr: c && !c.eid && c.cr !== undefined ? c.cr : null, link: a === 'xlink' }); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); return this.render(); }
     if (a === 'xkeep') { await Abilities.keep(t.dataset.key, t.dataset.xid); return this.render(); }
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'add') { this.add(t.dataset.id); return; }
-    if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value); return; }
+    if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
     if (a === 'fromroller') { for (const b of Roller.st.board) for (let i = 0; i < b.count; i++) this.add(b.id, { quiet: true }); toast('Added the roller’s monsters', 'ok'); return; }
     if (a === 'lair') { st.list.push({ cid: uid(), kind: 'lair', init: 20, notes: '' }); this.save(); return this.render(); }
     if (a === 'hide' || a === 'show') { const c = find(); if (c) { c.hidden = a === 'hide'; if (a === 'hide' && st.turn === c.cid) this.step(1); } this.save(); return this.render(); }
@@ -6634,14 +6678,14 @@ const Tracker = {
         [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]) && ($('#encName').value.trim() || 'Encounter');
       if (!name) return;
       const counts = new Map();
-      for (const c of this.monsters()) { const k = c.eid || 'custom:' + c.bname; const cur = counts.get(k) || { n: 0, ...(c.eid ? { eid: c.eid } : { custom: { name: c.bname, ac: c.ac, hp: c.base, bonus: c.bonus } }) }; cur.n++; counts.set(k, cur); }
+      for (const c of this.monsters()) { const k = c.eid || 'custom:' + c.bname; const cur = counts.get(k) || { n: 0, ...(c.eid ? { eid: c.eid } : { custom: { name: c.bname, ac: c.ac, hp: c.base, bonus: c.bonus, ...(c.cr !== undefined ? { cr: c.cr } : {}) } }) }; cur.n++; counts.set(k, cur); }
       this.encounters = [...(this.encounters || []), { id: uid(), name, items: [...counts.values()], lairs: st.list.filter((c) => c.kind === 'lair').map((c) => ({ init: c.init, notes: c.notes })) }];
       this.saveEncounters(); this.encOpen = true; toast(`Saved “${name}”`, 'ok'); return this.render();
     }
     if (a === 'encload') {
       const enc = (this.encounters || []).find((x) => x.id === t.dataset.id);
       if (!enc) return;
-      for (const x of enc.items) for (let i = 0; i < x.n; i++) { if (x.eid) this.add(x.eid, { quiet: true }); else this.addCustom(x.custom.name, x.custom.ac, x.custom.hp, x.custom.bonus, { quiet: true }); }
+      for (const x of enc.items) for (let i = 0; i < x.n; i++) { if (x.eid) this.add(x.eid, { quiet: true }); else this.addCustom(x.custom.name, x.custom.ac, x.custom.hp, x.custom.bonus, { quiet: true, cr: x.custom.cr ?? null }); }
       for (const l of enc.lairs || []) st.list.push({ cid: uid(), kind: 'lair', init: l.init, notes: l.notes });
       this.save(); this.render(); toast(`Added “${enc.name}” to the fight`, 'ok');
       return;
@@ -6663,6 +6707,12 @@ const Tracker = {
   },
   onChange(ev) {
     const el = ev.target, d = el.dataset, st = this.st;
+    if (el.id === 'tcCr') {
+      const q = el.value ? QuickStats.get(el.value) : null, ac = $('#tcAc'), hp = $('#tcHp'), box = $('#tcQuick');
+      if (q) { if (ac) ac.value = q.ac; if (hp) hp.value = q.hp; }
+      if (box) box.textContent = q ? QuickStats.line(q) + (q.n > 1 ? ' · gets Multiattack and Attack to roll' : ' · gets an Attack to roll') : '';
+      return;
+    }
     if ('trInit' in d) {
       const v = el.value.trim(), n = v === '' ? '' : this.num(v);
       if (d.pid) { const t = Roller.st.party.find((x) => x.id === d.pid); if (t) { t.init = n; Roller.save(); } }
@@ -7748,7 +7798,7 @@ async function boot() {
     if (ev.target.id === 'rrSearch') { done(); $('#rrHits .rr-hit')?.click(); }
     else if (ev.target.id === 'trSearch') { done(); $('#trHits .rr-hit')?.click(); }
     else if (ev.target.matches('[data-tr-dmgin]')) { done(); ev.target.closest('.tr-dmg').querySelector('[data-tr="dmg"]').click(); }
-    else if (['tcName', 'tcAc', 'tcHp', 'tcInit'].includes(ev.target.id)) { done(); $('#toolPane [data-tr="custom"]')?.click(); }
+    else if (['tcName', 'tcAc', 'tcHp', 'tcInit', 'tcCr'].includes(ev.target.id)) { done(); $('#toolPane [data-tr="custom"]')?.click(); }
     else if (ev.target.matches('#toolPane input')) ev.stopPropagation(); // any other box: Enter is just Enter
   });
   $('#toolPane').addEventListener('focusout', (ev) => {

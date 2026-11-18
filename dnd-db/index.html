@@ -444,6 +444,18 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .abf-known { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .abf-known .chip { max-width: none; overflow: visible; white-space: nowrap; padding: 6px 10px; min-height: 34px; border-radius: 999px; font-size: 13px; }
 #askBody:not(.ab-picked) .abf.linking > :not(.abf-link) { display: none; }
+#askBody.ab-list .abf > :not(.abf-link), #askBody.ab-list #abLinkHits, #askBody.ab-list .abf-known { display: none; }
+.abl { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+.abl-h { display: flex; gap: 14px; align-items: center; }
+.abl-rows { display: flex; flex-direction: column; max-height: 46vh; overflow: auto; }
+.abf .abl-row { display: grid; grid-template-columns: 24px 1fr; grid-template-rows: auto auto; column-gap: 10px; row-gap: 1px; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--border); color: inherit; font-size: 14px; cursor: pointer; }
+.abf .abl-row input { grid-row: 1 / span 2; width: 20px; height: 20px; margin: 0; }
+.abf .abl-row .hint { grid-column: 2; font-size: 12px; line-height: 1.3; }
+#askDlg:has(#askBody.ab-list) #askBtns .primary { display: none; }
+.abl [data-abl="add"] { position: sticky; bottom: 0; }
+.abl-row .abl-n { font-weight: 600; font-size: 14px; }
+.abl-row.has { opacity: .55; }
+.abl [data-abl="add"] { align-self: flex-end; min-height: 40px; }
 .rr-mini button { padding: 4px 9px; font-size: 12.5px; min-height: 32px; }
 .rr-mini button.on[data-m="adv"] { background: color-mix(in srgb, #2e9e6a 22%, transparent); }
 .rr-mini button.on[data-m="dis"] { background: color-mix(in srgb, #c2410c 22%, transparent); }
@@ -5643,7 +5655,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.8'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.9'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6130,7 +6142,7 @@ const Roller = {
       + `<span class="rr-stats">${f.CR ? `CR ${esc(String(f.CR).split(/[\s(]/)[0])} · ` : ''}AC ${esc(String(f.AC || '?').split(/[\s(]/)[0])} · HP ${esc(String(f.HP || '?').split(/[\s(]/)[0])}</span>`
       + `<span class="rr-count"><button data-rr="dec" data-bid="${b.bid}" aria-label="One fewer">−</button><b>${b.count}</b><button data-rr="inc" data-bid="${b.bid}" aria-label="One more">+</button></span><button class="rr-x" data-rr="rm" data-bid="${b.bid}" aria-label="Remove from encounter">×</button></div>`
       + `<div class="rr-mrow">${this.modeHtml(b.mode, `data-rr="bmode" data-bid="${b.bid}"`)}${b.count > 1 ? '<span class="hint">for all ' + b.count + '</span>' : ''}</div>`
-      + (rows || '<div class="rr-note">No attacks or save effects found in this stat block.</div>') + `<div class="rr-saves">${saves}</div></div>`;
+      + `<div class="rr-saves">${saves}</div>` + (rows || '<div class="rr-note">No attacks or save effects found in this stat block.</div>') + '</div>';
   },
   partyHtml() {
     const rows = this.st.party.map((t) => `<div class="rr-pc${t.id === this.st.activeId ? ' on' : ''}"><button class="rr-tgt" data-rr="target" data-tid="${t.id}" title="Roll attacks against ${esc(t.name || 'this target')}">${t.id === this.st.activeId ? '◉' : '○'}</button>`
@@ -6316,19 +6328,17 @@ const Abilities = {
     return out.sort((a, b) => a.name.localeCompare(b.name)).slice(0, 24);
   },
   /** Fill the form from a database entry: a spell's attack or save and damage, a feat's text. */
-  fill(r, eid, crOverride = null) {
-    const set = (id, v) => { const el = $('#' + id); if (el) el.value = v ?? ''; };
-    const kind = (k) => { const el = document.querySelector(`#askBody [name="abKind"][value="${k}"]`); if (el) el.checked = true; };
+  /** Work out an ability from a database entry: a spell's attack or save and damage, a power's CR maths, a feat's text. */
+  plan(r, eid, crOverride = null) {
     const power = this.isPower(r), me = eid && App.entries.get(eid), cr = me ? crValue(me.fields.CR) : (crOverride ?? null);
     const crLabel = me ? String(me.fields.CR || '').split(/[\s(]/)[0] : crText(crOverride);
     let text = String(r.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     if (power) text = this.atCr(text, cr);
     const cast = this.casting(eid, crOverride), f = r.fields || {};
-    set('abName', r.name);
     const ct = String(f['Casting Time'] || f.Usage || '');
-    set('abSec', /bonus/i.test(ct) ? 'Bonus Actions' : /reaction/i.test(ct) ? 'Reactions' : /trait/i.test(ct) ? 'Traits' : 'Actions');
+    const p = { ref: r.id, name: r.name, sec: /bonus/i.test(ct) ? 'Bonus Actions' : /reaction/i.test(ct) ? 'Reactions' : /trait/i.test(ct) ? 'Traits' : 'Actions', kind: 'other', hit: '', dc: '', ab: 'STR', half: false, dmg: '', desc: '', note: '' };
     if (power) {
-      set('abName', r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*([^)]+))?\)/, (_, l) => (l ? ` (${l})` : '')));
+      p.name = r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*([^)]+))?\)/, (_, l) => (l ? ` (${l})` : ''));
       const dm = [], re = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?|\\d+)\\s+(${DAMAGE_TYPES})\\s+damage\\b`, 'gi');
       let m;
       while ((m = re.exec(text)) && dm.length < 2) dm.push(`${m[1].replace(/\s+/g, '')} ${m[2].toLowerCase()}`);
@@ -6336,33 +6346,80 @@ const Abilities = {
       const AB = '(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)';
       const sv = new RegExp(`must (?:succeed on|make) an? ${AB} saving throw[^.]{0,70}?\\(DC\\s*(\\d+)\\)|must (?:succeed on|make) an? DC\\s*(\\d+)\\s+${AB} saving throw`, 'i').exec(text);
       const rider = /\bextra \d+/i.test(text) || (sv && dm.length && !/\bor (?:take|be)\b|failed save|on a failure/i.test(text));
-      set('abDmg', dm.join(', '));
-      if (sv && !rider) { kind('save'); set('abDc', sv[2] || sv[3]); set('abAb', (sv[1] || sv[4]).slice(0, 3).toUpperCase()); const h = $('#abHalf'); if (h) h.checked = /half as much damage|half damage/i.test(text); }
-      else kind('other');
-      set('abText', text);
-      const note = $('#abLinked');
-      if (note) note.innerHTML = `Monster power <b>${esc(r.name)}</b>${f.Theme ? ` (${esc(f.Theme)})` : ''}${/\bCR\b/.test(r.text || '') ? (cr !== null ? `. Worked out for CR ${esc(crLabel)}: check the numbers.` : '. No CR on this creature, so the CR maths is left as written.') : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
-      $('#abUnlink')?.addEventListener('click', () => { this._ref = null; note.innerHTML = ''; });
-      this._ref = r.id;
-      return;
+      p.dmg = dm.join(', ');
+      if (sv && !rider) { p.kind = 'save'; p.dc = sv[2] || sv[3]; p.ab = (sv[1] || sv[4]).slice(0, 3).toUpperCase(); p.half = /half as much damage|half damage/i.test(text); }
+      p.desc = text;
+      p.note = `Monster power <b>${esc(r.name)}</b>${f.Theme ? ` (${esc(f.Theme)})` : ''}${/\bCR\b/.test(r.text || '') ? (cr !== null ? `. Worked out for CR ${esc(crLabel)}: check the numbers.` : '. No CR on this creature, so the CR maths is left as written.') : ''}`;
+      return p;
     }
-    const types = DAMAGE_TYPES, dm = [], re = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?)\\s+(${types})\\b`, 'gi');
+    const dm = [], re = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?)\\s+(${DAMAGE_TYPES})\\b`, 'gi');
     let m;
     while ((m = re.exec(text)) && dm.length < 2) if (!/increases by\s*$/i.test(text.slice(Math.max(0, m.index - 14), m.index))) dm.push(`${m[1].replace(/\s+/g, '')} ${m[2].toLowerCase()}`);
     const sv = /\b(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma) saving throw/i.exec(text);
     const atk = /\b(?:melee|ranged)? ?spell attack\b/i.test(text) && !/spell save DC/i.test(text.slice(0, 40));
-    set('abDmg', dm.join(', '));
-    if (r.type === 'spell' && atk) { kind('attack'); set('abHit', cast.hit !== undefined ? (cast.hit >= 0 ? '+' : '') + cast.hit : ''); }
-    else if (r.type === 'spell' && sv) {
-      kind('save'); set('abDc', cast.dc || ''); set('abAb', sv[1].slice(0, 3).toUpperCase());
-      const h = $('#abHalf'); if (h) h.checked = /half as much damage|half damage/i.test(text);
-    } else kind('other');
+    p.dmg = dm.join(', ');
+    if (r.type === 'spell' && atk) { p.kind = 'attack'; p.hit = cast.hit !== undefined ? (cast.hit >= 0 ? '+' : '') + cast.hit : ''; }
+    else if (r.type === 'spell' && sv) { p.kind = 'save'; p.dc = cast.dc || ''; p.ab = sv[1].slice(0, 3).toUpperCase(); p.half = /half as much damage|half damage/i.test(text); }
     const brief = text.length > 220 ? text.slice(0, 220).replace(/\s+\S*$/, '') + '…' : text;
-    set('abText', dm.length || sv || atk ? (r.type === 'spell' && sv && !dm.length ? brief : '') : brief);
+    p.desc = dm.length || sv || atk ? (r.type === 'spell' && sv && !dm.length ? brief : '') : brief;
+    p.note = `Linked to <b>${esc(r.name)}</b> (${esc(Types.get(r.type).label.replace(/s$/, '').toLowerCase())})${r.type === 'spell' && (atk || sv) ? (!cast.dc ? '. No spell save DC found on this creature: fill it in.' : cast.byCr ? '. No spell save DC on this creature, so DC and to-hit come from its CR (10 + ½ CR, +4 + ½ CR).' : '') : ''}`;
+    return p;
+  },
+  /** The stored text for an ability, written so the roller can read it back. */
+  compose({ kind, hit, dc, ab, half, dmg, desc }) {
+    const d = this.dmgText(dmg);
+    if (kind === 'attack') return `Melee or Ranged Attack Roll: ${(hit || '+0').replace(/^(\d)/, '+$1')}. Hit: ${d || 'no damage'}.${desc ? ' ' + desc : ''}`;
+    if (kind === 'save') return `${AB_FULL[ab] || 'Dexterity'} Saving Throw: DC ${dc || '10'}. Failure: ${d || 'see the description'}.${d && half ? ' Success: Half damage.' : ''}${desc ? ' ' + desc : ''}`;
+    if (d) return `Damage: ${d}.${desc ? ' ' + desc : ''}`;
+    return desc || '';
+  },
+  fill(r, eid, crOverride = null) {
+    const p = this.plan(r, eid, crOverride);
+    const set = (id, v) => { const el = $('#' + id); if (el) el.value = v ?? ''; };
+    const kind = document.querySelector(`#askBody [name="abKind"][value="${p.kind}"]`); if (kind) kind.checked = true;
+    set('abName', p.name); set('abSec', p.sec); set('abDmg', p.dmg); set('abText', p.desc);
+    if (p.kind === 'attack') set('abHit', p.hit);
+    if (p.kind === 'save') { set('abDc', p.dc); set('abAb', p.ab); const h = $('#abHalf'); if (h) h.checked = p.half; }
     const note = $('#abLinked');
-    if (note) note.innerHTML = `Linked to <b>${esc(r.name)}</b> (${esc(Types.get(r.type).label.replace(/s$/, "").toLowerCase())})${r.type === 'spell' && (atk || sv) ? (!cast.dc ? '. No spell save DC found on this creature: fill it in.' : cast.byCr ? '. No spell save DC on this creature, so DC and to-hit come from its CR (10 + ½ CR, +4 + ½ CR).' : '') : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
+    if (note) note.innerHTML = `${p.note} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
     $('#abUnlink')?.addEventListener('click', () => { this._ref = null; note.innerHTML = ''; });
     this._ref = r.id;
+  },
+  /** Tables of spells you have imported (Action-Balancing Spells, Add-On Spells…). */
+  spellLists() {
+    return [...App.entries.values()].filter((e) => e.table && e.table.headers.some((h) => /^\s*spells?\s*$/i.test(h)) && e.table.rows.length).sort((a, b) => a.name.localeCompare(b.name));
+  },
+  listRows(list) {
+    const h = list.table.headers.map((x) => fold(x)), si = h.findIndex((x) => /^spells?$/.test(x.trim()));
+    const spells = new Map();
+    for (const x of App.entries.values()) if (x.type === 'spell') { spells.set(fold(x.name), x); for (const al of aliasesOf(x)) spells.set(fold(al), x); }
+    return list.table.rows.map((r, i) => {
+      const name = String(r[si] || '').trim(), hit = spells.get(fold(name));
+      const extra = r.filter((_, j) => j !== si).map((v) => String(v).trim()).filter(Boolean);
+      const act = h.findIndex((x) => /^action$|casting/.test(x)), actV = act >= 0 ? String(r[act] || '') : '';
+      return { i, name: hit ? hit.name : name.replace(/\b\w/g, (c) => c.toUpperCase()), entry: hit || null, extra, act: actV };
+    }).filter((x) => x.name);
+  },
+  listBox(list, key, eid) {
+    const rows = this.listRows(list), have = new Set([...this.list(key).map((x) => fold(x.name)), ...((eid && App.entries.get(eid)?.sections) || []).flatMap((sc) => sc.items.map((i) => fold(i.name)))]);
+    return `<div class="abl" data-list="${esc(list.id)}"><div class="abl-h"><button type="button" class="linkish" data-abl="all">Select all</button><button type="button" class="linkish" data-abl="none">None</button><span class="hint" id="ablN">0 selected</span></div>`
+      + `<div class="abl-rows">${rows.map((x) => `<label class="abl-row${have.has(fold(x.name)) ? ' has' : ''}"><input type="checkbox" value="${x.i}"${have.has(fold(x.name)) ? ' disabled' : ''}><span class="abl-n">${esc(x.name)}</span><span class="hint">${esc(x.extra.join(' · '))}${have.has(fold(x.name)) ? ' · already has it' : x.entry ? '' : ' · not in your spells (adds a note)'}</span></label>`).join('')}</div>`
+      + `<button type="button" class="primary" data-abl="add" disabled>Add selected</button></div>`;
+  },
+  addFromList(key, list, idxs, opts) {
+    const rows = this.listRows(list).filter((x) => idxs.includes(x.i));
+    Roller.st.extras = Roller.st.extras || {};
+    const bucket = (Roller.st.extras[key] = Roller.st.extras[key] || []);
+    const secOf = (a) => (/bonus/i.test(a) ? 'Bonus Actions' : /reaction/i.test(a) ? 'Reactions' : 'Actions');
+    for (const x of rows) {
+      if (x.entry) {
+        const p = this.plan(x.entry, opts.eid, opts.cr);
+        bucket.push({ id: uid(), name: p.name, sec: x.entry.fields?.['Casting Time'] ? p.sec : secOf(x.act), text: this.compose(p), ref: x.entry.id });
+      } else bucket.push({ id: uid(), name: x.name, sec: secOf(x.act), text: `Casts ${x.name} (from ${list.name}).` });
+    }
+    Roller.save();
+    toast(`Added ${rows.length} spell${rows.length === 1 ? '' : 's'} from ${list.name}`, 'ok');
+    return rows.length;
   },
   async add(key, label, after, opts = {}) {
     const sec = ['Actions', 'Bonus Actions', 'Reactions', 'Legendary Actions', 'Traits'].map((x) => `<option>${x}</option>`).join('');
@@ -6372,7 +6429,9 @@ const Abilities = {
     const pw = [...App.entries.values()].filter((x) => this.isPower(x));
     const themes = [...new Set(pw.map((x) => x.fields.Theme || 'Other'))];
     const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers by theme…</option>${themes.map((t) => `<optgroup label="${esc(t)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`).join('')}</select></label>` : '';
-    const link = `<div class="abf-wide abf-link"><label>From your database <input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"></label>${browse}`
+    const lists = this.spellLists();
+    const listSel = lists.length ? `<label>Spell lists <select id="abList"><option value="">Add several spells from a list…</option>${lists.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} (${l.table.rows.length})</option>`).join('')}</select></label><div id="abListBox"></div>` : '';
+    const link = `<div class="abf-wide abf-link"><label>From your database <input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"></label>${browse}${listSel}`
       + (known.length ? `<div class="abf-known"><span class="hint">Its spells:</span>${known.map((x) => `<button type="button" class="chip" data-ab-ref="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>` : '')
       + `<div id="abLinkHits"></div><div id="abLinked" class="hint"></div></div>`;
     const done = ask(opts.link ? `Add to ${esc(label)} for this fight` : `Add an ability: ${esc(label)}`,
@@ -6392,15 +6451,29 @@ const Abilities = {
     q.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); ev.stopPropagation(); const h = hits.querySelector('[data-ab-ref]'); if (h) pick(h.dataset.abRef); } });
     body.addEventListener('click', (ev) => { const h = ev.target.closest('[data-ab-ref]'); if (h) { ev.preventDefault(); pick(h.dataset.abRef); } });
     $('#abPower')?.addEventListener('change', (ev) => { if (ev.target.value) pick(ev.target.value); ev.target.value = ''; });
+    const lbox = $('#abListBox');
+    $('#abList')?.addEventListener('change', (ev) => {
+      const l = App.entries.get(ev.target.value);
+      lbox.innerHTML = l ? this.listBox(l, key, opts.eid) : '';
+      body.classList.toggle('ab-list', !!l);
+    });
+    lbox?.addEventListener('change', () => { const n = lbox.querySelectorAll('input:checked').length; $('#ablN').textContent = `${n} selected`; const b = lbox.querySelector('[data-abl="add"]'); b.disabled = !n; b.textContent = n ? `Add ${n} spell${n === 1 ? '' : 's'}` : 'Add selected'; });
+    lbox?.addEventListener('click', (ev) => {
+      const t = ev.target.closest('[data-abl]');
+      if (!t) return;
+      ev.preventDefault();
+      if (t.dataset.abl === 'all' || t.dataset.abl === 'none') { for (const c of lbox.querySelectorAll('input:not(:disabled)')) c.checked = t.dataset.abl === 'all'; lbox.dispatchEvent(new Event('change')); return; }
+      const l = App.entries.get(lbox.querySelector('.abl').dataset.list), idxs = [...lbox.querySelectorAll('input:checked')].map((c) => +c.value);
+      if (l && idxs.length && this.addFromList(key, l, idxs, opts)) { this._listed = true; $('#askDlg').close(); }
+    });
+    this._listed = false;
     if (opts.link) setTimeout(() => q.focus(), 30);
     const ok = await done;
+    if (this._listed) { after && after(); return; }
     if (!ok || (opts.link && !this._ref)) return;
     const g = (id) => ($('#' + id)?.value || '').trim(), kind = document.querySelector('#askBody [name="abKind"]:checked')?.value || 'other';
-    const name = g('abName') || 'New ability', dmg = this.dmgText(g('abDmg')), desc = g('abText');
-    let text = desc;
-    if (kind === 'attack') { const hit = (g('abHit') || '+0').replace(/^(\d)/, '+$1'); text = `Melee or Ranged Attack Roll: ${hit}. Hit: ${dmg || 'no damage'}.${desc ? ' ' + desc : ''}`; }
-    if (kind === 'save') text = `${AB_FULL[g('abAb')]} Saving Throw: DC ${g('abDc') || '10'}. Failure: ${dmg || 'see the description'}.${dmg && $('#abHalf')?.checked ? ' Success: Half damage.' : ''}${desc ? ' ' + desc : ''}`;
-    if (kind === 'other' && dmg) text = `Damage: ${dmg}.${desc ? ' ' + desc : ''}`;
+    const name = g('abName') || 'New ability';
+    const text = this.compose({ kind, hit: g('abHit'), dc: g('abDc'), ab: g('abAb'), half: !!$('#abHalf')?.checked, dmg: g('abDmg'), desc: g('abText') });
     Roller.st.extras = Roller.st.extras || {};
     const x = { id: uid(), name, sec: g('abSec') || 'Actions', text };
     if (this._ref) x.ref = this._ref;
@@ -6820,7 +6893,7 @@ const Tracker = {
     const mine = Roller.log.filter((r) => r.cid === c.cid);
     const recent = mine.length ? `<details class="tr-recent" data-keep="trRecent"${Keep.open('trRecent', true) ? ' open' : ''}><summary>Rolls this fight (${mine.length})</summary>${mine.slice(0, 3).map((r) => Roller.resultHtml(r)).join('')}</details>` : '';
     return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}</div>`
-      + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>') + saves
+      + saves + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>')
       + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xlink" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat, item or power</button><button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
   },
   /* ----- markup ----- */

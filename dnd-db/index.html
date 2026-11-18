@@ -3160,6 +3160,10 @@ const FACETS = {
   subclass: [{ key: 'sclass', label: 'Class', get: (e) => e.fields.Class || null }],
   'sage-advice': [{ key: 'topic', label: 'Topic', get: (e) => e.fields.Topic || null }],
   rule: [{ key: 'rcat', label: 'Category', get: (e) => e.fields.Category || null }],
+  other: [
+    { key: 'ocat', label: 'Category', get: (e) => e.fields.Category || null },
+    { key: 'otheme', label: 'Theme', get: (e) => e.fields.Theme || null },
+  ],
 };
 const byName = (a, b) => a.name.localeCompare(b.name);
 const SORTS = {
@@ -5604,7 +5608,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-18.5'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-18.6'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -5923,16 +5927,22 @@ const Roller = {
   },
   readAction(name, text) {
     const a = { name, text, kind: 'note', dmg: [] };
+    const formMade = /^(Damage:|\w+ Saving Throw: DC|Melee or Ranged Attack Roll:)/.test(text);
+    const scan = formMade ? (/^.*?(?:Hit|Failure|Damage): [^.]*\./.exec(text) || [text])[0] : text;
     const hit = /(?:Melee|Ranged)(?:\s+or\s+Ranged)?(?:\s+(?:Weapon|Spell))?\s+Attack(?:\s+Roll)?:?\s*([+\-−]\s*\d+)/i.exec(text) || /([+\-−]\s*\d+)\s+to\s+hit\b/i.exec(text);
     const types = DAMAGE_TYPES;
     let m;
     const re1 = new RegExp(`(\\d+)\\s*\\(\\s*([0-9dD+\\-−\\s]+?)\\s*\\)\\s*(${types})\\b`, 'gi');
-    while ((m = re1.exec(text))) a.dmg.push({ avg: +m[1], dice: m[2].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[3].toLowerCase()) });
+    while ((m = re1.exec(scan))) a.dmg.push({ avg: +m[1], dice: m[2].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[3].toLowerCase()) });
     if (!a.dmg.length) {
       const re2 = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?)\\s+(${types})\\b`, 'gi');
-      while ((m = re2.exec(text))) a.dmg.push({ dice: m[1].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[2].toLowerCase()) });
+      while ((m = re2.exec(scan))) a.dmg.push({ dice: m[1].replace(/\s+/g, '').replace(/−/g, '-'), type: cap(m[2].toLowerCase()) });
     }
     const AB = '(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma|Str|Dex|Con|Int|Wis|Cha)';
+    if (!a.dmg.length && /^(Damage:|\w+ Saving Throw: DC)/.test(text)) {
+      const re3 = new RegExp(`\\b(\\d+)\\s+(${types})\\s+damage\\b`, 'gi');
+      while ((m = re3.exec(scan))) a.dmg.push({ dice: m[1], type: cap(m[2].toLowerCase()) });
+    }
     const sv = new RegExp(`DC\\s*(\\d+)\\s*${AB}\\w*(?:[\\s\\S]{0,25}?(?:saving throw|save))?`, 'i').exec(text)
       || new RegExp(`${AB}\\s+Saving Throw:\\s*DC\\s*(\\d+)`, 'i').exec(text);
     const save = sv && (/^\d/.test(sv[1]) ? { dc: +sv[1], ab: sv[2].slice(0, 3).toUpperCase() } : { dc: +sv[2], ab: sv[1].slice(0, 3).toUpperCase() });
@@ -6034,7 +6044,7 @@ const Roller = {
     if (x.kind === 'save') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <b class="hl-save">DC ${x.dc} ${x.ab}</b> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">fail ${x.sum}${x.half ? ` · save ${Math.floor(x.sum / 2)}` : ''}</span></div>`;
     if (x.kind === 'dmg') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">total <b>${x.sum}</b></span></div>`;
     if (x.kind === 'throw') return `<div class="rr-line">d20 ${x.d20.length > 1 ? x.d20.map((v) => (v === x.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ') : `<b>${x.chosen}</b>`} ${x.mod >= 0 ? '+' : '−'}${Math.abs(x.mod)} = <b class="rr-tot">${x.total}</b></div>`;
-    return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <span class="rr-note">${x.save ? `DC ${x.save.dc} ${x.save.ab} save · no damage to roll` : 'no roll: see the stat block'}</span></div>`;
+    return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <span class="rr-note">${x.save ? `DC ${x.save.dc} ${x.save.ab} save · no damage to roll` : x.text && x.text.length < 600 ? esc(x.text) : 'no roll: see the stat block'}</span></div>`;
   },
   resultHtml(r, full = true) {
     const totals = new Map();
@@ -6053,6 +6063,7 @@ const Roller = {
     if (a.kind === 'multi') return a.parts.length ? 'rolls all its attacks' : '';
     if (a.kind === 'damage') return a.dmg.map((c) => `${c.dice} ${c.type}`).join(' + ');
     if (a.kind === 'savefx') return `DC ${a.save.dc} ${a.save.ab}`;
+    if (a.extra && a.text) return a.text.length > 90 ? a.text.slice(0, 90).replace(/\s+\S*$/, '') + '…' : a.text;
     return '';
   },
   cardHtml(b) {
@@ -6212,7 +6223,7 @@ const Abilities = {
   },
   refHtml(a) {
     const r = a.ref && App.entries.get(a.ref);
-    return r ? ` · <a href="#" data-open="${esc(r.id)}" class="rr-ref" title="Open ${esc(r.name)}">${esc(Types.get(r.type).label.replace(/s$/, '').toLowerCase())}</a>` : '';
+    return r ? ` · <a href="#" data-open="${esc(r.id)}" class="rr-ref" title="Open ${esc(r.name)}">${this.isPower(r) ? 'power' : esc(Types.get(r.type).label.replace(/s$/, '').toLowerCase())}</a>` : '';
   },
   /** The creature's spell save DC and spell attack bonus, read from its spellcasting text. */
   casting(eid) {
@@ -6224,7 +6235,23 @@ const Abilities = {
     if (dc) out.dc = +dc[1];
     if (hit) out.hit = parseInt(hit[1].replace(/[\s−]/g, (c) => (c === '−' ? '-' : '')), 10);
     else if (dc) out.hit = out.dc - 8;
+    const cr = crValue(e.fields.CR);
+    if (!dc && cr !== null) { out.dc = 10 + Math.floor(cr / 2); out.hit = 4 + Math.floor(cr / 2); out.byCr = true; }
     return out;
+  },
+  isPower: (r) => r && r.type === 'other' && /monster power/i.test(r.fields?.Category || ''),
+  /** "DC = 13 + 1/2 CR", "2 + CR", "CR + 2", "an extra CR damage", "3 × CR" worked out for this creature's CR (minimum 1). */
+  atCr(text, cr) {
+    if (cr === null || cr === undefined) return text;
+    const half = Math.floor(cr / 2), one = (n) => Math.max(1, Math.floor(n));
+    return String(text)
+      .replace(/\bDC\s*=\s*(\d+)\s*\+\s*1\/2\s*CR\b/g, (_, n) => `DC ${+n + half}`)
+      .replace(/\b(\d+)\s*\+\s*1\/2\s*CR\b/g, (_, n) => String(one(+n + half)))
+      .replace(/\b(\d+)\s*\+\s*CR\b/g, (_, n) => String(one(+n + cr)))
+      .replace(/\bCR\s*\+\s*(\d+)\b/g, (_, n) => String(one(+n + cr)))
+      .replace(/\b(\d+)\s*[×x]\s*CR\b/g, (_, n) => String(one(+n * cr)))
+      .replace(/\bextra CR\b/g, `extra ${one(cr)}`)
+      .replace(/\bequal to CR\b/g, `equal to ${one(cr)}`);
   },
   /** Spells the creature already lists that are in the database: quick picks. */
   known(eid) {
@@ -6240,11 +6267,31 @@ const Abilities = {
   fill(r, eid) {
     const set = (id, v) => { const el = $('#' + id); if (el) el.value = v ?? ''; };
     const kind = (k) => { const el = document.querySelector(`#askBody [name="abKind"][value="${k}"]`); if (el) el.checked = true; };
-    const text = String(r.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const power = this.isPower(r), me = eid && App.entries.get(eid), cr = me ? crValue(me.fields.CR) : null;
+    let text = String(r.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (power) text = this.atCr(text, cr);
     const cast = this.casting(eid), f = r.fields || {};
     set('abName', r.name);
-    const ct = String(f['Casting Time'] || '');
-    set('abSec', /bonus/i.test(ct) ? 'Bonus Actions' : /reaction/i.test(ct) ? 'Reactions' : 'Actions');
+    const ct = String(f['Casting Time'] || f.Usage || '');
+    set('abSec', /bonus/i.test(ct) ? 'Bonus Actions' : /reaction/i.test(ct) ? 'Reactions' : /trait/i.test(ct) ? 'Traits' : 'Actions');
+    if (power) {
+      set('abName', r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*([^)]+))?\)/, (_, l) => (l ? ` (${l})` : '')));
+      const dm = [], re = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?|\\d+)\\s+(${DAMAGE_TYPES})\\s+damage\\b`, 'gi');
+      let m;
+      while ((m = re.exec(text)) && dm.length < 2) dm.push(`${m[1].replace(/\s+/g, '')} ${m[2].toLowerCase()}`);
+      const AB = '(Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma)';
+      const sv = new RegExp(`must (?:succeed on|make) an? ${AB} saving throw\\s*\\(DC\\s*(\\d+)\\)|must (?:succeed on|make) an? DC\\s*(\\d+)\\s+${AB} saving throw`, 'i').exec(text);
+      const rider = /\bextra \d+/i.test(text) || (sv && dm.length && !/\bor (?:take|be)\b|failed save|on a failure/i.test(text));
+      set('abDmg', dm.join(', '));
+      if (sv && !rider) { kind('save'); set('abDc', sv[2] || sv[3]); set('abAb', (sv[1] || sv[4]).slice(0, 3).toUpperCase()); const h = $('#abHalf'); if (h) h.checked = /half as much damage|half damage/i.test(text); }
+      else kind('other');
+      set('abText', text);
+      const note = $('#abLinked');
+      if (note) note.innerHTML = `Monster power <b>${esc(r.name)}</b>${f.Theme ? ` (${esc(f.Theme)})` : ''}${/\bCR\b/.test(r.text || '') ? (cr !== null ? `. Worked out for CR ${esc(String(me.fields.CR).split(/[\s(]/)[0])}: check the numbers.` : '. No CR on this creature, so the CR maths is left as written.') : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
+      $('#abUnlink')?.addEventListener('click', () => { this._ref = null; note.innerHTML = ''; });
+      this._ref = r.id;
+      return;
+    }
     const types = DAMAGE_TYPES, dm = [], re = new RegExp(`\\b(\\d+d\\d+(?:\\s*[+\\-−]\\s*\\d+)?)\\s+(${types})\\b`, 'gi');
     let m;
     while ((m = re.exec(text)) && dm.length < 2) if (!/increases by\s*$/i.test(text.slice(Math.max(0, m.index - 14), m.index))) dm.push(`${m[1].replace(/\s+/g, '')} ${m[2].toLowerCase()}`);
@@ -6259,7 +6306,7 @@ const Abilities = {
     const brief = text.length > 220 ? text.slice(0, 220).replace(/\s+\S*$/, '') + '…' : text;
     set('abText', dm.length || sv || atk ? (r.type === 'spell' && sv && !dm.length ? brief : '') : brief);
     const note = $('#abLinked');
-    if (note) note.innerHTML = `Linked to <b>${esc(r.name)}</b> (${esc(Types.get(r.type).label.replace(/s$/, "").toLowerCase())})${r.type === 'spell' && (atk || sv) && !cast.dc ? '. No spell save DC found on this creature: fill it in.' : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
+    if (note) note.innerHTML = `Linked to <b>${esc(r.name)}</b> (${esc(Types.get(r.type).label.replace(/s$/, "").toLowerCase())})${r.type === 'spell' && (atk || sv) ? (!cast.dc ? '. No spell save DC found on this creature: fill it in.' : cast.byCr ? '. No spell save DC on this creature, so DC and to-hit come from its CR (10 + ½ CR, +4 + ½ CR).' : '') : ''} <button type="button" class="linkish" id="abUnlink">unlink</button>`;
     $('#abUnlink')?.addEventListener('click', () => { this._ref = null; note.innerHTML = ''; });
     this._ref = r.id;
   },
@@ -6268,10 +6315,13 @@ const Abilities = {
     const ab = ABILS.map((k) => `<option value="${k}">${AB_FULL[k]}</option>`).join('');
     const known = this.known(opts.eid);
     this._ref = null;
-    const link = `<div class="abf-wide abf-link"><label>From your database <input id="abLink" type="search" placeholder="Search spells, feats, items…" autocomplete="off" enterkeyhint="search"></label>`
+    const pw = [...App.entries.values()].filter((x) => this.isPower(x));
+    const themes = [...new Set(pw.map((x) => x.fields.Theme || 'Other'))];
+    const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers by theme…</option>${themes.map((t) => `<optgroup label="${esc(t)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`).join('')}</select></label>` : '';
+    const link = `<div class="abf-wide abf-link"><label>From your database <input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"></label>${browse}`
       + (known.length ? `<div class="abf-known"><span class="hint">Its spells:</span>${known.map((x) => `<button type="button" class="chip" data-ab-ref="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>` : '')
       + `<div id="abLinkHits"></div><div id="abLinked" class="hint"></div></div>`;
-    const done = ask(opts.link ? `Add a spell, feat or item: ${esc(label)}` : `Add an ability: ${esc(label)}`,
+    const done = ask(opts.link ? `Add to ${esc(label)} for this fight` : `Add an ability: ${esc(label)}`,
       `<div class="abf${opts.link ? ' linking' : ''}">${link}<label>Name <input id="abName" placeholder="e.g. Fire Bolt"></label><label>Section <select id="abSec">${sec}</select></label>`
       + `<div class="abf-kind"><label><input type="radio" name="abKind" value="attack" checked> Attack roll</label><label><input type="radio" name="abKind" value="save"> Saving throw</label><label><input type="radio" name="abKind" value="other"> Other</label></div>`
       + `<label class="abf-atk">To hit <input id="abHit" inputmode="numeric" placeholder="+5"></label>`
@@ -6283,10 +6333,11 @@ const Abilities = {
     const pick = (id) => { const r = App.entries.get(id); if (!r) return; this.fill(r, opts.eid); hits.innerHTML = ''; q.value = ''; body.classList.add('ab-picked'); };
     q.addEventListener('input', () => {
       const ids = q.value.trim() ? App.index.search(q.value).filter((id) => { const x = App.entries.get(id); return x && x.type !== 'monster'; }).slice(0, 8) : [];
-      hits.innerHTML = ids.map((id) => { const x = App.entries.get(id); return `<button type="button" class="rr-hit" data-ab-ref="${esc(id)}">${esc(x.name)} <span class="hint">${esc(Types.get(x.type).label)}${x.fields?.Level ? ' · ' + (x.fields.Level === 'Cantrip' ? 'cantrip' : 'level ' + esc(x.fields.Level)) : ''}</span></button>`; }).join('');
+      hits.innerHTML = ids.map((id) => { const x = App.entries.get(id); return `<button type="button" class="rr-hit" data-ab-ref="${esc(id)}">${esc(x.name)} <span class="hint">${esc(this.isPower(x) ? 'Power · ' + (x.fields.Theme || '') : Types.get(x.type).label)}${x.fields?.Level ? ' · ' + (x.fields.Level === 'Cantrip' ? 'cantrip' : 'level ' + esc(x.fields.Level)) : ''}</span></button>`; }).join('');
     });
     q.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); ev.stopPropagation(); const h = hits.querySelector('[data-ab-ref]'); if (h) pick(h.dataset.abRef); } });
     body.addEventListener('click', (ev) => { const h = ev.target.closest('[data-ab-ref]'); if (h) { ev.preventDefault(); pick(h.dataset.abRef); } });
+    $('#abPower')?.addEventListener('change', (ev) => { if (ev.target.value) pick(ev.target.value); ev.target.value = ''; });
     if (opts.link) setTimeout(() => q.focus(), 30);
     const ok = await done;
     if (!ok || (opts.link && !this._ref)) return;
@@ -6460,7 +6511,7 @@ const Tracker = {
     const recent = Roller.log.filter((r) => r.cid === c.cid).slice(0, 3).map((r) => Roller.resultHtml(r)).join('');
     return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}</div>`
       + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>') + saves
-      + `<div class="tr-addab"><button class="linkish" data-tr="xlink" data-key="${esc(key)}" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat or item</button><button class="linkish" data-tr="xadd" data-key="${esc(key)}" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
+      + `<div class="tr-addab"><button class="linkish" data-tr="xlink" data-key="${esc(key)}" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Spell, feat, item or power</button><button class="linkish" data-tr="xadd" data-key="${esc(key)}" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Custom ability</button></div>${recent}</div>`;
   },
   /* ----- markup ----- */
   rowHtml(c, lab) {

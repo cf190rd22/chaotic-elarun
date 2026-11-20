@@ -554,8 +554,8 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-table { table-layout: fixed; min-width: 470px; }
 .tr-table col.w-init { width: 26px; } .tr-table col.w-name { width: 104px; } .tr-table col.w-lab { width: 28px; } .tr-table col.w-ac { width: 34px; }
 .tr-table col.w-adj { width: 34px; } .tr-table col.w-hp { width: 32px; } .tr-table col.w-max { width: 30px; } .tr-table col.w-dmg { width: 44px; }
-.tr-table col.w-pm { width: 24px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 36px; }
-.tr-table.battle col.w-ctl { width: 22px; }
+.tr-table col.w-pm { width: 24px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 56px; }
+.tr-table.battle col.w-ctl { width: 30px; }
 @container (min-width: 760px) { .tr-table col.w-name { width: 170px; } .tr-table col.w-dmg { width: 64px; } .tr-table col.w-pm { width: 34px; } .tr-table col.w-adj { width: 44px; } }
 .tr-table td { padding: 2px 2px; } .tr-table th { padding: 5px 2px; }
 .tr-table input { padding: 2px 4px; }
@@ -585,7 +585,7 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-table tr.tie > td.c-init { background: color-mix(in srgb, #8b5cf6 26%, var(--panel)); }
 .tr-table tr.tie > td.c-init input { font-weight: 700; color: #6d28d9; }
 .tr-table tr.autoinit > td.c-init input { font-style: italic; }
-.tr-table tr[data-row] { cursor: pointer; }
+.tr-table.battle tr[data-row] { cursor: pointer; }
 .tr-table tr.tr-addrow > td { background: var(--bg); white-space: normal; }
 .tr-addin { display: flex; gap: 6px; } .tr-addin input { flex: 1; }
 #trQuickHits { display: flex; flex-direction: column; }
@@ -614,7 +614,10 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-roundsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
 .tr-addin .clearable { flex: 1; display: flex; min-width: 0; } .tr-addin .clearable input { flex: 1; width: 100%; min-width: 120px; }
 @container (max-width: 460px) { .statblock .ab-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.tr-table.battle td.c-ctl .rr-x { width: 20px; }
+
+.tr-start { font-size: 13.5px; padding: 4px 14px; border-radius: 16px; font-weight: 600; }
+.tr-end { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; }
+.tr-over { font-size: 12.5px; color: var(--muted); }
 .tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: inherit; }
 .tr-new:hover { border-color: var(--muted); }
 .mark-note { font-size: 11px; color: var(--muted); white-space: nowrap; }
@@ -641,7 +644,8 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-table .c-note { width: 100%; }
 .tr-table .c-note input { width: 100%; min-width: 80px; }
 .tr-table .c-ctl { width: 1%; }
-.tr-table .c-ctl button { border: 0; background: transparent; min-width: 24px; padding: 0 3px; }
+.tr-table .c-ctl button { border: 0; background: transparent; width: 24px !important; min-width: 24px; padding: 0; }
+.tr-table td.c-ctl { padding: 0 2px; overflow: visible; white-space: nowrap; }
 .tr-table tr.tr-cur > td { background: hsl(215 80% 55% / .12); }
 .tr-table tr.tr-cur > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 .tr-table tr.lair > td { background: hsl(275 40% 50% / .07); }
@@ -6010,7 +6014,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.12'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.13'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7463,7 +7467,7 @@ const Tracker = {
     const keepScroll = pane.querySelector('.rr-scroll')?.scrollTop || 0;
     const lab = this.labels(), all = this.sorted(), shown = all.filter((c) => !c.hidden), hidden = all.filter((c) => c.hidden);
     const setup = this.st.setup !== false, fromRoller = Roller.st.board.reduce((n, b) => n + b.count, 0);
-    const battle = !!this.st.turn;
+    const inFight = !!this.st.turn && !this.st.endedAt, battle = inFight;
     // same initiative, different creature: flag both
     this.ties = new Set();
     { const by = new Map(); for (const c of shown) { const v = this.num(c.kind === 'pc' ? this.pc(c).init : c.init); if (!Number.isFinite(v)) continue; (by.get(v) || by.set(v, []).get(v)).push(c); }
@@ -7471,7 +7475,9 @@ const Tracker = {
     const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
     const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
     pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<button class="tr-clock${this.st.pausedAt ? ' paused' : ''}${this.st.endedAt ? ' ended' : ''}" id="trClock" data-tr="clock" title="Fight · round · turn. Tap to pause or end the battle">${this.clockText()}</button>` : ''}`
-      + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
+      + (inFight ? `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span><button class="tr-end" data-tr="endfight" title="Stop the timer and see the round times">■ End combat</button>`
+        : this.st.endedAt ? '<span class="tr-over">Combat over</span>'
+        : `<button class="tr-start primary" data-tr="startfight" title="Start the first turn and the timer"${this.st.list.some((c) => this.live(c)) ? '' : ' disabled'}>▶ Start combat</button>`)
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">↺ New fight</button>'
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
@@ -7556,12 +7562,18 @@ const Tracker = {
     const t = ev.target.closest('[data-tr]');
     if (!t) {
       const row = ev.target.closest('.tr-table tr[data-row]');
-      if (row && !ev.target.closest('input, button, select, a, textarea, label')) this.jumpTo(row.dataset.row);
+      if (row && this.st.turn && !this.st.endedAt && !ev.target.closest('input, button, select, a, textarea, label, td.c-ctl')) this.jumpTo(row.dataset.row);
       return;
     }
     const a = t.dataset.tr, st = this.st, find = () => st.list.find((c) => c.cid === t.dataset.cid);
     if (a === 'close') return Tools.show(null);
     if (a === 'pin') return Tools.togglePin();
+    if (a === 'startfight') {
+      if (this.st.endedAt) return;
+      this.st.turn = null; this.st.round = 1; this.st.setup = false;
+      return this.step(1);
+    }
+    if (a === 'endfight') { if (await ask('End combat?', '<p>Stops the timer and shows the round times. Monsters and damage stay until you start a new fight.</p>', [{ label: 'Cancel', value: null }, { label: 'End combat', value: true, kind: 'primary' }])) await this.endBattle(); return; }
     if (a === 'next') return this.step(1);
     if (a === 'prev') return this.step(-1);
     if (a === 'setup') { st.setup = st.setup === false; this.save(); this.render(); const sc = $('#toolPane .rr-scroll'); if (sc) sc.scrollTop = 0; return; }

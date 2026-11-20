@@ -138,8 +138,12 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .ab-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0 0 12px; }
 .ab { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; }
 .ab-k { font: 700 11.5px system-ui; letter-spacing: .1em; color: var(--accent); }
-.ab-s { font: 600 20px var(--serif); line-height: 1.2; }
-.ab-m { display: inline-block; font-weight: 700; font-size: 13px; border: 1px solid var(--border); border-radius: 10px; padding: 0 8px; background: var(--panel); }
+.ab-s { display: inline; font: 600 20px var(--serif); line-height: 1.3; }
+.ab-m { display: inline; margin-left: 4px; font-weight: 700; font-size: 14px; }
+.ab-m::before { content: '('; } .ab-m::after { content: ')'; }
+.sb-more { margin: 8px 0; }
+.sb-more > summary { cursor: pointer; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 4px 0; }
+.sb-more[open] > summary { margin-bottom: 4px; }
 .ab-sv { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
 .mods { display: inline-flex; flex-wrap: wrap; gap: 4px; }
 .mod-box { border: 1px solid var(--border); background: var(--panel-2); border-radius: 6px; padding: 0 7px; white-space: nowrap; }
@@ -4077,7 +4081,15 @@ const Renderers = {
       const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k === 'AC' && sbCards() ? 'Armor Class' : k === 'HP' && sbCards() ? 'Hit Points' : k}</div><div class="sb-v">${cardsV(k, k === 'Speed' ? normaliseSpeed(f[k]) : f[k])}</div></div>`).join('');
       sb = '<div class="statblock">'
         + (boxes ? `<div class="sb-top">${boxes}</div>` : '') + renderAbilities(e.abilities)
-        + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE])
+        + (() => {
+          // saves, skills and damage defences stay in view; senses, languages, gear and the rest fold away
+          const skip = [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE];
+          const keys = Object.keys(f).filter((k) => !skip.includes(k));
+          const keyK = (k) => /sav|skill|resist|immun|vulnerab/i.test(k);
+          const more = keys.filter((k) => !keyK(k));
+          return renderKV(f, [...skip, ...more])
+            + (more.length ? `<details class="sb-more" data-keep="sbMore"${Keep.open('sbMore', false) ? ' open' : ''}><summary>${esc(more.join(' · '))}</summary>${renderKV(f, [...skip, ...keys.filter(keyK)])}</details>` : '');
+        })()
         + renderSections(secs, { runIn: true, prefix, wrap: true }) + '</div>';
     } finally { Fmt.sb = false; }
     // the stat block first; tagline, habitat, treasure and lore after it
@@ -5921,7 +5933,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.6'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.7'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

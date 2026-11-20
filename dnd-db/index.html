@@ -488,7 +488,7 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-table col.w-init { width: 26px; } .tr-table col.w-name { width: 104px; } .tr-table col.w-lab { width: 28px; } .tr-table col.w-ac { width: 34px; }
 .tr-table col.w-adj { width: 34px; } .tr-table col.w-hp { width: 32px; } .tr-table col.w-max { width: 30px; } .tr-table col.w-dmg { width: 44px; }
 .tr-table col.w-pm { width: 24px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 36px; }
-.tr-table.battle col.w-ctl { width: 0; } .tr-table.battle td.c-ctl > *, .tr-table.battle th:last-child { display: none; }
+.tr-table.battle col.w-ctl { width: 22px; }
 @container (min-width: 760px) { .tr-table col.w-name { width: 170px; } .tr-table col.w-dmg { width: 64px; } .tr-table col.w-pm { width: 34px; } .tr-table col.w-adj { width: 44px; } }
 .tr-table td { padding: 2px 2px; } .tr-table th { padding: 5px 2px; }
 .tr-table input { padding: 2px 4px; }
@@ -534,6 +534,9 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-dl { display: flex; flex-direction: column; gap: 2px; font-size: 13px; max-height: 260px; overflow: auto; }
 .tr-dl .neg { color: #b91c1c; font-weight: 600; } .tr-dl .pos { color: #15803d; font-weight: 600; }
 .tr-dmglog > summary, .tr-deadsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+.tr-clock { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tr-addin .clearable { flex: 1; display: flex; } .tr-addin .clearable input { flex: 1; }
+.tr-table.battle td.c-ctl .rr-x { width: 20px; }
 .tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: #b91c1c; }
 .mark-note { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .tr-diffstrip .rr-bar.crowded { margin-bottom: 2px; }
@@ -3494,7 +3497,7 @@ const tdClass = (c) => (String(c).length <= 12 ? ' class="nw"' : '');
 function renderTable(t) {
   if (!t || !t.headers.length) return '';
   return '<div class="tbl-wrap"><table class="data"><thead><tr>' + t.headers.map((h) => `<th${tdClass(h)}>${esc(h)}</th>`).join('') + '</tr></thead><tbody>'
-    + t.rows.map((r) => '<tr>' + r.map((c) => `<td${tdClass(c)}>${rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
+    + t.rows.map((r) => '<tr>' + r.map((c) => `<td${tdClass(c)}>${Linker.cell(c) ?? rich(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>';
 }
 
 /**
@@ -4178,6 +4181,27 @@ const Linker = {
     this.local = m;
   },
 
+  /** A table cell that is just one or more names ("Burning hands", "Goblin, skeleton"): link each, in any case, every time. */
+  CELL_TYPES: new Set(['spell', 'monster', 'item', 'feat', 'class', 'subclass', 'species', 'background']),
+  cell(text) {
+    const raw = String(text || '').trim();
+    if (!raw || raw.length > 80 || /[.:]/.test(raw)) return null;
+    if (!this.map) this.build();
+    const parts = raw.split(/(\s*[,;]\s*|\s+or\s+)/);
+    let any = false;
+    const html = parts.map((p, i) => {
+      if (i % 2) return esc(p);
+      const toks = this.tokens(p).map((t) => t.f);
+      if (!toks.length) return esc(p);
+      const key = toks.join(' ');
+      const g = (this.map.get(toks[0]) || []).find((x) => x.toks.join(' ') === key || x.toks.join(' ') === key.replace(/(es|s)$/, ''));
+      const ent = g && g.ents.find((e) => this.CELL_TYPES.has(e.type) && e.id !== this.self);
+      if (!ent) return esc(p);
+      any = true;
+      return `<a class="xref" href="#/e/${encodeURIComponent(ent.id)}" data-open="${esc(ent.id)}" data-peek>${esc(p)}</a>`;
+    }).join('');
+    return any ? html : null;
+  },
   /** Find mentions in `text`; cb({ ent, start, end }) for each. */
   scan(text, cb) {
     if (!this.map) this.build();
@@ -5808,7 +5832,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-19.5'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.1'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6306,8 +6330,27 @@ const Roller = {
       + `<button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('');
     return rows + `<button data-rr="pcadd" class="rr-add">+ Add a target</button>${this.st.activeId ? ' <button data-rr="target" data-tid="" class="linkish">No target</button>' : ''}`;
   },
+  /** Your party list's levels, unless you have set the party by hand. Players without a level take the most common one. */
+  partyLevels() {
+    if (this.st.balSet || !this.st.party.length) return null;
+    const lv = this.st.party.map((p) => parseInt(p.level, 10)).filter((n) => n >= 1 && n <= 20);
+    if (!lv.length) return null;
+    const count = new Map(); for (const n of lv) count.set(n, (count.get(n) || 0) + 1);
+    const common = [...count].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0][0];
+    return this.st.party.map((p) => { const n = parseInt(p.level, 10); return n >= 1 && n <= 20 ? n : common; });
+  },
   balHtml() {
+    const fp = this.partyLevels();
+    if (fp) {
+      const g = new Map(); for (const n of fp) g.set(n, (g.get(n) || 0) + 1);
+      return `<div class="rr-bal"><span class="rr-balrow"><b>Your party:</b> ${[...g].sort((a, b) => b[0] - a[0]).map(([lv, n]) => `${n} × level ${lv}`).join(', ')}</span><button class="linkish" data-rr="balhand" title="Rate it for a different party">Set by hand</button></div>`;
+    }
+    const hasLv = this.st.party.some((p) => parseInt(p.level, 10) >= 1);
     const rows = (this.st.bal && this.st.bal.length ? this.st.bal : [{ n: 4, lv: 1 }]);
+    if (hasLv && this.st.balSet) return this.balRows(rows) + '<button class="linkish" data-rr="balparty">Use my party’s levels</button>';
+    return this.balRows(rows) + (this.st.party.length && !hasLv ? '<p class="hint">Tip: give each player a level in Party (saved) and it’s used here automatically.</p>' : '');
+  },
+  balRows(rows) {
     return '<div class="rr-bal">' + rows.map((g, i) => `<span class="rr-balrow"><input data-bal="n" data-i="${i}" type="number" min="1" max="12" inputmode="numeric" value="${g.n}" aria-label="Number of characters"> characters of level <input data-bal="lv" data-i="${i}" type="number" min="1" max="20" inputmode="numeric" value="${g.lv}" aria-label="Level">${rows.length > 1 ? `<button class="rr-x" data-rr="baldel" data-i="${i}" aria-label="Remove">×</button>` : ''}</span>`).join('')
       + '<button class="linkish" data-rr="baladd">+ another level</button></div>';
   },
@@ -6316,7 +6359,8 @@ const Roller = {
     if (!this.st.bal || !this.st.bal.length) this.st.bal = [{ n: 4, lv: 1 }];
     // until you set the party size yourself, it is the number of players in the party list
     if (!this.st.balSet && this.st.party.length && this.st.bal.length === 1) this.st.bal[0].n = this.st.party.length;
-    const levels = this.st.bal.flatMap((g) => Array.from({ length: Math.max(0, Math.min(12, g.n | 0)) }, () => Math.max(1, Math.min(20, g.lv | 0))));
+    const fromParty = this.partyLevels();
+    const levels = fromParty || this.st.bal.flatMap((g) => Array.from({ length: Math.max(0, Math.min(12, g.n | 0)) }, () => Math.max(1, Math.min(20, g.lv | 0))));
     const gen = (this.st.gen || []).map((g) => ({ cr: g.cr, count: Math.max(0, g.n | 0) }));
     const byCr = new Map();
     for (const c of Tracker.monsters()) {
@@ -6412,6 +6456,8 @@ const Roller = {
     if (a === 'xkeep') { await FightView.keep(t.dataset.key, t.dataset.xid); return this.render(); }
     if (a === 'genadd') { this.st.gen = [...(this.st.gen || []), { n: 1, cr: '1' }]; this.save(); return this.render(); }
     if (a === 'gendel') { this.st.gen.splice(+t.dataset.i, 1); this.save(); return this.render(); }
+    if (a === 'balhand') { const fp = this.partyLevels() || []; const g = new Map(); for (const n of fp) g.set(n, (g.get(n) || 0) + 1); this.st.bal = [...g].map(([lv, n]) => ({ n, lv })); this.st.balSet = true; this.save(); return this.render(); }
+    if (a === 'balparty') { this.st.balSet = false; this.save(); return this.render(); }
     if (a === 'baladd') { this.st.bal = [...(this.st.bal || []), { n: 1, lv: (this.st.bal?.[this.st.bal.length - 1]?.lv) || 1 }]; this.save(); return this.render(); }
     if (a === 'baldel') { this.st.bal.splice(+t.dataset.i, 1); this.save(); return this.render(); }
     if (a === 'pcadd') { const id = uid(); this.st.party.push({ id, name: '', ac: '', acAdj: '' }); if (!this.st.activeId) this.st.activeId = id; this.save(); this.render(); $(`#toolPane [data-pc="name"][data-tid="${id}"]`)?.focus(); return; }
@@ -6608,7 +6654,7 @@ const Abilities = {
     const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers: roles, creature types, themes…</option>${themes.map((t) => { const [, g, n] = groupOf(t); return `<optgroup label="${esc(g === 'Common' ? 'Common · any monster' : `${g} · ${n}`)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`; }).join('')}</select></label>` : '';
     const lists = this.spellLists();
     const listSel = lists.length ? `<label>Spell lists <select id="abList"><option value="">Add several spells from a list…</option>${lists.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} (${l.table.rows.length})</option>`).join('')}</select></label><div id="abListBox"></div>` : '';
-    const link = `<div class="abf-wide abf-link"><label>From your database <input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"></label>${browse}${listSel}`
+    const link = `<div class="abf-wide abf-link"><label>From your database <span class="clearable"><input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span></label>${browse}${listSel}`
       + (known.length ? `<div class="abf-known"><span class="hint">Its spells:</span>${known.map((x) => `<button type="button" class="chip" data-ab-ref="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>` : '')
       + `<div id="abLinkHits"></div><div id="abLinked" class="hint"></div></div>`;
     const done = ask(opts.link ? `Add to ${esc(label)} for this fight` : `Add an ability: ${esc(label)}`,
@@ -6962,6 +7008,7 @@ const Tracker = {
     for (const c of this.st.list) if (c.kind === 'mon') { c.bname = c.bname || (App.entries.get(c.eid)?.name || String(c.name || '').replace(/ \d+$/, '')); c.log = c.log || []; }
     this.encounters = (await Store.getMeta('encounters')) || [];
     this.syncParty();
+    if (this.st.startedAt) this.tick();
     for (const c of this.st.list) if (c.kind === 'mon' && c.d20 === undefined && Number.isFinite(this.num(c.init))) c.d20 = this.num(c.init) - (c.bonus || 0);
     if (Roller.st.board && Roller.st.board.length) {
       for (const b of Roller.st.board) { const e = App.entries.get(b.id); if (e && !this.countOf(b.id)) for (let i = 0; i < b.count; i++) this.add(b.id, { quiet: true, noRender: true }); }
@@ -7079,7 +7126,7 @@ const Tracker = {
     this.save(); this.render();
     $('#toolPane .tr-cur')?.scrollIntoView({ block: 'nearest' });
     const cur = this.st.list.find((c) => c.cid === this.st.turn);
-    if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); }
+    if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); this.turnStarted(); const el = $('#trClock'); if (el) el.textContent = this.clockText(); else this.render(); }
     if (this.st.follow && cur && cur.eid && App.isWide()) App.showDetail(cur.eid, { fromSearch: App.currentId === cur.eid }); // stat block follows the turn
     else if (this.st.follow && cur && cur.kind === 'pc' && App.isWide()) { App.currentId = null; App.showDetail(null); }
     else FightView.refresh();
@@ -7173,7 +7220,7 @@ const Tracker = {
     const cur = c.cid === this.st.turn ? ' tr-cur' : '';
     const init = (v, attrs) => `<td class="c-init">${cur ? '<span class="tr-mark">▶</span>' : ''}<input ${attrs} data-tr-init value="${esc(v ?? '')}" inputmode="numeric" placeholder="–" aria-label="Initiative"></td>`;
     const adj = (v, attrs, has) => `<td class="c-adj"><input class="tr-adj" ${attrs} data-tr-acadj value="${esc(v || '')}" inputmode="numeric" placeholder="±" aria-label="AC change (Shield, cover…)">${has ? `<button class="tr-acx" data-tr="acclear" ${attrs} title="Clear the AC change" aria-label="Clear the AC change">×</button>` : ''}</td>`;
-    const tail = (c2) => `<td class="c-ctl">${c2 && c2.kind === 'mon' ? `<button class="tr-hide" data-tr="hide" data-cid="${c2.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>` : ''}${c2 && c2.kind !== 'pc' && this.st.setup !== false ? `<button class="rr-x" data-tr="rm" data-cid="${c2.cid}" aria-label="Remove">×</button>` : ''}</td>`;
+    const tail = (c2) => `<td class="c-ctl">${c2 && c2.kind === 'mon' && !this.st.turn ? `<button class="tr-hide" data-tr="hide" data-cid="${c2.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>` : ''}${c2 && c2.kind !== 'pc' ? `<button class="rr-x" data-tr="rm" data-cid="${c2.cid}" title="Remove from the fight (you can bring it back)" aria-label="Remove">×</button>` : ''}</td>`;
     const tie = this.ties && this.ties.has(c.cid) ? ' tie' : '';
     if (c.kind === 'pc') {
       const t = this.pc(c), has = !!this.num(t.acAdj);
@@ -7208,6 +7255,7 @@ const Tracker = {
   partyHtml() {
     return Roller.st.party.map((t) => `<div class="tr-prow"><input data-pc="name" data-tid="${t.id}" value="${esc(t.name || '')}" placeholder="Name">`
       + `<label>AC <input data-pc="ac" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.ac ?? '')}"></label>`
+      + `<label title="Character level, used for encounter difficulty">Lv <input data-pc="level" data-tid="${t.id}" type="number" min="1" max="20" inputmode="numeric" value="${esc(t.level ?? '')}"></label>`
       + `<label title="Initiative: the number used in the turn order">Init <input data-pc="init" data-tid="${t.id}" inputmode="numeric" value="${esc(t.init ?? '')}"></label>`
       + `<input data-pc="notes" data-tid="${t.id}" value="${esc(t.notes || '')}" placeholder="Notes" class="tr-pnote"><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('')
       + '<button data-rr="pcadd" class="rr-add">+ Add a party member</button>';
@@ -7235,7 +7283,7 @@ const Tracker = {
       for (const g of by.values()) { const kinds = new Set(g.map((c) => (c.kind === 'pc' ? 'pc:' + c.pid : c.kind === 'lair' ? 'lair:' + c.cid : (c.eid || c.bname)))); if (kinds.size > 1) for (const c of g) this.ties.add(c.cid); } }
     const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
     const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
-    pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>`
+    pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<span class="tr-clock" id="trClock" title="Fight time · this turn">${this.clockText()}</span>` : ''}`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">New fight</button>'
@@ -7244,7 +7292,7 @@ const Tracker = {
       + '<div class="rr-scroll">'
       + (this.diffOpen && !battle ? Roller.difficultyHtml() : '')
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
-        + `<div class="tr-tools"><div class="rr-addbox"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><div id="trHits"></div></div>`
+        + `<div class="tr-tools"><div class="rr-addbox"><span class="clearable"><input id="trSearch" type="search" placeholder="Add monsters: type a name, then tap to add one each time…" autocomplete="off"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span><div id="trHits"></div></div>`
         + `<details class="tr-custom"><summary>No stat block? Add a creature by hand</summary><div class="tr-cform"><input id="tcName" placeholder="Name">${QuickStats.rows().length ? `<label title="Fill AC and HP and give it attacks from the Monster Statistics by Challenge Rating table">CR <select id="tcCr"><option value="">–</option>${QuickStats.rows().map((q) => `<option value="${esc(q.cr)}">${esc(q.cr)}</option>`).join('')}</select></label>` : ''}<label>AC <input id="tcAc" inputmode="numeric"></label><label>HP <input id="tcHp" inputmode="numeric"></label><label>Init bonus <input id="tcInit" inputmode="numeric" placeholder="+0"></label><button data-tr="custom">Add</button></div><div id="tcQuick" class="hint"></div></details>`
         + `<div class="tr-btns">${this.monsters().length ? '<button data-tr="reroll" title="Fills each monster group’s initiative with d20 + its initiative bonus. Or just type the numbers.">Roll monster initiative</button>' : ''}<button data-tr="lair">+ Lair action</button>`
         + `<span class="rr-seg" title="How creatures of the same kind are labelled (in turn order)"><button data-tr="labels" data-v="abc" class="${this.st.labels !== '123' ? 'on' : ''}">A B C</button><button data-tr="labels" data-v="123" class="${this.st.labels === '123' ? 'on' : ''}">1 2 3</button></span>`
@@ -7256,10 +7304,10 @@ const Tracker = {
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
       + `<div class="tr-tablewrap"><table class="tr-table${battle ? ' battle' : ''}"><colgroup><col class="w-init"><col class="w-name"><col class="w-lab"><col class="w-ac"><col class="w-adj"><col class="w-hp"><col class="w-max"><col class="w-dmg"><col class="w-pm"><col class="w-pm"><col class="w-note"><col class="w-ctl"></colgroup>`
       + `<thead><tr><th class="c-init" title="Initiative">#</th><th>Name</th><th></th><th>AC</th><th title="AC change (Shield, cover…)">±</th><th>HP</th><th>Max</th><th title="Type damage, e.g. 7 or 5+12, then − or Enter">Dmg</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}`
-      + `<tr class="tr-addrow"><td class="c-init"></td><td colspan="11"><span class="tr-addin"><input id="trQuick" type="search" placeholder="+ Add a monster…" autocomplete="off" aria-label="Add a monster"><button data-tr="lair" title="Add a lair action row">+ Lair action</button></span><div id="trQuickHits"></div></td></tr>`
+      + `<tr class="tr-addrow"><td class="c-init"></td><td colspan="11"><span class="tr-addin"><span class="clearable"><input id="trQuick" type="search" placeholder="+ Add a monster…" autocomplete="off" aria-label="Add a monster"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span><button data-tr="lair" title="Add a lair action row">+ Lair action</button></span><div id="trQuickHits"></div></td></tr>`
       + '</tbody></table></div>'
       + (hidden.filter((c) => !c.dead).length ? `<h3 class="tr-h">Hidden</h3>${hidden.filter((c) => !c.dead).map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
-      + (hidden.filter((c) => c.dead).length ? `<details class="rr-sec tr-deadsec" data-keep="trDead"${Keep.open('trDead', true) ? ' open' : ''}><summary>Defeated (${hidden.filter((c) => c.dead).length})</summary>${hidden.filter((c) => c.dead).map((c) => `<div class="tr-row later"><span class="tr-name">${esc(this.nameOf(c, lab))}</span><span class="hint">${c.hp}/${c.max} HP</span><button data-tr="revive" data-cid="${c.cid}" title="Put it back in the turn order">Reinstate</button></div>`).join('')}</details>` : '')
+      + (hidden.filter((c) => c.dead).length ? `<details class="rr-sec tr-deadsec" data-keep="trDead"${Keep.open('trDead', true) ? ' open' : ''}><summary>Defeated &amp; removed (${hidden.filter((c) => c.dead).length})</summary>${hidden.filter((c) => c.dead).map((c) => `<div class="tr-row later"><span class="tr-name">${esc(this.nameOf(c, lab))}</span><span class="hint">${c.removed ? 'removed · ' : ''}${c.hp}/${c.max} HP</span><button data-tr="revive" data-cid="${c.cid}" title="Put it back in the turn order">Reinstate</button><button class="rr-x" data-tr="purge" data-cid="${c.cid}" title="Delete it from this fight" aria-label="Delete">×</button></div>`).join('')}</details>` : '')
       + this.damageLogHtml(lab)
       + `<details class="rr-sec rr-logsec" data-keep="rrLog"${Keep.open('rrLog', false) ? ' open' : ''}><summary class="rr-logh"><h3>Roll log${Roller.log.length ? ` (${Roller.log.length})` : ''}</h3>${Roller.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</summary>${Roller.log.slice(0, 40).map((r) => Roller.resultHtml(r)).join('') || '<p class="hint">Every roll is kept here.</p>'}</details>`
       + '</div>';
@@ -7313,7 +7361,7 @@ const Tracker = {
   jumpTo(cid) {
     const c = this.st.list.find((x) => x.cid === cid);
     if (!c) return;
-    this.st.turn = cid; this.focus = cid; this.save(); this.render();
+    this.st.turn = cid; this.focus = cid; this.turnStarted(); this.save(); this.render();
     if (this.st.follow && App.isWide()) { if (c.eid) App.showDetail(c.eid, { fromSearch: App.currentId === c.eid }); else if (c.kind === 'pc') { App.currentId = null; App.showDetail(null); } }
   },
   async onClick(ev) {
@@ -7347,7 +7395,7 @@ const Tracker = {
     if (a === 'side') { const r = !document.body.classList.contains('combat-right'); document.body.classList.toggle('combat-right', r); safeLocal.set('dndref.combatRight', r ? '1' : ''); return this.render(); }
     if (a === 'qadd') { this.add(t.dataset.id, { quiet: true }); this.quickQ = $('#trQuick')?.value || ''; setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = this.quickQ; i.focus(); this.quickHits(this.quickQ); } }, 0); return; }
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
-    if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; } this.save(); return this.render(); }
+    if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; c.removed = false; } this.save(); return this.render(); }
     if (a === 'deadtoggle') { st.hideDead = st.hideDead === false; this.save(); return this.render(); }
     if (a === 'reroll') { const seen = new Map(); for (const c of this.monsters()) { if (!seen.has(c.gid)) seen.set(c.gid, rollDie(20) + (c.bonus || 0)); c.init = seen.get(c.gid); } this.save(); return this.render(); }
     if (a === 'diff') { this.diffOpen = !this.diffOpen; return this.render(); }
@@ -7362,7 +7410,13 @@ const Tracker = {
       if (Number.isFinite(p)) { this.setPct(this.monsters().filter((c) => !who || this.baseName(c) === who), p); this.save(); this.render(); toast(`${who || 'Every monster'}: max HP is now the stat block ${p >= 0 ? '+' : ''}${p}%`, 'ok'); }
       return;
     }
-    if (a === 'rm') { st.list = st.list.filter((c) => c.cid !== t.dataset.cid); this.save(); return this.render(); }
+    if (a === 'rm') {
+      const c = find();
+      if (c && c.kind === 'mon') { c.hidden = true; c.dead = true; c.removed = true; if (st.turn === c.cid) this.step(1); toast(`${this.nameOf(c)} removed (bring it back under “Defeated & removed”)`, 'ok', 2500); }
+      else st.list = st.list.filter((x) => x.cid !== t.dataset.cid);
+      this.save(); return this.render();
+    }
+    if (a === 'purge') { st.list = st.list.filter((x) => x.cid !== t.dataset.cid); this.save(); return this.render(); }
     if (a === 'encsave') {
       const name = await ask('Save this encounter', '<p>Saves the monsters (and lair actions) in this fight, so you can add them to a fight again later.</p><input id="encName" style="width:100%" placeholder="e.g. Goblin ambush">',
         [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]) && ($('#encName').value.trim() || 'Encounter');
@@ -7394,12 +7448,27 @@ const Tracker = {
       for (const p of Roller.st.party) p.init = '';
       Roller.save();
       st.list = st.list.filter((c) => c.kind === 'pc');
-      st.round = 1; st.turn = null; st.setup = true; st.uses = {}; this.hist.clear(); this.focus = null;
+      st.round = 1; st.turn = null; st.setup = true; st.uses = {}; st.startedAt = null; st.turnAt = null; this.hist.clear(); this.focus = null;
+      this.q = ''; this.quickQ = ''; const mq = $('#q'); if (mq && mq.value) { mq.value = ''; mq.dispatchEvent(new Event('input', { bubbles: true })); }
       Roller.st.extras = {}; Roller.save();
       this.save(); this.render();
     }
   },
   later() { clearTimeout(this._lt); this._lt = setTimeout(() => this.render(), 0); },
+  clockText() {
+    const f = (ms) => { const t = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+    const now = Date.now();
+    return `⏱ ${f(now - this.st.startedAt)}${this.st.turnAt ? ` · turn ${f(now - this.st.turnAt)}` : ''}`;
+  },
+  tick() {
+    if (this._clock) return;
+    this._clock = setInterval(() => { const el = $('#trClock'); if (el && this.st.startedAt) el.textContent = this.clockText(); }, 1000);
+  },
+  turnStarted() {
+    if (!this.st.startedAt) this.st.startedAt = Date.now();
+    this.st.turnAt = Date.now();
+    this.tick();
+  },
   onChange(ev) {
     const el = ev.target, d = el.dataset, st = this.st;
     const render = () => this.later();
@@ -7828,6 +7897,8 @@ function wireEvents() {
     if (!x) return;
     e.preventDefault();
     const input = x.previousElementSibling;
+    if (input.id === 'trQuick') Tracker.quickQ = '';
+    if (input.id === 'trSearch') Tracker.q = '';
     input.value = '';
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.focus();
@@ -8486,7 +8557,7 @@ async function boot() {
     const gk = ev.target.dataset.gen;
     if (gk) { const g = Roller.st.gen[+ev.target.dataset.i]; if (g) { g[gk] = gk === 'n' ? parseInt(ev.target.value, 10) || 0 : ev.target.value; Roller.save(); } }
     const bal = ev.target.dataset.bal;
-    if (bal) { const g = Roller.st.bal[+ev.target.dataset.i]; if (g) { g[bal] = parseInt(ev.target.value, 10) || 1; if (bal === 'n') Roller.st.balSet = true; Roller.save(); } }
+    if (bal) { const g = Roller.st.bal[+ev.target.dataset.i]; if (g) { g[bal] = parseInt(ev.target.value, 10) || 1; Roller.st.balSet = true; Roller.save(); } }
     if (gk || bal) Tracker.refreshDiff();
   });
   $('#toolPane').addEventListener('change', (ev) => {

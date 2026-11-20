@@ -534,7 +534,9 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-dl { display: flex; flex-direction: column; gap: 2px; font-size: 13px; max-height: 260px; overflow: auto; }
 .tr-dl .neg { color: #b91c1c; font-weight: 600; } .tr-dl .pos { color: #15803d; font-weight: 600; }
 .tr-dmglog > summary, .tr-deadsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
-.tr-clock { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; border-radius: 14px; padding: 3px 10px; min-height: 0; }
+.tr-clock { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; border-radius: 14px; padding: 3px 10px; min-height: 0; min-width: 30ch; text-align: center; }
+/* the clock sits on its own line under the buttons, so ticking never moves them */
+#toolPane .rr-top .tr-clock { order: 10; flex-basis: 100%; min-width: 0; text-align: left; border: 0; background: transparent; padding: 0 2px; }
 .tr-clock.paused { color: #b45309; border-color: #f59e0b; } .tr-clock.ended { color: var(--text, inherit); background: var(--panel); }
 .tr-rounds { border-collapse: collapse; width: 100%; font-size: 13px; margin: 4px 0; }
 .tr-rounds td { padding: 2px 6px; border-top: 1px solid var(--border); white-space: nowrap; }
@@ -543,7 +545,8 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-roundsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
 .tr-addin .clearable { flex: 1; display: flex; } .tr-addin .clearable input { flex: 1; }
 .tr-table.battle td.c-ctl .rr-x { width: 20px; }
-.tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: #b91c1c; }
+.tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: inherit; }
+.tr-new:hover { border-color: var(--muted); }
 .mark-note { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .tr-diffstrip .rr-bar.crowded { margin-bottom: 2px; }
 .tr-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
@@ -5839,7 +5842,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.2'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.3'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7293,7 +7296,7 @@ const Tracker = {
     pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<button class="tr-clock${this.st.pausedAt ? ' paused' : ''}${this.st.endedAt ? ' ended' : ''}" id="trClock" data-tr="clock" title="Fight · round · turn. Tap to pause or end the battle">${this.clockText()}</button>` : ''}`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
-      + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">New fight</button>'
+      + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">↺ New fight</button>'
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
       + (battle ? '' : `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`)
       + '<div class="rr-scroll">'

@@ -333,14 +333,15 @@ body.tool-open #listPane { display: none; }
   body.tool-open #toolPane { grid-column: 1; grid-row: 1; }
   body.tool-open #toolSplit { display: block; grid-column: 2; grid-row: 1; }
   body.tool-open #detail { grid-column: 3; grid-row: 1; }
-  body.tool-open.tool-list .layout { grid-template-columns: minmax(360px, var(--combat-w)) 7px var(--list-w) minmax(0, 1fr); }
+  /* three columns: every one keeps a usable width (the stat block is never squeezed to a sliver) */
+  body.tool-open.tool-list .layout { grid-template-columns: minmax(300px, min(var(--combat-w), 38%)) 7px minmax(220px, 300px) minmax(340px, 1fr); }
   body.tool-open.tool-list #listPane { display: flex; grid-column: 3; grid-row: 1; }
   body.tool-open.tool-list #detail { grid-column: 4; }
 }
 @media (min-width: 721px) {
   body.tool-open.combat-right .layout { grid-template-columns: minmax(0, 1fr) 7px minmax(360px, var(--combat-w)); }
   body.tool-open.combat-right #detail { grid-column: 1; } body.tool-open.combat-right #toolSplit { grid-column: 2; } body.tool-open.combat-right #toolPane { grid-column: 3; }
-  body.tool-open.combat-right.tool-list .layout { grid-template-columns: var(--list-w) minmax(0, 1fr) 7px minmax(360px, var(--combat-w)); }
+  body.tool-open.combat-right.tool-list .layout { grid-template-columns: minmax(220px, 300px) minmax(340px, 1fr) 7px minmax(300px, min(var(--combat-w), 38%)); }
   body.tool-open.combat-right.tool-list #listPane { grid-column: 1; } body.tool-open.combat-right.tool-list #detail { grid-column: 2; }
   body.tool-open.combat-right.tool-list #toolSplit { grid-column: 3; } body.tool-open.combat-right.tool-list #toolPane { grid-column: 4; }
 }
@@ -611,7 +612,8 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-rounds td.num { text-align: right; font-variant-numeric: tabular-nums; width: 1%; }
 .tr-rounds td.bar { width: 60%; } .tr-rounds td.bar span { display: block; height: 8px; border-radius: 4px; background: var(--accent); opacity: .6; }
 .tr-roundsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
-.tr-addin .clearable { flex: 1; display: flex; } .tr-addin .clearable input { flex: 1; }
+.tr-addin .clearable { flex: 1; display: flex; min-width: 0; } .tr-addin .clearable input { flex: 1; width: 100%; min-width: 120px; }
+@container (max-width: 460px) { .statblock .ab-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .tr-table.battle td.c-ctl .rr-x { width: 20px; }
 .tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: inherit; }
 .tr-new:hover { border-color: var(--muted); }
@@ -896,8 +898,9 @@ details.refs > summary { font-weight: 600; margin: 6px 0; }
 #detail { overflow: auto; padding: 18px 28px 60px; min-width: 0; }
 .d-top:empty { display: none; }
 @media (min-width: 721px) { .d-top:not(:has(.nav-back)) { display: none; } }
-.d-head { display: flex; align-items: flex-start; gap: 8px; }
-.d-head h2 { margin: 0; font-size: 30px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.d-head { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; }
+.d-head h2 { margin: 0; font-size: 30px; flex: 1 1 220px; min-width: 0; overflow-wrap: break-word; }
+.d-head .head-acts { flex-wrap: wrap; }
 .d-sub { color: hsl(var(--h) 55% var(--badge-l)); font-size: 17px; margin: 4px 0 10px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
 .chipb {
@@ -5940,7 +5943,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.9'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.10'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

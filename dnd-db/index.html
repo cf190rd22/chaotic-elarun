@@ -4406,6 +4406,11 @@ const Linker = {
     if (!this.map) this.build();
     const T = this.tokens(text);
     const isUpper = (s) => /^[\p{Lu}\p{N}]/u.test(s);
+    // Spell lists in older stat blocks are lower case ("At will: druidcraft, produce flame"; "casts fireball"):
+    // there a lower-case name may still link, but only to a spell.
+    const listM = /^\s*(?:at will|\d+\/day(?: each)?|cantrips?(?: \([^)]*\))?|\d+(?:st|nd|rd|th)[- ]level(?: \([^)]*\))?|level \d+(?: \([^)]*\))?)\s*:/i.exec(text);
+    const listEnd = listM ? listM[0].length : Infinity;
+    const castBefore = (i) => i > 0 && /^(cast|casts|casting)$/.test(T[i - 1].f) && /^\s+$/.test(text.slice(T[i - 1].e, T[i].s));
     for (let i = 0; i < T.length; i++) {
       const look = (mp) => (mp && (mp.get(T[i].f) || mp.get(T[i].f.replace(/(es|s)$/, '')))) || [];
       // This page's own features first, then other entries; longest name wins.
@@ -4419,7 +4424,7 @@ const Linker = {
           const t = T[i + k].f, c = g.toks[k];
           ok = t === c || (k === n - 1 && (t === c + 's' || t === c + 'es'));
           if (ok && k > 0) ok = /^[\s-]+$/.test(text.slice(T[i + k - 1].e, T[i + k].s));
-          if (ok && !LINK_SMALL.has(c) && !isUpper(T[i + k].o)) ok = false;
+          if (ok && !LINK_SMALL.has(c) && !isUpper(T[i + k].o) && !((T[i].s >= listEnd || castBefore(i)) && g.ents.some((e) => e.type === 'spell'))) ok = false;
         }
         if (!ok || (n === 1 && LINK_SMALL.has(g.toks[0]))) continue;
         const ent = this.pick(g.ents, text, T, i, n);
@@ -6043,7 +6048,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.15'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.16'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

@@ -143,6 +143,7 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .ab-m::before { content: '('; } .ab-m::after { content: ')'; }
 .sb-more { margin: 8px 0; }
 .sb-kv2 > div:empty { display: none; }
+.sb-kv1 .sb-more, .sb-kv2 .sb-more { margin: 2px 0 6px; }
 @container (min-width: 640px) { .sb-kv2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; } .sb-kv2 > div:empty { display: block; } }
 .sb-more > summary { cursor: pointer; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 4px 0; }
 .sb-more[open] > summary { margin-bottom: 4px; }
@@ -214,6 +215,20 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 .facet-bar label { display: flex; flex-direction: column; font-size: 12.5px; font-weight: 600; color: var(--text); gap: 3px; }
 .facet-bar select { font-size: 14px; padding: 5px 6px; max-width: 190px; }
 .facet-bar button { font-size: 12px; padding: 3px 8px; }
+.fct { position: relative; }
+.fct > summary { list-style: none; cursor: pointer; display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; font-weight: 600; }
+.fct > summary::-webkit-details-marker { display: none; }
+.fct-v { font-weight: 400; font-size: 14px; padding: 5px 26px 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); min-width: 90px; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: relative; }
+.fct-v::after { content: '▾'; position: absolute; right: 8px; color: var(--muted); }
+.fct.on .fct-v { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.fct-opts { position: absolute; z-index: 40; top: 100%; left: 0; margin-top: 4px; min-width: 200px; max-height: 320px; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 28px rgb(0 0 0 / .22); padding: 6px; display: flex; flex-direction: column; }
+.facet-bar .fct-o { flex-direction: row; }
+.fct-o { display: flex; align-items: center; gap: 8px; padding: 6px 6px; min-height: 34px; border-radius: 6px; font-size: 14px; font-weight: 400; cursor: pointer; }
+.fct-o:hover { background: var(--panel-2); }
+.fct-o input { width: 18px; height: 18px; margin: 0; }
+.fct-o small { margin-left: auto; color: var(--muted); }
+.fct-o.zero { opacity: .5; }
+.fct-opts .linkish { align-self: flex-start; margin: 6px; }
 #resultMeta button.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
 .pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
 .pill { display: inline-flex; align-items: baseline; gap: 6px; border: 1px solid var(--border); background: var(--panel); border-radius: 6px; padding: 2px 9px; font-size: 14px; }
@@ -4167,8 +4182,11 @@ const Renderers = {
           const keyK = (k) => /sav|skill|resist|immun|vulnerab/i.test(k), side = (k) => /^senses$/i.test(k);
           const main = keys.filter(keyK), right = keys.filter(side), more = keys.filter((k) => !keyK(k) && !side(k));
           const only = (ks) => renderKV(f, [...skip, ...keys.filter((k) => !ks.includes(k))]);
-          return (sbCards() ? only([...main, ...right]) : `<div class="sb-kv2"><div>${only(main)}</div><div>${only(right)}</div></div>`)
-            + (more.length ? `<details class="sb-more" data-keep="sbMore"${Keep.open('sbMore', false) ? ' open' : ''}><summary>${esc(more.join(' · '))}</summary>${only(more)}</details>` : '');
+          const fold = more.length ? `<details class="sb-more" data-keep="sbMore"${Keep.open('sbMore', false) ? ' open' : ''}><summary>${esc(more.join(' · '))}</summary>${only(more)}</details>` : '';
+          if (sbCards()) return only([...main, ...right]) + fold;
+          // saves / skills / defences on the left; senses and the folded extras on the right. Nothing on the left: one column.
+          if (!main.length) return `<div class="sb-kv1">${only(right)}${fold}</div>`;
+          return `<div class="sb-kv2"><div>${only(main)}</div><div>${only(right)}${fold}</div></div>`;
         })()
         + renderSections(secs, { runIn: true, prefix, wrap: true }) + '</div>';
     } finally { Fmt.sb = false; }
@@ -4883,7 +4901,10 @@ const App = {
   isHome() { return false; }, // the summary page was removed: an empty search lists everything, grouped
 
   viewState() { return this.view[this.tab] || (this.view[this.tab] = { sort: 'default', facets: {} }); },
-  activeFilterCount() { return Object.values(this.viewState().facets).filter(Boolean).length + (this.source ? 1 : 0); },
+  activeFilterCount() { return Object.keys(this.viewState().facets).filter((k) => this.facetSel(k).length).length + (this.source ? 1 : 0); },
+  /** The values picked for a filter (older saved views kept one value as a string). */
+  facetSel(k) { const v = this.viewState().facets[k]; return Array.isArray(v) ? v : v ? [v] : []; },
+  facetMatch(d, e) { const sel = this.facetSel(d.key); return !sel.length || facetValues(d, e).some((v) => sel.includes(v)); },
 
   setSource(src, { toSearch = false } = {}) {
     this.source = src || '';
@@ -4972,8 +4993,8 @@ const App = {
     let ids = this.index.search(this.parsedQuery().text, this.filter());
     // Tab filters
     const vs = this.viewState(), defs = FACETS[this.tab] || [];
-    const active = defs.filter((d) => vs.facets[d.key]);
-    if (active.length) ids = ids.filter((id) => { const e = this.entries.get(id); return active.every((d) => facetValues(d, e).includes(vs.facets[d.key])); });
+    const active = defs.filter((d) => this.facetSel(d.key).length);
+    if (active.length) ids = ids.filter((id) => { const e = this.entries.get(id); return active.every((d) => this.facetMatch(d, e)); });
     if (this.tab === 'fav' && Cols.filter) ids = ids.filter((id) => Cols.has(this.entries.get(id), Cols.filter));
     // Sort: chosen order, or relevance when searching, or the tab's natural order when browsing
     const chosen = SORTS[vs.sort] && SORTS[vs.sort].fn;
@@ -5078,16 +5099,22 @@ const App = {
     if (sources.length || this.source) html += sel('source', 'Source', sources.map(([k, v]) => [k, v.n, v.label]), this.source, 'data-source-sel');
     for (const d of defs) {
       // Counts respect the other active filters, so you see what's actually left.
-      const others = defs.filter((o) => o !== d && vs.facets[o.key]);
+      const others = defs.filter((o) => o !== d && this.facetSel(o.key).length);
       const counts = new Map();
       for (const e of scope) {
         if (this.source && fold(e.source).trim() !== this.source) continue;
-        if (!others.every((o) => facetValues(o, e).includes(vs.facets[o.key]))) continue;
+        if (!others.every((o) => this.facetMatch(o, e))) continue;
         for (const v of facetValues(d, e)) counts.set(v, (counts.get(v) || 0) + 1);
       }
-      if (!counts.size && !vs.facets[d.key]) continue;
+      const picked = this.facetSel(d.key);
+      for (const v of picked) if (!counts.has(v)) counts.set(v, 0);
+      if (!counts.size) continue;
       const opts = [...counts.entries()].sort((a, b) => (d.order ? d.order(a[0], b[0]) : a[0].localeCompare(b[0])));
-      html += sel(d.key, d.label, opts, vs.facets[d.key] || '', 'data-facet');
+      // a tick list: pick as many as you like
+      const sum = picked.length ? (picked.length <= 2 ? picked.join(', ') : `${picked.length} picked`) : 'Any';
+      html += `<details class="fct${picked.length ? ' on' : ''}" data-fct="${esc(d.key)}"${this.facetOpenKey === d.key ? ' open' : ''}><summary><span class="fct-l">${esc(d.label)}</span><span class="fct-v">${esc(sum)}</span></summary>`
+        + `<div class="fct-opts">${opts.map(([v, n]) => `<label class="fct-o${n ? '' : ' zero'}"><input type="checkbox" data-facet="${esc(d.key)}" value="${esc(v)}"${picked.includes(v) ? ' checked' : ''}> <span>${esc(v)}</span> <small>${n}</small></label>`).join('')}`
+        + (picked.length ? `<button type="button" class="linkish" data-fct-clear="${esc(d.key)}">Clear ${esc(d.label.toLowerCase())}</button>` : '') + '</div></details>';
     }
     html += this.activeFilterCount() ? '<button data-act="clear-filters">Clear filters</button>' : '';
     bar.innerHTML = html || '<span class="hint">No filters for this tab yet.</span>';
@@ -6014,7 +6041,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.13'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.14'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -8213,8 +8240,16 @@ function wireEvents() {
   $('#facetBar').addEventListener('change', (e) => {
     if (e.target.dataset.sourceSel !== undefined) { App.setSource(e.target.value); return; }
     const k = e.target.dataset.facet;
-    if (k) { App.viewState().facets[k] = e.target.value; App.runSearch(); }
+    if (k) {
+      const cur = new Set(App.facetSel(k));
+      if (e.target.checked) cur.add(e.target.value); else cur.delete(e.target.value);
+      App.viewState().facets[k] = [...cur];
+      App.facetOpenKey = k; // keep this list open while you tick more
+      App.runSearch();
+    }
   });
+  $('#facetBar').addEventListener('toggle', (e) => { const d = e.target.closest?.('details.fct'); if (d) { if (d.open) { App.facetOpenKey = d.dataset.fct; for (const o of $$('#facetBar details.fct[open]')) if (o !== d) o.open = false; } else if (App.facetOpenKey === d.dataset.fct) App.facetOpenKey = null; } }, true);
+  $('#facetBar').addEventListener('click', (e) => { const c = e.target.closest('[data-fct-clear]'); if (c) { App.viewState().facets[c.dataset.fctClear] = []; App.runSearch(); } });
   const clearFilters = (e) => {
     if (!e.target.closest('[data-act="clear-filters"]')) return;
     App.viewState().facets = {}; App.source = ''; App.runSearch();

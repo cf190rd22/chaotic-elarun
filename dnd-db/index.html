@@ -534,7 +534,13 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-dl { display: flex; flex-direction: column; gap: 2px; font-size: 13px; max-height: 260px; overflow: auto; }
 .tr-dl .neg { color: #b91c1c; font-weight: 600; } .tr-dl .pos { color: #15803d; font-weight: 600; }
 .tr-dmglog > summary, .tr-deadsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
-.tr-clock { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tr-clock { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; border-radius: 14px; padding: 3px 10px; min-height: 0; }
+.tr-clock.paused { color: #b45309; border-color: #f59e0b; } .tr-clock.ended { color: var(--text, inherit); background: var(--panel); }
+.tr-rounds { border-collapse: collapse; width: 100%; font-size: 13px; margin: 4px 0; }
+.tr-rounds td { padding: 2px 6px; border-top: 1px solid var(--border); white-space: nowrap; }
+.tr-rounds td.num { text-align: right; font-variant-numeric: tabular-nums; width: 1%; }
+.tr-rounds td.bar { width: 60%; } .tr-rounds td.bar span { display: block; height: 8px; border-radius: 4px; background: var(--accent); opacity: .6; }
+.tr-roundsec > summary { cursor: pointer; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
 .tr-addin .clearable { flex: 1; display: flex; } .tr-addin .clearable input { flex: 1; }
 .tr-table.battle td.c-ctl .rr-x { width: 20px; }
 .tr-new { font-size: 12.5px; padding: 3px 10px; border-radius: 14px; color: #b91c1c; }
@@ -1149,6 +1155,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
         <legend>Tools</legend>
         <label class="hint">Links in the Tools menu, one per line as <code>Name | https://…</code></label>
         <textarea id="toolLinks" rows="4" style="width:100%" placeholder="Character sheet | https://example.github.io/sheet.html"></textarea>
+        <p class="hint">One per line: a name and a web address (a bare address works too). They appear in the Tools menu.</p>
         <label class="hint"><input type="checkbox" id="tapRoll"> Tap a “+5 to hit” or damage highlight in any stat block to roll it</label>
       </fieldset>
 
@@ -1401,7 +1408,7 @@ function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 
       el.onclick = () => finish(b.value);
       box.appendChild(el);
     }
-    dlg.onclose = () => finish(null);
+    dlg.onclose = () => { if (dlg.open) return; finish(null); }; // a late "close" from the previous box must not shut this one
     dlg.showModal();
     const primary = box.querySelector('.primary') || box.lastElementChild;
     if (primary) primary.focus();
@@ -5832,7 +5839,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7120,7 +7127,7 @@ const Tracker = {
     if (i < 0) this.st.turn = list[0].cid;
     else if (dir > 0) {
       if (i + 1 < list.length) this.st.turn = list[i + 1].cid;
-      else { this.st.round++; list = this.sorted().filter((c) => this.live(c)); this.st.turn = list[0].cid; }
+      else { if (this.st.startedAt && !this.st.endedAt) { this.closeRound(); this.st.roundAt = Date.now(); this.st.roundPausedMs = 0; } this.st.round++; list = this.sorted().filter((c) => this.live(c)); this.st.turn = list[0].cid; }
     } else if (i > 0) this.st.turn = list[i - 1].cid;
     else if (this.st.round > 1) { this.st.round--; list = this.sorted().filter((c) => this.live(c)); this.st.turn = list[list.length - 1].cid; }
     this.save(); this.render();
@@ -7283,7 +7290,7 @@ const Tracker = {
       for (const g of by.values()) { const kinds = new Set(g.map((c) => (c.kind === 'pc' ? 'pc:' + c.pid : c.kind === 'lair' ? 'lair:' + c.cid : (c.eid || c.bname)))); if (kinds.size > 1) for (const c of g) this.ties.add(c.cid); } }
     const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
     const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
-    pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<span class="tr-clock" id="trClock" title="Fight time · this turn">${this.clockText()}</span>` : ''}`
+    pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<button class="tr-clock${this.st.pausedAt ? ' paused' : ''}${this.st.endedAt ? ' ended' : ''}" id="trClock" data-tr="clock" title="Fight · round · turn. Tap to pause or end the battle">${this.clockText()}</button>` : ''}`
       + `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span>`
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">New fight</button>'
@@ -7309,6 +7316,7 @@ const Tracker = {
       + (hidden.filter((c) => !c.dead).length ? `<h3 class="tr-h">Hidden</h3>${hidden.filter((c) => !c.dead).map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
       + (hidden.filter((c) => c.dead).length ? `<details class="rr-sec tr-deadsec" data-keep="trDead"${Keep.open('trDead', true) ? ' open' : ''}><summary>Defeated &amp; removed (${hidden.filter((c) => c.dead).length})</summary>${hidden.filter((c) => c.dead).map((c) => `<div class="tr-row later"><span class="tr-name">${esc(this.nameOf(c, lab))}</span><span class="hint">${c.removed ? 'removed · ' : ''}${c.hp}/${c.max} HP</span><button data-tr="revive" data-cid="${c.cid}" title="Put it back in the turn order">Reinstate</button><button class="rr-x" data-tr="purge" data-cid="${c.cid}" title="Delete it from this fight" aria-label="Delete">×</button></div>`).join('')}</details>` : '')
       + this.damageLogHtml(lab)
+      + (this.st.startedAt ? `<details class="rr-sec tr-roundsec" data-keep="trRounds"${Keep.open('trRounds', !!this.st.endedAt) ? ' open' : ''}><summary>Round times${(this.st.roundLog || []).length ? ` (${this.st.roundLog.length})` : ''}</summary>${this.roundsHtml()}</details>` : '')
       + `<details class="rr-sec rr-logsec" data-keep="rrLog"${Keep.open('rrLog', false) ? ' open' : ''}><summary class="rr-logh"><h3>Roll log${Roller.log.length ? ` (${Roller.log.length})` : ''}</h3>${Roller.log.length ? '<button data-rr="clearlog" class="linkish">Clear</button>' : ''}</summary>${Roller.log.slice(0, 40).map((r) => Roller.resultHtml(r)).join('') || '<p class="hint">Every roll is kept here.</p>'}</details>`
       + '</div>';
     pane.querySelector('.rr-scroll').scrollTop = keepScroll;
@@ -7390,10 +7398,15 @@ const Tracker = {
     if (a === 'label') { const c = find(); return c && this.editLabel(c); }
     if (a === 'sub') { const list = this.monsters().filter((c) => c.eid === t.dataset.id); const last = list[list.length - 1]; if (last) { st.list = st.list.filter((c) => c !== last); if (st.turn === last.cid) st.turn = null; this.save(); this.render(); } return; }
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
-    if (a === 'add') { this.add(t.dataset.id); return; }
+    if (a === 'add') {
+      this.add(t.dataset.id);
+      if (t.classList.contains('rr-hit')) { this.q = ''; const sb = $('#trSearch'); if (sb) { sb.value = ''; sb.focus(); } const h = $('#trHits'); if (h) h.innerHTML = ''; } // the − / + buttons keep it for more
+      return;
+    }
     if (a === 'custom') { this.addCustom($('#tcName')?.value, $('#tcAc')?.value, $('#tcHp')?.value, $('#tcInit')?.value, { cr: $('#tcCr')?.value || null }); return; }
     if (a === 'side') { const r = !document.body.classList.contains('combat-right'); document.body.classList.toggle('combat-right', r); safeLocal.set('dndref.combatRight', r ? '1' : ''); return this.render(); }
-    if (a === 'qadd') { this.add(t.dataset.id, { quiet: true }); this.quickQ = $('#trQuick')?.value || ''; setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = this.quickQ; i.focus(); this.quickHits(this.quickQ); } }, 0); return; }
+    if (a === 'qadd') { this.quickQ = ''; this.add(t.dataset.id, { quiet: true }); setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = ''; i.focus(); } const h = $('#trQuickHits'); if (h) h.innerHTML = ''; }, 0); return; }
+    if (a === 'clock') return this.clockMenu();
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
     if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; c.removed = false; } this.save(); return this.render(); }
     if (a === 'deadtoggle') { st.hideDead = st.hideDead === false; this.save(); return this.render(); }
@@ -7448,25 +7461,76 @@ const Tracker = {
       for (const p of Roller.st.party) p.init = '';
       Roller.save();
       st.list = st.list.filter((c) => c.kind === 'pc');
-      st.round = 1; st.turn = null; st.setup = true; st.uses = {}; st.startedAt = null; st.turnAt = null; this.hist.clear(); this.focus = null;
+      st.round = 1; st.turn = null; st.setup = true; st.uses = {}; st.startedAt = null; st.turnAt = null; st.roundAt = null; st.pausedAt = null; st.endedAt = null; st.pausedMs = 0; st.roundPausedMs = 0; st.turnPausedMs = 0; st.roundLog = []; this.hist.clear(); this.focus = null;
       this.q = ''; this.quickQ = ''; const mq = $('#q'); if (mq && mq.value) { mq.value = ''; mq.dispatchEvent(new Event('input', { bubbles: true })); }
       Roller.st.extras = {}; Roller.save();
       this.save(); this.render();
     }
   },
   later() { clearTimeout(this._lt); this._lt = setTimeout(() => this.render(), 0); },
+  fmt(ms) { const t = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); },
+  /** Time since `from`, leaving out pauses since then. */
+  since(from, paused = 0) { const st = this.st, now = st.endedAt || st.pausedAt || Date.now(); return now - from - paused; },
+  fightMs() { return this.since(this.st.startedAt, this.st.pausedMs || 0); },
+  roundMs() { return this.since(this.st.roundAt || this.st.startedAt, this.st.roundPausedMs || 0); },
+  turnMs() { return this.since(this.st.turnAt || this.st.startedAt, this.st.turnPausedMs || 0); },
   clockText() {
-    const f = (ms) => { const t = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
-    const now = Date.now();
-    return `⏱ ${f(now - this.st.startedAt)}${this.st.turnAt ? ` · turn ${f(now - this.st.turnAt)}` : ''}`;
+    const st = this.st, f = (ms) => this.fmt(ms);
+    if (st.endedAt) return `■ Ended · ${f(this.fightMs())} · ${(st.roundLog || []).length} round${(st.roundLog || []).length === 1 ? '' : 's'}`;
+    return `${st.pausedAt ? '❚❚' : '⏱'} ${f(this.fightMs())} · round ${f(this.roundMs())} · turn ${f(this.turnMs())}`;
+  },
+  pause(on) {
+    const st = this.st;
+    if (!st.startedAt || st.endedAt) return;
+    if (on && !st.pausedAt) st.pausedAt = Date.now();
+    if (!on && st.pausedAt) { const d = Date.now() - st.pausedAt; st.pausedMs = (st.pausedMs || 0) + d; st.roundPausedMs = (st.roundPausedMs || 0) + d; st.turnPausedMs = (st.turnPausedMs || 0) + d; st.pausedAt = null; }
+    this.save(); this.render();
+  },
+  /** Close the round that is running: its time goes into the round log. */
+  closeRound() {
+    const st = this.st;
+    if (!st.startedAt) return;
+    st.roundLog = st.roundLog || [];
+    if (!st.roundLog.some((x) => x.r === st.round)) st.roundLog.push({ r: st.round, ms: this.roundMs() });
+  },
+  roundsHtml(final = false) {
+    const st = this.st, log = [...(st.roundLog || [])];
+    if (!final && st.startedAt && !st.endedAt && !log.some((x) => x.r === st.round)) log.push({ r: st.round, ms: this.roundMs(), now: true });
+    if (!log.length) return '<p class="hint">No rounds timed yet.</p>';
+    const done = log.filter((x) => !x.now), avg = done.length ? done.reduce((a, b) => a + b.ms, 0) / done.length : 0, max = Math.max(...log.map((x) => x.ms), 1);
+    return `<table class="tr-rounds"><tbody>${log.map((x) => `<tr><td>Round ${x.r}${x.now ? ' <span class="hint">(now)</span>' : ''}</td><td class="num">${this.fmt(x.ms)}</td><td class="bar"><span style="width:${(x.ms / max * 100).toFixed(0)}%"></span></td></tr>`).join('')}</tbody></table>`
+      + `<p class="hint">Fight ${this.fmt(this.fightMs())}${done.length ? ` · average round ${this.fmt(avg)} · longest ${this.fmt(Math.max(...done.map((x) => x.ms)))}` : ''}</p>`;
+  },
+  async clockMenu() {
+    const st = this.st;
+    if (!st.startedAt) return;
+    const btns = [{ label: 'Close', value: null }];
+    if (st.endedAt) btns.push({ label: 'Resume the fight', value: 'resume' });
+    else { btns.push({ label: st.pausedAt ? 'Resume timer' : 'Pause timer', value: st.pausedAt ? 'unpause' : 'pause' }); btns.push({ label: 'End battle', value: 'end', kind: 'primary' }); }
+    const v = await ask(st.endedAt ? 'Battle over' : 'Fight timer', `<p><b>${esc(this.clockText())}</b></p>${this.roundsHtml()}`, btns);
+    if (v === 'pause') this.pause(true);
+    else if (v === 'unpause') this.pause(false);
+    else if (v === 'end') this.endBattle();
+    else if (v === 'resume') { const d = Date.now() - st.endedAt; st.pausedMs = (st.pausedMs || 0) + d; st.roundPausedMs = (st.roundPausedMs || 0) + d; st.turnPausedMs = (st.turnPausedMs || 0) + d; st.roundLog = (st.roundLog || []).filter((x) => x.r !== st.round); st.endedAt = null; this.save(); this.tick(); this.render(); }
+  },
+  async endBattle() {
+    const st = this.st;
+    if (st.pausedAt) this.pause(false);
+    this.closeRound();
+    st.endedAt = Date.now();
+    this.save(); this.render();
+    await ask('Battle over', `<p><b>${esc(this.fmt(this.fightMs()))}</b> over ${(st.roundLog || []).length} round${(st.roundLog || []).length === 1 ? '' : 's'}.</p>${this.roundsHtml(true)}<p class="hint">It stays under “Round times” until you start a new fight.</p>`, [{ label: 'OK', value: true, kind: 'primary' }]);
   },
   tick() {
     if (this._clock) return;
-    this._clock = setInterval(() => { const el = $('#trClock'); if (el && this.st.startedAt) el.textContent = this.clockText(); }, 1000);
+    this._clock = setInterval(() => { const el = $('#trClock'); if (el && this.st.startedAt && !this.st.pausedAt && !this.st.endedAt) el.textContent = this.clockText(); }, 1000);
   },
   turnStarted() {
-    if (!this.st.startedAt) this.st.startedAt = Date.now();
-    this.st.turnAt = Date.now();
+    const st = this.st;
+    if (st.endedAt) return; // the timer stays stopped once the battle is over
+    if (!st.startedAt) { st.startedAt = Date.now(); st.roundAt = st.startedAt; st.roundLog = []; st.pausedMs = 0; st.roundPausedMs = 0; }
+    st.turnAt = Date.now(); st.turnPausedMs = 0;
+    if (st.pausedAt) { st.pausedMs = (st.pausedMs || 0) + (Date.now() - st.pausedAt); st.roundPausedMs = (st.roundPausedMs || 0) + (Date.now() - st.pausedAt); st.pausedAt = null; } // moving on resumes it
     this.tick();
   },
   onChange(ev) {
@@ -7538,7 +7602,15 @@ const Tools = {
     return `<button class="rr-pin${this.pinned ? ' on' : ''}" ${attr} title="${this.pinned ? 'Unpin: take the results list’s place again' : 'Pin to the right, so the list and entries stay usable during a fight'}" aria-pressed="${this.pinned}">${this.pinned ? 'Unpin' : 'Pin'}</button>`;
   },
   links() {
-    return String(safeLocal.get('dndref.toolLinks') || '').split('\n').map((l) => l.split('|').map((x) => x.trim())).filter(([n, u]) => n && /^https?:\/\//i.test(u || ''));
+    // "Name | https://…", "Name - https://…", "Name https://…" or just a URL
+    return String(safeLocal.get('dndref.toolLinks') || '').split('\n').map((l) => {
+      const m = /(https?:\/\/\S+|www\.\S+)/i.exec(l);
+      if (!m) return null;
+      const url = /^www\./i.test(m[1]) ? 'https://' + m[1] : m[1];
+      let name = l.slice(0, m.index).replace(/[|:\-–—\s]+$/, '').trim();
+      if (!name) { try { name = new URL(url).hostname.replace(/^www\./, ''); } catch { name = url; } }
+      return [name, url];
+    }).filter(Boolean);
   },
   open(anchor) {
     const links = this.links();
@@ -7550,7 +7622,12 @@ const Tools = {
       if (v === 'roller') Tools.show('roller');
       else if (v === 'tracker') Tools.show('tracker');
       else if (v === 'edit') { $('#settingsBtn').click(); setTimeout(() => $('#toolLinks')?.focus(), 150); }
-      else if (v.startsWith('link:')) window.open(links[+v.slice(5)][1], '_blank', 'noopener');
+      else if (v.startsWith('link:')) {
+        const [n, u] = links[+v.slice(5)];
+        const w = window.open(u, '_blank', 'noopener');
+        // some viewers block new windows: offer a plain link to tap instead
+        if (!w) ask(n, `<p><a href="${esc(u)}" target="_blank" rel="noopener">Open ${esc(n)} ↗</a></p><p class="hint">${esc(u)}</p>`, [{ label: 'Close', value: null }]);
+      }
     });
   },
 };
@@ -8593,7 +8670,7 @@ async function boot() {
     if (ev.target.matches('[data-pc]')) setTimeout(() => { if (!$('#toolPane').contains(document.activeElement) || !document.activeElement.matches('[data-pc]')) Tools.render(); }, 0);
     if (ev.target.matches('[data-bal], [data-gen]')) Tracker.refreshDiff();
   });
-  $('#toolLinks').addEventListener('change', (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
+  for (const t of ['input', 'change']) $('#toolLinks').addEventListener(t, (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
   Keep.init();
   // drag the bar between Combat and the page to resize (remembered)
   $('#toolSplit').addEventListener('pointerdown', (ev) => {

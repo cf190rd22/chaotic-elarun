@@ -538,6 +538,8 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 /* the clock sits on its own line under the buttons, so ticking never moves them */
 #toolPane .rr-top .tr-clock { order: 10; flex-basis: 100%; min-width: 0; text-align: left; border: 0; background: transparent; padding: 0 2px; }
 .tr-clock.paused { color: #b45309; border-color: #f59e0b; } .tr-clock.ended { color: var(--text, inherit); background: var(--panel); }
+.tr-clock .tc-p, .tr-clockbig .tc-p { display: inline-block; min-width: 10ch; margin-right: 18px; font-variant-numeric: tabular-nums; }
+.tr-clock .tc-p i, .tr-clockbig .tc-p i { font-style: normal; opacity: .75; margin-right: 3px; }
 .tr-rounds { border-collapse: collapse; width: 100%; font-size: 13px; margin: 4px 0; }
 .tr-rounds td { padding: 2px 6px; border-top: 1px solid var(--border); white-space: nowrap; }
 .tr-rounds td.num { text-align: right; font-variant-numeric: tabular-nums; width: 1%; }
@@ -5842,7 +5844,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.3'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.4'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7108,12 +7110,21 @@ const Tracker = {
     const ok = await ask(`Label: ${esc(b)} ${esc(cur)}`,
       `<div class="abf"><label class="abf-wide">This one <input id="lbVal" value="${esc(c.label || '')}" placeholder="${esc(cur || 'automatic')}" autocomplete="off"></label>`
       + `<div class="abf-kind abf-wide"><span class="hint">All ${esc(b)}s:</span>${opt('', 'as the tracker')}${opt('abc', 'A B C')}${opt('123', '1 2 3')}</div>`
+      + `<label class="abf-wide">From here on <input id="lbFrom" placeholder="e.g. D or 4" maxlength="3" autocomplete="off"><span class="hint">This one gets it, and the ${esc(b)}s after it in the turn order carry on (E, F… or 5, 6…).</span></label>`
       + `<label class="abf-wide">All ${esc(b)}s start at <input id="lbStart" value="${esc((this.st.labelStart || {})[b] || '')}" placeholder="A or 1" maxlength="3" autocomplete="off"></label></div>`
       + '<p class="hint">Leave it blank to follow the turn order. A label you type stays put; the others skip it.</p>',
       [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
     if (!ok) return;
     const v = ($('#lbVal')?.value || '').trim().slice(0, 12), sv = document.querySelector('#askBody [name="lbStyle"]:checked')?.value || '';
     c.label = v || undefined;
+    const from = ($('#lbFrom')?.value || '').trim().toUpperCase();
+    if (/^\d+$/.test(from) || /^[A-Z]{1,2}$/.test(from)) {
+      // this one and the ones after it (in turn order) get fixed labels from here
+      const kind = this.sorted().filter((x) => x.kind === 'mon' && this.baseName(x) === b), at = kind.indexOf(c);
+      const next = (lab) => { if (/^\d+$/.test(lab)) return String(+lab + 1); const z = lab.split(''); let i = z.length - 1; while (i >= 0 && z[i] === 'Z') { z[i] = 'A'; i--; } if (i < 0) z.unshift('A'); else z[i] = String.fromCharCode(z[i].charCodeAt(0) + 1); return z.join(''); };
+      let lab = from;
+      for (const x of kind.slice(at)) { x.label = lab; lab = next(lab); }
+    }
     this.st.labelStyle = this.st.labelStyle || {};
     if (sv) this.st.labelStyle[b] = sv; else delete this.st.labelStyle[b];
     const stv = ($('#lbStart')?.value || '').trim();
@@ -7136,7 +7147,7 @@ const Tracker = {
     this.save(); this.render();
     $('#toolPane .tr-cur')?.scrollIntoView({ block: 'nearest' });
     const cur = this.st.list.find((c) => c.cid === this.st.turn);
-    if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); this.turnStarted(); const el = $('#trClock'); if (el) el.textContent = this.clockText(); else this.render(); }
+    if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); this.turnStarted(); const el = $('#trClock'); if (el) el.innerHTML = this.clockText(); else this.render(); }
     if (this.st.follow && cur && cur.eid && App.isWide()) App.showDetail(cur.eid, { fromSearch: App.currentId === cur.eid }); // stat block follows the turn
     else if (this.st.follow && cur && cur.kind === 'pc' && App.isWide()) { App.currentId = null; App.showDetail(null); }
     else FightView.refresh();
@@ -7479,8 +7490,8 @@ const Tracker = {
   turnMs() { return this.since(this.st.turnAt || this.st.startedAt, this.st.turnPausedMs || 0); },
   clockText() {
     const st = this.st, f = (ms) => this.fmt(ms);
-    if (st.endedAt) return `■ Ended · ${f(this.fightMs())} · ${(st.roundLog || []).length} round${(st.roundLog || []).length === 1 ? '' : 's'}`;
-    return `${st.pausedAt ? '❚❚' : '⏱'} ${f(this.fightMs())} · round ${f(this.roundMs())} · turn ${f(this.turnMs())}`;
+    if (st.endedAt) return `<span class="tc-p"><i>■ Ended</i> ${f(this.fightMs())}</span><span class="tc-p">${(st.roundLog || []).length} round${(st.roundLog || []).length === 1 ? '' : 's'}</span>`;
+    return `<span class="tc-p"><i>${st.pausedAt ? '❚❚' : '⏱'}</i> ${f(this.fightMs())}</span><span class="tc-p"><i>round</i> ${f(this.roundMs())}</span><span class="tc-p"><i>turn</i> ${f(this.turnMs())}</span>`;
   },
   pause(on) {
     const st = this.st;
@@ -7510,7 +7521,7 @@ const Tracker = {
     const btns = [{ label: 'Close', value: null }];
     if (st.endedAt) btns.push({ label: 'Resume the fight', value: 'resume' });
     else { btns.push({ label: st.pausedAt ? 'Resume timer' : 'Pause timer', value: st.pausedAt ? 'unpause' : 'pause' }); btns.push({ label: 'End battle', value: 'end', kind: 'primary' }); }
-    const v = await ask(st.endedAt ? 'Battle over' : 'Fight timer', `<p><b>${esc(this.clockText())}</b></p>${this.roundsHtml()}`, btns);
+    const v = await ask(st.endedAt ? 'Battle over' : 'Fight timer', `<p class="tr-clockbig">${this.clockText()}</p>${this.roundsHtml()}`, btns);
     if (v === 'pause') this.pause(true);
     else if (v === 'unpause') this.pause(false);
     else if (v === 'end') this.endBattle();
@@ -7526,7 +7537,7 @@ const Tracker = {
   },
   tick() {
     if (this._clock) return;
-    this._clock = setInterval(() => { const el = $('#trClock'); if (el && this.st.startedAt && !this.st.pausedAt && !this.st.endedAt) el.textContent = this.clockText(); }, 1000);
+    this._clock = setInterval(() => { const el = $('#trClock'); if (el && this.st.startedAt && !this.st.pausedAt && !this.st.endedAt) el.innerHTML = this.clockText(); }, 1000);
   },
   turnStarted() {
     const st = this.st;

@@ -5214,6 +5214,8 @@ const App = {
 
   /** Opened from a search that matched the text: put the search in find-in-page and jump to it. */
   autoFind(id) {
+    return; // the main search no longer fills "Find in this page" (you asked to keep them separate)
+    // eslint-disable-next-line no-unreachable
     if (Find.offFor !== null && Find.offFor === this.activeQuery()) return; // you cleared it for this search
     const e = this.entries.get(id), bm = e && bodyMatch(e);
     const fi = $('#detail .fip-in');
@@ -6041,7 +6043,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.14'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.15'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

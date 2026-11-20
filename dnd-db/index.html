@@ -1217,7 +1217,8 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
       <fieldset>
         <legend>Data</legend>
         <div class="ctl-row">
-          <button id="exportAllBtn">Export whole database (JSON)</button>
+          <button id="exportAllBtn" title="Ctrl/⌘+S">Save a backup copy (JSON)</button>
+          <span class="hint" id="lastLocalSave"></span>
           <button id="importJsonBtn2">Import JSON…</button>
           <button id="loadSamplesBtn">Re-add sample entries</button>
           <button id="clearDbBtn" class="danger">Delete all entries…</button>
@@ -1736,6 +1737,15 @@ async function adoptCombat(c) {
   return out.join(', ');
 }
 
+/** A full backup file (entries, collections, icons, party, saved encounters) saved to your device. */
+function saveBackupFile() {
+  const all = [...App.entries.values()], d = new Date(), pad = (n) => String(n).padStart(2, '0');
+  const name = `dnd-reference-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}.json`;
+  download(name, JSON.stringify(exportPayload(all, { full: true }), null, 1));
+  safeLocal.set('dndref.lastLocalSave', String(Date.now()));
+  const el = $('#lastLocalSave'); if (el) el.textContent = `Last copy saved ${d.toLocaleString()}.`;
+  toast(`Saved ${name} (${all.length} entries, party and encounters) to your downloads`, 'ok', 4000);
+}
 function exportPayload(entries, { full = false } = {}) {
   return {
     format: 'dnd-reference-db',
@@ -5711,6 +5721,7 @@ const Importer = {
 const Settings = {
   async open() {
     const c = await GitHub.config();
+    { const t = +safeLocal.get('dndref.lastLocalSave'); $('#lastLocalSave').textContent = t ? `Last copy saved ${new Date(t).toLocaleString()}.` : 'No copy saved from this browser yet.'; }
     $('#ghToken').value = c.token || '';
     $('#ghOwner').value = c.owner || '';
     $('#ghRepo').value = c.repo || '';
@@ -5943,7 +5954,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.10'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.11'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7729,11 +7740,13 @@ const Tools = {
     const links = this.links();
     Cols.openMenu(anchor, `<div class="cm-h">Tools</div><button class="cm-i" data-pick="tracker"><span class="cm-box">⚔</span>Combat${Tracker.monsters().length ? `<span class="count">${Tracker.monsters().length}</span>` : ''}</button>`
       + links.map(([n, u], i) => `<button class="cm-i" data-pick="link:${i}"><span class="cm-box">↗</span>${esc(n)}</button>`).join('')
+      + `<button class="cm-i" data-pick="save"><span class="cm-box">💾</span>Save a backup copy</button>`
       + `<button class="cm-i" data-pick="edit"><span class="cm-box">✎</span>${links.length ? 'Edit links…' : 'Add your own links…'}</button>`,
     (v) => {
       Cols.closeMenu();
       if (v === 'roller') Tools.show('roller');
       else if (v === 'tracker') Tools.show('tracker');
+      else if (v === 'save') saveBackupFile();
       else if (v === 'edit') { $('#settingsBtn').click(); setTimeout(() => $('#toolLinks')?.focus(), 150); }
       else if (v.startsWith('link:')) {
         const [n, u] = links[+v.slice(5)];
@@ -8253,10 +8266,7 @@ function wireEvents() {
   $('#importFile').addEventListener('change', async (e) => { await Importer.importFile(e.target.files[0]); e.target.value = ''; });
 
   // Settings: data
-  $('#exportAllBtn').addEventListener('click', () => {
-    const all = [...App.entries.values()];
-    download(`dnd-reference-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(exportPayload(all, { full: true }), null, 1));
-  });
+  $('#exportAllBtn').addEventListener('click', () => saveBackupFile());
   $('#loadSamplesBtn').addEventListener('click', async () => { await App.upsert(SAMPLE_ENTRIES.map((s) => makeEntry(s))); });
   $('#clearDbBtn').addEventListener('click', async () => {
     const ok = await ask('Delete ALL entries?', `<p>This deletes all ${App.entries.size} entries from this browser. Settings and your GitHub backup are untouched.</p><p>Consider exporting first.</p>`,
@@ -8389,6 +8399,8 @@ function wireEvents() {
     const ae = document.activeElement;
     const typing = ae && (/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName) || ae.isContentEditable);
     const dialogOpen = !!document.querySelector('dialog[open]');
+    // Save a backup copy: Ctrl/⌘ + S (instead of the browser saving the page)
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 's') { e.preventDefault(); saveBackupFile(); return; }
     // Master search: Ctrl/⌘ + G from anywhere (overrides the browser's "find next" while the app has focus)
     if ((e.key === 'g' || e.key === 'G') && (e.ctrlKey || e.metaKey) && !e.altKey) {
       e.preventDefault();

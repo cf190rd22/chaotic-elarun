@@ -1217,7 +1217,8 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
       <fieldset>
         <legend>Data</legend>
         <div class="ctl-row">
-          <button id="exportAllBtn" title="Ctrl/⌘+S">Save a backup copy (JSON)</button>
+          <button id="exportAllBtn" title="Ctrl/⌘+S">Save a local copy (app + data, .html)…</button>
+          <button id="exportJsonBtn" title="For Import or GitHub">Export data only (.json)…</button>
           <span class="hint" id="lastLocalSave"></span>
           <button id="importJsonBtn2">Import JSON…</button>
           <button id="loadSamplesBtn">Re-add sample entries</button>
@@ -1328,6 +1329,7 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
 
 <script>
 'use strict';
+const APP_SOURCE = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 /* #####################################################################
    D&D REFERENCE DATABASE
    Single-file app. Sections, in dependency order:
@@ -1367,9 +1369,9 @@ const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 const ordinal = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
 const hashHue = (s) => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; };
 
-function download(filename, text) {
+function download(filename, text, type = 'application/json') {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  a.href = URL.createObjectURL(new Blob([text], { type }));
   a.download = filename;
   document.body.appendChild(a);
   a.click();
@@ -1737,14 +1739,68 @@ async function adoptCombat(c) {
   return out.join(', ');
 }
 
-/** A full backup file (entries, collections, icons, party, saved encounters) saved to your device. */
-function saveBackupFile() {
-  const all = [...App.entries.values()], d = new Date(), pad = (n) => String(n).padStart(2, '0');
-  const name = `dnd-reference-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}.json`;
-  download(name, JSON.stringify(exportPayload(all, { full: true }), null, 1));
+const stamp = () => { const d = new Date(), pad = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`; };
+/** The whole app as one .html file with your data (entries, collections, icons, party, encounters) built in. */
+function appWithData() {
+  const json = JSON.stringify(exportPayload([...App.entries.values()], { full: true })).replace(/</g, '\\u003c');
+  let src = APP_SOURCE.replace(/(<html[^>]*?)\s+data-theme="[^"]*"/, '$1');
+  const at = src.indexOf("<script>\n'use strict';");
+  if (at < 0) throw new Error('Could not find the app script to build a copy');
+  // a copy saved from a copy: drop the old data block, which sits just before the app script
+  const old = src.lastIndexOf('<script id="seedData"', at);
+  const head = old >= 0 ? src.slice(0, old) : src.slice(0, at);
+  return head + `<script id="seedData" type="application/json">${json}<\/script>\n` + src.slice(at);
+}
+/** Save to a place you choose ("Save as…"), or to Downloads where the browser can't ask. */
+async function saveFileAs(name, text, { type = 'text/html', ext = '.html', label = 'D&D Reference (app with your data)' } = {}) {
+  if (window.showSaveFilePicker) {
+    try {
+      const h = await window.showSaveFilePicker({ id: 'dndref-backup', suggestedName: name, types: [{ description: label, accept: { [type]: [ext] } }] });
+      const w = await h.createWritable(); await w.write(new Blob([text], { type })); await w.close();
+      return h.name;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return null; // you cancelled
+      logInfo('Save as… not available here, downloading instead: ' + (err && err.message));
+    }
+  }
+  download(name, text, type);
+  return name + ' (in Downloads)';
+}
+/** A local copy: the app and your data in one file. Open it anywhere and everything is there. */
+async function saveBackupFile() {
+  let html;
+  try { html = appWithData(); } catch (err) { toast('Could not build the copy: ' + err.message, 'err', 6000); return; }
+  const saved = await saveFileAs(`dnd-reference-${stamp()}.html`, html);
+  if (!saved) return;
   safeLocal.set('dndref.lastLocalSave', String(Date.now()));
-  const el = $('#lastLocalSave'); if (el) el.textContent = `Last copy saved ${d.toLocaleString()}.`;
-  toast(`Saved ${name} (${all.length} entries, party and encounters) to your downloads`, 'ok', 4000);
+  const el = $('#lastLocalSave'); if (el) el.textContent = `Last copy saved ${new Date().toLocaleString()}.`;
+  toast(`Saved ${saved}: the app with ${App.entries.size} entries, your party and encounters built in`, 'ok', 5000);
+}
+async function saveJsonFile() {
+  const saved = await saveFileAs(`dnd-reference-${stamp()}.json`, JSON.stringify(exportPayload([...App.entries.values()], { full: true }), null, 1), { type: 'application/json', ext: '.json', label: 'D&D Reference data (JSON)' });
+  if (saved) toast(`Saved ${saved}`, 'ok', 3000);
+}
+/** Opened from a saved copy: offer (or, in an empty browser, just load) the data built into the file. */
+async function loadSeed() {
+  const el = document.getElementById('seedData');
+  if (!el) return;
+  let payload, raw;
+  try { raw = JSON.parse(el.textContent); payload = readImportPayload(raw); } catch (err) { logError('Saved copy data unreadable', err); return; }
+  const at = raw.exportedAt || '';
+  if (safeLocal.get('dndref.seedSeen') === at) return;
+  safeLocal.set('dndref.seedSeen', at);
+  const empty = App.entries.size <= SAMPLE_ENTRIES.length;
+  if (!empty) {
+    const ok = await ask('Saved copy', `<p>This file has your data from <b>${esc(new Date(at).toLocaleString())}</b> (${payload.entries.length} entries${payload.combat?.party?.length ? `, party of ${payload.combat.party.length}` : ''}).</p><p>This browser already has ${App.entries.size} entries. Merge the file’s data in? Newer versions win; nothing is deleted.</p>`,
+      [{ label: 'Not now', value: null }, { label: 'Merge', value: true, kind: 'primary' }]);
+    if (!ok) return;
+  }
+  for (const t of payload.types) if (t && t.key) Types.ensure(t.key, t.label);
+  await importIconOverrides(payload.icons, false);
+  await Cols.adopt(payload.collections);
+  const r = await App.merge(payload.entries);
+  const cb = await adoptCombat(payload.combat);
+  toast(`Loaded the saved copy: ${r.added} new, ${r.updated} updated${cb ? `, ${cb}` : ''}`, 'ok', 5000);
 }
 function exportPayload(entries, { full = false } = {}) {
   return {
@@ -5954,7 +6010,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.11'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.12'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7740,7 +7796,7 @@ const Tools = {
     const links = this.links();
     Cols.openMenu(anchor, `<div class="cm-h">Tools</div><button class="cm-i" data-pick="tracker"><span class="cm-box">⚔</span>Combat${Tracker.monsters().length ? `<span class="count">${Tracker.monsters().length}</span>` : ''}</button>`
       + links.map(([n, u], i) => `<button class="cm-i" data-pick="link:${i}"><span class="cm-box">↗</span>${esc(n)}</button>`).join('')
-      + `<button class="cm-i" data-pick="save"><span class="cm-box">💾</span>Save a backup copy</button>`
+      + `<button class="cm-i" data-pick="save"><span class="cm-box">💾</span>Save a local copy…</button>`
       + `<button class="cm-i" data-pick="edit"><span class="cm-box">✎</span>${links.length ? 'Edit links…' : 'Add your own links…'}</button>`,
     (v) => {
       Cols.closeMenu();
@@ -8267,6 +8323,7 @@ function wireEvents() {
 
   // Settings: data
   $('#exportAllBtn').addEventListener('click', () => saveBackupFile());
+  $('#exportJsonBtn').addEventListener('click', () => saveJsonFile());
   $('#loadSamplesBtn').addEventListener('click', async () => { await App.upsert(SAMPLE_ENTRIES.map((s) => makeEntry(s))); });
   $('#clearDbBtn').addEventListener('click', async () => {
     const ok = await ask('Delete ALL entries?', `<p>This deletes all ${App.entries.size} entries from this browser. Settings and your GitHub backup are untouched.</p><p>Consider exporting first.</p>`,
@@ -8846,6 +8903,7 @@ async function boot() {
   const initial = m && decodeURIComponent(m[1]);
   if (initial && App.entries.has(initial)) App.open(initial);
   else App.showDetail(null);
+  await loadSeed().catch((err) => logError('Saved copy', err));
 }
 
 boot().catch((err) => {

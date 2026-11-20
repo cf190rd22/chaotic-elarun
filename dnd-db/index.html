@@ -489,6 +489,13 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .toc-d > summary::-webkit-details-marker { display: none; }
 .toc-d > summary::before { content: '▸ '; } .toc-d[open] > summary::before { content: '▾ '; }
 .toc-d[open] > .toc { margin-top: 6px; }
+.d-sub .toc-d { display: inline-block; margin: 0 0 0 12px; vertical-align: middle; position: relative; }
+.d-sub .toc-d > summary { padding: 2px 10px; }
+.d-sub .toc-d[open] > .toc { position: absolute; left: 0; top: calc(100% + 4px); z-index: 30; width: min(640px, 80vw); margin: 0; box-shadow: 0 10px 28px rgb(0 0 0 / .25); }
+/* when Actions runs into the second column, it lines up with the first action, not with the heading */
+@container (min-width: 640px) {
+  .statblock .sb-secs > .sb-sec:not(.sb-traits):first-child > h3, .statblock .sb-secs > .sb-sec.sb-traits + .sb-sec > h3 { column-span: all; }
+}
 /* two columns of actions when there's room (both styles); traits stay full width */
 .d-body { container-type: inline-size; }
 @container (min-width: 640px) {
@@ -4073,8 +4080,9 @@ const Renderers = {
         + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE])
         + renderSections(secs, { runIn: true, prefix, wrap: true }) + '</div>';
     } finally { Fmt.sb = false; }
-    return place + (e.text ? `<div class="mon-desc">${formatText(e.text)}</div>` : '') + sb
-      + (lore.length ? renderSections(lore, { prefix: 'lore' }) : '');
+    // the stat block first; tagline, habitat, treasure and lore after it
+    return sb + (lore.length ? renderSections(lore, { prefix: 'lore' }) : '')
+      + (e.text ? `<div class="mon-desc">${formatText(e.text)}</div>` : '') + place;
   },
   class(e) {
     // Subclasses are linked by their "Class" field matching this class's name.
@@ -4165,7 +4173,7 @@ function renderEntryBody(e) {
   const r = Renderers[e.type] || Renderers.default;
   const tags = e.tags.length ? '<div class="tags">' + e.tags.map((t) => `<span class="badge grey">${esc(t)}</span>`).join('') + '</div>' : '';
   const tagline = e.fields.Tagline ? `<p class="tagline">${esc(e.fields.Tagline)}</p>` : '';
-  return tagline + r(e) + tags;
+  return e.type === 'monster' ? r(e) + tagline + tags : tagline + r(e) + tags; // monsters: stat block first
 }
 
 
@@ -5183,9 +5191,8 @@ const App = {
         <h2${e.type === 'sage-advice' ? ' class="question"' : ''}>${e.type === 'sage-advice' ? Linker.html(e.name) : esc(e.name)}${spellIcons(e)}</h2>
         <span class="head-acts">${e.type === 'monster' && !isMonGroup(e) ? `<button class="col-btn${Tracker.countOf(e.id) ? ' in' : ''}" data-act="enc-add" title="Add one to the fight (Combat tool)">${Tracker.countOf(e.id) ? `In combat ×${Tracker.countOf(e.id)} · +1` : '+ Combat'}</button>` : ''}${Cols.buttonHtml(e)}<button class="star ${e.fav ? 'on' : ''}" data-act="fav" title="Favourite (f)" aria-label="Toggle favourite">${e.fav ? '★' : '☆'}</button></span>
       </div>
-      <div class="d-sub">${subtitleHtml(e, t)}</div>
+      <div class="d-sub">${subtitleHtml(e, t)}${renderToc(e)}</div>
       ${headChips(e, t.hue)}
-      ${renderToc(e)}
       <div class="d-body">${renderEntryBody(e)}</div>
       ${e.type === 'monster' && !isMonGroup(e) ? FightView.barHtml(e) : ''}
       <div class="d-tools">
@@ -5914,7 +5921,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.5'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.6'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

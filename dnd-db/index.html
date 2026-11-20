@@ -483,6 +483,55 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .tr-addab { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; }
 .tr-addab .linkish { min-height: 36px; }
 .rr-ref { font-size: 12px; }
+/* Jump to: folded */
+.toc-d { margin: 0 0 12px; }
+.toc-d > summary { cursor: pointer; display: inline-block; padding: 4px 10px; border: 1px solid var(--border); border-radius: 14px; background: var(--panel-2); list-style: none; }
+.toc-d > summary::-webkit-details-marker { display: none; }
+.toc-d > summary::before { content: '▸ '; } .toc-d[open] > summary::before { content: '▾ '; }
+.toc-d[open] > .toc { margin-top: 6px; }
+/* two columns of actions when there's room (both styles); traits stay full width */
+.d-body { container-type: inline-size; }
+@container (min-width: 640px) {
+  .statblock .sb-secs { columns: 2; column-gap: 28px; }
+  .statblock .sb-sec.sb-traits { column-span: all; }
+  .statblock .sb-sec h3 { break-after: avoid; margin-top: .4em; }
+  .statblock .sb-sec .sb-item { break-inside: avoid; }
+  .statblock .sb-sec { break-inside: auto; }
+}
+/* Cards style */
+body.sb-cards .statblock .sb-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+body.sb-cards .statblock .sb-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; padding: 10px 8px; border-radius: 10px; }
+body.sb-cards .statblock .sb-box .card-l { color: var(--accent); margin: 0; }
+body.sb-cards .statblock .sb-box .sb-v { font-size: 24px; font-weight: 700; line-height: 1.15; }
+body.sb-cards .statblock .sb-box .sb-v small { display: block; font-size: 13px; font-weight: 500; color: var(--muted); }
+body.sb-cards .statblock .ab-grid { border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; gap: 0; background: var(--panel-2); }
+body.sb-cards .statblock .ab { border: 0; background: transparent; padding: 2px; }
+body.sb-cards .statblock .ab .ab-s { display: inline; font-size: 20px; }
+body.sb-cards .statblock .ab .ab-m { display: inline; margin-left: 4px; font-size: 14px; border: 0; background: transparent; padding: 0; }
+body.sb-cards .statblock .ab .ab-m::before { content: '('; } body.sb-cards .statblock .ab .ab-m::after { content: ')'; }
+body.sb-cards .statblock .ab .ab-sv { font-size: 11px; }
+.sb-pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.sb-pill { border: 1.5px solid var(--border); border-radius: 8px; padding: 4px 10px; font-size: 14px; line-height: 1.4; }
+.sb-pill > b { font-weight: 700; margin-right: 2px; }
+.sb-pill.p-save { border-color: #16a34a; background: color-mix(in srgb, #16a34a 12%, transparent); } .sb-pill.p-save > b { color: #16a34a; }
+.sb-pill.p-skill { border-color: #8b5cf6; background: color-mix(in srgb, #8b5cf6 14%, transparent); } .sb-pill.p-skill > b { color: #8b5cf6; }
+.sb-pill.p-imm { border-color: #3b82f6; background: color-mix(in srgb, #3b82f6 14%, transparent); } .sb-pill.p-imm > b { color: #3b82f6; }
+.sb-pill.p-res { border-color: #0891b2; background: color-mix(in srgb, #0891b2 12%, transparent); } .sb-pill.p-res > b { color: #0891b2; }
+.sb-pill.p-vul { border-color: #dc2626; background: color-mix(in srgb, #dc2626 10%, transparent); } .sb-pill.p-vul > b { color: #dc2626; }
+.sb-pill.p-plain > b { color: var(--muted); }
+body.sb-cards .statblock .sb-sec.sb-traits h3 { display: none; }
+body.sb-cards .statblock .sb-sec.sb-traits .sb-item { border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; background: var(--panel-2); margin: 8px 0; }
+body.sb-cards .statblock .sb-sec.sb-traits .sb-item > b:first-child { text-transform: uppercase; color: var(--accent); letter-spacing: .02em; }
+body.sb-cards .statblock .sb-item > b:first-child > i { font-style: normal; }
+body.sb-cards .statblock .sb-sec h3 { border-bottom-width: 1px; font-size: 17px; letter-spacing: .04em; text-transform: uppercase; }
+body.sb-cards .statblock .sb-actions h3 { color: #16a34a; border-color: color-mix(in srgb, #16a34a 50%, transparent); }
+body.sb-cards .statblock .sb-bonus-actions h3 { color: #ea580c; border-color: color-mix(in srgb, #ea580c 50%, transparent); }
+body.sb-cards .statblock .sb-reactions h3 { color: #8b5cf6; border-color: color-mix(in srgb, #8b5cf6 50%, transparent); }
+body.sb-cards .statblock .sb-legendary-actions h3, body.sb-cards .statblock .sb-mythic-actions h3 { color: #dc2626; border-color: color-mix(in srgb, #dc2626 50%, transparent); }
+body.sb-cards .statblock .sb-sec:not(.sb-traits) .sb-item::before { content: '▶'; font-size: .75em; margin-right: 6px; vertical-align: 1px; }
+body.sb-cards .statblock .sb-actions .sb-item::before { color: #16a34a; } body.sb-cards .statblock .sb-bonus-actions .sb-item::before { color: #ea580c; }
+body.sb-cards .statblock .sb-reactions .sb-item::before { color: #8b5cf6; } body.sb-cards .statblock .sb-legendary-actions .sb-item::before { color: #dc2626; }
+body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { background: transparent; border: 1.5px solid currentColor; border-radius: 8px; padding: 0 6px; }
 .tr-tablewrap { border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
 .tr-table { table-layout: fixed; min-width: 470px; }
 .tr-table col.w-init { width: 26px; } .tr-table col.w-name { width: 104px; } .tr-table col.w-lab { width: 28px; } .tr-table col.w-ac { width: 34px; }
@@ -1137,6 +1186,11 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
           <label><input type="radio" name="theme" value="system"> Follow system</label>
           <label><input type="radio" name="theme" value="light"> Light</label>
           <label><input type="radio" name="theme" value="dark"> Dark</label>
+        </div>
+        <div class="ctl-row" id="sbStyleRadios">
+          <span class="hint">Stat blocks:</span>
+          <label><input type="radio" name="sbStyle" value="classic"> Classic</label>
+          <label><input type="radio" name="sbStyle" value="cards"> Cards (compact, coloured)</label>
         </div>
       </fieldset>
 
@@ -3499,9 +3553,19 @@ function inline(L) {
   return rich(L);
 }
 
+const sbCards = () => document.body.classList.contains('sb-cards');
+const PILL = [[/^saving throws?$/i, 'SAVE', 'save'], [/^skills?$/i, 'SKILLS', 'skill'], [/^damage immunit/i, 'IMMUNE', 'imm'], [/^damage resist/i, 'RESIST', 'res'], [/^damage vulnerab/i, 'VULNERABLE', 'vul'],
+  [/^condition immunit/i, 'COND. IMMUNE', 'imm'], [/^senses$/i, 'SENSES', 'plain'], [/^languages$/i, 'LANGUAGES', 'plain'], [/^gear$/i, 'GEAR', 'plain'], [/^immunities$/i, 'IMMUNE', 'imm'], [/^resistances$/i, 'RESIST', 'res'], [/^vulnerabilities$/i, 'VULNERABLE', 'vul']];
 function renderKV(fields, skip = []) {
   const rows = Object.entries(fields).filter(([k]) => !skip.includes(k));
   if (!rows.length) return '';
+  if (Fmt.sb && sbCards()) {
+    return '<div class="sb-pills">' + rows.map(([k, v]) => {
+      const p = PILL.find(([re]) => re.test(k)) || [null, k.toUpperCase(), 'plain'];
+      const val = /^languages$/i.test(k) ? esc(v) : rich(/resist|immun|vulnerab/i.test(k) ? String(v).replace(new RegExp(`\\b(${DAMAGE_TYPES})\\b`, 'g'), (w) => cap(w)) : v, { allTypes: /resist|immun|vulnerab/i.test(k) });
+      return `<span class="sb-pill p-${p[2]}"><b>${esc(p[1])}:</b> ${val.replace(/\n/g, ' ')}</span>`;
+    }).join('') + '</div>';
+  }
   return '<dl class="facts">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${(Fmt.sb && /^(saving throws|skills)$/i.test(k) ? modBoxes(v) : (/^languages$/i.test(k) ? esc(v) : rich(/resist|immun|vulnerab/i.test(k) ? String(v).replace(new RegExp(`\\b(${DAMAGE_TYPES})\\b`, 'g'), (w) => cap(w)) : v, { allTypes: /resist|immun|vulnerab/i.test(k) }))).replace(/\n/g, '<br>')}</dd>`).join('') + '</dl>';
 }
 /** Short cells ("01–50", "+2", "3rd") never wrap; long ones flow. */
@@ -3889,8 +3953,8 @@ function renderOptions(options, anchor) {
   }).join('') + '</div>';
 }
 
-function renderSections(sections, { runIn = false, prefix = 'sec' } = {}) {
-  return sections.map((s, si) => `<h3 data-anchor="${prefix}-${si}">${esc(s.heading)}</h3>` + formatText(s.intro)
+function renderSections(sections, { runIn = false, prefix = 'sec', wrap = false } = {}) {
+  const out = sections.map((s, si) => (wrap ? `<div class="sb-sec sb-${slugify(s.heading)}">` : '') + `<h3 data-anchor="${prefix}-${si}">${esc(s.heading)}</h3>` + formatText(s.intro)
     + s.items.map((it, ii) => {
       Linker.curAnchor = `${prefix}-${si}-${ii}`;
       let html;
@@ -3905,7 +3969,8 @@ function renderSections(sections, { runIn = false, prefix = 'sec' } = {}) {
       }
       Linker.curAnchor = null;
       return html;
-    }).join('')).join('');
+    }).join('') + (wrap ? '</div>' : '')).join('');
+  return wrap ? `<div class="sb-secs">${out}</div>` : out;
 }
 
 /** "Jump to" strip: every feature/action, with its level, linking to its section. */
@@ -3923,8 +3988,7 @@ function renderToc(e) {
   const feats = featureAnchors(e);
   const heads = textHeadings(e);
   if (feats.length < 3 && heads.length >= 3) {
-    return `<nav class="toc" aria-label="Jump to"><span class="toc-l">Jump to</span>`
-      + heads.map((h) => `<a href="#" data-jump="${h.anchor}" class="${h.sub ? 'sub' : 'h2'}">${esc(h.name)}</a>`).join('') + '</nav>';
+    return tocWrap(heads.length, heads.map((h) => `<a href="#" data-jump="${h.anchor}" class="${h.sub ? 'sub' : 'h2'}">${esc(h.name)}</a>`).join(''));
   }
   if (feats.length < 3) return '';
   const multi = new Set(feats.map((f) => f.section)).size > 1 && !feats.some((f) => f.level);
@@ -3935,7 +3999,11 @@ function renderToc(e) {
     if (f.sub && f.sub !== lastSub) { html += `<span class="toc-break"></span><span class="toc-sec">${esc(f.sub)}</span>`; lastSub = f.sub; }
     html += `<a href="#" data-jump="${f.anchor}"${f.sub ? ' class="sub"' : ''}>${f.level ? `<span class="lvl">${f.level}</span>` : ''}${esc(f.name)}</a>`;
   }
-  return `<nav class="toc" aria-label="Jump to"><span class="toc-l">Jump to</span>${html}</nav>`;
+  return tocWrap(feats.length, html);
+}
+/** Jump-to strip, folded by default (opening it is remembered). */
+function tocWrap(n, inner) {
+  return `<details class="toc-d" data-keep="toc"${Keep.open('toc', false) ? ' open' : ''}><summary class="toc-l">Jump to <span class="hint">(${n})</span></summary><nav class="toc" aria-label="Jump to">${inner}</nav></details>`;
 }
 
 function card(label, value, wide = false) {
@@ -3998,11 +4066,12 @@ const Renderers = {
     Fmt.sb = HIGHLIGHT_TYPES.has(e.type);
     let sb;
     try {
-      const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k}</div><div class="sb-v">${rich(k === 'Speed' ? normaliseSpeed(f[k]) : f[k])}</div></div>`).join('');
+      const cardsV = (k, v) => { const m = /^([^(]+?)\s*(\(.*\))\s*$/.exec(String(v)); return sbCards() && m && k !== 'Speed' ? `${rich(m[1])} <small>${rich(m[2])}</small>` : rich(v); };
+      const boxes = top.filter((k) => f[k]).map((k) => `<div class="sb-box${k === 'Speed' ? ' wide' : ''}"><div class="card-l">${k === 'CR' ? 'Challenge' : k === 'AC' && sbCards() ? 'Armor Class' : k === 'HP' && sbCards() ? 'Hit Points' : k}</div><div class="sb-v">${cardsV(k, k === 'Speed' ? normaliseSpeed(f[k]) : f[k])}</div></div>`).join('');
       sb = '<div class="statblock">'
         + (boxes ? `<div class="sb-top">${boxes}</div>` : '') + renderAbilities(e.abilities)
         + renderKV(f, [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE])
-        + renderSections(secs, { runIn: true, prefix }) + '</div>';
+        + renderSections(secs, { runIn: true, prefix, wrap: true }) + '</div>';
     } finally { Fmt.sb = false; }
     return place + (e.text ? `<div class="mon-desc">${formatText(e.text)}</div>` : '') + sb
       + (lore.length ? renderSections(lore, { prefix: 'lore' }) : '');
@@ -5622,6 +5691,7 @@ const Settings = {
     $('#ghStatus').textContent = sync ? `Last synced ${new Date(sync.at).toLocaleString()} (blob ${sync.sha.slice(0, 7)}).` : 'Not synced yet.';
     const pref = safeLocal.get('dndref.theme') || 'system';
     for (const r of $$('input[name="theme"]')) r.checked = r.value === pref;
+    for (const r of $$('input[name="sbStyle"]')) r.checked = r.value === (safeLocal.get('dndref.sbStyle') || 'classic');
     this.renderTypes();
     this.renderIcons();
     this.renderDiag();
@@ -5844,7 +5914,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.4'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.5'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6929,8 +6999,8 @@ const FightView = {
     if (!sb) return;
     const extras = Roller.actionsOf(e, c ? c.cid : null).filter((a) => a.extra);
     for (const a of extras) {
-      let h = [...sb.querySelectorAll(':scope > h3')].find((x) => x.textContent.trim().toLowerCase() === a.sec.toLowerCase());
-      if (!h) { h = document.createElement('h3'); h.textContent = a.sec; sb.appendChild(h); }
+      let h = [...sb.querySelectorAll('h3')].find((x) => x.textContent.trim().toLowerCase() === a.sec.toLowerCase());
+      if (!h) { const w = document.createElement('div'); w.className = `sb-sec sb-${slugify(a.sec)}`; h = document.createElement('h3'); h.textContent = a.sec; w.appendChild(h); (sb.querySelector('.sb-secs') || sb).appendChild(w); }
       let at = h;
       while (at.nextElementSibling && at.nextElementSibling.tagName !== 'H3') at = at.nextElementSibling;
       Fmt.sb = true;
@@ -8686,6 +8756,12 @@ async function boot() {
   });
   for (const t of ['input', 'change']) $('#toolLinks').addEventListener(t, (ev) => safeLocal.set('dndref.toolLinks', ev.target.value));
   Keep.init();
+  document.body.classList.toggle('sb-cards', safeLocal.get('dndref.sbStyle') === 'cards');
+  for (const r of $$('input[name="sbStyle"]')) r.addEventListener('change', (ev) => {
+    safeLocal.set('dndref.sbStyle', ev.target.value);
+    document.body.classList.toggle('sb-cards', ev.target.value === 'cards');
+    if (App.currentId) App.showDetail(App.currentId, { fromSearch: true });
+  });
   // drag the bar between Combat and the page to resize (remembered)
   $('#toolSplit').addEventListener('pointerdown', (ev) => {
     const bar = ev.currentTarget, lay = document.querySelector('.layout'), box = lay.getBoundingClientRect();

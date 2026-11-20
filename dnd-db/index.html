@@ -142,6 +142,8 @@ h1, h2, h3, h4 { font-family: var(--serif); line-height: 1.25; }
 .ab-m { display: inline; margin-left: 4px; font-weight: 700; font-size: 14px; }
 .ab-m::before { content: '('; } .ab-m::after { content: ')'; }
 .sb-more { margin: 8px 0; }
+.sb-kv2 > div:empty { display: none; }
+@container (min-width: 640px) { .sb-kv2 { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; } .sb-kv2 > div:empty { display: block; } }
 .sb-more > summary { cursor: pointer; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 4px 0; }
 .sb-more[open] > summary { margin-bottom: 4px; }
 .ab-sv { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
@@ -505,7 +507,9 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 @container (min-width: 640px) {
   .statblock .sb-secs { columns: 2; column-gap: 28px; }
   .statblock .sb-sec.sb-traits { column-span: all; }
-  .statblock .sb-sec h3 { break-after: avoid; margin-top: .4em; }
+  .statblock .sb-secs .sb-sec h3 { break-after: avoid; margin-top: 0; }
+  .statblock .sb-secs .sb-sec { padding-bottom: .9em; }
+  .statblock .sb-secs .sb-sec > :last-child { margin-bottom: 0; }
   .statblock .sb-sec .sb-item { break-inside: avoid; }
   .statblock .sb-sec { break-inside: auto; }
 }
@@ -4085,10 +4089,11 @@ const Renderers = {
           // saves, skills and damage defences stay in view; senses, languages, gear and the rest fold away
           const skip = [...top, 'Size', 'Creature Type', 'Alignment', ...MON_PLACE];
           const keys = Object.keys(f).filter((k) => !skip.includes(k));
-          const keyK = (k) => /sav|skill|resist|immun|vulnerab/i.test(k);
-          const more = keys.filter((k) => !keyK(k));
-          return renderKV(f, [...skip, ...more])
-            + (more.length ? `<details class="sb-more" data-keep="sbMore"${Keep.open('sbMore', false) ? ' open' : ''}><summary>${esc(more.join(' · '))}</summary>${renderKV(f, [...skip, ...keys.filter(keyK)])}</details>` : '');
+          const keyK = (k) => /sav|skill|resist|immun|vulnerab/i.test(k), side = (k) => /^senses$/i.test(k);
+          const main = keys.filter(keyK), right = keys.filter(side), more = keys.filter((k) => !keyK(k) && !side(k));
+          const only = (ks) => renderKV(f, [...skip, ...keys.filter((k) => !ks.includes(k))]);
+          return (sbCards() ? only([...main, ...right]) : `<div class="sb-kv2"><div>${only(main)}</div><div>${only(right)}</div></div>`)
+            + (more.length ? `<details class="sb-more" data-keep="sbMore"${Keep.open('sbMore', false) ? ' open' : ''}><summary>${esc(more.join(' · '))}</summary>${only(more)}</details>` : '');
         })()
         + renderSections(secs, { runIn: true, prefix, wrap: true }) + '</div>';
     } finally { Fmt.sb = false; }
@@ -5933,7 +5938,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.7'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-20.8'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

@@ -6048,7 +6048,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-20.16'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-21.1'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7510,7 +7510,7 @@ const Tracker = {
     const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
     pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<button class="tr-clock${this.st.pausedAt ? ' paused' : ''}${this.st.endedAt ? ' ended' : ''}" id="trClock" data-tr="clock" title="Fight · round · turn. Tap to pause or end the battle">${this.clockText()}</button>` : ''}`
       + (inFight ? `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span><button class="tr-end" data-tr="endfight" title="Stop the timer and see the round times">■ End combat</button>`
-        : this.st.endedAt ? '<span class="tr-over">Combat over</span>'
+        : this.st.endedAt ? '<span class="tr-over">Combat over</span><button class="tr-start" data-tr="startfight" title="Start a new round 1 with the same monsters (the timer restarts)">▶ Start again</button>'
         : `<button class="tr-start primary" data-tr="startfight" title="Start the first turn and the timer"${this.st.list.some((c) => this.live(c)) ? '' : ' disabled'}>▶ Start combat</button>`)
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">↺ New fight</button>'
@@ -7603,7 +7603,7 @@ const Tracker = {
     if (a === 'close') return Tools.show(null);
     if (a === 'pin') return Tools.togglePin();
     if (a === 'startfight') {
-      if (this.st.endedAt) return;
+      if (this.st.endedAt) Object.assign(this.st, { endedAt: null, startedAt: null, roundAt: null, turnAt: null, pausedAt: null, pausedMs: 0, roundPausedMs: 0, turnPausedMs: 0, roundLog: [] });
       this.st.turn = null; this.st.round = 1; this.st.setup = false;
       return this.step(1);
     }
@@ -7737,14 +7737,16 @@ const Tracker = {
     if (v === 'pause') this.pause(true);
     else if (v === 'unpause') this.pause(false);
     else if (v === 'end') this.endBattle();
-    else if (v === 'resume') { const d = Date.now() - st.endedAt; st.pausedMs = (st.pausedMs || 0) + d; st.roundPausedMs = (st.roundPausedMs || 0) + d; st.turnPausedMs = (st.turnPausedMs || 0) + d; st.roundLog = (st.roundLog || []).filter((x) => x.r !== st.round); st.endedAt = null; this.save(); this.tick(); this.render(); }
+    else if (v === 'resume') { const d = Date.now() - st.endedAt; st.pausedMs = (st.pausedMs || 0) + d; st.roundPausedMs = (st.roundPausedMs || 0) + d; st.turnPausedMs = (st.turnPausedMs || 0) + d; st.roundLog = (st.roundLog || []).filter((x) => x.r !== st.round); st.endedAt = null; if (!st.turn && st.lastTurn && st.list.some((c) => c.cid === st.lastTurn)) st.turn = st.lastTurn; this.save(); this.tick(); this.render(); }
   },
   async endBattle() {
     const st = this.st;
     if (st.pausedAt) this.pause(false);
     this.closeRound();
     st.endedAt = Date.now();
+    st.lastTurn = st.turn; st.turn = null; // out of battle: no current turn, no turn panel
     this.save(); this.render();
+    if (this.st.follow && App.isWide()) { App.currentId = null; App.showDetail(null); }
     await ask('Battle over', `<p><b>${esc(this.fmt(this.fightMs()))}</b> over ${(st.roundLog || []).length} round${(st.roundLog || []).length === 1 ? '' : 's'}.</p>${this.roundsHtml(true)}<p class="hint">It stays under “Round times” until you start a new fight.</p>`, [{ label: 'OK', value: true, kind: 'primary' }]);
   },
   tick() {

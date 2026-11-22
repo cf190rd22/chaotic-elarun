@@ -349,14 +349,15 @@ body.tool-open #listPane { display: none; }
   body.tool-open #toolSplit { display: block; grid-column: 2; grid-row: 1; }
   body.tool-open #detail { grid-column: 3; grid-row: 1; }
   /* three columns: every one keeps a usable width (the stat block is never squeezed to a sliver) */
-  body.tool-open.tool-list .layout { grid-template-columns: minmax(300px, min(var(--combat-w), 38%)) 7px minmax(220px, 300px) minmax(340px, 1fr); }
+  /* the combat tracker keeps its width while you look things up: the results list and the entry share the rest */
+  body.tool-open.tool-list .layout { grid-template-columns: max(360px, min(var(--combat-w), calc(100% - 447px))) 7px minmax(180px, 260px) minmax(260px, 1fr); }
   body.tool-open.tool-list #listPane { display: flex; grid-column: 3; grid-row: 1; }
   body.tool-open.tool-list #detail { grid-column: 4; }
 }
 @media (min-width: 721px) {
   body.tool-open.combat-right .layout { grid-template-columns: minmax(0, 1fr) 7px minmax(360px, var(--combat-w)); }
   body.tool-open.combat-right #detail { grid-column: 1; } body.tool-open.combat-right #toolSplit { grid-column: 2; } body.tool-open.combat-right #toolPane { grid-column: 3; }
-  body.tool-open.combat-right.tool-list .layout { grid-template-columns: minmax(220px, 300px) minmax(340px, 1fr) 7px minmax(300px, min(var(--combat-w), 38%)); }
+  body.tool-open.combat-right.tool-list .layout { grid-template-columns: minmax(180px, 260px) minmax(260px, 1fr) 7px max(360px, min(var(--combat-w), calc(100% - 447px))); }
   body.tool-open.combat-right.tool-list #listPane { grid-column: 1; } body.tool-open.combat-right.tool-list #detail { grid-column: 2; }
   body.tool-open.combat-right.tool-list #toolSplit { grid-column: 3; } body.tool-open.combat-right.tool-list #toolPane { grid-column: 4; }
 }
@@ -6157,7 +6158,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

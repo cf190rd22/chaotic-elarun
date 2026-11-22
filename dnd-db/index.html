@@ -247,7 +247,7 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 .feat-cards { margin-left: 10px; font: 600 11.5px system-ui; padding: 1px 9px; min-height: 0; height: 24px; border-radius: 12px; vertical-align: middle; color: var(--muted); }
 .feat-cards:hover { color: var(--accent); border-color: var(--accent-border); }
 .os-body { max-height: 70vh; overflow: auto; }
-.os-h { margin: 10px 0 4px; }
+.os-h { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 10px 0 4px; } .os-h h4 { margin: 0; } .os-h button { font-size: 12.5px; padding: 3px 12px; }
 .os-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; padding: 7px 0; border-top: 1px solid var(--border); }
 .os-t { flex: 1 1 280px; min-width: 0; } .os-t .hint { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .os-b { display: flex; gap: 6px; align-items: center; } .os-b button { font-size: 12.5px; padding: 2px 10px; }
@@ -3763,6 +3763,7 @@ function formatText(text, { plainFirst = false } = {}) {
     const b = /^(?:[•●▪◦*]|-)\s+(.*)$/.exec(L);
     if (b) { list.push(b[1]); continue; }
     if (listMode && L.length <= 90 && !/[.!?]$/.test(L)) { list.push(L); continue; }
+    if (listMode && L.length <= 80 && (list.length || ((LS[li + 1] || '').trim().length && (LS[li + 1] || '').trim().length <= 80))) { list.push(L); continue; }
     flush();
     let nx = li + 1;
     while (nx < LS.length && !LS[nx].trim()) nx++;
@@ -4016,6 +4017,28 @@ const reListCue = /alphabetical order|\bthe following\b|\boptions?\b.*\b(availab
 const reListTitle = /\b(options|maneuvers|invocations|metamagic|infusions|disciplines|arcane shots|runes|maneuver|fighting styles?|blessings|boons|techniques|secrets|tricks|talents|hexes|curses|gifts|pacts|stances|forms)\b/i;
 const reSpendCue = /\b(expend|spend|spends|expends)\b[^.]*\b(points?|dice|die|uses?|charges?|slots?)\b/i;
 const reRunInLine = /^([A-Z][^.!?:]{1,45}?)\.\s+(\S.*)$/;
+/** The longest run of "Name. text" paragraphs (at least `min`): [start, end, options]. Lines after an option that ends
+    with ":" ("…by doing one of the following:") belong to that option, up to the next "Name." paragraph. */
+function runInGroup(lines, min) {
+  const head = (l) => { const m = reRunInLine.exec(String(l || '').trim()); return m && isTitleCaseName(m[1]) && m[1].split(/\s+/).length <= 6 ? m : null; };
+  let best = null;
+  for (let i = 0; i < lines.length; i++) {
+    if (!head(lines[i])) continue;
+    const opts = [];
+    let j = i;
+    while (j < lines.length) {
+      const m = head(lines[j]);
+      if (!m) break;
+      const o = { name: m[1].trim(), props: [], text: m[2] };
+      j++;
+      if (/:\s*$/.test(m[2])) { while (j < lines.length && !head(lines[j])) { o.text += '\n' + lines[j]; j++; } }
+      opts.push(o);
+    }
+    if (opts.length >= min && (!best || opts.length > best[2].length)) best = [i, j, opts];
+    i = j - 1;
+  }
+  return best;
+}
 function isSentence(l) { const t = String(l || '').trim(); return t.length > 30 && /[.!?:)”"]$/.test(t) && /\s/.test(t) && !isOptionName(t); }
 function splitOptionsLoose(text, title = '') {
   const strict = splitOptions(text);
@@ -4035,19 +4058,12 @@ function splitOptionsLoose(text, title = '') {
     return { before: lines.slice(0, starts[0]).join('\n'), options, after: '' };
   }
   // 2. a run of "Name. text" paragraphs
-  let best = null;
-  for (let i = 0; i < lines.length; i++) {
-    let j = i;
-    while (j < lines.length) { const m = reRunInLine.exec(lines[j].trim()); if (!m || !isTitleCaseName(m[1]) || m[1].split(/\s+/).length > 6) break; j++; }
-    if (j - i >= 3 && (!best || j - i > best[1] - best[0])) best = [i, j];
-    if (j > i) i = j - 1;
-  }
+  const best = runInGroup(lines, 3);
   if (best) {
-    const [a, b] = best, group = lines.slice(a, b);
+    const [a, b, options] = best;
     const ctx = lines.slice(Math.max(0, a - 4), a).join(' ');
-    const spendy = group.filter((l) => reSpendCue.test(l)).length;
-    if (reListTitle.test(title) || reListCue.test(ctx) || reSpendCue.test(ctx) || spendy >= Math.ceil(group.length / 2)) {
-      const options = group.map((l) => { const m = reRunInLine.exec(l.trim()); return { name: m[1].trim(), props: [], text: m[2] }; });
+    const spendy = options.filter((o) => reSpendCue.test(o.text)).length;
+    if (reListTitle.test(title) || reListCue.test(ctx) || reSpendCue.test(ctx) || spendy >= Math.ceil(options.length / 2)) {
       return { before: lines.slice(0, a).join('\n'), options, after: lines.slice(b).join('\n') };
     }
   }
@@ -4068,16 +4084,10 @@ function splitOptionsForced(text) {
     if (l && isOptionName(l) && !reRunInLine.test(l) && isSentence(lines[i + 1])) starts.push(i);
   }
   if (starts.length >= 2) return { before: lines.slice(0, starts[0]).join('\n'), after: '', options: starts.map((st, k) => ({ name: lines[st].trim(), props: [], text: lines.slice(st + 1, k + 1 < starts.length ? starts[k + 1] : lines.length).join('\n') })) };
-  let best = null;
-  for (let i = 0; i < lines.length; i++) {
-    let j = i;
-    while (j < lines.length) { const m = reRunInLine.exec(lines[j].trim()); if (!m || !isTitleCaseName(m[1]) || m[1].split(/\s+/).length > 6) break; j++; }
-    if (j - i >= 2 && (!best || j - i > best[1] - best[0])) best = [i, j];
-    if (j > i) i = j - 1;
-  }
+  const best = runInGroup(lines, 2);
   if (!best) return null;
-  const [a, b] = best;
-  return { before: lines.slice(0, a).join('\n'), after: lines.slice(b).join('\n'), options: lines.slice(a, b).map((l) => { const m = reRunInLine.exec(l.trim()); return { name: m[1].trim(), props: [], text: m[2] }; }) };
+  const [a, b, options] = best;
+  return { before: lines.slice(0, a).join('\n'), after: lines.slice(b).join('\n'), options };
 }
 /** A feature's options, honouring your choice: it.cards true = always cards, false = never, unset = automatic. */
 function optionsFor(it, title) {
@@ -4115,12 +4125,24 @@ const OptScan = {
   async open() {
     const { cand, shown } = this.rows();
     const done = ask('Option lists', `<p class="hint">${cand.length} possible list${cand.length === 1 ? '' : 's'} not shown as cards; ${shown.length} already shown as cards. Your choices are saved on the entries (and in backups).</p>`
-      + (cand.length ? `<h4 class="os-h">Possible lists</h4>${cand.map((r) => this.rowHtml(r, false)).join('')}` : '<p>Nothing else looks like a list.</p>')
+      + (cand.length ? `<div class="os-h"><h4>Possible lists</h4><button data-os="all" class="primary">Show all ${cand.length} as cards</button><span class="hint">then switch back any that aren't</span></div>${cand.map((r) => this.rowHtml(r, false)).join('')}` : '<p>Nothing else looks like a list.</p>')
       + (shown.length ? `<details class="os-shown"><summary>Shown as cards (${shown.length})</summary>${shown.map((r) => this.rowHtml(r, true)).join('')}</details>` : ''),
       [{ label: 'Done', value: true, kind: 'primary' }]);
     $('#askBody').classList.add('os-body');
     $('#askBody').addEventListener('click', async (ev) => {
       const b = ev.target.closest('[data-os]'); if (!b) return;
+      if (b.dataset.os === 'all') {
+        const changed = new Set();
+        for (const r of cand) { const it = r.e.sections[r.si].items[r.ii]; if (it.cards === undefined) { it.cards = true; changed.add(r.e); } }
+        await App.upsert([...changed], { quiet: true });
+        for (const row of document.querySelectorAll('#askBody .os-row')) {
+          const it = App.entries.get(row.dataset.id)?.sections[+row.dataset.si].items[+row.dataset.ii];
+          if (it && it.cards === true) row.querySelector('.os-b').innerHTML = '<button data-os="peek" aria-expanded="false">Preview</button><span class="hint">✓ Cards</span><button data-os="off">Not a list</button><button data-os="open">Open</button>';
+        }
+        b.replaceWith(Object.assign(document.createElement('span'), { className: 'hint', textContent: `✓ ${cand.length} shown as cards` }));
+        toast(`${cand.length} features shown as cards. Use "Not a list" on any that aren't.`, 'ok', 4000);
+        return;
+      }
       const row = b.closest('.os-row'), e = App.entries.get(row.dataset.id), it = e && e.sections[+row.dataset.si].items[+row.dataset.ii];
       if (!it) return;
       if (b.dataset.os === 'peek') {
@@ -6316,7 +6338,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.6'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.7'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

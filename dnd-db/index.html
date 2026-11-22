@@ -784,6 +784,11 @@ body.rollpop-open #detail, body.rollpop-open #toolPane .rr-scroll { padding-bott
 #toolPane .tr-row .tr-lab { min-height: 0; height: 26px; min-width: 0; width: auto; align-self: center; padding: 0 8px; font-size: 12.5px; font-weight: 600; border-radius: 6px; margin-left: 4px; line-height: 1; }
 .tr-modtag { align-self: center; font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border-radius: 999px; background: color-mix(in srgb, #c2410c 18%, transparent); }
 #toolPane .tr-row .tr-lab.empty { opacity: .3; font-weight: 400; border-style: dashed; background: transparent; }
+.tr-cbadge { width: auto !important; min-height: 0 !important; height: 20px; padding: 0 5px !important; margin-left: 5px; border-radius: 10px; font-size: 11px; font-weight: 700; vertical-align: middle; background: color-mix(in srgb, #9333ea 18%, var(--panel)); border: 1px solid color-mix(in srgb, #9333ea 45%, transparent); color: inherit; }
+.tr-table tr.hascond > td.c-name { box-shadow: inset 3px 0 0 #9333ea; }
+.tr-hitkey { margin: 4px 2px 0; font-size: 12px; }
+.gs-by { font-size: 12px; font-weight: 600; color: var(--accent); }
+.tr-active .gs-row { margin-top: 8px; }
 .tr-hitrow { display: flex; align-items: stretch; gap: 6px; }
 .tr-hitrow .rr-hit { flex: 1; }
 .tr-step { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--border); border-radius: 8px; padding: 0 2px; }
@@ -6129,7 +6134,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.7'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.8'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7375,21 +7380,29 @@ const Conds = {
       + (c.exh ? `<button class="tr-cond c-exh" data-tr="cond" data-cid="${c.cid}" title="Exhaustion ${c.exh}: −${2 * c.exh} to d20 tests, speed −${5 * c.exh} ft (2024). Tap to change">Exh ${c.exh}</button>` : '')
       + `<button class="tr-condadd" data-tr="cond" data-cid="${c.cid}" title="Conditions and exhaustion" aria-label="Conditions">+◎</button></span>`;
   },
+  /** A small badge by the name, so a row with conditions shows even when the notes column is off-screen. */
+  badge(c) {
+    const n = this.of(c).length;
+    if (!n && !c.exh) return '';
+    const t = [...this.of(c).map((k) => k.n), ...(c.exh ? ['Exhaustion ' + c.exh] : [])].join(', ');
+    return `<button class="tr-cbadge" data-tr="cond" data-cid="${c.cid}" title="${esc(t)}. Tap to change" aria-label="Conditions: ${esc(t)}">◎${n + (c.exh ? 1 : 0) > 1 ? n + (c.exh ? 1 : 0) : ''}</button>`;
+  },
   untilText(u) { const w = Tracker.st.list.find((x) => x.cid === u.cid); return `${u.at === 'start' ? 'start' : 'end'} of ${w ? Tracker.nameOf(w) : 'its'}’s next turn`; },
   async edit(c) {
     const have = new Set(this.of(c).map((k) => k.n));
+    const live = !!(Tracker.st.turn && !Tracker.st.endedAt);
     const who = Tracker.sorted().filter((x) => x.kind !== 'lair').map((x) => `<option value="${x.cid}"${x.cid === (Tracker.st.turn || c.cid) ? ' selected' : ''}>${esc(Tracker.nameOf(x))}</option>`).join('');
     const ok = await ask(`Conditions: ${esc(Tracker.nameOf(c))}`,
       `<div class="cd-grid">${this.LIST.map((n) => `<label class="cd-o" title="${esc(this.EFFECT[n])}"><input type="checkbox" value="${n}"${have.has(n) ? ' checked' : ''}> ${n}</label>`).join('')}</div>`
       + `<div class="cd-row"><label>Exhaustion <select id="cdExh">${[0, 1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}"${(c.exh || 0) === n ? ' selected' : ''}>${n ? n + ' (−' + 2 * n + ')' : 'none'}</option>`).join('')}</select></label>`
-      + `<label>New ones last <select id="cdUntil"><option value="">until removed</option><option value="end">until the end of…</option><option value="start">until the start of…</option></select></label><label>…whose next turn <select id="cdWho">${who}</select></label></div>`
+      + `<label>New ones last <select id="cdUntil"><option value=""${live ? '' : ' selected'}>until removed</option><option value="end"${live ? ' selected' : ''}>until the end of the next turn of…</option><option value="start">until the start of the next turn of…</option><option value="now">until the end of this turn of…</option></select></label><label>…whose turn <select id="cdWho">${who}</select></label></div>`
       + `<label class="cd-note">Note for new ones <input id="cdNote" placeholder="e.g. escape DC 14, by the cyclops" autocomplete="off"></label>`,
       [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
     if (!ok) return;
     const picked = new Set([...document.querySelectorAll('#askBody .cd-o input:checked')].map((i) => i.value));
     const at = $('#cdUntil').value, w = $('#cdWho').value, note = ($('#cdNote').value || '').trim();
     const kept = this.of(c).filter((k) => picked.has(k.n));
-    for (const n of picked) if (!have.has(n)) kept.push({ n, ...(note ? { note } : {}), ...(at ? { until: { cid: w, at, armed: Tracker.st.turn !== w } } : {}) });
+    for (const n of picked) if (!have.has(n)) kept.push({ n, ...(note ? { note } : {}), ...(at === 'now' ? { until: { cid: w, at: 'end', armed: true } } : at ? { until: { cid: w, at, armed: Tracker.st.turn !== w } } : {}) });
     c.conds = kept;
     c.exh = +$('#cdExh').value || 0;
     Tracker.save(); Tracker.render(); FightView.refresh();
@@ -7441,8 +7454,10 @@ const GroupSave = {
     const kind = Tracker.monsters().filter((x) => !x.hidden && x.eid === c.eid && x.bname === c.bname && Tracker.alive(x));
     const grp = Tracker.chunk(c);
     const opts = c.horde ? [['self', `all ${Tracker.alive(c)} in the group`]] : [...(grp.length > 1 ? [['chunk', `this group (${grp.length})`]] : []), ...(kind.length > 1 ? [['kind', `every ${Tracker.baseName(c)} (${kind.reduce((n, x) => n + Tracker.alive(x), 0)})`]] : []), ['self', 'just this one']];
-    const last = GroupSave.last || {};
-    return `<div class="fv-ctl gs-row"><b class="hint">Save for</b><select class="gs-who">${opts.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('')}</select>`
+    const pcTurn = Tracker.st.list.find((x) => x.cid === Tracker.st.turn && x.kind === 'pc');
+    const pc = pcTurn ? Tracker.pc(pcTurn) : null, pdc = pc && parseInt(pc.dc, 10);
+    const last = pdc ? { spell: true, ...((GroupSave.byPc || {})[pc.id] || {}), dc: pdc } : GroupSave.last || {};
+    return `<div class="fv-ctl gs-row"><b class="hint">Save for</b>${pdc ? `<span class="gs-by" title="It's their turn: their spell save DC is filled in">${esc(pc.name || 'Player')}'s spell</span>` : ''}<select class="gs-who">${opts.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('')}</select>`
       + `<select class="gs-ab">${ABILS.map((k) => `<option${k === (last.ab || 'DEX') ? ' selected' : ''}>${k}</option>`).join('')}</select>`
       + `<label class="gs-dc">DC <input class="gs-dcin" inputmode="numeric" value="${esc(last.dc || '')}" placeholder="15"></label>`
       + `<label class="hint" title="Creatures with Magic Resistance roll with advantage"><input type="checkbox" class="gs-spell"${last.spell ? ' checked' : ''}> vs a spell</label>`
@@ -7460,6 +7475,8 @@ const GroupSave = {
     const ab = row.querySelector('.gs-ab').value, dc = parseInt(row.querySelector('.gs-dcin').value, 10), who = row.querySelector('.gs-who').value, spell = row.querySelector('.gs-spell').checked;
     if (!dc) { toast('Type the save DC first', 'warn'); row.querySelector('.gs-dcin').focus(); return; }
     GroupSave.last = { ab, dc, spell };
+    const pcTurn = Tracker.st.list.find((x) => x.cid === Tracker.st.turn && x.kind === 'pc');
+    if (pcTurn) (GroupSave.byPc = GroupSave.byPc || {})[pcTurn.pid] = { ab, spell }; // remembers which save their spells usually ask for
     const e = Tracker.pseudo(c), mod = c.eid ? Roller.saveMod(e, ab) : 0;
     const mr = spell && e.sections && e.sections.some((sc) => sc.items.some((i) => /magic resistance/i.test(i.name)));
     const rows = GroupSave.targets(c, who).map((t) => {
@@ -8002,7 +8019,7 @@ const Tracker = {
     const grp = this.chunk(c);
     const grpSeg = grp.length > 1 ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-tr="grp" data-v="one" class="${this.st.groupRoll ? '' : 'on'}">This one</button><button data-tr="grp" data-v="all" class="${this.st.groupRoll ? 'on' : ''}" title="Roll attacks for every ${esc(this.baseName(c))} on this initiative">All ${grp.length}</button></span>` : '';
     return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
-      + saves + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>')
+      + saves + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>') + GroupSave.html(c, 'data-tr')
       + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Add an ability, spell or power</button></div>${recent}</div>`;
   },
   /* ----- markup ----- */
@@ -8022,7 +8039,7 @@ const Tracker = {
     const tie = this.ties && this.ties.has(c.cid) ? ' tie' : '';
     if (c.kind === 'pc') {
       const t = this.pc(c), has = !!this.num(t.acAdj);
-      return `<tr class="pc${cur}${tie}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-name">${esc(t.name || 'Unnamed')}</span></td><td class="c-lab"></td>`
+      return `<tr class="pc${cur}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-name">${esc(t.name || 'Unnamed')}</span>${Conds.badge(c)}</td><td class="c-lab"></td>`
         + `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>`
         + adj(t.acAdj, `data-pid="${t.id}"`, has)
         + `<td class="c-hp"></td><td class="c-max"></td><td class="c-dmg" colspan="3"></td>`
@@ -8036,8 +8053,8 @@ const Tracker = {
     const tags = (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">mod</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '');
     const pct = c.max ? c.hp / c.max : 1, hcls = c.hp <= 0 ? ' down' : pct <= 0.1 ? ' h10' : pct <= 0.2 ? ' h20' : pct <= 0.5 ? ' h50' : '';
-    const row = `<tr class="mon${cur}${hcls}${tie}${c.initAuto ? ' autoinit' : ''}${c.horde ? ' horde' : ''}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}`
-      + `<td class="c-name">${c.horde ? `<b class="tr-hcount" title="${this.alive(c)} of ${c.horde.hps.length} still standing">×${this.alive(c)}</b> ` : ''}${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${tags}</td>`
+    const row = `<tr class="mon${cur}${hcls}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}${c.initAuto ? ' autoinit' : ''}${c.horde ? ' horde' : ''}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}`
+      + `<td class="c-name">${c.horde ? `<b class="tr-hcount" title="${this.alive(c)} of ${c.horde.hps.length} still standing">×${this.alive(c)}</b> ` : ''}${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${Conds.badge(c)}${tags}</td>`
       + `<td class="c-lab"><button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button></td>`
       + `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
       + adj(c.acAdj, `data-cid="${c.cid}"`, has)
@@ -8055,6 +8072,7 @@ const Tracker = {
       + `<label>AC <input data-pc="ac" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.ac ?? '')}"></label>`
       + `<label title="Character level, used for encounter difficulty">Lv <input data-pc="level" data-tid="${t.id}" type="number" min="1" max="20" inputmode="numeric" value="${esc(t.level ?? '')}"></label>`
       + `<label title="Initiative: the number used in the turn order">Init <input data-pc="init" data-tid="${t.id}" inputmode="numeric" value="${esc(t.init ?? '')}"></label>`
+      + `<label title="Spell save DC: on this player's turn, group saves start with this DC">Save DC <input data-pc="dc" data-tid="${t.id}" inputmode="numeric" value="${esc(t.dc ?? '')}"></label>`
       + `<input data-pc="notes" data-tid="${t.id}" value="${esc(t.notes || '')}" placeholder="Notes" class="tr-pnote"><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('')
       + '<button data-rr="pcadd" class="rr-add">+ Add a party member</button>';
   },
@@ -8131,8 +8149,8 @@ const Tracker = {
     box.innerHTML = ids.map((id) => {
       const e = App.entries.get(id), n = this.monsters().filter((c) => c.eid === id).length;
       return `<div class="tr-hitrow"><button class="rr-hit" data-tr="add" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])}</span></button>`
-        + `<span class="tr-step${n ? ' on' : ''}"><button data-tr="sub" data-id="${id}" aria-label="One fewer"${n ? '' : ' disabled'}>−</button><b title="In the fight">${n}</b><button data-tr="add" data-id="${id}" aria-label="One more">+</button></span><button class="tr-hordebtn" data-tr="horde" data-id="${id}" title="Add a group of these as one row (a horde): one initiative, one HP total, rolls for all of them">⧉ Group</button></div>`;
-    }).join('');
+        + `<span class="tr-step${n ? ' on' : ''}"><button data-tr="sub" data-id="${id}" aria-label="One fewer"${n ? '' : ' disabled'}>−</button><b title="In the fight">${n}</b><button data-tr="add" data-id="${id}" aria-label="One more">+</button></span><button class="tr-hordebtn" data-tr="horde" data-id="${id}" title="Add many as ONE row (a horde): one initiative, attacks and saves roll for all of them, damage spills from one to the next">+ Horde of…</button></div>`;
+    }).join('') + (ids.length ? '<p class="hint tr-hitkey"><b>+ Name</b> adds one row per creature (each with its own HP). <b>+ Horde of…</b> adds many as a single row, e.g. 20 goblins: they share one initiative, attacks and saves roll for all of them, and damage carries over from one to the next.</p>' : '');
   },
   /** "60" sets it, "+10" / "-10" adds, "50%" is half the stat block's HP, "+20%" adds a fifth of it. */
   maxFrom(v, c) {
@@ -8206,7 +8224,7 @@ const Tracker = {
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
     if (a === 'horde') {
       const e = App.entries.get(t.dataset.id);
-      const n = parseInt(await askText(`How many ${esc(e.name)} in the group?`, '10', 'A horde shares one row and one initiative. Damage spills from one creature to the next, so 30 damage to 7-HP goblins drops 4 and wounds the 5th.'), 10);
+      const n = parseInt(await askText(`Horde of ${esc(e.name)}: how many?`, '10', `They go in the list as ONE row, e.g. "×10 ${esc(e.name)}", with one initiative. Attacks and group saves roll for every one still standing. Damage carries over from one to the next, so 30 damage to 7-HP goblins drops 4 and wounds the 5th. Use separate rows instead if you want to track each one.`), 10);
       if (n > 0) { this.addHorde(t.dataset.id, Math.min(n, 200)); this.q = ''; const sb = $('#trSearch'); if (sb) sb.value = ''; const h = $('#trHits'); if (h) h.innerHTML = ''; }
       return;
     }
@@ -8220,6 +8238,7 @@ const Tracker = {
     if (a === 'qadd') { this.quickQ = ''; this.add(t.dataset.id, { quiet: true }); setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = ''; i.focus(); } const h = $('#trQuickHits'); if (h) h.innerHTML = ''; }, 0); return; }
     if (a === 'clock') return this.clockMenu();
     if (a === 'cond') { const c = find(); return c && Conds.edit(c); }
+    if (a === 'gsave') { const c = find(); return c && GroupSave.roll(c, t.closest('.gs-row')); }
     if (a === 'condrm') { const c = find(); return c && Conds.remove(c, +t.dataset.i); }
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
     if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; c.removed = false; } this.save(); return this.render(); }

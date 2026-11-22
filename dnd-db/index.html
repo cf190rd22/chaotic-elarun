@@ -244,6 +244,14 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 /* features separated by a rule */
 .feat + .feat { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 4px; }
 .feat h4 { margin-top: 10px; }
+.feat-cards { margin-left: 10px; font: 600 11.5px system-ui; padding: 1px 9px; min-height: 0; height: 24px; border-radius: 12px; vertical-align: middle; color: var(--muted); }
+.feat-cards:hover { color: var(--accent); border-color: var(--accent-border); }
+.os-body { max-height: 70vh; overflow: auto; }
+.os-h { margin: 10px 0 4px; }
+.os-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; padding: 7px 0; border-top: 1px solid var(--border); }
+.os-t { flex: 1 1 280px; min-width: 0; } .os-t .hint { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.os-b { display: flex; gap: 6px; align-items: center; } .os-b button { font-size: 12.5px; padding: 2px 10px; }
+.os-shown summary { cursor: pointer; margin: 12px 0 4px; font-weight: 600; }
 /* results bar: one line */
 #resultMeta { flex-wrap: nowrap; }
 #resultMeta .rm-count { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1383,6 +1391,12 @@ mark.fip.cur { background: var(--amber); color: #111; outline-color: var(--amber
           <button id="bsGo">Review…</button>
         </div>
         <p class="hint">You see exactly which entries change before anything happens. <button id="bsUndo" class="linkish" hidden>Undo the last source change</button></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Option lists</legend>
+        <p class="hint">Maneuvers, Metamagic, Invocations and the like show as cards when they're spotted automatically. This goes through every class, subclass, feat and "other" entry and lists the features that look like option lists but aren't shown as cards, so you can switch them on (or mark them as not a list). Every feature that could be a list also has an <b>▦ As cards</b> / <b>≡ As text</b> switch on its heading.</p>
+        <div class="ctl-row"><button id="optScan">Find option lists…</button></div>
       </fieldset>
 
       <fieldset>
@@ -4037,6 +4051,75 @@ function splitOptionsLoose(text, title = '') {
   }
   return null;
 }
+/** No cues needed: any 2+ "Name" + text blocks, or 2+ "Name. text" paragraphs in a row. Used when you ask for cards, and to find candidates. */
+function splitOptionsForced(text) {
+  const lines = String(text || '').split('\n');
+  const starts = [];
+  for (let i = 0; i < lines.length - 1; i++) {
+    const l = lines[i].trim();
+    if (l && isOptionName(l) && !reRunInLine.test(l) && isSentence(lines[i + 1])) starts.push(i);
+  }
+  if (starts.length >= 2) return { before: lines.slice(0, starts[0]).join('\n'), after: '', options: starts.map((st, k) => ({ name: lines[st].trim(), props: [], text: lines.slice(st + 1, k + 1 < starts.length ? starts[k + 1] : lines.length).join('\n') })) };
+  let best = null;
+  for (let i = 0; i < lines.length; i++) {
+    let j = i;
+    while (j < lines.length) { const m = reRunInLine.exec(lines[j].trim()); if (!m || !isTitleCaseName(m[1]) || m[1].split(/\s+/).length > 6) break; j++; }
+    if (j - i >= 2 && (!best || j - i > best[1] - best[0])) best = [i, j];
+    if (j > i) i = j - 1;
+  }
+  if (!best) return null;
+  const [a, b] = best;
+  return { before: lines.slice(0, a).join('\n'), after: lines.slice(b).join('\n'), options: lines.slice(a, b).map((l) => { const m = reRunInLine.exec(l.trim()); return { name: m[1].trim(), props: [], text: m[2] }; }) };
+}
+/** A feature's options, honouring your choice: it.cards true = always cards, false = never, unset = automatic. */
+function optionsFor(it, title) {
+  if (it && it.cards === false) return null;
+  const auto = splitOptionsLoose(it && it.text, title);
+  if (auto || !(it && it.cards === true)) return auto;
+  return splitOptionsForced(it.text);
+}
+/** Settings → Option lists: what's shown as cards, and what might be a list but isn't. */
+const OptScan = {
+  rows() {
+    const out = { cand: [], shown: [] };
+    for (const e of App.entries.values()) {
+      if (!['class', 'subclass', 'feat', 'other', 'species', 'background', 'item'].includes(e.type) || !e.sections) continue;
+      e.sections.forEach((sec, si) => sec.items.forEach((it, ii) => {
+        if (!it.text || it.cards === false) return;
+        const title = itemTitle(it).title, shown = optionsFor(it, title);
+        if (shown) { out.shown.push({ e, si, ii, title, opts: shown.options }); return; }
+        const f = splitOptionsForced(it.text);
+        if (f) out.cand.push({ e, si, ii, title, opts: f.options });
+      }));
+    }
+    const by = (a, b) => a.e.name.localeCompare(b.e.name) || a.title.localeCompare(b.title);
+    out.cand.sort(by); out.shown.sort(by);
+    return out;
+  },
+  rowHtml(r, shown) {
+    const names = r.opts.map((o) => o.name), list = names.slice(0, 5).join(', ') + (names.length > 5 ? `, +${names.length - 5}` : '');
+    return `<div class="os-row" data-id="${esc(r.e.id)}" data-si="${r.si}" data-ii="${r.ii}"><div class="os-t"><b>${esc(r.e.name)}</b> › ${esc(r.title)} <span class="hint">${names.length} · ${esc(list)}</span></div>`
+      + `<div class="os-b">${shown ? '<button data-os="off">As text</button>' : '<button data-os="on" class="primary">As cards</button><button data-os="off">Not a list</button>'}<button data-os="open">Open</button></div></div>`;
+  },
+  async open() {
+    const { cand, shown } = this.rows();
+    const done = ask('Option lists', `<p class="hint">${cand.length} possible list${cand.length === 1 ? '' : 's'} not shown as cards; ${shown.length} already shown as cards. Your choices are saved on the entries (and in backups).</p>`
+      + (cand.length ? `<h4 class="os-h">Possible lists</h4>${cand.map((r) => this.rowHtml(r, false)).join('')}` : '<p>Nothing else looks like a list.</p>')
+      + (shown.length ? `<details class="os-shown"><summary>Shown as cards (${shown.length})</summary>${shown.map((r) => this.rowHtml(r, true)).join('')}</details>` : ''),
+      [{ label: 'Done', value: true, kind: 'primary' }]);
+    $('#askBody').classList.add('os-body');
+    $('#askBody').addEventListener('click', async (ev) => {
+      const b = ev.target.closest('[data-os]'); if (!b) return;
+      const row = b.closest('.os-row'), e = App.entries.get(row.dataset.id), it = e && e.sections[+row.dataset.si].items[+row.dataset.ii];
+      if (!it) return;
+      if (b.dataset.os === 'open') { $('#askDlg').close(); App.open(e.id); setTimeout(() => document.querySelector(`#detail [data-anchor="sec-${row.dataset.si}-${row.dataset.ii}"]`)?.scrollIntoView({ block: 'start' }), 150); return; }
+      it.cards = b.dataset.os === 'on';
+      await App.upsert([e], { quiet: true });
+      row.querySelector('.os-b').innerHTML = `<span class="hint">${it.cards ? '✓ Shown as cards' : b.textContent === 'Not a list' ? '✓ Marked as not a list' : '✓ Shown as text'}</span><button data-os="${it.cards ? 'off' : 'on'}">Undo</button>`;
+    });
+    await done;
+  },
+};
 /** "The following options are available to your Misfortunist feature…" -> "Misfortunist Options". */
 function optionsTitle(sentence) {
   const m = /available to (?:your|the) (.+?)(?: feature| class feature)?[.:,]/i.exec(sentence || '');
@@ -4138,7 +4221,7 @@ function featureAnchors(e) {
     if (!it.name) return;
     const { title } = itemTitle(it);
     out.push({ name: title, anchor: `sec-${si}-${ii}`, level: it.level, section: s.heading });
-    const so = e.type === 'monster' ? null : splitOptionsLoose(it.text, title);
+    const so = e.type === 'monster' ? null : optionsFor(it, title);
     if (so) so.options.forEach((o, k) => out.push({ name: o.name, anchor: `sec-${si}-${ii}-o${k}`, level: null, section: s.heading, sub: title }));
   }));
   return out;
@@ -4197,8 +4280,8 @@ function renderEmbeddedStatblock(name, body, showTitle) {
 }
 
 /** Feature text, with any stat block inside it drawn as a stat block. */
-function featureText(text, ownerName, anchor = '') {
-  const so = splitOptionsLoose(text, ownerName);
+function featureText(text, ownerName, anchor = '', it = null) {
+  const so = it ? optionsFor(it, ownerName) : splitOptionsLoose(text, ownerName);
   if (so) return featureText(so.before, ownerName) + renderOptions(so.options, anchor) + (so.after ? formatText(so.after) : '');
   const sb = findStatblock(text, ownerName);
   if (!sb) return formatText(text, { plainFirst: true });
@@ -4229,8 +4312,14 @@ function renderSections(sections, { runIn = false, prefix = 'sec', wrap = false 
       } else {
         const lvl = it.level ? `<span class="lvl" title="Level ${it.level}">${it.level}</span>` : '';
         const { title, intro } = itemTitle(it);
-        html = `<div class="feat"><h4 data-anchor="${prefix}-${si}-${ii}">${lvl}${esc(title)}</h4>` + (intro ? `<p class="opt-intro">${rich(intro)}</p>` : '')
-          + featureText(it.text, title, `${prefix}-${si}-${ii}`) + '</div>';
+        // a switch for anything that is, or could be, a list of options (only on the entry's own sections)
+        let sw = '';
+        if (prefix === 'sec') {
+          const shown = !!optionsFor(it, title), could = shown || !!splitOptionsForced(it.text);
+          if (could) sw = `<button class="feat-cards" data-cards="${shown ? 'off' : 'on'}" data-si="${si}" data-ii="${ii}" title="${shown ? 'Show this feature as plain text' : 'Show the options in this feature as cards'}${it.cards !== undefined ? ' (you chose this; tap to switch)' : ''}">${shown ? '≡ As text' : '▦ As cards'}</button>`;
+        }
+        html = `<div class="feat"><h4 data-anchor="${prefix}-${si}-${ii}">${lvl}${esc(title)}${sw}</h4>` + (intro ? `<p class="opt-intro">${rich(intro)}</p>` : '')
+          + featureText(it.text, title, `${prefix}-${si}-${ii}`, prefix === 'sec' ? it : null) + '</div>';
       }
       Linker.curAnchor = null;
       return html;
@@ -6210,7 +6299,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.4'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.5'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -9033,6 +9122,19 @@ function wireEvents() {
   $('#home').addEventListener('click', onRowClick);
 
   $('#detail').addEventListener('click', async (ev) => {
+    const cb = ev.target.closest('[data-cards]');
+    if (cb) {
+      ev.preventDefault();
+      const e = App.entries.get(App.currentId), it = e && e.sections && e.sections[+cb.dataset.si] && e.sections[+cb.dataset.si].items[+cb.dataset.ii];
+      if (!it) return;
+      it.cards = cb.dataset.cards === 'on';
+      if (it.cards && !optionsFor(it, itemTitle(it).title)) { delete it.cards; toast("Couldn't find separate options in this feature's text", 'warn'); return; }
+      const sc = $('#detail'), top = sc.scrollTop, wy = window.scrollY;
+      await App.upsert([e], { quiet: true });
+      App.showDetail(e.id);
+      sc.scrollTop = top; window.scrollTo(0, wy);
+      return;
+    }
     const jump = ev.target.closest('[data-jump]');
     if (jump) { ev.preventDefault(); jumpTo(jump.dataset.jump); return; }
     if (ev.target.closest('[data-act="fip-next"]')) { Find.step(1); return; }
@@ -9152,6 +9254,7 @@ function wireEvents() {
   });
 
   // Settings: diagnostics
+  $('#optScan').addEventListener('click', () => OptScan.open());
   $('#diagCopy').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(ErrorLog.text()); toast('Diagnostics copied', 'ok'); }
     catch { const r = document.createRange(); r.selectNodeContents($('#diagBox')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Select-all done: copy it manually', 'warn'); }

@@ -350,14 +350,14 @@ body.tool-open #listPane { display: none; }
   body.tool-open #detail { grid-column: 3; grid-row: 1; }
   /* three columns: every one keeps a usable width (the stat block is never squeezed to a sliver) */
   /* the combat tracker keeps its width while you look things up: the results list and the entry share the rest */
-  body.tool-open.tool-list .layout { grid-template-columns: max(360px, min(var(--combat-w), calc(100% - 447px))) 7px minmax(180px, 260px) minmax(260px, 1fr); }
+  body.tool-open.tool-list .layout { grid-template-columns: max(360px, min(var(--combat-w), calc(100% - 427px))) 7px minmax(200px, 260px) minmax(220px, 1fr); }
   body.tool-open.tool-list #listPane { display: flex; grid-column: 3; grid-row: 1; }
   body.tool-open.tool-list #detail { grid-column: 4; }
 }
 @media (min-width: 721px) {
   body.tool-open.combat-right .layout { grid-template-columns: minmax(0, 1fr) 7px minmax(360px, var(--combat-w)); }
   body.tool-open.combat-right #detail { grid-column: 1; } body.tool-open.combat-right #toolSplit { grid-column: 2; } body.tool-open.combat-right #toolPane { grid-column: 3; }
-  body.tool-open.combat-right.tool-list .layout { grid-template-columns: minmax(180px, 260px) minmax(260px, 1fr) 7px max(360px, min(var(--combat-w), calc(100% - 447px))); }
+  body.tool-open.combat-right.tool-list .layout { grid-template-columns: minmax(200px, 260px) minmax(220px, 1fr) 7px max(360px, min(var(--combat-w), calc(100% - 427px))); }
   body.tool-open.combat-right.tool-list #listPane { grid-column: 1; } body.tool-open.combat-right.tool-list #detail { grid-column: 2; }
   body.tool-open.combat-right.tool-list #toolSplit { grid-column: 3; } body.tool-open.combat-right.tool-list #toolPane { grid-column: 4; }
 }
@@ -656,8 +656,11 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-table .tr-nm .tr-lab { width: auto !important; min-width: 22px !important; height: 22px; padding: 0 5px !important; font-size: 12px; font-weight: 700; border-radius: 6px; }
 .tr-table .tr-nm .tr-lab.empty { opacity: .35; font-weight: 400; border-style: dashed; background: transparent; }
 .tr-table .tr-nm .tr-cbadge { margin-left: 0; }
-.tr-cbadge.none { opacity: .35; background: transparent; border-style: dashed; font-weight: 400; }
-.tr-cbadge.none:hover { opacity: 1; }
+.tr-cbadge.none { background: var(--panel); border: 1.5px solid color-mix(in srgb, #9333ea 55%, transparent); color: #7e22ce; font-weight: 700; }
+.tr-cbadge.none:hover { background: color-mix(in srgb, #9333ea 15%, var(--panel)); }
+.tr-table .tr-cbadge { height: 22px; min-width: 24px; font-size: 12px; }
+.tr-table .tr-pchp { width: auto !important; padding: 0 10px; height: 26px; font-size: 12px; color: var(--muted); border-style: dashed; }
+.tr-table tr.pcdown .tr-name { color: hsl(355 65% var(--hl-d)); }
 .tr-table .tr-acbtn { border: 0; background: none; font-weight: 600; text-decoration: underline dotted; }
 .tr-table th.c-ctl { text-align: right; } .tr-table .tr-colbtn { width: 26px !important; height: 24px; border: 0; background: none; font-size: 16px; color: var(--muted); }
 .fv-cond { font-size: 12.5px; padding: 0 10px; min-height: 30px; border-radius: 15px; width: auto !important; background: color-mix(in srgb, #9333ea 10%, var(--panel)); border: 1px solid color-mix(in srgb, #9333ea 35%, transparent); }
@@ -6158,7 +6161,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.2'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.3'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -8002,6 +8005,16 @@ const Tracker = {
     const c = this.st.list.find((x) => x.cid === cid), box = $(`#toolPane [data-tr-dmgin][data-cid="${cid}"]`);
     const raw = box?.value || '', n = this.calc(raw);
     if (!c || n === null || n === 0) { box?.focus(); if (raw && n === null) toast('Use numbers with + and −, e.g. 5+12', 'warn'); return; }
+    if (c.kind === 'pc') {
+      const t = this.pc(c), mx = this.num(t.maxHp);
+      if (!mx) { toast('Set their max HP first (tap + HP)', 'warn'); return; }
+      const was = Number.isFinite(this.num(t.hp)) ? this.num(t.hp) : mx;
+      t.hp = sign < 0 ? Math.max(0, was - n) : Math.min(mx, Math.max(0, was) + n);
+      c.log = c.log || []; c.log.push({ r: this.st.round, d: t.hp - was, t: Date.now(), hp: t.hp });
+      if (was > 0 && t.hp <= 0) toast(`${t.name || 'They'} ${t.name ? 'is' : 'are'} at 0 HP: unconscious, death saves`, 'warn', 3500);
+      if (sign < 0 && n >= mx + Math.max(0, was) && was > 0) toast(`Massive damage: ${n} ≥ ${mx} past 0 HP is instant death`, 'warn', 5000);
+      Roller.save(); this.save(); this.render(); return;
+    }
     const before = c.hp;
     const dropped = this.applyHp(c, sign < 0 ? n : -n);
     c.log = c.log || [];
@@ -8075,6 +8088,15 @@ const Tracker = {
     safeLocal.set('dndref.trHideCols', [...this.hiddenCols].join(','));
     this.render();
   },
+  async editPcMax(c) {
+    const t = this.pc(c);
+    const v = await askText(`Max HP: ${t.name || 'Player'}`, t.maxHp || '', 'Their hit point maximum. Current HP is kept between fights; New fight leaves it alone. Leave empty to stop tracking.');
+    if (v === null) return;
+    const n = this.num(v);
+    if (!Number.isFinite(n) || n <= 0) { delete t.maxHp; delete t.hp; }
+    else { const had = this.num(t.maxHp); t.maxHp = n; if (!had || !Number.isFinite(this.num(t.hp))) t.hp = n; else t.hp = Math.min(this.num(t.hp), n); }
+    Roller.save(); this.render();
+  },
   async askAc(t) {
     const pc = t.dataset.pid ? Roller.st.party.find((x) => x.id === t.dataset.pid) : null, c = pc ? null : this.st.list.find((x) => x.cid === t.dataset.cid);
     const o = pc || c; if (!o) return;
@@ -8092,12 +8114,20 @@ const Tracker = {
     const tail = (c2) => `<td class="c-ctl">${c2 && c2.kind === 'mon' && !this.st.turn ? `<button class="tr-hide" data-tr="hide" data-cid="${c2.cid}" title="Hide from the turn order" aria-label="Hide">◌</button>` : ''}${c2 && c2.kind !== 'pc' ? `<button class="rr-x" data-tr="rm" data-cid="${c2.cid}" title="Remove from the fight (you can bring it back)" aria-label="Remove">×</button>` : ''}</td>`;
     const tie = this.ties && this.ties.has(c.cid) ? ' tie' : '';
     if (c.kind === 'pc') {
-      const t = this.pc(c), has = !!this.num(t.acAdj);
-      return `<tr class="pc${cur}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-nm"><span class="tr-name">${esc(t.name || 'Unnamed')}</span>${Conds.badge(c)}</span></td>`
+      const t = this.pc(c), has = !!this.num(t.acAdj), open = this.hist.has(c.cid);
+      const mx = this.num(t.maxHp), php = Number.isFinite(this.num(t.hp)) ? this.num(t.hp) : mx;
+      const prow = `<tr class="pc${cur}${php <= 0 && mx ? ' pcdown' : ''}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-nm"><span class="tr-name">${esc(t.name || 'Unnamed')}</span>${Conds.badge(c)}</span></td>`
         + (this.col('adj') ? `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>` + adj(t.acAdj, `data-pid="${t.id}"`, has)
           : `<td class="c-ac"><button class="tr-acbtn" data-tr="acask" data-pid="${t.id}" title="AC ${esc(t.ac ?? '?')}${has ? ` ${esc(t.acAdj)}` : ''}. Tap to change it for this fight">${has ? `<b class="tr-eff">${Roller.acOf(t)}</b>` : esc(t.ac ?? '?')}</button></td>`)
-        + `<td class="c-hp"></td>${this.col('max') ? '<td class="c-max"></td>' : ''}<td class="c-dmg" colspan="${this.col('pm') ? 3 : 1}"></td>`
+        + (mx ? `<td class="c-hp${php <= 0 ? ' down' : php <= mx / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${php}</button></td>`
+            + (this.col('max') ? `<td class="c-max"><button class="tr-maxv" data-tr="maxedit" data-cid="${c.cid}" title="Change ${esc(t.name || 'their')} max HP" aria-label="Max HP ${mx}">${mx}</button></td>` : '')
+            + `<td class="c-dmg"><input data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"></td>`
+            + (this.col('pm') ? `<td class="c-pm"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage" aria-label="Take damage">−</button></td><td class="c-pm"><button data-tr="heal" data-cid="${c.cid}" title="Heal" aria-label="Heal">+</button></td>` : '')
+          : `<td class="c-hp" colspan="${(this.col('max') ? 3 : 2) + (this.col('pm') ? 2 : 0)}"><button class="tr-pchp" data-tr="maxedit" data-cid="${c.cid}" title="Track this player's hit points">+ HP</button></td>`)
         + (this.col('note') ? `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>` : '') + `${tail(null)}</tr>`;
+      const pextras = mx ? (!this.col('pm') ? `<span class="tr-hx"><button data-tr="dmg" data-cid="${c.cid}">− Damage</button><button data-tr="heal" data-cid="${c.cid}">+ Heal</button><span class="hint">uses the dmg box</span></span>` : '') + (!this.col('max') ? `<span class="tr-hx">Max <button data-tr="maxedit" data-cid="${c.cid}">${mx}</button></span>` : '') : '';
+      const phist = open ? `<tr class="tr-histrow"><td></td><td colspan="${this.ncols() - 1}"><div class="tr-hist">${pextras ? `<div class="tr-hxrow">${pextras}</div>` : ''}${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div></td></tr>` : '';
+      return prow + phist;
     }
     if (c.kind === 'lair') {
       return `<tr class="lair${cur}${tie}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name"><span class="tr-name">Lair action</span></td>`
@@ -8131,6 +8161,7 @@ const Tracker = {
       + `<label>AC <input data-pc="ac" data-tid="${t.id}" type="number" inputmode="numeric" value="${esc(t.ac ?? '')}"></label>`
       + `<label title="Character level, used for encounter difficulty">Lv <input data-pc="level" data-tid="${t.id}" type="number" min="1" max="20" inputmode="numeric" value="${esc(t.level ?? '')}"></label>`
       + `<label title="Initiative: the number used in the turn order">Init <input data-pc="init" data-tid="${t.id}" inputmode="numeric" value="${esc(t.init ?? '')}"></label>`
+      + `<label title="Hit points: current / max. Current stays between fights">HP <input data-pc="hp" data-tid="${t.id}" inputmode="numeric" value="${esc(t.hp ?? '')}"> / <input data-pc="maxHp" data-tid="${t.id}" inputmode="numeric" value="${esc(t.maxHp ?? '')}"></label>`
       + `<label title="Spell save DC: on this player's turn, group saves start with this DC">Save DC <input data-pc="dc" data-tid="${t.id}" inputmode="numeric" value="${esc(t.dc ?? '')}"></label>`
       + `<input data-pc="notes" data-tid="${t.id}" value="${esc(t.notes || '')}" placeholder="Notes" class="tr-pnote"><button class="rr-x" data-rr="pcdel" data-tid="${t.id}" aria-label="Remove">×</button></div>`).join('')
       + '<button data-rr="pcadd" class="rr-add">+ Add a party member</button>';
@@ -8301,7 +8332,7 @@ const Tracker = {
     if (a === 'acask') return this.askAc(t);
     if (a === 'gsave') { const c = find(); return c && GroupSave.roll(c, t.closest('.gs-row')); }
     if (a === 'condrm') { const c = find(); return c && Conds.remove(c, +t.dataset.i); }
-    if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
+    if (a === 'maxedit') { const c = find(); if (c && c.kind === 'pc') return this.editPcMax(c); return c && this.editMax(c); }
     if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; c.removed = false; } this.save(); return this.render(); }
     if (a === 'deadtoggle') { st.hideDead = st.hideDead === false; this.save(); return this.render(); }
     if (a === 'reroll') { const seen = new Map(); for (const c of this.monsters()) { if (!seen.has(c.gid)) seen.set(c.gid, rollDie(20) + (c.bonus || 0)); c.init = seen.get(c.gid); } this.save(); return this.render(); }

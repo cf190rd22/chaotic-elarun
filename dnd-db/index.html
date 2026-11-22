@@ -622,15 +622,15 @@ body.sb-cards .statblock .sb-reactions .sb-item::before { color: #8b5cf6; } body
 body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { background: transparent; border: 1.5px solid currentColor; border-radius: 8px; padding: 0 6px; }
 .tr-tablewrap { border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; }
 .tr-table { table-layout: fixed; min-width: 470px; }
-.tr-table col.w-init { width: 26px; } .tr-table col.w-name { width: 104px; } .tr-table col.w-lab { width: 28px; } .tr-table col.w-ac { width: 34px; }
+.tr-table col.w-init { width: 26px; } .tr-table col.w-name { width: 150px; } .tr-table col.w-ac { width: 34px; }
 .tr-table col.w-adj { width: 34px; } .tr-table col.w-hp { width: 32px; } .tr-table col.w-max { width: 30px; } .tr-table col.w-dmg { width: 44px; }
 .tr-table col.w-pm { width: 24px; } .tr-table col.w-note { width: auto; } .tr-table col.w-ctl { width: 56px; }
 .tr-table.battle col.w-ctl { width: 30px; }
-@container (min-width: 760px) { .tr-table col.w-name { width: 170px; } .tr-table col.w-dmg { width: 64px; } .tr-table col.w-pm { width: 34px; } .tr-table col.w-adj { width: 44px; } }
+@container (min-width: 760px) { .tr-table col.w-name { width: 210px; } .tr-table col.w-dmg { width: 64px; } .tr-table col.w-pm { width: 34px; } .tr-table col.w-adj { width: 44px; } }
 .tr-table td { padding: 2px 2px; } .tr-table th { padding: 5px 2px; }
 .tr-table input { padding: 2px 4px; }
 .tr-table button { min-width: 0; width: 100%; padding: 0; }
-.tr-table .c-lab .tr-lab, .tr-table .c-hp .tr-hpv, .tr-table .c-max .tr-maxv { width: 100%; min-width: 0 !important; padding: 0; }
+.tr-table .c-hp .tr-hpv, .tr-table .c-max .tr-maxv { width: 100%; min-width: 0 !important; padding: 0; }
 .tr-table .c-adj input { width: 100% !important; }
 .tr-table .c-adj:has(.tr-acx) input { width: calc(100% - 20px) !important; }
 .tr-table .c-adj .tr-acx { width: 18px !important; min-width: 18px; height: 18px; }
@@ -644,12 +644,25 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-table .c-note input { min-width: 0; }
 .tr-table .c-ctl { text-align: right; }
 /* the first four columns stay put when the table scrolls sideways; solid backgrounds so nothing shows through */
-.tr-table th:nth-child(-n+4), .tr-table tr:not(.tr-activerow):not(.tr-histrow):not(.tr-addrow):not(.lair) > td:nth-child(-n+4), .tr-table tr.lair > td:first-child, .tr-table tr.tr-addrow > td:first-child { position: sticky; z-index: 2; }
+.tr-table th:nth-child(-n+3), .tr-table tr:not(.tr-activerow):not(.tr-histrow):not(.tr-addrow):not(.lair) > td:nth-child(-n+3), .tr-table tr.lair > td:first-child, .tr-table tr.tr-addrow > td:first-child { position: sticky; z-index: 2; }
 .tr-table th:nth-child(1), .tr-table tr > td.c-init { left: 0; }
 .tr-table th:nth-child(2), .tr-table tr > td.c-name { left: 26px; }
-.tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 130px; }
-.tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 158px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
-@container (min-width: 760px) { .tr-table th:nth-child(3), .tr-table tr > td.c-lab { left: 196px; } .tr-table th:nth-child(4), .tr-table tr > td.c-ac { left: 224px; } }
+.tr-table th:nth-child(3), .tr-table tr > td.c-ac { left: 176px; box-shadow: 4px 0 6px -4px rgb(0 0 0 / .25); }
+@container (min-width: 760px) { .tr-table th:nth-child(3), .tr-table tr > td.c-ac { left: 236px; } }
+.tr-table .tr-nm { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.tr-table .tr-nm > .tr-name { flex: 0 1 auto; min-width: 0; }
+.tr-table .tr-nm > :not(.tr-name) { flex: none; }
+.tr-table .tr-nm .tr-lab { width: auto !important; min-width: 22px !important; height: 22px; padding: 0 5px !important; font-size: 12px; font-weight: 700; border-radius: 6px; }
+.tr-table .tr-nm .tr-lab.empty { opacity: .35; font-weight: 400; border-style: dashed; background: transparent; }
+.tr-table .tr-nm .tr-cbadge { margin-left: 0; }
+.tr-cbadge.none { opacity: .35; background: transparent; border-style: dashed; font-weight: 400; }
+.tr-cbadge.none:hover { opacity: 1; }
+.tr-table .tr-acbtn { border: 0; background: none; font-weight: 600; text-decoration: underline dotted; }
+.tr-table th.c-ctl { text-align: right; } .tr-table .tr-colbtn { width: 26px !important; height: 24px; border: 0; background: none; font-size: 16px; color: var(--muted); }
+.fv-cond { font-size: 12.5px; padding: 0 10px; min-height: 30px; border-radius: 15px; width: auto !important; background: color-mix(in srgb, #9333ea 10%, var(--panel)); border: 1px solid color-mix(in srgb, #9333ea 35%, transparent); }
+.tr-hxrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 6px; }
+.tr-hx { display: inline-flex; align-items: center; gap: 6px; } .tr-hx button { width: auto !important; padding: 0 10px; height: 28px; }
+.tr-hxnote { flex: 1 1 220px; } .tr-hxnote input { flex: 1; min-width: 120px; }
 .tr-table td { background: var(--panel); background-clip: padding-box; }
 .tr-table th { background: var(--panel); }
 .tr-table tr.tie > td.c-init { background: color-mix(in srgb, #8b5cf6 26%, var(--panel)); }
@@ -1582,7 +1595,7 @@ function toBase64(str) {
 }
 
 /** Promise-based modal choice. buttons: [{label, value, kind}] -> resolves with value (or null on Esc). */
-function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }]) {
+function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }], after = null) {
   const dlg = $('#askDlg');
   $('#askTitle').textContent = title;
   { const old = $('#askBody'), fresh = old.cloneNode(false); old.replaceWith(fresh); } // a fresh body: no listeners left over from earlier boxes
@@ -1602,9 +1615,10 @@ function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 
     }
     dlg.onclose = () => { if (dlg.open) return; finish(null); }; // a late "close" from the previous box must not shut this one
     dlg.showModal();
+    if (after) after();
     const primary = box.querySelector('.primary') || box.lastElementChild;
     const firstIn = $('#askTextIn');
-    if (firstIn) { firstIn.focus(); firstIn.select(); firstIn.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); primary?.click(); } }); }
+    if (firstIn) { firstIn.focus(); firstIn.select(); firstIn.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); ev.stopPropagation(); primary?.click(); } }); }
     else if (primary) primary.focus();
   });
 }
@@ -6143,7 +6157,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.9'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.1'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -7387,12 +7401,12 @@ const Conds = {
     const lst = this.of(c);
     return `<span class="tr-conds">${lst.map((k, i) => `<button class="tr-cond c-${esc(k.n.toLowerCase())}" data-tr="condrm" data-cid="${c.cid}" data-i="${i}" title="${esc(this.EFFECT[k.n] || k.n)}${k.note ? ' · ' + esc(k.note) : ''}${k.until ? ' · ends ' + esc(this.untilText(k.until)) : ''}. Tap to remove">${esc(k.n)}${k.note ? ` <small>${esc(k.note)}</small>` : ''}${k.until ? ' ⏳' : ''}</button>`).join('')}`
       + (c.exh ? `<button class="tr-cond c-exh" data-tr="cond" data-cid="${c.cid}" title="Exhaustion ${c.exh}: −${2 * c.exh} to d20 tests, speed −${5 * c.exh} ft (2024). Tap to change">Exh ${c.exh}</button>` : '')
-      + `<button class="tr-condadd" data-tr="cond" data-cid="${c.cid}" title="Conditions and exhaustion" aria-label="Conditions">+◎</button></span>`;
+      + '</span>'; // add / change is the ◎ by the name
   },
   /** A small badge by the name, so a row with conditions shows even when the notes column is off-screen. */
   badge(c) {
     const n = this.of(c).length;
-    if (!n && !c.exh) return '';
+    if (!n && !c.exh) return `<button class="tr-cbadge none" data-tr="cond" data-cid="${c.cid}" title="Add a condition or exhaustion" aria-label="Conditions">◎</button>`;
     const t = [...this.of(c).map((k) => k.n), ...(c.exh ? ['Exhaustion ' + c.exh] : [])].join(', ');
     return `<button class="tr-cbadge" data-tr="cond" data-cid="${c.cid}" title="${esc(t)}. Tap to change" aria-label="Conditions: ${esc(t)}">◎${n + (c.exh ? 1 : 0) > 1 ? n + (c.exh ? 1 : 0) : ''}</button>`;
   },
@@ -7404,14 +7418,20 @@ const Conds = {
     const ok = await ask(`Conditions: ${esc(Tracker.nameOf(c))}`,
       `<div class="cd-grid">${this.LIST.map((n) => `<label class="cd-o" title="${esc(this.EFFECT[n])}"><input type="checkbox" value="${n}"${have.has(n) ? ' checked' : ''}> ${n}</label>`).join('')}</div>`
       + `<div class="cd-row"><label>Exhaustion <select id="cdExh">${[0, 1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}"${(c.exh || 0) === n ? ' selected' : ''}>${n ? n + ' (−' + 2 * n + ')' : 'none'}</option>`).join('')}</select></label>`
-      + `<label>New ones last <select id="cdUntil"><option value=""${live ? '' : ' selected'}>until removed</option><option value="end"${live ? ' selected' : ''}>until the end of the next turn of…</option><option value="start">until the start of the next turn of…</option><option value="now">until the end of this turn of…</option></select></label><label>…whose turn <select id="cdWho">${who}</select></label></div>`
-      + `<label class="cd-note">Note for new ones <input id="cdNote" placeholder="e.g. escape DC 14, by the cyclops" autocomplete="off"></label>`,
-      [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
+      + `<label>Lasts <select id="cdUntil"><option value=""${live ? '' : ' selected'}>until removed</option><option value="end"${live ? ' selected' : ''}>until the end of the next turn of…</option><option value="start">until the start of the next turn of…</option><option value="now">until the end of this turn of…</option></select></label><label>…whose turn <select id="cdWho">${who}</select></label></div>`
+      + `<p class="hint cd-when" id="cdWhen"></p><label class="cd-note">Note for new ones <input id="cdNote" placeholder="e.g. escape DC 14, by the cyclops" autocomplete="off"></label>`,
+      [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }], () => {
+        const upd = () => { const at = $('#cdUntil').value, w = Tracker.st.list.find((x) => x.cid === $('#cdWho').value), nm = w ? Tracker.nameOf(w) : '…';
+          $('#cdWhen').textContent = (!at ? 'Stays until you remove it.' : at === 'now' ? `Ends when ${nm}'s current turn ends.` : at === 'start' ? `Ends as ${nm}'s next turn starts.` : Tracker.st.turn === $('#cdWho').value ? `Ends at the end of ${nm}'s NEXT turn (not this one).` : `Ends when ${nm}'s next turn ends.`) + ($('#cdUntil').dataset.dirty && have.size ? ' Applies to the ones already on too.' : ' Applies to newly ticked ones.'); };
+        const dirty = () => { $('#cdUntil').dataset.dirty = '1'; upd(); };
+        $('#cdUntil').addEventListener('change', dirty); $('#cdWho').addEventListener('change', dirty); upd(); });
     if (!ok) return;
     const picked = new Set([...document.querySelectorAll('#askBody .cd-o input:checked')].map((i) => i.value));
-    const at = $('#cdUntil').value, w = $('#cdWho').value, note = ($('#cdNote').value || '').trim();
-    const kept = this.of(c).filter((k) => picked.has(k.n));
-    for (const n of picked) if (!have.has(n)) kept.push({ n, ...(note ? { note } : {}), ...(at === 'now' ? { until: { cid: w, at: 'end', armed: true } } : at ? { until: { cid: w, at, armed: Tracker.st.turn !== w } } : {}) });
+    const at = $('#cdUntil').value, w = $('#cdWho').value, note = ($('#cdNote').value || '').trim(), retime = !!$('#cdUntil').dataset.dirty;
+    const until = at === 'now' ? { cid: w, at: 'end', armed: true } : at === 'start' ? { cid: w, at: 'start', armed: true } : at ? { cid: w, at, armed: Tracker.st.turn !== w } : null;
+    // changing how long it lasts also re-times the ones already on (e.g. Prone "until removed" → "until the start of its next turn")
+    const kept = this.of(c).filter((k) => picked.has(k.n)).map((k) => (retime ? { ...k, until: until ? { ...until } : undefined } : k));
+    for (const n of picked) if (!have.has(n)) kept.push({ n, ...(note ? { note } : {}), ...(at === 'now' ? { until: { cid: w, at: 'end', armed: true } } : at === 'start' ? { until: { cid: w, at: 'start', armed: true } } : at ? { until: { cid: w, at, armed: Tracker.st.turn !== w } } : {}) });
     c.conds = kept;
     c.exh = +$('#cdExh').value || 0;
     Tracker.save(); Tracker.render(); FightView.refresh();
@@ -7658,7 +7678,7 @@ const FightView = {
     const grp = Tracker.chunk(c);
     const hordeAtk = c.horde ? `<label class="fv-hatk" title="How many of the group attack (those in reach)">Attackers <input data-fv-hatk data-cid="${c.cid}" inputmode="numeric" value="${Math.min(Tracker.alive(c), c.hordeAtk || Tracker.alive(c))}"> of ${Tracker.alive(c)}</label>` : '';
     const grpSeg = c.horde ? hordeAtk : grp.length > 1 && c.cid === Tracker.st.turn ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-fv="grp" data-v="one" class="${Tracker.st.groupRoll ? '' : 'on'}">This one</button><button data-fv="grp" data-v="all" class="${Tracker.st.groupRoll ? 'on' : ''}">All ${grp.length}</button></span>` : '';
-    return `${Remind.html(c)}<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
+    return `${Remind.html(c)}<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span><button class="fv-cond" data-fv="cond" data-cid="${c.cid}" title="Conditions and exhaustion">◎ ${Conds.of(c).length || c.exh ? esc([...Conds.of(c).map((k) => k.n), ...(c.exh ? ['Exh ' + c.exh] : [])].join(', ')) : 'Conditions'}</button>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
       + `<div class="fv-ctl">${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xadd">+ Add an ability, spell or power</button>${Abilities.known(e.id).length ? '<button class="linkish" data-fv="swap">⇄ Swap a spell</button>' : ''}</div>`
       + GroupSave.html(c, 'data-fv')
       + this.swapsHtml(e, c) + '</div>';
@@ -7749,6 +7769,7 @@ const FightView = {
     if (a === 'swapundo') { Swaps.undo(t.dataset.key, t.dataset.from); Tracker.render(); return this.refresh(); }
     if (a === 'swapkeep') { await Swaps.keep(t.dataset.key, c); Tracker.render(); return this.refresh(); }
     if (a === 'gsave' && c) return GroupSave.roll(c, t.closest('.gs-row'));
+    if (a === 'cond' && c) return Conds.edit(c);
     if (a === 'grp') { Tracker.st.groupRoll = t.dataset.v === 'all'; Tracker.save(); Tracker.render(); return this.refresh(); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); Tracker.render(); return this.refresh(); }
     if (a === 'xkeep') { await this.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); Tracker.render(); return this.refresh(); }
@@ -7943,6 +7964,7 @@ const Tracker = {
     const cur = this.st.list.find((c) => c.cid === this.st.turn);
     if (cur && dir > 0) {
       const extra = [...(prevTurn ? Conds.tick(prevTurn, 'end') : []), ...Conds.tick(cur.cid, 'start')].map((x) => esc(x));
+      if (extra.length) toast(extra.join(' · ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#39;|&#x27;/g, "'"), 'ok', 3500);
       extra.push(...Uses.rechargeAtTurn(cur));
       this.st.remind = { cid: cur.cid, extra };
       this.save(); this.render();
@@ -8027,7 +8049,7 @@ const Tracker = {
     const recent = mine.length ? `<details class="tr-recent" data-keep="trRecent"${Keep.open('trRecent', true) ? ' open' : ''}><summary>Rolls this fight (${mine.length})</summary>${mine.slice(0, 3).map((r) => Roller.resultHtml(r)).join('')}</details>` : '';
     const grp = this.chunk(c);
     const grpSeg = grp.length > 1 ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-tr="grp" data-v="one" class="${this.st.groupRoll ? '' : 'on'}">This one</button><button data-tr="grp" data-v="all" class="${this.st.groupRoll ? 'on' : ''}" title="Roll attacks for every ${esc(this.baseName(c))} on this initiative">All ${grp.length}</button></span>` : '';
-    return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}</b>’s turn ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
+    return `<div class="tr-active"><div class="tr-ah"><b>${esc(this.nameOf(c))}’s turn</b> <button class="fv-cond" data-tr="cond" data-cid="${c.cid}" title="Conditions and exhaustion">◎ ${Conds.of(c).length || c.exh ? esc([...Conds.of(c).map((k) => k.n), ...(c.exh ? ['Exh ' + c.exh] : [])].join(', ')) : 'Conditions'}</button> ${tsel}${Roller.modeHtml(c.mode, `data-tr="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
       + saves + (rows || '<div class="rr-note">No attacks or saves in its stat block.</div>') + GroupSave.html(c, 'data-tr')
       + `<div class="tr-addab">${FightView.scopeHtml(c, 'data-tr')}<button class="linkish" data-tr="xadd" data-cid="${c.cid}" data-name="${esc(c.bname)}">+ Add an ability, spell or power</button></div>${recent}</div>`;
   },
@@ -8039,6 +8061,28 @@ const Tracker = {
     return `<details class="rr-sec tr-dmglog" data-keep="trDmgLog"${Keep.open('trDmgLog', false) ? ' open' : ''}><summary>Damage log (${rows.length})</summary><div class="tr-dl">`
       + rows.slice(0, 80).map(({ c, h }) => `<div><span class="hint">R${h.r}</span> <b>${esc(this.nameOf(c, lab))}</b> <span class="${h.d < 0 ? 'neg' : 'pos'}">${h.d < 0 ? '−' + -h.d : '+' + h.d}</span>${h.x ? ` <span class="hint">(${esc(h.x)})</span>` : ''}${h.hp !== undefined ? ` <span class="hint">→ ${h.hp}</span>` : ''}</div>`).join('') + '</div></details>';
   },
+  /** Columns you can hide: AC ±, Max HP, the − / + buttons, Notes. What they did moves into the HP panel. */
+  COLS: { adj: 'AC ± (Shield, cover)', max: 'Max HP', pm: '− / + buttons', note: 'Notes and conditions' },
+  col(k) { return !(this.hiddenCols || (this.hiddenCols = new Set((safeLocal.get('dndref.trHideCols') || '').split(',').filter(Boolean)))).has(k); },
+  ncols() { return 3 + (this.col('adj') ? 1 : 0) + 1 + (this.col('max') ? 1 : 0) + 1 + (this.col('pm') ? 2 : 0) + (this.col('note') ? 1 : 0) + 1; },
+  async pickCols() {
+    const ok = await ask('Columns', `<p class="hint">Hide what you don't use. Tap a creature's HP to reach anything hidden (damage, heal, max HP, notes); conditions are always on the ◎ by the name.</p>`
+      + Object.entries(this.COLS).map(([k, l]) => `<label class="cd-o"><input type="checkbox" value="${k}"${this.col(k) ? ' checked' : ''}> ${esc(l)}</label>`).join(''), [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
+    if (!ok) return;
+    const on = new Set([...document.querySelectorAll('#askBody input:checked')].map((i) => i.value));
+    this.hiddenCols = new Set(Object.keys(this.COLS).filter((k) => !on.has(k)));
+    safeLocal.set('dndref.trHideCols', [...this.hiddenCols].join(','));
+    this.render();
+  },
+  async askAc(t) {
+    const pc = t.dataset.pid ? Roller.st.party.find((x) => x.id === t.dataset.pid) : null, c = pc ? null : this.st.list.find((x) => x.cid === t.dataset.cid);
+    const o = pc || c; if (!o) return;
+    const v = await askText(`AC change: ${pc ? pc.name || 'Player' : this.nameOf(c)}`, o.acAdj || '', `Base AC ${o.ac ?? '?'}. Type +5 for Shield, +2 or +5 for cover, -2… Leave empty to clear.`);
+    if (v === null || v === undefined) return;
+    o.acAdj = String(v).trim();
+    if (pc) Roller.save(); else this.save();
+    this.render(); FightView.refresh();
+  },
   sideBySide() { return App.isWide() && this.st.follow !== false; },
   rowHtml(c, lab) {
     const cur = c.cid === this.st.turn ? ' tr-cur' : '';
@@ -8048,32 +8092,37 @@ const Tracker = {
     const tie = this.ties && this.ties.has(c.cid) ? ' tie' : '';
     if (c.kind === 'pc') {
       const t = this.pc(c), has = !!this.num(t.acAdj);
-      return `<tr class="pc${cur}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-name">${esc(t.name || 'Unnamed')}</span>${Conds.badge(c)}</td><td class="c-lab"></td>`
-        + `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>`
-        + adj(t.acAdj, `data-pid="${t.id}"`, has)
-        + `<td class="c-hp"></td><td class="c-max"></td><td class="c-dmg" colspan="3"></td>`
-        + `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>${tail(null)}</tr>`;
+      return `<tr class="pc${cur}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}" data-row="${c.cid}">${init(t.init, `data-pid="${t.id}"`)}<td class="c-name"><span class="tr-nm"><span class="tr-name">${esc(t.name || 'Unnamed')}</span>${Conds.badge(c)}</span></td>`
+        + (this.col('adj') ? `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>` + adj(t.acAdj, `data-pid="${t.id}"`, has)
+          : `<td class="c-ac"><button class="tr-acbtn" data-tr="acask" data-pid="${t.id}" title="AC ${esc(t.ac ?? '?')}${has ? ` ${esc(t.acAdj)}` : ''}. Tap to change it for this fight">${has ? `<b class="tr-eff">${Roller.acOf(t)}</b>` : esc(t.ac ?? '?')}</button></td>`)
+        + `<td class="c-hp"></td>${this.col('max') ? '<td class="c-max"></td>' : ''}<td class="c-dmg" colspan="${this.col('pm') ? 3 : 1}"></td>`
+        + (this.col('note') ? `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>` : '') + `${tail(null)}</tr>`;
     }
     if (c.kind === 'lair') {
-      return `<tr class="lair${cur}${tie}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name" colspan="2"><span class="tr-name">Lair action</span></td>`
-        + `<td class="c-note" colspan="8"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens" aria-label="What happens"></td>${tail(c)}</tr>`;
+      return `<tr class="lair${cur}${tie}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name"><span class="tr-name">Lair action</span></td>`
+        + `<td class="c-note" colspan="${this.ncols() - 3}"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="What happens" aria-label="What happens"></td>${tail(c)}</tr>`;
     }
     const open = this.hist.has(c.cid), has = !!this.num(c.acAdj), eff = has && Number.isFinite(this.num(c.ac)) ? this.num(c.ac) + this.num(c.acAdj) : null;
     const tags = (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">mod</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '');
     const pct = c.max ? c.hp / c.max : 1, hcls = c.hp <= 0 ? ' down' : pct <= 0.1 ? ' h10' : pct <= 0.2 ? ' h20' : pct <= 0.5 ? ' h50' : '';
     const row = `<tr class="mon${cur}${hcls}${tie}${Conds.of(c).length || c.exh ? ' hascond' : ''}${c.initAuto ? ' autoinit' : ''}${c.horde ? ' horde' : ''}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}`
-      + `<td class="c-name">${c.horde ? `<b class="tr-hcount" title="${this.alive(c)} of ${c.horde.hps.length} still standing">×${this.alive(c)}</b> ` : ''}${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${Conds.badge(c)}${tags}</td>`
-      + `<td class="c-lab"><button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button></td>`
-      + `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
-      + adj(c.acAdj, `data-cid="${c.cid}"`, has)
+      + `<td class="c-name"><span class="tr-nm">${c.horde ? `<b class="tr-hcount" title="${this.alive(c)} of ${c.horde.hps.length} still standing">×${this.alive(c)}</b>` : ''}${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}`
+      + `<button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button>${Conds.badge(c)}${tags}</span></td>`
+      + (this.col('adj') ? `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
+        : `<td class="c-ac"><button class="tr-acbtn" data-tr="acask" data-cid="${c.cid}" title="AC ${esc(c.ac)}${has ? ` ${c.acAdj > 0 ? '+' : ''}${esc(c.acAdj)}` : ''}. Tap to change it for this fight (Shield, cover…)">${eff !== null ? `<b class="tr-eff">${eff}</b>` : esc(c.ac || '?')}</button></td>`)
+      + (this.col('adj') ? adj(c.acAdj, `data-cid="${c.cid}"`, has) : '')
       + `<td class="c-hp${c.hp <= 0 ? ' down' : c.hp <= c.max / 2 ? ' bloodied' : ''}"><button class="tr-hpv" data-tr="hist" data-cid="${c.cid}" title="Damage history" aria-expanded="${open}">${c.hp}</button></td>`
-      + `<td class="c-max"><button class="tr-maxv" data-tr="maxedit" data-cid="${c.cid}" title="Change max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP ${c.max}">${c.max}</button></td>`
+      + (!this.col('max') ? '' : `<td class="c-max"><button class="tr-maxv" data-tr="maxedit" data-cid="${c.cid}" title="Change max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP ${c.max}">${c.max}</button></td>`)
       + `<td class="c-dmg"><input data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"></td>`
-      + `<td class="c-pm"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage" aria-label="Take damage">−</button></td><td class="c-pm"><button data-tr="heal" data-cid="${c.cid}" title="Heal" aria-label="Heal">+</button></td>`
-      + `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>${tail(c)}</tr>`;
-    const hist = open ? `<tr class="tr-histrow"><td></td><td colspan="11"><div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div></td></tr>` : '';
-    const active = cur && c.hp > 0 && !this.sideBySide() ? `<tr class="tr-activerow"><td colspan="12">${this.activeHtml(c)}</td></tr>` : '';
+      + (this.col('pm') ? `<td class="c-pm"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage" aria-label="Take damage">−</button></td><td class="c-pm"><button data-tr="heal" data-cid="${c.cid}" title="Heal" aria-label="Heal">+</button></td>` : '')
+      + (this.col('note') ? `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>` : '') + `${tail(c)}</tr>`;
+    // tapping HP opens this panel: history, plus whatever the hidden columns would have offered
+    const extras = (!this.col('pm') ? `<span class="tr-hx"><button data-tr="dmg" data-cid="${c.cid}">− Damage</button><button data-tr="heal" data-cid="${c.cid}">+ Heal</button><span class="hint">uses the dmg box</span></span>` : '')
+      + (!this.col('max') ? `<span class="tr-hx">Max <button data-tr="maxedit" data-cid="${c.cid}">${c.max}</button></span>` : '')
+      + (!this.col('note') ? `<span class="tr-hx tr-hxnote">${Conds.chipsHtml(c)}<input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></span>` : '');
+    const hist = open ? `<tr class="tr-histrow"><td></td><td colspan="${this.ncols() - 1}"><div class="tr-hist">${extras ? `<div class="tr-hxrow">${extras}</div>` : ''}${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div></td></tr>` : '';
+    const active = cur && c.hp > 0 && !this.sideBySide() ? `<tr class="tr-activerow"><td colspan="${this.ncols()}">${this.activeHtml(c)}</td></tr>` : '';
     return row + hist + active;
   },
   partyHtml() {
@@ -8129,9 +8178,9 @@ const Tracker = {
         + (anyAdj ? '<button data-tr="acclearall" title="Clear every AC ± change">Clear all AC ±</button>' : '')
         + `<label class="hint"><input type="checkbox" data-tr="deadtoggle"${this.st.hideDead !== false ? ' checked' : ''}> Move defeated monsters out of the order</label></div></div>`
         + `<details class="rr-sec tr-encsec"${this.encOpen ? ' open' : ''}><summary>Saved encounters (${(this.encounters || []).length})</summary>${this.encountersHtml()}</details>` : '')
-      + `<div class="tr-tablewrap"><table class="tr-table${battle ? ' battle' : ''}"><colgroup><col class="w-init"><col class="w-name"><col class="w-lab"><col class="w-ac"><col class="w-adj"><col class="w-hp"><col class="w-max"><col class="w-dmg"><col class="w-pm"><col class="w-pm"><col class="w-note"><col class="w-ctl"></colgroup>`
-      + `<thead><tr><th class="c-init" title="Initiative">#</th><th>Name</th><th></th><th>AC</th><th title="AC change (Shield, cover…)">±</th><th>HP</th><th>Max</th><th title="Type damage, e.g. 7 or 5+12, then − or Enter">Dmg</th><th></th><th></th><th>Notes</th><th></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}`
-      + `<tr class="tr-addrow"><td class="c-init"></td><td colspan="11"><span class="tr-addin"><span class="clearable"><input id="trQuick" type="search" placeholder="+ Add a monster…" autocomplete="off" aria-label="Add a monster"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span><button data-tr="lair" title="Add a lair action row">+ Lair action</button></span><div id="trQuickHits"></div></td></tr>`
+      + `<div class="tr-tablewrap"><table class="tr-table${battle ? ' battle' : ''}"><colgroup><col class="w-init"><col class="w-name"><col class="w-ac">${this.col('adj') ? '<col class="w-adj">' : ''}<col class="w-hp">${this.col('max') ? '<col class="w-max">' : ''}<col class="w-dmg">${this.col('pm') ? '<col class="w-pm"><col class="w-pm">' : ''}${this.col('note') ? '<col class="w-note">' : ''}<col class="w-ctl"></colgroup>`
+      + `<thead><tr><th class="c-init" title="Initiative">#</th><th>Name</th><th>AC</th>${this.col('adj') ? '<th title="AC change (Shield, cover…)">±</th>' : ''}<th title="Tap a creature's HP for its history${this.col('pm') && this.col('max') ? '' : ', damage, heal, max'}">HP</th>${this.col('max') ? '<th>Max</th>' : ''}<th title="Type damage, e.g. 7 or 5+12, then Enter (Shift+Enter heals)">Dmg</th>${this.col('pm') ? '<th></th><th></th>' : ''}${this.col('note') ? '<th>Notes</th>' : ''}<th class="c-ctl"><button class="tr-colbtn" data-tr="cols" title="Show or hide columns" aria-label="Columns">⋮</button></th></tr></thead><tbody>${shown.map((c) => this.rowHtml(c, lab)).join('')}`
+      + `<tr class="tr-addrow"><td class="c-init"></td><td colspan="${this.ncols() - 1}"><span class="tr-addin"><span class="clearable"><input id="trQuick" type="search" placeholder="+ Add a monster…" autocomplete="off" aria-label="Add a monster"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span><button data-tr="lair" title="Add a lair action row">+ Lair action</button></span><div id="trQuickHits"></div></td></tr>`
       + '</tbody></table></div>'
       + (hidden.filter((c) => !c.dead).length ? `<h3 class="tr-h">Hidden</h3>${hidden.filter((c) => !c.dead).map((c) => `<div class="tr-row later"><span class="tr-mark"></span><span class="tr-name">${esc(this.nameOf(c, lab))}</span><button data-tr="show" data-cid="${c.cid}">Show</button></div>`).join('')}` : '')
       + (hidden.filter((c) => c.dead).length ? `<details class="rr-sec tr-deadsec" data-keep="trDead"${Keep.open('trDead', true) ? ' open' : ''}><summary>Defeated &amp; removed (${hidden.filter((c) => c.dead).length})</summary>${hidden.filter((c) => c.dead).map((c) => `<div class="tr-row later"><span class="tr-name">${esc(this.nameOf(c, lab))}</span><span class="hint">${c.removed ? 'removed · ' : ''}${c.hp}/${c.max} HP</span><button data-tr="revive" data-cid="${c.cid}" title="Put it back in the turn order">Reinstate</button><button class="rr-x" data-tr="purge" data-cid="${c.cid}" title="Delete it from this fight" aria-label="Delete">×</button></div>`).join('')}</details>` : '')
@@ -8247,6 +8296,8 @@ const Tracker = {
     if (a === 'qadd') { this.quickQ = ''; this.add(t.dataset.id, { quiet: true }); setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = ''; i.focus(); } const h = $('#trQuickHits'); if (h) h.innerHTML = ''; }, 0); return; }
     if (a === 'clock') return this.clockMenu();
     if (a === 'cond') { const c = find(); return c && Conds.edit(c); }
+    if (a === 'cols') return this.pickCols();
+    if (a === 'acask') return this.askAc(t);
     if (a === 'gsave') { const c = find(); return c && GroupSave.roll(c, t.closest('.gs-row')); }
     if (a === 'condrm') { const c = find(); return c && Conds.remove(c, +t.dataset.i); }
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }

@@ -1496,6 +1496,7 @@ function toBase64(str) {
 function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }]) {
   const dlg = $('#askDlg');
   $('#askTitle').textContent = title;
+  $('#askBody').className = ''; // every box starts clean (a picker's state must never hide the next box's buttons)
   $('#askBody').innerHTML = html;
   const box = $('#askBtns');
   box.innerHTML = '';
@@ -6048,7 +6049,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-21.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.1'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

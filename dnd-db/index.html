@@ -493,6 +493,26 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .sw-o { display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 8px 10px; min-height: 44px; border-radius: 8px; }
 .sw-o small { color: var(--muted); font-weight: 400; }
 .fv-swapped { opacity: .55; }
+.tr-notecell { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.tr-notecell input { flex: 1 1 60px; min-width: 40px; }
+.tr-conds { display: inline-flex; gap: 3px; flex-wrap: nowrap; flex: 0 1 auto; overflow: hidden; }
+.tr-table .tr-cond { width: auto !important; height: 22px; min-height: 0; padding: 0 6px !important; border-radius: 11px; font-size: 11px; font-weight: 600; white-space: nowrap; background: color-mix(in srgb, #9333ea 16%, var(--panel)); border: 1px solid color-mix(in srgb, #9333ea 40%, transparent); color: inherit; }
+.tr-table .tr-cond small { font-weight: 400; opacity: .8; }
+.tr-table .tr-cond.c-exh { background: color-mix(in srgb, #b45309 18%, var(--panel)); border-color: color-mix(in srgb, #b45309 45%, transparent); }
+.tr-table .tr-cond.c-prone, .tr-table .tr-cond.c-grappled, .tr-table .tr-cond.c-restrained { background: color-mix(in srgb, #2563eb 15%, var(--panel)); border-color: color-mix(in srgb, #2563eb 40%, transparent); }
+.tr-table .tr-condadd { width: 26px !important; height: 22px; min-height: 0; padding: 0 !important; font-size: 11px; opacity: .6; border-style: dashed; }
+.tr-table .tr-condadd:hover { opacity: 1; }
+.cd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 4px; margin-bottom: 10px; }
+.cd-o { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; }
+.cd-o:has(input:checked) { border-color: #9333ea; background: color-mix(in srgb, #9333ea 12%, var(--panel)); }
+.cd-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.cd-row label, .cd-note { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted); }
+.cd-note input { width: 100%; }
+.tr-remind { margin: 6px 12px; padding: 8px 12px; border-radius: 10px; border-left: 4px solid #f59e0b; background: color-mix(in srgb, #f59e0b 10%, var(--panel)); font-size: 13.5px; }
+.tr-remind ul { margin: 4px 0 0; padding-left: 18px; } .tr-remind li { margin: 2px 0; }
+.tr-remind .rm-h { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: #b45309; }
+.rm-c { color: #9333ea; } .rm-ok { color: #15803d; } .rm-no { color: #b91c1c; }
+#detail .tr-remind { margin: 16px 0 0; }
 .fv-swapin { font-weight: 600; }
 .fv-swaptag { font-size: 9.5px; margin-left: 4px; vertical-align: middle; }
 .fv-swaps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13px; }
@@ -6096,7 +6116,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.5'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.6'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6506,6 +6526,7 @@ const Roller = {
     const total = d.chosen + (a.toHit || 0);
     const dmg = a.dmg.map((c) => this.damage(c, crit));
     const vs = tgt ? { id: tgt.id, name: tgt.name || 'Target', ac: this.acOf(tgt), hit: !fumble && (crit || total >= this.acOf(tgt)) } : null;
+    if (vs) { const row = Conds.rowForPc(tgt.id), cs = Conds.of(row).map((k) => k.n); if (cs.length) vs.conds = cs; }
     return { kind: 'attack', name: a.name, d20: d.rolls, chosen: d.chosen, toHit: a.toHit, total, crit, fumble, dmg, sum: dmg.reduce((x, y) => x + y.total, 0), vs, extraSave: a.extraSave, rider: a.rider || '' };
   },
   rollSaveFx(a) {
@@ -6573,7 +6594,7 @@ const Roller = {
       const d = x.d20.length > 1 ? `<span class="rr-d20s">${x.d20.map((v) => (v === x.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ')}</span>` : `<b>${x.chosen}</b>`;
       const res = x.crit ? '<span class="rr-res crit">CRIT</span>' : x.fumble ? '<span class="rr-res miss">MISS (1)</span>'
         : x.vs ? `<span class="rr-res ${x.vs.hit ? 'hit' : 'miss'}">${x.vs.hit ? 'HIT' : 'MISS'}</span>` : '';
-      const vs = x.vs ? `<span class="rr-vs">vs ${esc(x.vs.name)} AC ${x.vs.ac}</span>` : '';
+      const vs = x.vs ? `<span class="rr-vs">vs ${esc(x.vs.name)} AC ${x.vs.ac}${x.vs.conds ? ` <b class="rr-cond">(${esc(x.vs.conds.join(', '))})</b>` : ''}</span>` : '';
       const dmg = x.vs && !x.vs.hit && !x.crit ? `<span class="rr-dice">would have dealt ${x.sum}</span>` : x.dmg.map((c) => this.diceHtml(c)).join(' ');
       const landed = x.fumble ? false : x.crit ? true : x.vs ? x.vs.hit : undefined;
       return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> d20 ${d} ${x.toHit >= 0 ? '+' : '−'}${Math.abs(x.toHit)} = <b class="rr-tot">${x.total}</b> ${vs} ${res} ${dmg}${x.extraSave && !x.rider ? ` <span class="rr-note">+ DC ${x.extraSave.dc} ${x.extraSave.ab} save</span>` : ''}</div>${this.riderHtml(x.rider, landed)}`;
@@ -7300,6 +7321,97 @@ const Swaps = {
   },
 };
 
+/* Conditions and exhaustion on any creature in the fight (players too), with "until the end of X's next turn". */
+const Conds = {
+  LIST: ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious'],
+  /** What each one means at the table (2024 rules, short). */
+  EFFECT: {
+    Blinded: 'disadvantage on its attacks; attacks against it have advantage',
+    Charmed: "can't attack the charmer",
+    Deafened: "can't hear",
+    Frightened: "disadvantage on attacks and checks while it can see the source; can't move closer",
+    Grappled: 'speed 0; disadvantage on attacks against anyone but the grappler',
+    Incapacitated: 'no actions, bonus actions or reactions',
+    Invisible: 'advantage on its attacks; attacks against it have disadvantage',
+    Paralyzed: 'incapacitated, speed 0; fails Str and Dex saves; attacks against it have advantage; hits within 5 ft are crits',
+    Petrified: 'incapacitated; fails Str and Dex saves; resistance to all damage; attacks against it have advantage',
+    Poisoned: 'disadvantage on attacks and ability checks',
+    Prone: 'disadvantage on its attacks; melee attacks against it (within 5 ft) have advantage, ranged have disadvantage',
+    Restrained: 'speed 0; disadvantage on its attacks and Dex saves; attacks against it have advantage',
+    Stunned: 'incapacitated; fails Str and Dex saves; attacks against it have advantage',
+    Unconscious: 'incapacitated, prone; fails Str and Dex saves; attacks against it have advantage; hits within 5 ft are crits',
+  },
+  DIS_ON_ITS_ATTACKS: ['Blinded', 'Frightened', 'Poisoned', 'Prone', 'Restrained'],
+  ADV_AGAINST: ['Blinded', 'Paralyzed', 'Petrified', 'Restrained', 'Stunned', 'Unconscious'],
+  of(c) { return (c && c.conds) || []; },
+  /** The tracker row for a player (conditions live on the turn-order row). */
+  rowForPc(pid) { return Tracker.st.list.find((x) => x.kind === 'pc' && x.pid === pid); },
+  chipsHtml(c) {
+    const lst = this.of(c);
+    return `<span class="tr-conds">${lst.map((k, i) => `<button class="tr-cond c-${esc(k.n.toLowerCase())}" data-tr="condrm" data-cid="${c.cid}" data-i="${i}" title="${esc(this.EFFECT[k.n] || k.n)}${k.note ? ' · ' + esc(k.note) : ''}${k.until ? ' · ends ' + esc(this.untilText(k.until)) : ''}. Tap to remove">${esc(k.n)}${k.note ? ` <small>${esc(k.note)}</small>` : ''}${k.until ? ' ⏳' : ''}</button>`).join('')}`
+      + (c.exh ? `<button class="tr-cond c-exh" data-tr="cond" data-cid="${c.cid}" title="Exhaustion ${c.exh}: −${2 * c.exh} to d20 tests, speed −${5 * c.exh} ft (2024). Tap to change">Exh ${c.exh}</button>` : '')
+      + `<button class="tr-condadd" data-tr="cond" data-cid="${c.cid}" title="Conditions and exhaustion" aria-label="Conditions">+◎</button></span>`;
+  },
+  untilText(u) { const w = Tracker.st.list.find((x) => x.cid === u.cid); return `${u.at === 'start' ? 'start' : 'end'} of ${w ? Tracker.nameOf(w) : 'its'}’s next turn`; },
+  async edit(c) {
+    const have = new Set(this.of(c).map((k) => k.n));
+    const who = Tracker.sorted().filter((x) => x.kind !== 'lair').map((x) => `<option value="${x.cid}"${x.cid === (Tracker.st.turn || c.cid) ? ' selected' : ''}>${esc(Tracker.nameOf(x))}</option>`).join('');
+    const ok = await ask(`Conditions: ${esc(Tracker.nameOf(c))}`,
+      `<div class="cd-grid">${this.LIST.map((n) => `<label class="cd-o" title="${esc(this.EFFECT[n])}"><input type="checkbox" value="${n}"${have.has(n) ? ' checked' : ''}> ${n}</label>`).join('')}</div>`
+      + `<div class="cd-row"><label>Exhaustion <select id="cdExh">${[0, 1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}"${(c.exh || 0) === n ? ' selected' : ''}>${n ? n + ' (−' + 2 * n + ')' : 'none'}</option>`).join('')}</select></label>`
+      + `<label>New ones last <select id="cdUntil"><option value="">until removed</option><option value="end">until the end of…</option><option value="start">until the start of…</option></select></label><label>…whose next turn <select id="cdWho">${who}</select></label></div>`
+      + `<label class="cd-note">Note for new ones <input id="cdNote" placeholder="e.g. escape DC 14, by the cyclops" autocomplete="off"></label>`,
+      [{ label: 'Cancel', value: null }, { label: 'Save', value: true, kind: 'primary' }]);
+    if (!ok) return;
+    const picked = new Set([...document.querySelectorAll('#askBody .cd-o input:checked')].map((i) => i.value));
+    const at = $('#cdUntil').value, w = $('#cdWho').value, note = ($('#cdNote').value || '').trim();
+    const kept = this.of(c).filter((k) => picked.has(k.n));
+    for (const n of picked) if (!have.has(n)) kept.push({ n, ...(note ? { note } : {}), ...(at ? { until: { cid: w, at, armed: Tracker.st.turn !== w } } : {}) });
+    c.conds = kept;
+    c.exh = +$('#cdExh').value || 0;
+    Tracker.save(); Tracker.render(); FightView.refresh();
+  },
+  remove(c, i) { const l = this.of(c); l.splice(i, 1); c.conds = l; Tracker.save(); Tracker.render(); FightView.refresh(); },
+  /** Turn boundaries: "until the end of X's next turn" ends when X's turn ends (not the turn it was given in). */
+  tick(cid, at) {
+    const gone = [];
+    for (const c of Tracker.st.list) {
+      if (!c.conds) continue;
+      c.conds = c.conds.filter((k) => {
+        if (!k.until || k.until.cid !== cid || k.until.at !== at) return true;
+        if (!k.until.armed) { k.until.armed = true; return true; }
+        gone.push(`${Tracker.nameOf(c)} is no longer ${k.n}`);
+        return false;
+      });
+    }
+    return gone;
+  },
+};
+
+/* Reminders for whoever's turn it is: conditions and what they do, exhaustion, recharges, legendary actions, notes. */
+const Remind = {
+  build(c, extra = []) {
+    const out = [...extra];
+    for (const k of Conds.of(c)) out.push(`<b class="rm-c">${esc(k.n)}</b>${k.note ? ` (${esc(k.note)})` : ''}: ${esc(Conds.EFFECT[k.n] || '')}${k.until ? ` · ends ${esc(Conds.untilText(k.until))}` : ''}`);
+    if (c.exh) out.push(`<b class="rm-c">Exhaustion ${c.exh}</b>: −${2 * c.exh} to every d20 test, speed −${5 * c.exh} ft${c.exh >= 6 ? ' · <b>dead at 6</b>' : ''}`);
+    const disBy = Conds.of(c).map((k) => k.n).filter((n) => Conds.DIS_ON_ITS_ATTACKS.includes(n));
+    if (c.kind === 'mon') {
+      if (c.mode === 'dis') out.push('<b>Rolling with disadvantage</b> (set on this creature)');
+      else if (c.mode === 'adv') out.push('<b>Rolling with advantage</b> (set on this creature)');
+      if (disBy.length && c.mode !== 'dis') out.push(`${esc(disBy.join(', '))}: its attacks have disadvantage <button class="linkish" data-tr="mode" data-cid="${c.cid}" data-m="dis">Set Dis</button>`);
+    }
+    const note = c.kind === 'pc' ? Tracker.pc(c).notes : c.notes;
+    if (note) out.push(`<b>Note</b>: ${esc(note)}`);
+    return out;
+  },
+  html(c) {
+    const r = Tracker.st.remind;
+    if (!c || !r || r.cid !== c.cid) return '';
+    const items = this.build(c, r.extra || []);
+    return items.length ? `<div class="tr-remind"><b class="rm-h">${esc(Tracker.nameOf(c))}’s turn</b><ul>${items.map((x) => `<li>${x}</li>`).join('')}</ul></div>` : '';
+  },
+};
+
 /** Remembers which <details data-keep="…"> are open. */
 const Keep = {
   open(k, dflt = false) { const v = safeLocal.get('dndref.open.' + k); return v === null || v === undefined ? dflt : v === '1'; },
@@ -7349,15 +7461,18 @@ const Uses = {
   },
   /** Start of a creature's turn: roll for each spent recharge. */
   rechargeAtTurn(c) {
-    const m = (Tracker.st.uses || {})[c.cid];
-    if (!m) return;
+    const m = (Tracker.st.uses || {})[c.cid], notes = [];
+    if (!m) return notes;
     for (const [k, v] of Object.entries(m)) {
+      const nm = esc(k.replace(/\s*\(Recharge[^)]*\)/i, ''));
+      if (/^legendary action uses/i.test(k) && v.used) { delete m[k]; notes.push(`<b>Legendary actions</b> back to ${v.of}`); continue; }
       if (!v.rc || !v.used) continue;
       const r = rollDie(6);
-      if (r >= v.rc) { delete m[k]; toast(`${Tracker.nameOf(c)}: ${k.replace(/\s*\(Recharge[^)]*\)/i, '')} recharged (rolled ${r})`, 'ok', 3500); }
-      else toast(`${Tracker.nameOf(c)}: ${k.replace(/\s*\(Recharge[^)]*\)/i, '')} not recharged (rolled ${r})`, 'warn', 2500);
+      if (r >= v.rc) { delete m[k]; notes.push(`<b class="rm-ok">${nm} recharged</b> (rolled ${r})`); }
+      else notes.push(`<b class="rm-no">${nm} not ready</b> (rolled ${r}, needs ${v.rc}+)`);
     }
     Tracker.save();
+    return notes;
   },
 };
 
@@ -7425,7 +7540,7 @@ const FightView = {
     const tsel = Roller.st.party.length ? `<select data-fv-target aria-label="Target"><option value="">no target</option>${Roller.st.party.map((t) => `<option value="${t.id}"${t.id === Roller.st.activeId ? ' selected' : ''}>${esc(t.name || 'Unnamed')} (AC ${Roller.acOf(t)})</option>`).join('')}</select>` : '';
     const grp = Tracker.chunk(c);
     const grpSeg = grp.length > 1 && c.cid === Tracker.st.turn ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-fv="grp" data-v="one" class="${Tracker.st.groupRoll ? '' : 'on'}">This one</button><button data-fv="grp" data-v="all" class="${Tracker.st.groupRoll ? 'on' : ''}">All ${grp.length}</button></span>` : '';
-    return `<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
+    return `${Remind.html(c)}<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
       + `<div class="fv-ctl">${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xadd">+ Add an ability, spell or power</button>${Abilities.known(e.id).length ? '<button class="linkish" data-fv="swap">⇄ Swap a spell</button>' : ''}</div>`
       + this.swapsHtml(e, c) + '</div>';
   },
@@ -7664,6 +7779,7 @@ const Tracker = {
   step(dir) {
     let list = this.sorted().filter((c) => this.live(c));
     if (!list.length) return;
+    const prevTurn = this.st.turn;
     const i = list.findIndex((c) => c.cid === this.st.turn);
     if (i < 0) this.st.turn = list[0].cid;
     else if (dir > 0) {
@@ -7674,7 +7790,13 @@ const Tracker = {
     this.save(); this.render();
     $('#toolPane .tr-cur')?.scrollIntoView({ block: 'nearest' });
     const cur = this.st.list.find((c) => c.cid === this.st.turn);
-    if (cur) { this.focus = cur.cid; Uses.rechargeAtTurn(cur); this.turnStarted(); const el = $('#trClock'); if (el) el.innerHTML = this.clockText(); else this.render(); }
+    if (cur && dir > 0) {
+      const extra = [...(prevTurn ? Conds.tick(prevTurn, 'end') : []), ...Conds.tick(cur.cid, 'start')].map((x) => esc(x));
+      extra.push(...Uses.rechargeAtTurn(cur));
+      this.st.remind = { cid: cur.cid, extra };
+      this.save(); this.render();
+    } else if (cur && (!this.st.remind || this.st.remind.cid !== cur.cid)) { this.st.remind = { cid: cur.cid, extra: [] }; this.render(); }
+    if (cur) { this.focus = cur.cid; this.turnStarted(); const el = $('#trClock'); if (el) el.innerHTML = this.clockText(); else this.render(); }
     if (this.st.follow && cur && cur.eid && App.isWide()) App.showDetail(cur.eid, { fromSearch: App.currentId === cur.eid }); // stat block follows the turn
     else if (this.st.follow && cur && cur.kind === 'pc' && App.isWide()) { App.currentId = null; App.showDetail(null); }
     else FightView.refresh();
@@ -7776,7 +7898,7 @@ const Tracker = {
         + `<td class="c-ac"><input data-pid="${t.id}" data-tr-ac value="${esc(t.ac ?? '')}" inputmode="numeric" aria-label="AC">${has ? `<b class="tr-eff" title="AC with the change">${Roller.acOf(t)}</b>` : ''}</td>`
         + adj(t.acAdj, `data-pid="${t.id}"`, has)
         + `<td class="c-hp"></td><td class="c-max"></td><td class="c-dmg" colspan="3"></td>`
-        + `<td class="c-note"><input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></td>${tail(null)}</tr>`;
+        + `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-pid="${t.id}" data-tr-pcnote value="${esc(t.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>${tail(null)}</tr>`;
     }
     if (c.kind === 'lair') {
       return `<tr class="lair${cur}${tie}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}<td class="c-name" colspan="2"><span class="tr-name">Lair action</span></td>`
@@ -7795,7 +7917,7 @@ const Tracker = {
       + `<td class="c-max"><button class="tr-maxv" data-tr="maxedit" data-cid="${c.cid}" title="Change max HP for this fight${c.eid ? ` (the stat block says ${c.base})` : ''}" aria-label="Max HP ${c.max}">${c.max}</button></td>`
       + `<td class="c-dmg"><input data-cid="${c.cid}" data-tr-dmgin inputmode="text" placeholder="dmg" aria-label="Damage or healing, e.g. 7 or 5+12"></td>`
       + `<td class="c-pm"><button data-tr="dmg" data-cid="${c.cid}" title="Take damage" aria-label="Take damage">−</button></td><td class="c-pm"><button data-tr="heal" data-cid="${c.cid}" title="Heal" aria-label="Heal">+</button></td>`
-      + `<td class="c-note"><input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></td>${tail(c)}</tr>`;
+      + `<td class="c-note"><div class="tr-notecell">${Conds.chipsHtml(c)}<input data-cid="${c.cid}" data-tr-note value="${esc(c.notes || '')}" placeholder="Notes" aria-label="Notes"></div></td>${tail(c)}</tr>`;
     const hist = open ? `<tr class="tr-histrow"><td></td><td colspan="11"><div class="tr-hist">${(c.log || []).length ? c.log.map((h) => `<span class="${h.d < 0 ? 'neg' : 'pos'}">R${h.r} ${h.d < 0 ? '−' + -h.d : '+' + h.d}${h.x ? ` (${esc(h.x)})` : ''}</span>`).join(' · ') : '<span class="hint">No damage yet.</span>'}</div></td></tr>` : '';
     const active = cur && c.hp > 0 && !this.sideBySide() ? `<tr class="tr-activerow"><td colspan="12">${this.activeHtml(c)}</td></tr>` : '';
     return row + hist + active;
@@ -7832,13 +7954,13 @@ const Tracker = {
     const kinds = [...new Set(this.monsters().map((c) => this.baseName(c)))];
     const anyAdj = Roller.st.party.some((p) => this.num(p.acAdj)) || this.monsters().some((c) => this.num(c.acAdj));
     pane.innerHTML = `<div class="rr-top"><h2>Combat</h2><span class="tr-round">Round <b>${this.st.round}</b></span>${this.st.startedAt ? `<button class="tr-clock${this.st.pausedAt ? ' paused' : ''}${this.st.endedAt ? ' ended' : ''}" id="trClock" data-tr="clock" title="Fight · round · turn. Tap to pause or end the battle">${this.clockText()}</button>` : ''}`
-      + (inFight ? `<span class="rr-seg"><button data-tr="prev" title="Previous turn">◀ Prev</button><button data-tr="next" class="on" title="Next turn">Next ▶</button></span><button class="tr-end" data-tr="endfight" title="Stop the timer and see the round times">■ End combat</button>`
+      + (inFight ? `<span class="rr-seg"><button data-tr="prev" title="Previous turn (P or ,)">◀ Prev</button><button data-tr="next" class="on" title="Next turn (N or .)">Next ▶</button></span><button class="tr-end" data-tr="endfight" title="Stop the timer and see the round times">■ End combat</button>`
         : this.st.endedAt ? '<span class="tr-over">Combat over</span><button class="tr-start" data-tr="startfight" title="Start a new round 1 with the same monsters (the timer restarts)">▶ Start again</button>'
         : `<button class="tr-start primary" data-tr="startfight" title="Start the first turn and the timer"${this.st.list.some((c) => this.live(c)) ? '' : ' disabled'}>▶ Start combat</button>`)
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">↺ New fight</button>'
       + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x tr-close" data-tr="close" title="Close Combat (Shift+I)" aria-label="Close Combat">×</button></div>`
-      + (battle ? '' : `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`)
+      + (battle ? Remind.html(this.st.list.find((c) => c.cid === this.st.turn)) : `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`)
       + '<div class="rr-scroll">'
       + (this.diffOpen && !battle ? Roller.difficultyHtml() : '')
       + (setup ? `<details class="rr-sec tr-partysec"${(this.partyOpen ?? !Roller.st.party.length) ? ' open' : ''}><summary>Party (saved)</summary><div class="tr-party">${this.partyHtml()}</div></details>`
@@ -7957,6 +8079,8 @@ const Tracker = {
     if (a === 'side') { const r = !document.body.classList.contains('combat-right'); document.body.classList.toggle('combat-right', r); safeLocal.set('dndref.combatRight', r ? '1' : ''); return this.render(); }
     if (a === 'qadd') { this.quickQ = ''; this.add(t.dataset.id, { quiet: true }); setTimeout(() => { const i = $('#trQuick'); if (i) { i.value = ''; i.focus(); } const h = $('#trQuickHits'); if (h) h.innerHTML = ''; }, 0); return; }
     if (a === 'clock') return this.clockMenu();
+    if (a === 'cond') { const c = find(); return c && Conds.edit(c); }
+    if (a === 'condrm') { const c = find(); return c && Conds.remove(c, +t.dataset.i); }
     if (a === 'maxedit') { const c = find(); return c && this.editMax(c); }
     if (a === 'revive') { const c = find(); if (c) { c.hidden = false; c.dead = false; c.removed = false; } this.save(); return this.render(); }
     if (a === 'deadtoggle') { st.hideDead = st.hideDead === false; this.save(); return this.render(); }
@@ -8011,6 +8135,8 @@ const Tracker = {
       for (const p of Roller.st.party) p.init = '';
       Roller.save();
       st.list = st.list.filter((c) => c.kind === 'pc');
+      for (const c of st.list) if (c.kind === 'pc') c.conds = []; // exhaustion stays: it lasts until a long rest
+      st.remind = null;
       st.round = 1; st.turn = null; st.setup = true; st.uses = {}; st.startedAt = null; st.turnAt = null; st.roundAt = null; st.pausedAt = null; st.endedAt = null; st.pausedMs = 0; st.roundPausedMs = 0; st.turnPausedMs = 0; st.roundLog = []; this.hist.clear(); this.focus = null;
       this.q = ''; this.quickQ = ''; const mq = $('#q'); if (mq && mq.value) { mq.value = ''; mq.dispatchEvent(new Event('input', { bubbles: true })); }
       Roller.st.extras = {}; Roller.save();
@@ -8617,6 +8743,8 @@ function wireEvents() {
       if (ev.target.closest('[data-act="fav"]')) App.toggleFav(linkRow.dataset.id); else App.navigate(linkRow.dataset.id);
       return;
     }
+    const trInDetail = ev.target.closest('#detail .tr-remind [data-tr]');
+    if (trInDetail) { Tracker.onClick(ev).then(() => FightView.refresh()); return; }
     const fv = ev.target.closest('#detail [data-fv]:not(select)');
     if (fv) { ev.preventDefault(); FightView.onClick(fv).catch((err) => logError('Fight', err)); return; }
     const hl = safeLocal.get('dndref.tapRoll') !== '0' && ev.target.closest('#detail .d-body .hl-tohit, #detail .d-body .hl-dmg');
@@ -8904,6 +9032,8 @@ function wireEvents() {
     else if (e.key === 'h') App.goHome();
     else if (e.key === 'x') { App.facetOpen = !App.facetOpen; App.renderMeta(); }
     else if (e.key === 'c') { if (App.rows.some((r) => r.k === 'h')) App.toggleAllGroups(); }
+    else if ((e.key === 'n' || e.key === '.') && Tools.current === 'tracker' && Tracker.st.turn && !Tracker.st.endedAt) { e.preventDefault(); Tracker.step(1); }
+    else if ((e.key === 'p' || e.key === ',') && Tools.current === 'tracker' && Tracker.st.turn && !Tracker.st.endedAt) { e.preventDefault(); Tracker.step(-1); }
     else if (e.key === 'n') $('#newBtn').click();
     else if (e.key === 'i') $('#importBtn').click();
     else if (e.key === ',') $('#settingsBtn').click();

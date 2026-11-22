@@ -287,7 +287,7 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 .embedded-sb .sb-meta { color: var(--muted); font-style: italic; font-size: 14px; margin: 0 0 6px; }
 /* option lists (Misfortunes, Invocations…) */
 .opt-intro { color: var(--muted); font-style: italic; }
-.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin: 10px 0 6px; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(max(260px, calc((100% - 21px) / 3)), 1fr)); gap: 10px; margin: 10px 0 6px; }
 .opt { background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--accent-border); border-radius: 8px; padding: 10px 12px 4px; min-width: 0; }
 .opt-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-bottom: 6px; }
 .opt-name { font-weight: 700; font-size: 15px; }
@@ -4034,6 +4034,8 @@ function runInGroup(lines, min) {
       if (/:\s*$/.test(m[2])) { while (j < lines.length && !head(lines[j])) { o.text += '\n' + lines[j]; j++; } }
       opts.push(o);
     }
+    // "Additionally, you can cast…" straight after the last one carries on that option
+    while (opts.length && j < lines.length && /^(Additionally|In addition|Also|Furthermore|Moreover|Likewise|Besides)\b/.test(String(lines[j]).trim())) { opts[opts.length - 1].text += '\n' + lines[j]; j++; }
     if (opts.length >= min && (!best || opts.length > best[2].length)) best = [i, j, opts];
     i = j - 1;
   }
@@ -6338,7 +6340,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.7'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.8'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

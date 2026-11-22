@@ -493,6 +493,17 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .sw-o { display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 8px 10px; min-height: 44px; border-radius: 8px; }
 .sw-o small { color: var(--muted); font-weight: 400; }
 .fv-swapped { opacity: .55; }
+.tr-hordebtn { font-size: 12px; padding: 0 8px; min-height: 36px; border-radius: 8px; white-space: nowrap; }
+.tr-hcount { color: var(--accent); font-size: 12px; margin-right: 2px; }
+.fv-hatk { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; } .fv-hatk input { width: 46px; text-align: center; }
+.gs-row { border-top: 1px dashed var(--border); padding-top: 8px; }
+.gs-row select, .gs-row input { min-height: 34px; } .gs-dc { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; } .gs-dc input { width: 48px; text-align: center; }
+.gs-res { margin: 4px 0; }
+.gs-sum { font-size: 16px; margin-bottom: 4px; } .gs-fail { color: #b91c1c; } .gs-pass { color: #15803d; }
+.gs-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.gs-chip { font-size: 12px; padding: 1px 7px; border-radius: 10px; font-variant-numeric: tabular-nums; }
+.gs-chip.f { background: color-mix(in srgb, #dc2626 16%, var(--panel)); } .gs-chip.p { background: color-mix(in srgb, #16a34a 14%, var(--panel)); }
+.gs-apply { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .gs-apply input { width: 80px; min-height: 34px; } .gs-apply button { min-height: 34px; font-size: 13px; }
 .tr-notecell { display: flex; align-items: center; gap: 4px; min-width: 0; }
 .tr-notecell input { flex: 1 1 60px; min-width: 40px; }
 .tr-conds { display: inline-flex; gap: 3px; flex-wrap: nowrap; flex: 0 1 auto; overflow: hidden; }
@@ -1578,7 +1589,9 @@ function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 
     dlg.onclose = () => { if (dlg.open) return; finish(null); }; // a late "close" from the previous box must not shut this one
     dlg.showModal();
     const primary = box.querySelector('.primary') || box.lastElementChild;
-    if (primary) primary.focus();
+    const firstIn = $('#askTextIn');
+    if (firstIn) { firstIn.focus(); firstIn.select(); firstIn.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); primary?.click(); } }); }
+    else if (primary) primary.focus();
   });
 }
 
@@ -6116,7 +6129,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.6'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.7'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6601,6 +6614,13 @@ const Roller = {
     }
     if (x.kind === 'save') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <b class="hl-save">DC ${x.dc} ${x.ab}</b> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">fail ${x.sum}${x.half ? ` · save ${Math.floor(x.sum / 2)}` : ''}</span></div>${x.rider ? this.riderHtml(x.rider, undefined, 'On a failed save') : ''}`;
     if (x.kind === 'dmg') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">total <b>${x.sum}</b></span></div>`;
+    if (x.kind === 'gsave') {
+      const fails = x.rows.filter((r) => !r.pass).length;
+      return `<div class="gs-res"><div class="gs-sum"><b class="gs-fail">${fails} fail</b> · <b class="gs-pass">${x.rows.length - fails} pass</b> <span class="rr-dice">d20 ${x.mod >= 0 ? '+' : '−'}${Math.abs(x.mod)}${x.mr ? ' · Magic Resistance: advantage' : ''}</span></div>`
+        + `<div class="gs-chips">${x.rows.map((r) => `<span class="gs-chip ${r.pass ? 'p' : 'f'}" title="d20 ${r.d20.join('/')}">${esc(r.label)} ${r.auto ? 'auto-fail' : r.total}</span>`).join('')}</div>`
+        + (x.applied ? `<div class="rr-note">Applied ${x.applied.dmg} damage${x.applied.onPass === 'half' ? ', half on a pass' : ''}: <b>${x.applied.down} down</b></div>`
+          : `<div class="gs-apply"><input class="gs-dmg" inputmode="numeric" placeholder="damage"><button data-gs="half">Fail full · pass half</button><button data-gs="none">Fail full · pass none</button></div>`) + '</div>';
+    }
     if (x.kind === 'throw') return `<div class="rr-line">d20 ${x.d20.length > 1 ? x.d20.map((v) => (v === x.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ') : `<b>${x.chosen}</b>`} ${x.mod >= 0 ? '+' : '−'}${Math.abs(x.mod)} = <b class="rr-tot">${x.total}</b></div>`;
     return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <span class="rr-note">${x.save ? `DC ${x.save.dc} ${x.save.ab} save · no damage to roll` : x.text && x.text.length < 600 ? esc(x.text) : 'no roll: see the stat block'}</span></div>`;
   },
@@ -6611,7 +6631,7 @@ const Roller = {
     const body = r.inst.map((subs, i) => `<div class="rr-inst">${many ? `<span class="rr-n">#${i + 1}</span>` : ''}<div>${subs.map((x) => this.instHtml(x)).join('')}</div></div>`).join('');
     const tsel = r.inst.some((subs) => subs.some((x) => x.kind === 'attack')) && this.st.party.length
       ? `<select class="rr-retarget" data-rid="${r.id}" title="Check these rolls against another target"><option value="">against…</option>${this.st.party.map((t) => `<option value="${t.id}">${esc(t.name || 'Target')} (AC ${this.acOf(t)})</option>`).join('')}</select>` : '';
-    return `<div class="rr-card${r.id === this.last ? ' new' : ''}"><div class="rr-head"><a href="#" data-open="${esc(r.eid || '')}">${esc(r.who)}</a>${many ? ` ×${r.inst.length}` : ''} · <b>${esc(r.what)}</b>${r.mode && r.mode !== 'normal' ? ` <span class="rr-mode">${r.mode === 'adv' ? 'advantage' : 'disadvantage'}</span>` : ''}${tsel}</div>${body}`
+    return `<div class="rr-card${r.id === this.last ? ' new' : ''}" data-rid="${r.id}"><div class="rr-head"><a href="#" data-open="${esc(r.eid || '')}">${esc(r.who)}</a>${many ? ` ×${r.inst.length}` : ''} · <b>${esc(r.what)}</b>${r.mode && r.mode !== 'normal' ? ` <span class="rr-mode">${r.mode === 'adv' ? 'advantage' : 'disadvantage'}</span>` : ''}${tsel}</div>${body}`
       + (totals.size ? `<div class="rr-total">${[...totals].map(([n, v]) => `${esc(n)} takes <b>${v}</b>`).join(' · ')}</div>` : '')
       + (r.rechargeOn ? `<div class="rr-note">Recharge d6: <b>${r.recharge}</b> (${r.recharge >= r.rechargeOn ? 'recharged' : 'not yet'})</div>` : '') + '</div>';
   },
@@ -6681,7 +6701,7 @@ const Roller = {
     for (const c of Tracker.monsters()) {
       const cr = c.eid ? App.entries.get(c.eid)?.fields.CR : c.cr !== undefined ? crText(c.cr) : null;
       const k = String(cr ?? '').split(/[\s(]/)[0];
-      if (crValue(k) !== null) byCr.set(k, (byCr.get(k) || 0) + 1);
+      if (crValue(k) !== null) byCr.set(k, (byCr.get(k) || 0) + (c.horde ? c.horde.hps.length : 1));
     }
     const mons = [...[...byCr].map(([cr, count]) => ({ cr, count })), ...gen].filter((m) => crValue(m.cr) !== null && m.count > 0);
     return { levels, mons, r: mons.length && levels.length ? rateEncounter(levels, mons) : null };
@@ -7185,13 +7205,16 @@ const RollPop = {
       el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
       el.addEventListener('click', (ev) => {
         if (ev.target.closest('[data-rp="x"]')) { this.close(); return; }
+        const gs = ev.target.closest('[data-gs]');
+        if (gs) { const card = gs.closest('[data-rid]') || el.querySelector('[data-rid]'); const v = Tracker.calc(gs.closest('.gs-res').querySelector('.gs-dmg').value); if (!v) { toast('Type the damage first', 'warn'); return; } GroupSave.apply(card ? card.dataset.rid : this.rid, v, gs.dataset.gs); return; }
         const o = ev.target.closest('[data-open]'); if (o && o.dataset.open) { ev.preventDefault(); App.navigate(o.dataset.open); }
       });
       el.addEventListener('change', (ev) => { if (ev.target.matches('.rr-retarget') && ev.target.value) { Roller.retarget(ev.target.dataset.rid, ev.target.value); this.show(Roller.log.find((x) => x.id === ev.target.dataset.rid)); Tracker.render(); } });
       document.body.appendChild(el);
     }
     if (!r) return;
-    el.innerHTML = `<button class="rp-x" data-rp="x" aria-label="Close the result" title="Close (Esc)">×</button>${Roller.resultHtml(r)}`;
+    this.rid = r.id;
+    el.innerHTML = `<button class="rp-x" data-rp="x" aria-label="Close the result" title="Close (Esc)">×</button><div data-rid="${r.id}">${Roller.resultHtml(r)}</div>`;
     el.hidden = false;
     document.body.classList.add('rollpop-open');
     el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
@@ -7412,6 +7435,74 @@ const Remind = {
   },
 };
 
+/* Group saves: every creature in a horde, a group or the whole kind rolls the save; then damage goes on each one. */
+const GroupSave = {
+  html(c, attr) {
+    const kind = Tracker.monsters().filter((x) => !x.hidden && x.eid === c.eid && x.bname === c.bname && Tracker.alive(x));
+    const grp = Tracker.chunk(c);
+    const opts = c.horde ? [['self', `all ${Tracker.alive(c)} in the group`]] : [...(grp.length > 1 ? [['chunk', `this group (${grp.length})`]] : []), ...(kind.length > 1 ? [['kind', `every ${Tracker.baseName(c)} (${kind.reduce((n, x) => n + Tracker.alive(x), 0)})`]] : []), ['self', 'just this one']];
+    const last = GroupSave.last || {};
+    return `<div class="fv-ctl gs-row"><b class="hint">Save for</b><select class="gs-who">${opts.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('')}</select>`
+      + `<select class="gs-ab">${ABILS.map((k) => `<option${k === (last.ab || 'DEX') ? ' selected' : ''}>${k}</option>`).join('')}</select>`
+      + `<label class="gs-dc">DC <input class="gs-dcin" inputmode="numeric" value="${esc(last.dc || '')}" placeholder="15"></label>`
+      + `<label class="hint" title="Creatures with Magic Resistance roll with advantage"><input type="checkbox" class="gs-spell"${last.spell ? ' checked' : ''}> vs a spell</label>`
+      + `<button ${attr}="gsave" data-cid="${c.cid}">Roll saves</button></div>`;
+  },
+  /** Each creature that rolls: { c, idx (horde slot), label }. */
+  targets(c, who) {
+    if (c.horde) return c.horde.hps.map((h, i) => ({ c, idx: i, label: `#${i + 1}` })).filter((x) => c.horde.hps[x.idx] > 0);
+    const lab = Tracker.labels();
+    const list = who === 'kind' ? Tracker.monsters().filter((x) => !x.hidden && x.eid === c.eid && x.bname === c.bname)
+      : who === 'chunk' ? Tracker.chunk(c) : [c];
+    return list.flatMap((x) => (x.horde ? GroupSave.targets(x, 'self').map((t) => ({ ...t, label: `${lab.get(x.cid) || ''}${t.label}` })) : x.hp > 0 ? [{ c: x, idx: null, label: lab.get(x.cid) || Tracker.baseName(x) }] : []));
+  },
+  roll(c, row) {
+    const ab = row.querySelector('.gs-ab').value, dc = parseInt(row.querySelector('.gs-dcin').value, 10), who = row.querySelector('.gs-who').value, spell = row.querySelector('.gs-spell').checked;
+    if (!dc) { toast('Type the save DC first', 'warn'); row.querySelector('.gs-dcin').focus(); return; }
+    GroupSave.last = { ab, dc, spell };
+    const e = Tracker.pseudo(c), mod = c.eid ? Roller.saveMod(e, ab) : 0;
+    const mr = spell && e.sections && e.sections.some((sc) => sc.items.some((i) => /magic resistance/i.test(i.name)));
+    const rows = GroupSave.targets(c, who).map((t) => {
+      const names = Conds.of(t.c).map((k) => k.n);
+      const autoFail = (ab === 'STR' || ab === 'DEX') && names.some((n) => ['Paralyzed', 'Petrified', 'Stunned', 'Unconscious'].includes(n));
+      const dis = ab === 'DEX' && names.includes('Restrained');
+      const mode = mr && !dis ? 'adv' : dis && !mr ? 'dis' : 'normal';
+      const d = Roller.d20(mode), total = d.chosen + mod - 2 * (t.c.exh || 0);
+      return { cid: t.c.cid, idx: t.idx, label: t.label, d20: d.rolls, chosen: d.chosen, total, pass: !autoFail && total >= dc, auto: autoFail };
+    });
+    if (!rows.length) return;
+    Roller.push({ who: `${Tracker.baseName(c)} ×${rows.length}`, eid: c.eid || '', cid: c.cid, what: `${AB_FULL[ab]} save DC ${dc}`, inst: [[{ kind: 'gsave', ab, dc, mod, rows, mr }]] });
+  },
+  /** Put damage on each creature: full on a fail, half (or none) on a pass. */
+  apply(rid, dmg, onPass) {
+    const r = Roller.log.find((x) => x.id === rid), x = r && r.inst[0][0];
+    if (!x || x.applied) return;
+    let down = 0;
+    for (const row of x.rows) {
+      const c = Tracker.st.list.find((y) => y.cid === row.cid);
+      if (!c) continue;
+      const amt = row.pass ? (onPass === 'half' ? Math.floor(dmg / 2) : 0) : dmg;
+      if (!amt) continue;
+      const before = c.hp;
+      down += Tracker.applyHp(c, amt, row.idx);
+      c.log = c.log || [];
+      c.log.push({ r: Tracker.st.round, d: c.hp - before, x: `${x.ab} save ${row.pass ? 'passed' : 'failed'}`, t: Date.now(), hp: c.hp });
+      if (before > 0) Tracker.downCheck(c);
+    }
+    x.applied = { dmg, onPass, down };
+    Roller.saveLog(); Tracker.save();
+    RollPop.show(r); Tracker.render(); FightView.refresh();
+    toast(`Applied ${dmg} damage${onPass === 'half' ? ' (half on a pass)' : ''}: ${down} down`, 'ok', 2500);
+  },
+};
+
+/** A one-line text question; resolves to the text, or null. */
+async function askText(title, value = '', hint = '') {
+  const ok = await ask(title, `<label class="cd-note">${hint ? `<span class="hint">${esc(hint)}</span>` : ''}<input id="askTextIn" value="${esc(value)}" autocomplete="off" inputmode="numeric"></label>`, [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }]);
+  setTimeout(() => {}, 0);
+  return ok ? ($('#askTextIn')?.value || '').trim() : null;
+}
+
 /** Remembers which <details data-keep="…"> are open. */
 const Keep = {
   open(k, dflt = false) { const v = safeLocal.get('dndref.open.' + k); return v === null || v === undefined ? dflt : v === '1'; },
@@ -7539,9 +7630,11 @@ const FightView = {
     if (!c) return '';
     const tsel = Roller.st.party.length ? `<select data-fv-target aria-label="Target"><option value="">no target</option>${Roller.st.party.map((t) => `<option value="${t.id}"${t.id === Roller.st.activeId ? ' selected' : ''}>${esc(t.name || 'Unnamed')} (AC ${Roller.acOf(t)})</option>`).join('')}</select>` : '';
     const grp = Tracker.chunk(c);
-    const grpSeg = grp.length > 1 && c.cid === Tracker.st.turn ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-fv="grp" data-v="one" class="${Tracker.st.groupRoll ? '' : 'on'}">This one</button><button data-fv="grp" data-v="all" class="${Tracker.st.groupRoll ? 'on' : ''}">All ${grp.length}</button></span>` : '';
+    const hordeAtk = c.horde ? `<label class="fv-hatk" title="How many of the group attack (those in reach)">Attackers <input data-fv-hatk data-cid="${c.cid}" inputmode="numeric" value="${Math.min(Tracker.alive(c), c.hordeAtk || Tracker.alive(c))}"> of ${Tracker.alive(c)}</label>` : '';
+    const grpSeg = c.horde ? hordeAtk : grp.length > 1 && c.cid === Tracker.st.turn ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-fv="grp" data-v="one" class="${Tracker.st.groupRoll ? '' : 'on'}">This one</button><button data-fv="grp" data-v="all" class="${Tracker.st.groupRoll ? 'on' : ''}">All ${grp.length}</button></span>` : '';
     return `${Remind.html(c)}<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
       + `<div class="fv-ctl">${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xadd">+ Add an ability, spell or power</button>${Abilities.known(e.id).length ? '<button class="linkish" data-fv="swap">⇄ Swap a spell</button>' : ''}</div>`
+      + GroupSave.html(c, 'data-fv')
       + this.swapsHtml(e, c) + '</div>';
   },
   swapsHtml(e, c) {
@@ -7629,6 +7722,7 @@ const FightView = {
     }
     if (a === 'swapundo') { Swaps.undo(t.dataset.key, t.dataset.from); Tracker.render(); return this.refresh(); }
     if (a === 'swapkeep') { await Swaps.keep(t.dataset.key, c); Tracker.render(); return this.refresh(); }
+    if (a === 'gsave' && c) return GroupSave.roll(c, t.closest('.gs-row'));
     if (a === 'grp') { Tracker.st.groupRoll = t.dataset.v === 'all'; Tracker.save(); Tracker.render(); return this.refresh(); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); Tracker.render(); return this.refresh(); }
     if (a === 'xkeep') { await this.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); Tracker.render(); return this.refresh(); }
@@ -7707,6 +7801,37 @@ const Tracker = {
     this.save();
     if (!quiet) toast(`${e.name} added (${this.monsters().filter((x) => x.eid === eid).length} in the fight)`, 'ok', 1800);
     if (!noRender) this.render();
+  },
+  addHorde(eid, n) {
+    const e = App.entries.get(eid);
+    if (!e) return;
+    const each = parseInt(String(e.fields.HP || '').trim(), 10) || 1, bonus = this.initBonus(e);
+    const c = { cid: uid(), kind: 'mon', eid, bname: e.name, bonus, ac: String(e.fields.AC || '').split(/[\s(]/)[0], base: each, max: each * n, hp: each * n, notes: '', log: [], horde: { each, hps: Array(n).fill(each) }, gid: uid(), init: '' };
+    this.st.list.push(c);
+    this.save(); this.render();
+    toast(`${n} × ${e.name} added as one group`, 'ok', 2200);
+  },
+  alive(c) { return c.horde ? c.horde.hps.filter((h) => h > 0).length : c.hp > 0 ? 1 : 0; },
+  /** Damage (or healing) for one creature, or for a horde spilling from one to the next. Returns how many dropped. */
+  applyHp(c, amount, idx = null) {
+    if (c.horde) {
+      const H = c.horde, before = this.alive(c);
+      if (idx !== null) H.hps[idx] = Math.max(0, Math.min(H.each, H.hps[idx] - amount));
+      else if (amount > 0) { let left = amount; for (let i = 0; i < H.hps.length && left > 0; i++) { if (H.hps[i] <= 0) continue; const t = Math.min(left, H.hps[i]); H.hps[i] -= t; left -= t; } }
+      else { let left = -amount; const order = H.hps.map((h, i) => [h, i]).filter(([h]) => h > 0).sort((a, b) => a[0] - b[0]); for (const [, i] of order) { if (left <= 0) break; const t = Math.min(left, H.each - H.hps[i]); H.hps[i] += t; left -= t; } }
+      c.hp = H.hps.reduce((x, y) => x + y, 0); c.max = H.each * H.hps.length;
+      return before - this.alive(c);
+    }
+    const was = c.hp;
+    c.hp = Math.max(0, amount > 0 ? c.hp - amount : Math.min(Math.max(c.max, c.hp), c.hp - amount));
+    return was > 0 && c.hp <= 0 ? 1 : 0;
+  },
+  downCheck(c) {
+    if (c.hp <= 0 && this.st.hideDead !== false && !c.hidden) {
+      c.hidden = true; c.dead = true;
+      if (this.st.turn === c.cid) this.step(1);
+      toast(`${this.nameOf(c)} ${c.horde ? 'are all' : 'is'} down: moved to Defeated`, 'ok', 2500);
+    }
   },
   addCustom(name, ac, hp, bonus, { quiet = false, cr = null } = {}) {
     name = (name || '').trim() || 'Creature'; hp = Math.max(1, this.num(hp) || 1); bonus = this.num(bonus) || 0;
@@ -7829,14 +7954,12 @@ const Tracker = {
     const raw = box?.value || '', n = this.calc(raw);
     if (!c || n === null || n === 0) { box?.focus(); if (raw && n === null) toast('Use numbers with + and −, e.g. 5+12', 'warn'); return; }
     const before = c.hp;
-    c.hp = Math.max(0, sign < 0 ? c.hp - n : Math.min(Math.max(c.max, c.hp), c.hp + n));
+    const dropped = this.applyHp(c, sign < 0 ? n : -n);
     c.log = c.log || [];
-    c.log.push({ r: this.st.round, d: c.hp - before, x: /[+\-]/.test(raw.replace(/^\s*=?\s*[+\-]?/, '')) ? raw.replace(/^\s*=/, '').trim() : '', t: Date.now(), hp: c.hp });
-    if (c.hp <= 0 && before > 0 && this.st.hideDead !== false) {
-      c.hidden = true; c.dead = true;
-      if (this.st.turn === c.cid) this.step(1);
-      toast(`${this.nameOf(c)} is down: moved to Defeated`, 'ok', 2500);
-    }
+    const how = /[+\-]/.test(raw.replace(/^\s*=?\s*[+\-]?/, '')) ? raw.replace(/^\s*=/, '').trim() : '';
+    c.log.push({ r: this.st.round, d: c.hp - before, x: [how, c.horde && dropped ? `${dropped} down` : ''].filter(Boolean).join(', '), t: Date.now(), hp: c.hp });
+    if (c.horde && dropped && c.hp > 0) toast(`${dropped} ${this.baseName(c)} down · ${this.alive(c)} left`, 'ok', 2200);
+    if (before > 0) this.downCheck(c);
     this.save(); this.render();
   },
   /* ----- rolling from the tracker (uses the roller's dice, targets and log) ----- */
@@ -7847,7 +7970,12 @@ const Tracker = {
     if (!e) return;
     const acts = Roller.actionsOf(e, cid), a = acts.find((x) => x.key === key);
     if (!a) return;
-    const group = !single && this.st.groupRoll && cid === this.st.turn ? this.chunk(c) : [c];
+    const group = c.horde ? Array.from({ length: Math.max(1, Math.min(this.alive(c), c.hordeAtk || this.alive(c))) }, () => c)
+      : !single && this.st.groupRoll && cid === this.st.turn ? this.chunk(c) : [c];
+    if (c.horde) {
+      Roller.rollAction(e, acts, a, { who: `${this.baseName(c)} ×${group.length}`, cid, mode: c.mode || 'normal', many: a.kind === 'save' || a.kind === 'savefx' ? null : group });
+      Uses.spendFor(c, a); this.render(); FightView.refresh(); return;
+    }
     if (group.length > 1 && !a.one && a.kind !== 'save' && a.kind !== 'savefx') {
       const lab = this.labels();
       Roller.rollAction(e, acts, a, { who: `${this.baseName(c)} ${group.map((m) => lab.get(m.cid) || '').join(', ')}`.trim(), cid, mode: c.mode || 'normal', many: group });
@@ -7908,8 +8036,8 @@ const Tracker = {
     const tags = (this.isModified(c) ? '<span class="tr-modtag" title="Uses a modified copy of its stat block">mod</span>' : '')
       + (c.mode === 'adv' || c.mode === 'dis' ? `<span class="tr-mode ${c.mode}">${c.mode === 'adv' ? 'Adv' : 'Dis'}</span>` : '');
     const pct = c.max ? c.hp / c.max : 1, hcls = c.hp <= 0 ? ' down' : pct <= 0.1 ? ' h10' : pct <= 0.2 ? ' h20' : pct <= 0.5 ? ' h50' : '';
-    const row = `<tr class="mon${cur}${hcls}${tie}${c.initAuto ? ' autoinit' : ''}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}`
-      + `<td class="c-name">${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${tags}</td>`
+    const row = `<tr class="mon${cur}${hcls}${tie}${c.initAuto ? ' autoinit' : ''}${c.horde ? ' horde' : ''}" data-row="${c.cid}">${init(c.init, `data-cid="${c.cid}"`)}`
+      + `<td class="c-name">${c.horde ? `<b class="tr-hcount" title="${this.alive(c)} of ${c.horde.hps.length} still standing">×${this.alive(c)}</b> ` : ''}${c.eid ? `<a href="#" class="tr-name" data-open="${esc(c.eid)}" data-cid="${c.cid}" title="Show its stat block">${esc(this.baseName(c))}</a>` : `<span class="tr-name">${esc(this.baseName(c))}</span>`}${tags}</td>`
       + `<td class="c-lab"><button class="tr-lab${lab.get(c.cid) ? '' : ' empty'}" data-tr="label" data-cid="${c.cid}" title="Change the label">${esc(lab.get(c.cid) || '#')}</button></td>`
       + `<td class="c-ac"><span class="tr-acv">${eff !== null ? `<b class="tr-eff" title="${esc(c.ac)} with the change">${eff}</b>` : esc(c.ac || '?')}</span></td>`
       + adj(c.acAdj, `data-cid="${c.cid}"`, has)
@@ -8003,7 +8131,7 @@ const Tracker = {
     box.innerHTML = ids.map((id) => {
       const e = App.entries.get(id), n = this.monsters().filter((c) => c.eid === id).length;
       return `<div class="tr-hitrow"><button class="rr-hit" data-tr="add" data-id="${id}"><b>+</b> ${esc(e.name)} <span class="hint">${e.fields.CR ? 'CR ' + esc(String(e.fields.CR).split(/[\s(]/)[0]) : ''} · HP ${esc(String(e.fields.HP || '?').split(/[\s(]/)[0])}</span></button>`
-        + `<span class="tr-step${n ? ' on' : ''}"><button data-tr="sub" data-id="${id}" aria-label="One fewer"${n ? '' : ' disabled'}>−</button><b title="In the fight">${n}</b><button data-tr="add" data-id="${id}" aria-label="One more">+</button></span></div>`;
+        + `<span class="tr-step${n ? ' on' : ''}"><button data-tr="sub" data-id="${id}" aria-label="One fewer"${n ? '' : ' disabled'}>−</button><b title="In the fight">${n}</b><button data-tr="add" data-id="${id}" aria-label="One more">+</button></span><button class="tr-hordebtn" data-tr="horde" data-id="${id}" title="Add a group of these as one row (a horde): one initiative, one HP total, rolls for all of them">⧉ Group</button></div>`;
     }).join('');
   },
   /** "60" sets it, "+10" / "-10" adds, "50%" is half the stat block's HP, "+20%" adds a fifth of it. */
@@ -8015,6 +8143,12 @@ const Tracker = {
     return Math.max(1, Math.round(sign ? c.max + sign * amt : amt));
   },
   async editMax(c) {
+    if (c.horde) {
+      const v = await askText(`HP of each ${esc(this.baseName(c))}`, String(c.horde.each), 'Changes every creature in the group by the same amount.');
+      const n = parseInt(v, 10);
+      if (n > 0) { const d = n - c.horde.each; c.horde.each = n; c.horde.hps = c.horde.hps.map((h) => (h > 0 ? Math.max(1, Math.min(n, h + d)) : 0)); c.hp = c.horde.hps.reduce((x, y) => x + y, 0); c.max = n * c.horde.hps.length; this.save(); this.render(); }
+      return;
+    }
     const kind = this.monsters().filter((x) => this.baseName(x) === this.baseName(c));
     const ok = await ask(`Max HP: ${esc(this.nameOf(c))}`,
       `<div class="abf"><label class="abf-wide">New max HP <input id="mxVal" value="${c.max}" autocomplete="off" inputmode="text"></label>`
@@ -8070,6 +8204,12 @@ const Tracker = {
     if (a === 'label') { const c = find(); return c && this.editLabel(c); }
     if (a === 'sub') { const list = this.monsters().filter((c) => c.eid === t.dataset.id); const last = list[list.length - 1]; if (last) { st.list = st.list.filter((c) => c !== last); if (st.turn === last.cid) st.turn = null; this.save(); this.render(); } return; }
     if (a === 'labels') { st.labels = t.dataset.v; this.save(); return this.render(); }
+    if (a === 'horde') {
+      const e = App.entries.get(t.dataset.id);
+      const n = parseInt(await askText(`How many ${esc(e.name)} in the group?`, '10', 'A horde shares one row and one initiative. Damage spills from one creature to the next, so 30 damage to 7-HP goblins drops 4 and wounds the 5th.'), 10);
+      if (n > 0) { this.addHorde(t.dataset.id, Math.min(n, 200)); this.q = ''; const sb = $('#trSearch'); if (sb) sb.value = ''; const h = $('#trHits'); if (h) h.innerHTML = ''; }
+      return;
+    }
     if (a === 'add') {
       this.add(t.dataset.id);
       if (t.classList.contains('rr-hit')) { this.q = ''; const sb = $('#trSearch'); if (sb) { sb.value = ''; sb.focus(); } const h = $('#trHits'); if (h) h.innerHTML = ''; } // the − / + buttons keep it for more
@@ -9310,6 +9450,8 @@ async function boot() {
   $('#toolsBtn').addEventListener('click', (ev) => Tools.open(ev.currentTarget));
   $('#toolPane').addEventListener('click', (ev) => {
     const o = ev.target.closest('[data-open]');
+    const gsb = ev.target.closest('[data-gs]');
+    if (gsb) { const v = Tracker.calc(gsb.closest('.gs-res').querySelector('.gs-dmg').value); if (!v) { toast('Type the damage first', 'warn'); return; } GroupSave.apply(gsb.closest('[data-rid]').dataset.rid, v, gsb.dataset.gs); return; }
     if (o && o.dataset.open) { ev.preventDefault(); if (o.dataset.cid) Tracker.focus = o.dataset.cid; App.navigate(o.dataset.open); if (o.dataset.cid) FightView.refresh(); return; }
     if (Tools.current === 'tracker' && !ev.target.closest('[data-rr]')) { Tracker.onClick(ev).catch((err) => logError('Tracker', err)); return; }
     Roller.onClick(ev).then(() => { if (Tools.current === 'tracker') Tracker.render(); }).catch((err) => logError('Roller', err));
@@ -9380,7 +9522,10 @@ async function boot() {
     bar.addEventListener('pointermove', move); bar.addEventListener('pointerup', up);
   });
   $('#toolSplit').addEventListener('dblclick', () => { document.querySelector('.layout').style.removeProperty('--combat-w'); safeLocal.set('dndref.combatW', ''); });
-  $('#detail').addEventListener('change', (ev) => { if (ev.target.matches('[data-fv-target]')) { Roller.st.activeId = ev.target.value || null; Roller.save(); Tracker.render(); } });
+  $('#detail').addEventListener('change', (ev) => {
+    if (ev.target.matches('[data-fv-target]')) { Roller.st.activeId = ev.target.value || null; Roller.save(); Tracker.render(); }
+    if (ev.target.matches('[data-fv-hatk]')) { const c = Tracker.st.list.find((x) => x.cid === ev.target.dataset.cid); if (c) { c.hordeAtk = Math.max(1, parseInt(ev.target.value, 10) || 1); Tracker.save(); } }
+  });
   $('#tapRoll').addEventListener('change', (ev) => safeLocal.set('dndref.tapRoll', ev.target.checked ? '1' : '0'));
   // Collections: right-click or long-press a star; chips in the Favourites tab; buttons in the entry pane.
   const starOf = (t) => t.closest && t.closest('.row [data-act="fav"], .d-head [data-act="fav"]');

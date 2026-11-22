@@ -293,9 +293,9 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 .opt-h::-webkit-details-marker { display: none; }
 .opt-h::before { content: '▾'; color: var(--muted); font-size: 12px; width: 10px; flex: none; }
 details.opt:not([open]) > .opt-h::before { content: '▸'; }
-details.opt:not([open]) { padding-bottom: 4px; align-self: start; }
+details.opt:not([open]) { padding-bottom: 4px; }
 details.opt:not([open]) > .opt-h { margin-bottom: 6px; }
-.opts { align-items: start; }
+.opts { align-items: stretch; } /* cards in a row share one height */
 .opts-bar { display: flex; gap: 6px; margin: 8px 0 -2px; }
 .opts-bar button { font-size: 12px; padding: 2px 10px; min-height: 0; height: 26px; border-radius: 13px; color: var(--muted); }
 .opts-bar button:hover { color: var(--accent); border-color: var(--accent-border); }
@@ -6359,7 +6359,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.9'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-24.1'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

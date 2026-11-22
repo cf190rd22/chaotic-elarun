@@ -3988,6 +3988,55 @@ function splitOptions(text) {
   });
   return { before: lines.slice(0, starts[0]).join('\n'), options };
 }
+/* Looser lists, for showing (not for splitting on import). Two more shapes become cards:
+   1. a name on its own line, then its text ("Ambush" / "When you make a Dexterity…"), when the
+      feature says it's a list ("presented in alphabetical order", "the following options", a
+      title like "Maneuver Options");
+   2. three or more paragraphs in a row that each start "Name. text" ("Flurry of Blows. You can
+      expend 1 Focus Point…"), when the text around them is about spending points or dice, or
+      offers a choice.
+   Anything else (Spellcasting's "Cantrips." / "Spell Slots." paragraphs) is left as it was. */
+const reListCue = /alphabetical order|\bthe following\b|\boptions?\b.*\b(available|presented|below|listed)\b|\bpresented (here|below)\b|\bchoose (one|two|three|\w+) of\b|\byou (know|learn|gain) \w+ (such|of the following|of these)\b/i;
+const reListTitle = /\b(options|maneuvers|invocations|metamagic|infusions|disciplines|arcane shots|runes|maneuver|fighting styles?|blessings|boons|techniques|secrets|tricks|talents|hexes|curses|gifts|pacts|stances|forms)\b/i;
+const reSpendCue = /\b(expend|spend|spends|expends)\b[^.]*\b(points?|dice|die|uses?|charges?|slots?)\b/i;
+const reRunInLine = /^([A-Z][^.!?:]{1,45}?)\.\s+(\S.*)$/;
+function isSentence(l) { const t = String(l || '').trim(); return t.length > 30 && /[.!?:)”"]$/.test(t) && /\s/.test(t) && !isOptionName(t); }
+function splitOptionsLoose(text, title = '') {
+  const strict = splitOptions(text);
+  if (strict) return strict;
+  const lines = String(text || '').split('\n');
+  // 1. name line + sentences
+  const starts = [];
+  for (let i = 0; i < lines.length - 1; i++) {
+    const l = lines[i].trim();
+    if (!l || !isOptionName(l) || reRunInLine.test(l)) continue;
+    if (!isSentence(lines[i + 1])) continue;
+    if (i > 0 && lines[i - 1].trim() && !isSentence(lines[i - 1]) && !reRunInLine.test(lines[i - 1].trim())) continue;
+    starts.push(i);
+  }
+  if (starts.length >= 3 && (reListTitle.test(title) || lines.slice(0, starts[0]).some((l) => reListCue.test(l)))) {
+    const options = starts.map((st, k) => ({ name: lines[st].trim(), props: [], text: lines.slice(st + 1, k + 1 < starts.length ? starts[k + 1] : lines.length).join('\n') }));
+    return { before: lines.slice(0, starts[0]).join('\n'), options, after: '' };
+  }
+  // 2. a run of "Name. text" paragraphs
+  let best = null;
+  for (let i = 0; i < lines.length; i++) {
+    let j = i;
+    while (j < lines.length) { const m = reRunInLine.exec(lines[j].trim()); if (!m || !isTitleCaseName(m[1]) || m[1].split(/\s+/).length > 6) break; j++; }
+    if (j - i >= 3 && (!best || j - i > best[1] - best[0])) best = [i, j];
+    if (j > i) i = j - 1;
+  }
+  if (best) {
+    const [a, b] = best, group = lines.slice(a, b);
+    const ctx = lines.slice(Math.max(0, a - 4), a).join(' ');
+    const spendy = group.filter((l) => reSpendCue.test(l)).length;
+    if (reListTitle.test(title) || reListCue.test(ctx) || reSpendCue.test(ctx) || spendy >= Math.ceil(group.length / 2)) {
+      const options = group.map((l) => { const m = reRunInLine.exec(l.trim()); return { name: m[1].trim(), props: [], text: m[2] }; });
+      return { before: lines.slice(0, a).join('\n'), options, after: lines.slice(b).join('\n') };
+    }
+  }
+  return null;
+}
 /** "The following options are available to your Misfortunist feature…" -> "Misfortunist Options". */
 function optionsTitle(sentence) {
   const m = /available to (?:your|the) (.+?)(?: feature| class feature)?[.:,]/i.exec(sentence || '');
@@ -4089,7 +4138,7 @@ function featureAnchors(e) {
     if (!it.name) return;
     const { title } = itemTitle(it);
     out.push({ name: title, anchor: `sec-${si}-${ii}`, level: it.level, section: s.heading });
-    const so = e.type === 'monster' ? null : splitOptions(it.text);
+    const so = e.type === 'monster' ? null : splitOptionsLoose(it.text, title);
     if (so) so.options.forEach((o, k) => out.push({ name: o.name, anchor: `sec-${si}-${ii}-o${k}`, level: null, section: s.heading, sub: title }));
   }));
   return out;
@@ -4149,8 +4198,8 @@ function renderEmbeddedStatblock(name, body, showTitle) {
 
 /** Feature text, with any stat block inside it drawn as a stat block. */
 function featureText(text, ownerName, anchor = '') {
-  const so = splitOptions(text);
-  if (so) return featureText(so.before, ownerName) + renderOptions(so.options, anchor);
+  const so = splitOptionsLoose(text, ownerName);
+  if (so) return featureText(so.before, ownerName) + renderOptions(so.options, anchor) + (so.after ? formatText(so.after) : '');
   const sb = findStatblock(text, ownerName);
   if (!sb) return formatText(text, { plainFirst: true });
   return formatText(sb.before, { plainFirst: true }) + renderEmbeddedStatblock(sb.name, sb.body, sb.titled) + featureText(sb.after, ownerName);
@@ -6161,7 +6210,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.3'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.4'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

@@ -482,6 +482,11 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .abf-link #abLinkHits { display: flex; flex-direction: column; gap: 2px; max-height: 40vh; overflow: auto; }
 .abf-link #abLinkHits:empty, .abf-link #abLinked:empty { display: none; }
 .abf-known { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.abf-sugg { display: flex; flex-direction: column; gap: 4px; padding-bottom: 6px; border-bottom: 1px dashed var(--border); }
+.abf-sugg .chip { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.2; border-radius: 10px !important; padding: 5px 10px !important; }
+.abf-sugg .chip small { font-size: 10.5px; color: var(--muted); font-weight: 400; }
+.abf-sugg .chip.sp { border-color: color-mix(in srgb, #8b5cf6 45%, var(--border)); }
+#askBody.ab-list .abf-sugg { display: none; }
 .abf-known .chip { max-width: none; overflow: visible; white-space: nowrap; padding: 6px 10px; min-height: 34px; border-radius: 999px; font-size: 13px; }
 #askBody:not(.ab-picked) .abf.linking > :not(.abf-link) { display: none; }
 #askBody.ab-list .abf > :not(.abf-link), #askBody.ab-list #abLinkHits, #askBody.ab-list .abf-known { display: none; }
@@ -6049,7 +6054,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6823,6 +6828,69 @@ const Abilities = {
     $('#abUnlink')?.addEventListener('click', () => { this._ref = null; note.innerHTML = ''; });
     this._ref = r.id;
   },
+  /** What this stat block is like, for suggestions: its type, CR, and the roles it already leans towards. */
+  profile(eid, crOverride = null) {
+    const e = eid && App.entries.get(eid);
+    const f = (e && e.fields) || {};
+    const type = cap(String(f['Creature Type'] || '').split(/[\s(]/)[0].toLowerCase());
+    const cr = e ? crValue(f.CR) : crOverride;
+    const secs = (e && e.sections) || [];
+    const items = secs.flatMap((sc) => sc.items.map((i) => ({ sec: sc.heading.toLowerCase(), name: i.name, text: String(i.text || '') })));
+    const all = items.map((i) => `${i.name}. ${i.text}`).join(' ');
+    const acts = e ? Roller.actionsOf(e).filter((a) => a.kind === 'attack') : [];
+    const ranged = acts.filter((a) => /ranged/i.test(a.text) && !/melee/i.test(a.text)).length, melee = acts.filter((a) => /melee/i.test(a.text)).length;
+    const q = cr !== null && cr !== undefined ? QuickStats.get(crText(cr)) : null;
+    const ac = parseInt(f.AC, 10), hp = parseInt(f.HP, 10);
+    const roles = [];
+    if (secs.some((sc) => /legendary/i.test(sc.heading)) || /legendary resistance/i.test(all)) roles.push(['Solo', 'it is a solo / legendary foe']);
+    if (/spellcasting|casts? (?:one of )?the following spells/i.test(all)) roles.push(['Magic', 'it casts spells'], ['Controller role', 'spellcasters make good controllers']);
+    if (ranged && ranged > melee) roles.push(['Artillery role', 'it fights at range']);
+    if (/stealth/i.test(f.Skills || '') || /\bhide\b/i.test(all)) roles.push(['Ambusher role', 'it is stealthy']);
+    const walk = parseInt(String(f.Speed || ''), 10); // the first number is its walking speed (a swim speed doesn't count)
+    if (/\bfly\b/i.test(f.Speed || '') || walk >= 40) roles.push(['Skirmisher role', /\bfly\b/i.test(f.Speed || '') ? 'it flies' : 'it is fast']);
+    if (q && Number.isFinite(ac) && ac >= q.ac + 2) roles.push(['Defender role', `AC ${ac} is high for CR ${crText(cr)}`]);
+    else if (q && Number.isFinite(hp) && hp >= q.hp * 1.25) roles.push(['Defender role', `${hp} HP is high for CR ${crText(cr)}`]);
+    if (melee && !roles.some(([r]) => /Artillery|Defender/.test(r))) roles.push(['Bruiser role', 'it fights up close']);
+    const TYPE_THEMES = { Aberration: ['Aberration', 'Aberrant'], Beast: ['Beast', 'Bestial'], Celestial: ['Celestial'], Construct: ['Construct'], Dragon: ['Dragon', 'Draconic'], Elemental: ['Elemental'], Fey: ['Fey', 'Charm or Fey'], Fiend: ['Fiend'], Giant: ['Giant'], Humanoid: ['Humanoid', 'Warrior', 'Rogue', 'Leadership'], Monstrosity: ['Monstrosity', 'Bestial'], Ooze: ['Ooze'], Plant: ['Plant', 'Plant and Poison'], Undead: ['Undead', 'Necromantic'] };
+    return { e, type, cr, roles, typeThemes: TYPE_THEMES[type] || [], has: new Set(items.map((i) => fold(i.name.replace(/\s*\(.*$/, '')))) };
+  },
+  /** Powers and add-on spells that suit this stat block, each with a reason. */
+  suggest(eid, key, crOverride = null) {
+    const P = this.profile(eid, crOverride), out = [], seen = new Set();
+    for (const k of this.known(eid)) { seen.add(k.id); P.has.add(fold(k.name)); } // spells it already casts
+    const added = new Set(this.list(key).map((x) => fold(x.name.replace(/\s*\(.*$/, ''))));
+    const fresh = (x) => { const n = fold(x.name.replace(/\s*\(.*$/, '')); return !seen.has(x.id) && !P.has.has(n) && !added.has(n); };
+    const pw = [...App.entries.values()].filter((x) => this.isPower(x));
+    const take = (theme, why, n) => {
+      const list = pw.filter((x) => fold(x.fields.Theme || '') === fold(theme) && fresh(x)).sort((a, b) => a.name.localeCompare(b.name));
+      let got = 0;
+      for (const x of list) { if (got >= n) break; seen.add(x.id); out.push({ r: x, why }); got++; }
+      return got;
+    };
+    // roles first (what it does in a fight), then its creature type, then one that suits anything
+    let roleN = 0;
+    for (const [role, why] of P.roles) { if (roleN >= 5) break; roleN += take(role, why, role === 'Solo' || role === 'Magic' ? 2 : 1); }
+    let typeN = 0;
+    for (const t of P.typeThemes) { if (typeN >= 3) break; typeN += take(t, `${P.type}`, 3 - typeN); }
+    take('Common', 'works on any monster', 1);
+    // add-on spells for casters, at a level that suits the CR, one of each kind
+    if (P.roles.some(([r]) => r === 'Magic')) {
+      const maxLv = Math.max(1, Math.min(9, Math.ceil(((P.cr ?? 1) + 1) / 2)));
+      for (const l of this.spellLists()) {
+        const rows = this.listRows(l).filter((x) => x.entry && fresh(x.entry));
+        const h = l.table.headers.map((x) => fold(x)), li = h.findIndex((x) => /level/.test(x)), ti = h.findIndex((x) => /^type$/.test(x));
+        const byType = new Map();
+        for (const x of rows) {
+          const lv = parseInt(l.table.rows[x.i][li], 10);
+          if (li >= 0 && !(lv <= maxLv)) continue;
+          const k = ti >= 0 ? l.table.rows[x.i][ti] : 'spell';
+          if (!byType.has(k) || parseInt(l.table.rows[byType.get(k).i][li], 10) < lv) byType.set(k, x);
+        }
+        for (const [k, x] of byType) if (!seen.has(x.entry.id)) { seen.add(x.entry.id); out.push({ r: x.entry, why: `${l.name}: ${String(k).toLowerCase()}, level ${l.table.rows[x.i][li]}` }); }
+      }
+    }
+    return out.slice(0, 12);
+  },
   /** Tables of spells you have imported (Action-Balancing Spells, Add-On Spells…). */
   spellLists() {
     return [...App.entries.values()].filter((e) => e.table && e.table.headers.some((h) => /^\s*spells?\s*$/i.test(h)) && e.table.rows.length).sort((a, b) => a.name.localeCompare(b.name));
@@ -6868,10 +6936,13 @@ const Abilities = {
     const TYPES = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
     const groupOf = (t) => (/ role$/i.test(t) ? [0, 'Role', t.replace(/ role$/i, '')] : TYPES.includes(t) ? [1, 'Creature type', t] : /^common$/i.test(t) ? [3, 'Common', 'Any monster'] : [2, 'Theme', t]);
     const themes = [...new Set(pw.map((x) => x.fields.Theme || 'Other'))].sort((a, b) => { const A = groupOf(a), B = groupOf(b); return A[0] - B[0] || A[2].localeCompare(B[2]); });
-    const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers: roles, creature types, themes…</option>${themes.map((t) => { const [, g, n] = groupOf(t); return `<optgroup label="${esc(g === 'Common' ? 'Common · any monster' : `${g} · ${n}`)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`; }).join('')}</select></label>` : '';
+    const sugg = this.suggest(opts.eid, key, opts.cr);
+    const sPw = sugg.filter((x) => this.isPower(x.r));
+    const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers: roles, creature types, themes…</option>${sPw.length ? `<optgroup label="★ Suggested for ${esc(label)}">${sPw.map((x) => `<option value="${esc(x.r.id)}">${esc(x.r.name)} · ${esc(x.why)}</option>`).join('')}</optgroup>` : ''}${themes.map((t) => { const [, g, n] = groupOf(t); return `<optgroup label="${esc(g === 'Common' ? 'Common · any monster' : `${g} · ${n}`)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`; }).join('')}</select></label>` : '';
     const lists = this.spellLists();
     const listSel = lists.length ? `<label>Spell lists <select id="abList"><option value="">Add several spells from a list…</option>${lists.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} (${l.table.rows.length})</option>`).join('')}</select></label><div id="abListBox"></div>` : '';
-    const link = `<div class="abf-wide abf-link"><label>From your database <span class="clearable"><input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span></label>${browse}${listSel}`
+    const suggHtml = sugg.length ? `<div class="abf-sugg"><span class="hint">★ Suggested for ${esc(label)}</span><div class="abf-known">${sugg.map((x) => `<button type="button" class="chip${this.isPower(x.r) ? ' pw' : ' sp'}" data-ab-ref="${esc(x.r.id)}" title="${esc(x.why)}">${esc(x.r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*[^)]*)?\)/, ''))}<small>${esc(x.why)}</small></button>`).join('')}</div></div>` : '';
+    const link = `<div class="abf-wide abf-link">${suggHtml}<label>From your database <span class="clearable"><input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span></label>${browse}${listSel}`
       + (known.length ? `<div class="abf-known"><span class="hint">Its spells:</span>${known.map((x) => `<button type="button" class="chip" data-ab-ref="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>` : '')
       + `<div id="abLinkHits"></div><div id="abLinked" class="hint"></div></div>`;
     const done = ask(opts.link ? `Add to ${esc(label)} for this fight` : `Add an ability: ${esc(label)}`,

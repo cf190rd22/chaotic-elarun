@@ -251,6 +251,8 @@ mark.fip.cur { background: hsl(30 95% 55%); color: #000; outline: 2px solid hsl(
 .os-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; padding: 7px 0; border-top: 1px solid var(--border); }
 .os-t { flex: 1 1 280px; min-width: 0; } .os-t .hint { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .os-b { display: flex; gap: 6px; align-items: center; } .os-b button { font-size: 12.5px; padding: 2px 10px; }
+.os-peek { flex-basis: 100%; margin: 4px 0 6px; padding: 8px 10px; border: 1px dashed var(--border); border-radius: 8px; background: var(--bg); font-size: 13.5px; }
+.os-peek .opts { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 .os-shown summary { cursor: pointer; margin: 12px 0 4px; font-weight: 600; }
 /* results bar: one line */
 #resultMeta { flex-wrap: nowrap; }
@@ -4025,7 +4027,7 @@ function splitOptionsLoose(text, title = '') {
     const l = lines[i].trim();
     if (!l || !isOptionName(l) || reRunInLine.test(l)) continue;
     if (!isSentence(lines[i + 1])) continue;
-    if (i > 0 && lines[i - 1].trim() && !isSentence(lines[i - 1]) && !reRunInLine.test(lines[i - 1].trim())) continue;
+    if (i > 0 && lines[i - 1].trim() && !isSentence(lines[i - 1]) && !/[.!?:]$/.test(lines[i - 1].trim()) && !reRunInLine.test(lines[i - 1].trim())) continue;
     starts.push(i);
   }
   if (starts.length >= 3 && (reListTitle.test(title) || lines.slice(0, starts[0]).some((l) => reListCue.test(l)))) {
@@ -4051,6 +4053,12 @@ function splitOptionsLoose(text, title = '') {
   }
   return null;
 }
+/** Spellcasting's own rules (Cantrips, Spell Slots, Prepared Spells…) are never a list of options. */
+const reNotListTitle = /\b(spellcasting|pact magic|spell slots?|spells? known|prepared spells|spellbook|cantrips|ritual casting|innate spellcasting)\b/i;
+const reSpellRule = /\b(cantrips?|spell slots?|prepared spells?|spellcasting|spellbook|ritual|spell list|spells? known|casting)\b/i;
+function notAList(title, options) {
+  return reNotListTitle.test(title || '') || options.filter((o) => reSpellRule.test(o.name)).length >= Math.min(2, options.length);
+}
 /** No cues needed: any 2+ "Name" + text blocks, or 2+ "Name. text" paragraphs in a row. Used when you ask for cards, and to find candidates. */
 function splitOptionsForced(text) {
   const lines = String(text || '').split('\n');
@@ -4074,10 +4082,13 @@ function splitOptionsForced(text) {
 /** A feature's options, honouring your choice: it.cards true = always cards, false = never, unset = automatic. */
 function optionsFor(it, title) {
   if (it && it.cards === false) return null;
-  const auto = splitOptionsLoose(it && it.text, title);
+  let auto = splitOptionsLoose(it && it.text, title);
+  if (auto && it && it.cards !== true && !auto.options.some((o) => o.props.length) && notAList(title, auto.options)) auto = null;
   if (auto || !(it && it.cards === true)) return auto;
   return splitOptionsForced(it.text);
 }
+/** Could this feature be shown as cards? (the switch and the scan) */
+function couldBeList(it, title) { const f = splitOptionsForced(it && it.text); return f && !notAList(title, f.options) ? f : null; }
 /** Settings → Option lists: what's shown as cards, and what might be a list but isn't. */
 const OptScan = {
   rows() {
@@ -4088,7 +4099,7 @@ const OptScan = {
         if (!it.text || it.cards === false) return;
         const title = itemTitle(it).title, shown = optionsFor(it, title);
         if (shown) { out.shown.push({ e, si, ii, title, opts: shown.options }); return; }
-        const f = splitOptionsForced(it.text);
+        const f = couldBeList(it, title);
         if (f) out.cand.push({ e, si, ii, title, opts: f.options });
       }));
     }
@@ -4099,7 +4110,7 @@ const OptScan = {
   rowHtml(r, shown) {
     const names = r.opts.map((o) => o.name), list = names.slice(0, 5).join(', ') + (names.length > 5 ? `, +${names.length - 5}` : '');
     return `<div class="os-row" data-id="${esc(r.e.id)}" data-si="${r.si}" data-ii="${r.ii}"><div class="os-t"><b>${esc(r.e.name)}</b> › ${esc(r.title)} <span class="hint">${names.length} · ${esc(list)}</span></div>`
-      + `<div class="os-b">${shown ? '<button data-os="off">As text</button>' : '<button data-os="on" class="primary">As cards</button><button data-os="off">Not a list</button>'}<button data-os="open">Open</button></div></div>`;
+      + `<div class="os-b"><button data-os="peek" aria-expanded="false">Preview</button>${shown ? '<button data-os="off">As text</button>' : '<button data-os="on" class="primary">As cards</button><button data-os="off">Not a list</button>'}<button data-os="open">Open</button></div><div class="os-peek" hidden></div></div>`;
   },
   async open() {
     const { cand, shown } = this.rows();
@@ -4112,7 +4123,13 @@ const OptScan = {
       const b = ev.target.closest('[data-os]'); if (!b) return;
       const row = b.closest('.os-row'), e = App.entries.get(row.dataset.id), it = e && e.sections[+row.dataset.si].items[+row.dataset.ii];
       if (!it) return;
-      if (b.dataset.os === 'open') { $('#askDlg').close(); App.open(e.id); setTimeout(() => document.querySelector(`#detail [data-anchor="sec-${row.dataset.si}-${row.dataset.ii}"]`)?.scrollIntoView({ block: 'start' }), 150); return; }
+      if (b.dataset.os === 'peek') {
+        const box = row.querySelector('.os-peek'), show = box.hidden;
+        if (show) { const title = itemTitle(it).title, so = optionsFor({ ...it, cards: true }, title); box.innerHTML = so ? (so.before.trim() ? formatText(so.before) : '') + renderOptions(so.options, 'peek') + (so.after ? formatText(so.after) : '') : formatText(it.text); }
+        box.hidden = !show; b.setAttribute('aria-expanded', String(show)); b.textContent = show ? 'Hide' : 'Preview';
+        return;
+      }
+      if (b.dataset.os === 'open') { $('#askDlg').close(); $('#settingsDlg').close(); App.open(e.id); setTimeout(() => document.querySelector(`#detail [data-anchor="sec-${row.dataset.si}-${row.dataset.ii}"]`)?.scrollIntoView({ block: 'start' }), 150); return; }
       it.cards = b.dataset.os === 'on';
       await App.upsert([e], { quiet: true });
       row.querySelector('.os-b').innerHTML = `<span class="hint">${it.cards ? '✓ Shown as cards' : b.textContent === 'Not a list' ? '✓ Marked as not a list' : '✓ Shown as text'}</span><button data-os="${it.cards ? 'off' : 'on'}">Undo</button>`;
@@ -4315,7 +4332,7 @@ function renderSections(sections, { runIn = false, prefix = 'sec', wrap = false 
         // a switch for anything that is, or could be, a list of options (only on the entry's own sections)
         let sw = '';
         if (prefix === 'sec') {
-          const shown = !!optionsFor(it, title), could = shown || !!splitOptionsForced(it.text);
+          const shown = !!optionsFor(it, title), could = shown || !!couldBeList(it, title) || it.cards === false;
           if (could) sw = `<button class="feat-cards" data-cards="${shown ? 'off' : 'on'}" data-si="${si}" data-ii="${ii}" title="${shown ? 'Show this feature as plain text' : 'Show the options in this feature as cards'}${it.cards !== undefined ? ' (you chose this; tap to switch)' : ''}">${shown ? '≡ As text' : '▦ As cards'}</button>`;
         }
         html = `<div class="feat"><h4 data-anchor="${prefix}-${si}-${ii}">${lvl}${esc(title)}${sw}</h4>` + (intro ? `<p class="opt-intro">${rich(intro)}</p>` : '')
@@ -6299,7 +6316,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-23.5'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-23.6'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

@@ -482,6 +482,9 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .abf-link #abLinkHits { display: flex; flex-direction: column; gap: 2px; max-height: 40vh; overflow: auto; }
 .abf-link #abLinkHits:empty, .abf-link #abLinked:empty { display: none; }
 .abf-known { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.abf-multi { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 10%, var(--panel)); position: sticky; top: 0; z-index: 2; }
+.abf-multi .primary { min-height: 34px; }
+[data-ab-ref].sel { outline: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)) !important; }
 .abf-sugg { display: flex; flex-direction: column; gap: 4px; padding-bottom: 6px; border-bottom: 1px dashed var(--border); }
 .abf-sugg .chip { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; line-height: 1.2; border-radius: 10px !important; padding: 5px 10px !important; }
 .abf-sugg .chip small { font-size: 10.5px; color: var(--muted); font-weight: 400; }
@@ -692,6 +695,16 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 @container (max-width: 700px) { .tr-row .tr-note { flex: 1 1 100%; } }
 #rollPop { position: fixed; z-index: 1003; right: 14px; bottom: 14px; width: min(440px, calc(100vw - 28px)); max-height: 55vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px rgb(0 0 0 / .3); padding: 8px 10px 4px; }
 #rollPop .rr-card { margin: 0; border: 0; box-shadow: none; padding-right: 30px; }
+#rollPop .rr-line { font-size: 14px; line-height: 1.9; }
+/* while a result is showing, pages can scroll their last lines up above it */
+body.rollpop-open #detail, body.rollpop-open #toolPane .rr-scroll { padding-bottom: min(52vh, 340px); }
+#rollPop .rr-tot { font-size: 20px; }
+#rollPop .rr-res { font-size: 13px; padding: 2px 8px; }
+#rollPop .rr-dmg { font-size: 20px; padding: 1px 8px; }
+#rollPop .rr-dice { font-size: 12px; }
+#rollPop .rr-total { font-size: 15px; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border); }
+#rollPop .rr-total b { font-size: 24px; }
+#rollPop .rr-head { font-size: 15px; }
 #rollPop .rp-x { position: absolute; top: 6px; right: 6px; width: 34px; height: 34px; min-height: 0; padding: 0; border-radius: 50%; font-size: 18px; }
 #rollPop.flash { animation: rpIn .18s ease-out; }
 @keyframes rpIn { from { transform: translateY(8px); opacity: .4; } to { transform: none; opacity: 1; } }
@@ -765,6 +778,11 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 }
 @media (max-width: 720px) { body.tool-open.show-detail #toolPane { display: none !important; } body.tool-open .tabs { display: none; } }
 .rr-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+/* Combat's close button sits in the outer top corner: right when Combat is on the left of the page, left when it is on the right */
+#toolPane .rr-top { position: relative; padding-right: 46px; }
+#toolPane .rr-top .tr-close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; min-height: 0; padding: 0; border-radius: 50%; font-size: 18px; order: 99; }
+body.combat-right #toolPane .rr-top { padding-right: 12px; padding-left: 46px; }
+body.combat-right #toolPane .rr-top .tr-close { right: auto; left: 8px; }
 .rr-top h2 { font: 700 17px var(--serif); margin: 0 auto 0 0; }
 .rr-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .rr-seg button { border: 0; border-radius: 0; padding: 4px 10px; font-size: 13px; background: transparent; }
@@ -1501,7 +1519,7 @@ function toBase64(str) {
 function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }]) {
   const dlg = $('#askDlg');
   $('#askTitle').textContent = title;
-  $('#askBody').className = ''; // every box starts clean (a picker's state must never hide the next box's buttons)
+  $('#askBody').className = 'dlg-body'; // every box starts clean (a picker's state must never hide the next box's buttons)
   $('#askBody').innerHTML = html;
   const box = $('#askBtns');
   box.innerHTML = '';
@@ -5305,6 +5323,7 @@ const App = {
     const e = this.entries.get(id);
     const el = $('#detail');
     if (!e) { el.innerHTML = (Cols.active ? `<div class="fip-bar tray-only">${Cols.trayHtml(null)}</div>` : '') + '<div class="empty">Select an entry, or press <span class="kbd">/</span> to search.</div>'; return; }
+    const keepY = this.currentId === id ? el.scrollTop : null; // redrawing the same page: don't jump to the top
     this.currentId = id;
     const t = Types.get(e.type);
     Linker.begin(e.id, featureAnchors(e));
@@ -5337,7 +5356,8 @@ const App = {
       </div>
       ${e.raw ? `<div class="raw-box" hidden>${esc(e.raw)}</div>` : ''}
       <div class="d-refs" data-for="${esc(e.id)}"></div>`;
-    if (!fromSearch) el.scrollTop = 0;
+    if (keepY !== null) el.scrollTop = keepY;
+    else if (!fromSearch) el.scrollTop = 0;
     Tables.enhance(el, e.id);
     if (e.type === 'monster' && !isMonGroup(e)) FightView.enhance(el, e);
     const onChip = el.querySelector('.tray-chip.on'); // keep the entry you're on visible in the tray
@@ -6054,7 +6074,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.2'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.3'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6941,7 +6961,7 @@ const Abilities = {
     const browse = pw.length ? `<label>Monster powers <select id="abPower"><option value="">Browse ${pw.length} powers: roles, creature types, themes…</option>${sPw.length ? `<optgroup label="★ Suggested for ${esc(label)}">${sPw.map((x) => `<option value="${esc(x.r.id)}">${esc(x.r.name)} · ${esc(x.why)}</option>`).join('')}</optgroup>` : ''}${themes.map((t) => { const [, g, n] = groupOf(t); return `<optgroup label="${esc(g === 'Common' ? 'Common · any monster' : `${g} · ${n}`)}">${pw.filter((x) => (x.fields.Theme || 'Other') === t).sort((a, b) => a.name.localeCompare(b.name)).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</optgroup>`; }).join('')}</select></label>` : '';
     const lists = this.spellLists();
     const listSel = lists.length ? `<label>Spell lists <select id="abList"><option value="">Add several spells from a list…</option>${lists.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} (${l.table.rows.length})</option>`).join('')}</select></label><div id="abListBox"></div>` : '';
-    const suggHtml = sugg.length ? `<div class="abf-sugg"><span class="hint">★ Suggested for ${esc(label)}</span><div class="abf-known">${sugg.map((x) => `<button type="button" class="chip${this.isPower(x.r) ? ' pw' : ' sp'}" data-ab-ref="${esc(x.r.id)}" title="${esc(x.why)}">${esc(x.r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*[^)]*)?\)/, ''))}<small>${esc(x.why)}</small></button>`).join('')}</div></div>` : '';
+    const suggHtml = sugg.length ? `<div class="abf-sugg"><span class="hint">★ Suggested for ${esc(label)} · tap to fill in, or Ctrl/⌘-click to pick several</span><div class="abf-known">${sugg.map((x) => `<button type="button" class="chip${this.isPower(x.r) ? ' pw' : ' sp'}" data-ab-ref="${esc(x.r.id)}" title="${esc(x.why)}">${esc(x.r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*[^)]*)?\)/, ''))}<small>${esc(x.why)}</small></button>`).join('')}</div></div>` : '';
     const link = `<div class="abf-wide abf-link">${suggHtml}<label>From your database <span class="clearable"><input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span></label>${browse}${listSel}`
       + (known.length ? `<div class="abf-known"><span class="hint">Its spells:</span>${known.map((x) => `<button type="button" class="chip" data-ab-ref="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>` : '')
       + `<div id="abLinkHits"></div><div id="abLinked" class="hint"></div></div>`;
@@ -6960,7 +6980,34 @@ const Abilities = {
       hits.innerHTML = ids.map((id) => { const x = App.entries.get(id); return `<button type="button" class="rr-hit" data-ab-ref="${esc(id)}">${esc(x.name)} <span class="hint">${esc(this.isPower(x) ? 'Power · ' + (x.fields.Theme || '') : Types.get(x.type).label)}${x.fields?.Level ? ' · ' + (x.fields.Level === 'Cantrip' ? 'cantrip' : 'level ' + esc(x.fields.Level)) : ''}</span></button>`; }).join('');
     });
     q.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); ev.stopPropagation(); const h = hits.querySelector('[data-ab-ref]'); if (h) pick(h.dataset.abRef); } });
-    body.addEventListener('click', (ev) => { const h = ev.target.closest('[data-ab-ref]'); if (h) { ev.preventDefault(); pick(h.dataset.abRef); } });
+    const multi = new Set();
+    const multiBar = () => {
+      let bar = $('#abMulti');
+      if (!multi.size) { bar?.remove(); return; }
+      if (!bar) { bar = Object.assign(document.createElement('div'), { id: 'abMulti', className: 'abf-multi' }); body.querySelector('.abf-link')?.prepend(bar); }
+      bar.innerHTML = `<span>${multi.size} picked</span><button type="button" class="primary" data-ab-multi="add">Add ${multi.size}</button><button type="button" class="linkish" data-ab-multi="clear">Clear</button>`;
+    };
+    body.addEventListener('click', (ev) => {
+      const m = ev.target.closest('[data-ab-multi]');
+      if (m) {
+        ev.preventDefault();
+        if (m.dataset.abMulti === 'clear') { multi.clear(); for (const c of body.querySelectorAll('[data-ab-ref].sel')) c.classList.remove('sel'); return multiBar(); }
+        Roller.st.extras = Roller.st.extras || {};
+        const bucket = (Roller.st.extras[key] = Roller.st.extras[key] || []);
+        for (const id of multi) { const r = App.entries.get(id); if (!r) continue; const p = this.plan(r, opts.eid, opts.cr); bucket.push({ id: uid(), name: p.name, sec: p.sec, text: this.compose(p), ref: r.id }); }
+        Roller.save(); toast(`Added ${multi.size} for this fight`, 'ok'); this._listed = true; $('#askDlg').close(); return;
+      }
+      const h = ev.target.closest('[data-ab-ref]');
+      if (!h) return;
+      ev.preventDefault();
+      if (ev.ctrlKey || ev.metaKey || multi.size) { // Ctrl/⌘-click picks several; once you've started, plain clicks add to the pick too
+        const id = h.dataset.abRef;
+        if (multi.has(id)) multi.delete(id); else multi.add(id);
+        for (const c of body.querySelectorAll(`[data-ab-ref="${CSS.escape(id)}"]`)) c.classList.toggle('sel', multi.has(id));
+        return multiBar();
+      }
+      pick(h.dataset.abRef);
+    });
     $('#abPower')?.addEventListener('change', (ev) => { if (ev.target.value) pick(ev.target.value); ev.target.value = ''; });
     const lbox = $('#abListBox');
     $('#abList')?.addEventListener('change', (ev) => {
@@ -7064,10 +7111,11 @@ const RollPop = {
     if (!r) return;
     el.innerHTML = `<button class="rp-x" data-rp="x" aria-label="Close the result" title="Close (Esc)">×</button>${Roller.resultHtml(r)}`;
     el.hidden = false;
+    document.body.classList.add('rollpop-open');
     el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
     Tracker.render();
   },
-  close() { const el = $('#rollPop'); if (el) el.hidden = true; },
+  close() { const el = $('#rollPop'); if (el) el.hidden = true; document.body.classList.remove('rollpop-open'); },
 };
 document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#rollPop') && !$('#rollPop').hidden && !document.querySelector('dialog[open]')) RollPop.close(); });
 
@@ -7586,7 +7634,7 @@ const Tracker = {
         : `<button class="tr-start primary" data-tr="startfight" title="Start the first turn and the timer"${this.st.list.some((c) => this.live(c)) ? '' : ' disabled'}>▶ Start combat</button>`)
       + `<button class="tr-setup${setup ? ' on' : ''}" data-tr="setup" aria-expanded="${setup}">${setup ? 'Hide setup' : 'Setup'}</button>`
       + '<button class="tr-new" data-tr="reset" title="Clear the monsters and start a new fight (your party stays)">↺ New fight</button>'
-      + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x" data-tr="close" title="Close (Shift+I)" aria-label="Close the tracker">×</button></div>`
+      + Tools.pinHtml('data-tr="pin"') + `<button class="rr-x tr-close" data-tr="close" title="Close Combat (Shift+I)" aria-label="Close Combat">×</button></div>`
       + (battle ? '' : `<div class="tr-diffwrap">${Roller.diffStrip(!!this.diffOpen)}</div>`)
       + '<div class="rr-scroll">'
       + (this.diffOpen && !battle ? Roller.difficultyHtml() : '')

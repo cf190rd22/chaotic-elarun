@@ -486,6 +486,10 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .sw-f label { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted); }
 .sw-f input { flex: 1 1 160px; min-width: 140px; }
 .sw-list { display: flex; flex-direction: column; gap: 4px; max-height: 50vh; overflow: auto; }
+.sw-row { display: grid; grid-template-columns: 1fr auto; gap: 4px; align-items: stretch; }
+.sw-row .sw-desc { grid-column: 1 / -1; font-size: 13px; padding: 6px 10px 8px; border-left: 3px solid var(--accent); background: var(--panel-2); border-radius: 0 6px 6px 0; }
+.sw-row .sw-desc p { margin: 6px 0 0; }
+.sw-i { width: 36px; min-height: 0; padding: 0; border-radius: 50%; font: italic 700 15px Georgia, serif; align-self: center; height: 36px; }
 .sw-o { display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 8px 10px; min-height: 44px; border-radius: 8px; }
 .sw-o small { color: var(--muted); font-weight: 400; }
 .fv-swapped { opacity: .55; }
@@ -708,6 +712,11 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 #rollPop { position: fixed; z-index: 1003; right: 14px; bottom: 14px; width: min(440px, calc(100vw - 28px)); max-height: 55vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 14px 40px rgb(0 0 0 / .3); padding: 8px 10px 4px; }
 #rollPop .rr-card { margin: 0; border: 0; box-shadow: none; padding-right: 30px; }
 #rollPop .rr-line { font-size: 14px; line-height: 1.9; }
+.rr-rider { margin: 2px 0 6px; padding: 5px 9px; border-radius: 8px; font-size: 13.5px; line-height: 1.45; background: color-mix(in srgb, #f59e0b 14%, var(--panel)); border-left: 3px solid #f59e0b; }
+.rr-rider.dim { opacity: .55; background: var(--panel-2); border-left-color: var(--border); }
+.rr-rider-l { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; margin-right: 6px; color: #b45309; }
+.rr-rider.dim .rr-rider-l { color: var(--muted); }
+.rr-cond { color: #9333ea; } .rr-dc { color: #be185d; }
 /* while a result is showing, pages can scroll their last lines up above it */
 body.rollpop-open #detail, body.rollpop-open #toolPane .rr-scroll { padding-bottom: min(52vh, 340px); }
 #rollPop .rr-tot { font-size: 20px; }
@@ -1779,7 +1788,7 @@ async function adoptCombat(c) {
   if (!c) return '';
   const out = [];
   if (Array.isArray(c.party) && c.party.length && !Roller.st.party.length) {
-    Roller.st.party = c.party.map((p) => ({ ...p })); Roller.st.activeId = c.activeId || Roller.st.party[0].id;
+    Roller.st.party = c.party.map((p) => ({ ...p })); Roller.st.activeId = null;
     if (Array.isArray(c.bal) && c.bal.length) { Roller.st.bal = c.bal; Roller.st.balSet = !!c.balSet; }
     if (c.crit) Roller.st.crit = c.crit;
     Roller.save(); Tracker.syncParty(); Tracker.save();
@@ -6087,7 +6096,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.4'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.5'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6439,7 +6448,36 @@ const Roller = {
     else if (a.dmg.length && /^Damage:/.test(text)) a.kind = 'damage';
     const rc = /\(Recharge (\d)(?:[-–](\d))?\)/i.exec(name);
     if (rc) a.recharge = +rc[1];
+    a.rider = this.rider(text, a.kind);
     return a;
+  },
+  /** What else it does after the damage: a save, a condition, a push… ("" when nothing). */
+  rider(text, kind) {
+    const t = String(text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    let rest = '';
+    if (kind === 'attack') {
+      const hitAt = t.search(/\bHit:/i);
+      if (hitAt < 0) return '';
+      const after = t.slice(hitAt);
+      const re = new RegExp(`\\b(?:${DAMAGE_TYPES})\\s+damage\\b`, 'gi');
+      let m, end = -1; while ((m = re.exec(after))) end = m.index + m[0].length;
+      rest = end >= 0 ? after.slice(end) : after.replace(/^Hit:\s*/i, '');
+    } else if (kind === 'save' || kind === 'savefx') {
+      const f = /\bFailure:\s*([^]*?)(?:\bSuccess:|$)/i.exec(t);
+      rest = f ? f[1] : t;
+      const re = new RegExp(`^[^.]*?\\b(?:${DAMAGE_TYPES})\\s+damage\\b`, 'i');
+      rest = rest.replace(re, '');
+    } else return '';
+    rest = rest.replace(/^[\s.,;:]+(?:and\s+)?/i, '').trim();
+    if (!rest || !new RegExp(`\\b(${CONDITION_NAMES})\\b|saving throw|\\bDC\\s*\\d|push|pull|knocked|speed|can't|cannot|disadvantage|advantage|swallow|grapple|ongoing|start of each|end of each|hit point maximum`, 'i').test(rest)) return '';
+    return rest.length > 260 ? rest.slice(0, 260).replace(/\s+\S*$/, '') + '…' : rest;
+  },
+  /** The rider, with conditions and DCs made easy to spot. */
+  riderHtml(txt, hit, label = null) {
+    if (!txt) return '';
+    const h = esc(txt).replace(new RegExp(`\\b(${CONDITION_NAMES})\\b`, 'gi'), '<b class="rr-cond">$1</b>')
+      .replace(/\b(DC \d+(?: (?:Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma))?(?: saving throw)?|(?:Strength|Dexterity|Constitution|Intelligence|Wisdom|Charisma) saving throw(?: \(DC \d+\))?)/gi, '<b class="rr-dc">$1</b>');
+    return `<div class="rr-rider${hit === false ? ' dim' : ''}"><span class="rr-rider-l">${label || (hit === undefined ? 'If it hits' : hit === false ? 'Had it hit' : 'On the hit')}</span> ${h}</div>`;
   },
   saveMod(e, k) {
     const a = e.abilities && e.abilities[k];
@@ -6468,12 +6506,12 @@ const Roller = {
     const total = d.chosen + (a.toHit || 0);
     const dmg = a.dmg.map((c) => this.damage(c, crit));
     const vs = tgt ? { id: tgt.id, name: tgt.name || 'Target', ac: this.acOf(tgt), hit: !fumble && (crit || total >= this.acOf(tgt)) } : null;
-    return { kind: 'attack', name: a.name, d20: d.rolls, chosen: d.chosen, toHit: a.toHit, total, crit, fumble, dmg, sum: dmg.reduce((x, y) => x + y.total, 0), vs, extraSave: a.extraSave };
+    return { kind: 'attack', name: a.name, d20: d.rolls, chosen: d.chosen, toHit: a.toHit, total, crit, fumble, dmg, sum: dmg.reduce((x, y) => x + y.total, 0), vs, extraSave: a.extraSave, rider: a.rider || '' };
   },
   rollSaveFx(a) {
     const dmg = a.dmg.map((c) => this.damage(c, false)), sum = dmg.reduce((x, y) => x + y.total, 0);
     if (a.kind === 'damage') return { kind: 'dmg', name: a.name, dmg, sum };
-    return { kind: 'save', name: a.name, dc: a.save.dc, ab: a.save.ab, half: a.half, dmg, sum };
+    return { kind: 'save', name: a.name, dc: a.save.dc, ab: a.save.ab, half: a.half, dmg, sum, rider: a.rider || '' };
   },
   roll(bid, key) {
     const b = this.st.board.find((x) => x.bid === bid), e = b && App.entries.get(b.id);
@@ -6537,9 +6575,10 @@ const Roller = {
         : x.vs ? `<span class="rr-res ${x.vs.hit ? 'hit' : 'miss'}">${x.vs.hit ? 'HIT' : 'MISS'}</span>` : '';
       const vs = x.vs ? `<span class="rr-vs">vs ${esc(x.vs.name)} AC ${x.vs.ac}</span>` : '';
       const dmg = x.vs && !x.vs.hit && !x.crit ? `<span class="rr-dice">would have dealt ${x.sum}</span>` : x.dmg.map((c) => this.diceHtml(c)).join(' ');
-      return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> d20 ${d} ${x.toHit >= 0 ? '+' : '−'}${Math.abs(x.toHit)} = <b class="rr-tot">${x.total}</b> ${vs} ${res} ${dmg}${x.extraSave ? ` <span class="rr-note">+ DC ${x.extraSave.dc} ${x.extraSave.ab} save</span>` : ''}</div>`;
+      const landed = x.fumble ? false : x.crit ? true : x.vs ? x.vs.hit : undefined;
+      return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> d20 ${d} ${x.toHit >= 0 ? '+' : '−'}${Math.abs(x.toHit)} = <b class="rr-tot">${x.total}</b> ${vs} ${res} ${dmg}${x.extraSave && !x.rider ? ` <span class="rr-note">+ DC ${x.extraSave.dc} ${x.extraSave.ab} save</span>` : ''}</div>${this.riderHtml(x.rider, landed)}`;
     }
-    if (x.kind === 'save') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <b class="hl-save">DC ${x.dc} ${x.ab}</b> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">fail ${x.sum}${x.half ? ` · save ${Math.floor(x.sum / 2)}` : ''}</span></div>`;
+    if (x.kind === 'save') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <b class="hl-save">DC ${x.dc} ${x.ab}</b> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">fail ${x.sum}${x.half ? ` · save ${Math.floor(x.sum / 2)}` : ''}</span></div>${x.rider ? this.riderHtml(x.rider, undefined, 'On a failed save') : ''}`;
     if (x.kind === 'dmg') return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> ${x.dmg.map((c) => this.diceHtml(c)).join(' ')} <span class="rr-note">total <b>${x.sum}</b></span></div>`;
     if (x.kind === 'throw') return `<div class="rr-line">d20 ${x.d20.length > 1 ? x.d20.map((v) => (v === x.chosen ? `<b>${v}</b>` : `<s>${v}</s>`)).join(' ') : `<b>${x.chosen}</b>`} ${x.mod >= 0 ? '+' : '−'}${Math.abs(x.mod)} = <b class="rr-tot">${x.total}</b></div>`;
     return `<div class="rr-line"><span class="rr-act">${esc(x.name)}</span> <span class="rr-note">${x.save ? `DC ${x.save.dc} ${x.save.ab} save · no damage to roll` : x.text && x.text.length < 600 ? esc(x.text) : 'no roll: see the stat block'}</span></div>`;
@@ -6715,7 +6754,7 @@ const Roller = {
     if (a === 'balparty') { this.st.balSet = false; this.save(); return this.render(); }
     if (a === 'baladd') { this.st.bal = [...(this.st.bal || []), { n: 1, lv: (this.st.bal?.[this.st.bal.length - 1]?.lv) || 1 }]; this.save(); return this.render(); }
     if (a === 'baldel') { this.st.bal.splice(+t.dataset.i, 1); this.save(); return this.render(); }
-    if (a === 'pcadd') { const id = uid(); this.st.party.push({ id, name: '', ac: '', acAdj: '' }); if (!this.st.activeId) this.st.activeId = id; this.save(); this.render(); $(`#toolPane [data-pc="name"][data-tid="${id}"]`)?.focus(); return; }
+    if (a === 'pcadd') { const id = uid(); this.st.party.push({ id, name: '', ac: '', acAdj: '' }); this.save(); this.render(); $(`#toolPane [data-pc="name"][data-tid="${id}"]`)?.focus(); return; }
     if (a === 'pcdel') { this.st.party = this.st.party.filter((x) => x.id !== t.dataset.tid); if (this.st.activeId === t.dataset.tid) this.st.activeId = null; this.save(); return this.render(); }
     if (a === 'clearlog') { ev.preventDefault(); this.log = []; this.saveLog(); RollPop.close(); return this.render(); }
     if (a === 'clearboard') { if (await ask('Clear the encounter?', '<p>Removes every monster from the roller, and abilities added for this fight. Your party stays.</p>', [{ label: 'Cancel', value: null }, { label: 'Clear', value: true, kind: 'primary' }])) { this.st.board = []; this.st.extras = {}; this.save(); this.render(); } }
@@ -7056,7 +7095,13 @@ const Abilities = {
     toast(`Added “${name}” for this fight`, 'ok');
     after && after();
   },
-  remove(key, id) { Roller.st.extras[key] = this.list(key).filter((x) => x.id !== id); Roller.save(); },
+  remove(key, id) {
+    const x = this.list(key).find((y) => y.id === id);
+    Roller.st.extras[key] = this.list(key).filter((y) => y.id !== id);
+    // a spell that came in by a swap: taking it away brings the original back
+    if (x && x.swapFor && Roller.st.swaps && Roller.st.swaps[key]) delete Roller.st.swaps[key][fold(x.swapFor)];
+    Roller.save();
+  },
   async keep(key, id, { into = null, quiet = false } = {}) {
     const e = into || App.entries.get(key), x = this.list(key).find((y) => y.id === id);
     if (!e || !x) return;
@@ -7173,13 +7218,23 @@ const Swaps = {
       const L = $('#swLv').value, K = $('#swKind').value, S = $('#swSchool').value, q = fold($('#swQ').value || '');
       const hits = all.filter((e) => (L === '' || lvlNum(e) === +L) && (!K || this.kind(e) === K) && (!S || e.fields.School === S) && (!q || fold(e.name).includes(q)))
         .sort((a, b) => (listed.has(b.id) - listed.has(a.id)) || a.name.localeCompare(b.name)).slice(0, 60);
-      list.innerHTML = hits.length ? hits.map((e) => `<button type="button" class="sw-o" data-sw="${esc(e.id)}"><b>${listed.has(e.id) ? '★ ' : ''}${esc(e.name)}</b><small>${lvlNum(e) === 0 ? 'Cantrip' : 'Level ' + lvlNum(e)} · ${esc(e.fields.School || '')} · ${this.kind(e)}${listed.has(e.id) ? ` · on ${esc(listed.get(e.id))}` : ''}</small></button>`).join('')
+      list.innerHTML = hits.length ? hits.map((e) => `<div class="sw-row"><button type="button" class="sw-o" data-sw="${esc(e.id)}"><b>${listed.has(e.id) ? '★ ' : ''}${esc(e.name)}</b><small>${lvlNum(e) === 0 ? 'Cantrip' : 'Level ' + lvlNum(e)} · ${esc(e.fields.School || '')} · ${this.kind(e)}${listed.has(e.id) ? ` · on ${esc(listed.get(e.id))}` : ''}</small></button><button type="button" class="sw-i" data-swi="${esc(e.id)}" aria-label="About ${esc(e.name)}" title="Read the spell">i</button></div>`).join('')
         : '<p class="hint">No spells in your library match. Try “Any” for one of the filters.</p>';
     };
     for (const id of ['swLv', 'swKind', 'swSchool']) $('#' + id).addEventListener('change', draw);
     $('#swQ').addEventListener('input', draw);
     let chosen = null;
-    list.addEventListener('click', (ev) => { const b = ev.target.closest('[data-sw]'); if (b) { chosen = b.dataset.sw; $('#askDlg').close(); } });
+    list.addEventListener('click', (ev) => {
+      const info = ev.target.closest('[data-swi]');
+      if (info) {
+        const row = info.closest('.sw-row'), open = row.querySelector('.sw-desc');
+        if (open) { open.remove(); return; }
+        const sp = App.entries.get(info.dataset.swi), f = sp.fields || {};
+        row.insertAdjacentHTML('beforeend', `<div class="sw-desc">${['Casting Time', 'Range', 'Components', 'Duration'].filter((k) => f[k]).map((k) => `<span><b>${esc(k)}:</b> ${esc(f[k])}</span>`).join(' · ')}${formatText(sp.text || '')}${f['At Higher Levels'] ? `<p><i>Higher levels.</i> ${esc(f['At Higher Levels'])}</p>` : ''}</div>`);
+        return;
+      }
+      const b = ev.target.closest('[data-sw]'); if (b) { chosen = b.dataset.sw; $('#askDlg').close(); }
+    });
     draw();
     const res = await v;
     if (res === 'undo') return this.undo(key, from);
@@ -7871,6 +7926,7 @@ const Tracker = {
     if (a === 'close') return Tools.show(null);
     if (a === 'pin') return Tools.togglePin();
     if (a === 'startfight') {
+      Roller.st.activeId = null; Roller.save(); // no target until you choose one
       if (this.st.endedAt) Object.assign(this.st, { endedAt: null, startedAt: null, roundAt: null, turnAt: null, pausedAt: null, pausedMs: 0, roundPausedMs: 0, turnPausedMs: 0, roundLog: [] });
       this.st.turn = null; this.st.round = 1; this.st.setup = false;
       return this.step(1);

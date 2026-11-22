@@ -286,6 +286,13 @@ kbd { font: 600 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 1p
 .embedded-sb .sb-title { font: 700 18px var(--serif); margin: 0; }
 .embedded-sb .sb-meta { color: var(--muted); font-style: italic; font-size: 14px; margin: 0 0 6px; }
 /* option lists (Misfortunes, Invocations…) */
+.subs-d > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 8px; }
+.subs-d > summary::-webkit-details-marker { display: none; }
+.subs-d > summary::before { content: '▸'; color: var(--muted); font-size: 13px; }
+.subs-d[open] > summary::before { content: '▾'; }
+.subs-d > summary h3 { display: inline; margin: 0; padding: 0; border: 0; }
+.subs-d > summary { padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.subs-d { margin: 18px 0 6px; }
 .opt-intro { color: var(--muted); font-style: italic; }
 .opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(max(260px, calc((100% - 21px) / 3)), 1fr)); gap: 10px; margin: 10px 0 6px; }
 .opt { background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--accent-border); border-radius: 8px; padding: 10px 12px 4px; min-width: 0; }
@@ -4506,7 +4513,7 @@ const Renderers = {
     // Subclasses are linked by their "Class" field matching this class's name.
     const subs = subclassesOf(e.name);
     const subHtml = subs.length
-      ? `<h3>Subclasses (${subs.length})</h3><div class="static">${subs.map((s) => rowHtml(s, -1)).join('')}</div>` : '';
+      ? `<details class="subs-d" data-keep="classSubs"${Keep.open('classSubs', false) ? ' open' : ''}><summary><h3>Subclasses <span class="hint">(${subs.length})</span></h3></summary><div class="static">${subs.map((s) => rowHtml(s, -1)).join('')}</div></details>` : ''; // folded by default; remembers if you open it
     return renderCards(e.fields) + formatText(e.text) + renderTable(e.table) + subHtml + renderSections(e.sections);
   },
   'sage-advice'(e) {
@@ -6359,7 +6366,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-24.1'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-24.2'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

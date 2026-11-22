@@ -716,9 +716,6 @@ body.sb-cards .statblock .hl-tohit, body.sb-cards .statblock .hl-dmg { backgroun
 .tr-table .c-ctl { width: 1%; }
 .tr-table .c-ctl button { border: 0; background: transparent; width: 24px !important; min-width: 24px; padding: 0; }
 .tr-table td.c-ctl { padding: 0 2px; overflow: visible; white-space: nowrap; }
-.tr-table tr.tr-cur > td { background: hsl(215 80% 55% / .12); }
-.tr-table tr.tr-cur > td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
-.tr-table tr.lair > td { background: hsl(275 40% 50% / .07); }
 .tr-table tr.down > td { color: var(--muted); } .tr-table tr.down .tr-name { text-decoration: line-through; }
 .tr-table tr.tr-activerow > td, .tr-table tr.tr-histrow > td { white-space: normal; border-top: 0; background: var(--panel); }
 .tr-table .tr-modtag, .tr-table .tr-mode { margin-left: 5px; font-size: 10px; }
@@ -814,6 +811,18 @@ body.rollpop-open #detail, body.rollpop-open #toolPane .rr-scroll { padding-bott
 .tr-cform { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tr-cform #tcName { flex: 1 1 140px; } .tr-cform label { display: inline-flex; gap: 4px; align-items: center; font-size: 12.5px; color: var(--muted); } .tr-cform label input { width: 56px; }
 #trHits .rr-hit b:first-child { color: var(--accent); margin-right: 4px; }
+/* the turn panel inside the table: not stretched by the table's button rules, and kept to the visible width */
+.tr-tablewrap { container-type: inline-size; }
+.tr-table tr.tr-activerow > td { padding: 0; overflow: visible; }
+.tr-table .tr-active { position: sticky; left: 0; width: 100cqw; max-width: 100%; box-sizing: border-box; }
+.tr-table .tr-active button { width: auto; }
+.tr-table .tr-active .rr-saves { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+.tr-table .tr-active .rr-sv { width: 100%; height: 34px; padding: 0 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+.tr-table .tr-active .rr-sv small { margin: 0; }
+.tr-table .tr-active .rr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 6px; }
+.tr-table .tr-active .rr-roll { padding: 0 12px; font-weight: 600; }
+.tr-table .tr-active .rr-sum { font-size: 12.5px; color: var(--muted); }
+.tr-table .tr-active .rr-seg button, .tr-table .tr-active .gs-row button { padding: 0 10px; }
 @media (max-width: 720px) {
   #toolPane .tr-row .tr-note { order: 10; flex-basis: 100%; }
   #toolPane .tr-active { padding-left: 12px; }
@@ -6134,7 +6143,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.8'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.9'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {

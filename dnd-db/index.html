@@ -482,6 +482,18 @@ details.rr-diff > summary::before { content: '▸'; color: var(--muted); } detai
 .abf-link #abLinkHits { display: flex; flex-direction: column; gap: 2px; max-height: 40vh; overflow: auto; }
 .abf-link #abLinkHits:empty, .abf-link #abLinked:empty { display: none; }
 .abf-known { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sw-f { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin: 4px 0 10px; }
+.sw-f label { display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted); }
+.sw-f input { flex: 1 1 160px; min-width: 140px; }
+.sw-list { display: flex; flex-direction: column; gap: 4px; max-height: 50vh; overflow: auto; }
+.sw-o { display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding: 8px 10px; min-height: 44px; border-radius: 8px; }
+.sw-o small { color: var(--muted); font-weight: 400; }
+.fv-swapped { opacity: .55; }
+.fv-swapin { font-weight: 600; }
+.fv-swaptag { font-size: 9.5px; margin-left: 4px; vertical-align: middle; }
+.fv-swaps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13px; }
+.fv-sw { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 10px; border: 1px solid var(--border); border-radius: 14px; }
+.fv-sw .rr-x { min-height: 0; height: 22px; width: 22px; padding: 0; }
 .abf-multi { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 10%, var(--panel)); position: sticky; top: 0; z-index: 2; }
 .abf-multi .primary { min-height: 34px; }
 [data-ab-ref].sel { outline: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)) !important; }
@@ -1519,6 +1531,7 @@ function toBase64(str) {
 function ask(title, html, buttons = [{ label: 'Cancel', value: null }, { label: 'OK', value: true, kind: 'primary' }]) {
   const dlg = $('#askDlg');
   $('#askTitle').textContent = title;
+  { const old = $('#askBody'), fresh = old.cloneNode(false); old.replaceWith(fresh); } // a fresh body: no listeners left over from earlier boxes
   $('#askBody').className = 'dlg-body'; // every box starts clean (a picker's state must never hide the next box's buttons)
   $('#askBody').innerHTML = html;
   const box = $('#askBtns');
@@ -6074,7 +6087,7 @@ const Theme = {
   toggle() { this.set(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); },
 };
 
-const APP_VERSION = '2026-11-22.3'; // shown in Settings so you can tell which copy of the file is open
+const APP_VERSION = '2026-11-22.4'; // shown in Settings so you can tell which copy of the file is open
 /* ---------- Tidy-up of older imports (runs once per version; undoable) ---------- */
 const TIDY_VERSION = 5;
 const Tidy = {
@@ -6963,7 +6976,7 @@ const Abilities = {
     const listSel = lists.length ? `<label>Spell lists <select id="abList"><option value="">Add several spells from a list…</option>${lists.map((l) => `<option value="${esc(l.id)}">${esc(l.name)} (${l.table.rows.length})</option>`).join('')}</select></label><div id="abListBox"></div>` : '';
     const suggHtml = sugg.length ? `<div class="abf-sugg"><span class="hint">★ Suggested for ${esc(label)} · tap to fill in, or Ctrl/⌘-click to pick several</span><div class="abf-known">${sugg.map((x) => `<button type="button" class="chip${this.isPower(x.r) ? ' pw' : ' sp'}" data-ab-ref="${esc(x.r.id)}" title="${esc(x.why)}">${esc(x.r.name.replace(/\s*\((?:Trait|Action|Bonus Action|Reaction)(?:,\s*[^)]*)?\)/, ''))}<small>${esc(x.why)}</small></button>`).join('')}</div></div>` : '';
     const link = `<div class="abf-wide abf-link">${suggHtml}<label>From your database <span class="clearable"><input id="abLink" type="search" placeholder="Search spells, feats, items${pw.length ? ', powers' : ''}…" autocomplete="off" enterkeyhint="search"><button type="button" class="clear-x" tabindex="-1" aria-label="Clear">×</button></span></label>${browse}${listSel}`
-      + (known.length ? `<div class="abf-known"><span class="hint">Its spells:</span>${known.map((x) => `<button type="button" class="chip" data-ab-ref="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>` : '')
+      + (known.length && opts.eid ? `<div class="abf-known"><span class="hint">Its spells · tap one to swap it for another:</span>${known.map((x) => `<button type="button" class="chip" data-ab-swap="${esc(x.id)}" title="Swap ${esc(x.name)} for a different spell this fight">⇄ ${esc(x.name)}</button>`).join('')}</div>` : '')
       + `<div id="abLinkHits"></div><div id="abLinked" class="hint"></div></div>`;
     const done = ask(opts.link ? `Add to ${esc(label)} for this fight` : `Add an ability: ${esc(label)}`,
       `<div class="abf${opts.link ? ' linking' : ''}">${link}<label>Name <input id="abName" placeholder="e.g. Fire Bolt"></label><label>Section <select id="abSec">${sec}</select></label>`
@@ -6980,6 +6993,8 @@ const Abilities = {
       hits.innerHTML = ids.map((id) => { const x = App.entries.get(id); return `<button type="button" class="rr-hit" data-ab-ref="${esc(id)}">${esc(x.name)} <span class="hint">${esc(this.isPower(x) ? 'Power · ' + (x.fields.Theme || '') : Types.get(x.type).label)}${x.fields?.Level ? ' · ' + (x.fields.Level === 'Cantrip' ? 'cantrip' : 'level ' + esc(x.fields.Level)) : ''}</span></button>`; }).join('');
     });
     q.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); ev.stopPropagation(); const h = hits.querySelector('[data-ab-ref]'); if (h) pick(h.dataset.abRef); } });
+    this._swapFrom = null;
+    body.addEventListener('click', (ev) => { const sw = ev.target.closest('[data-ab-swap]'); if (sw) { ev.preventDefault(); ev.stopPropagation(); this._swapFrom = sw.dataset.abSwap; $('#askDlg').close(); } }, true);
     const multi = new Set();
     const multiBar = () => {
       let bar = $('#abMulti');
@@ -7028,6 +7043,7 @@ const Abilities = {
     if (opts.link) setTimeout(() => q.focus(), 30);
     const ok = await done;
     if (this._listed) { after && after(); return; }
+    if (this._swapFrom) { const from = this._swapFrom; this._swapFrom = null; await Swaps.pick(key, opts.eid, from, opts.cr); after && after(); return; }
     if (!ok || (opts.link && !this._ref)) return;
     const g = (id) => ($('#' + id)?.value || '').trim(), kind = document.querySelector('#askBody [name="abKind"]:checked')?.value || 'other';
     const name = g('abName') || 'New ability';
@@ -7118,6 +7134,116 @@ const RollPop = {
   close() { const el = $('#rollPop'); if (el) el.hidden = true; document.body.classList.remove('rollpop-open'); },
 };
 document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#rollPop') && !$('#rollPop').hidden && !document.querySelector('dialog[open]')) RollPop.close(); });
+
+/* Swap a spell a creature knows for another one, for this fight (all of its kind or just one), or save the swap. */
+const Swaps = {
+  map(key) { return ((Roller.st.swaps || {})[key]) || {}; },
+  /** The swaps that apply to one creature: its kind's, then its own on top. */
+  for(c) { return c ? { ...this.map(c.eid), ...this.map('c:' + c.cid) } : {}; },
+  kind(e) {
+    const t = String(e.text || '');
+    if (/\d+d\d+[^.]{0,40}?\bdamage\b/i.test(t)) return 'Damage';
+    if (/saving throw|\b(charmed|frightened|paralyzed|restrained|blinded|incapacitated|stunned|prone|speed)\b/i.test(t)) return 'Control';
+    return 'Defence & utility';
+  },
+  /** Spells on your spell tables (Add-On Spells, Action-Balancing Spells): recommended first. */
+  listed() {
+    const out = new Map();
+    for (const l of Abilities.spellLists()) for (const x of Abilities.listRows(l)) if (x.entry) out.set(x.entry.id, l.name);
+    return out;
+  },
+  async pick(key, eid, fromId, crOverride = null) {
+    const from = App.entries.get(fromId);
+    if (!from) return;
+    const knownIds = new Set(Abilities.known(eid).map((x) => x.id));
+    const all = [...App.entries.values()].filter((e) => e.type === 'spell' && !knownIds.has(e.id));
+    const listed = this.listed();
+    const schools = [...new Set(all.map((e) => e.fields.School).filter(Boolean))].sort();
+    const lv = lvlNum(from), kind = this.kind(from), cur = this.map(key)[fold(from.name)];
+    const opt = (v, l, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(l)}</option>`;
+    const v = ask(`Swap ${esc(from.name)}`,
+      `<p class="hint">${esc(from.name)}: ${lv === 0 ? 'cantrip' : 'level ' + lv} · ${esc(from.fields.School || '')} · ${kind}. ${cur ? `Now swapped for <b>${esc(App.entries.get(cur.to)?.name || '?')}</b>.` : ''}</p>`
+      + `<div class="sw-f"><label>Level <select id="swLv">${opt('', 'Any')}${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => opt(n, n ? 'Level ' + n : 'Cantrip', n === lv)).join('')}</select></label>`
+      + `<label>Kind <select id="swKind">${opt('', 'Any')}${['Damage', 'Control', 'Defence & utility'].map((k) => opt(k, k, k === kind)).join('')}</select></label>`
+      + `<label>School <select id="swSchool">${opt('', 'Any')}${schools.map((x) => opt(x, x)).join('')}</select></label>`
+      + `<input id="swQ" type="search" placeholder="Filter by name…" autocomplete="off"></div><div id="swList" class="sw-list"></div>`,
+      cur ? [{ label: 'Cancel', value: null }, { label: 'Undo the swap', value: 'undo' }] : [{ label: 'Cancel', value: null }]);
+    const list = $('#swList');
+    const draw = () => {
+      const L = $('#swLv').value, K = $('#swKind').value, S = $('#swSchool').value, q = fold($('#swQ').value || '');
+      const hits = all.filter((e) => (L === '' || lvlNum(e) === +L) && (!K || this.kind(e) === K) && (!S || e.fields.School === S) && (!q || fold(e.name).includes(q)))
+        .sort((a, b) => (listed.has(b.id) - listed.has(a.id)) || a.name.localeCompare(b.name)).slice(0, 60);
+      list.innerHTML = hits.length ? hits.map((e) => `<button type="button" class="sw-o" data-sw="${esc(e.id)}"><b>${listed.has(e.id) ? '★ ' : ''}${esc(e.name)}</b><small>${lvlNum(e) === 0 ? 'Cantrip' : 'Level ' + lvlNum(e)} · ${esc(e.fields.School || '')} · ${this.kind(e)}${listed.has(e.id) ? ` · on ${esc(listed.get(e.id))}` : ''}</small></button>`).join('')
+        : '<p class="hint">No spells in your library match. Try “Any” for one of the filters.</p>';
+    };
+    for (const id of ['swLv', 'swKind', 'swSchool']) $('#' + id).addEventListener('change', draw);
+    $('#swQ').addEventListener('input', draw);
+    let chosen = null;
+    list.addEventListener('click', (ev) => { const b = ev.target.closest('[data-sw]'); if (b) { chosen = b.dataset.sw; $('#askDlg').close(); } });
+    draw();
+    const res = await v;
+    if (res === 'undo') return this.undo(key, from);
+    if (!chosen) return;
+    const to = App.entries.get(chosen);
+    if (cur) this.undo(key, from, { quiet: true });
+    // the new spell becomes something you can roll this fight
+    const p = Abilities.plan(to, eid, crOverride);
+    Roller.st.extras = Roller.st.extras || {};
+    const x = { id: uid(), name: p.name, sec: p.sec, text: Abilities.compose(p), ref: to.id, swapFor: from.name };
+    (Roller.st.extras[key] = Roller.st.extras[key] || []).push(x);
+    Roller.st.swaps = Roller.st.swaps || {};
+    (Roller.st.swaps[key] = Roller.st.swaps[key] || {})[fold(from.name)] = { from: from.name, fromId: from.id, to: to.id, xid: x.id };
+    Roller.save();
+    toast(`${from.name} → ${to.name} for this fight`, 'ok', 2500);
+  },
+  undo(key, from, { quiet = false } = {}) {
+    const m = this.map(key), k = fold(from.name || from), sw = m[k];
+    if (!sw) return;
+    if (sw.xid) Abilities.remove(key, sw.xid);
+    delete m[k];
+    Roller.save();
+    if (!quiet) toast(`${sw.from} is back`, 'ok', 1800);
+  },
+  /** Keep the swaps: rewrite the spell list in the stat block (the original, or a copy marked as modified). */
+  async keep(key, c) {
+    const m = this.map(key), list = Object.values(m);
+    const eid = String(key).startsWith('c:') ? c && c.eid : key, e = eid && App.entries.get(eid);
+    if (!e || !list.length) return;
+    const how = await ask('Keep the swapped spells', `<p>${list.map((x) => `${esc(x.from)} → <b>${esc(App.entries.get(x.to)?.name || '?')}</b>`).join('<br>')}</p><p>Write them into <b>${esc(e.name)}</b> itself, or into a copy marked as modified?</p>`,
+      [{ label: 'Cancel', value: null }, { label: 'Modified copy', value: 'copy' }, { label: `Update ${e.name}`, value: 'orig', kind: 'primary' }]);
+    if (!how) return;
+    let target = e;
+    if (how === 'copy') {
+      target = [...App.entries.values()].find((y) => y.type === 'monster' && y.fields['Based on'] === e.name && y.fields.Modified) || null;
+      if (!target) { const d = JSON.parse(JSON.stringify(e)); target = makeEntry({ ...d, id: uid(), name: `${e.name} (modified)`, tags: [...new Set([...(d.tags || []), 'modified'])], fields: { ...d.fields, 'Based on': e.name, Modified: 'Yes' }, edited: true, raw: '', fav: false, created: nowIso(), updated: nowIso() }); }
+    }
+    const t = JSON.parse(JSON.stringify(target));
+    const swapIn = (txt) => list.reduce((acc, x) => acc.replace(new RegExp(`\\b${x.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'), (w) => { const n = App.entries.get(x.to)?.name || w; return w === w.toLowerCase() ? n.toLowerCase() : n; }), String(txt || ''));
+    for (const sc of t.sections) for (const it of sc.items) if (/spell|cast/i.test(it.name + ' ' + String(it.text).slice(0, 160))) it.text = swapIn(it.text);
+    t.updated = nowIso(); t.edited = true;
+    await App.upsert([makeEntry(t)], { quiet: true });
+    for (const x of list) if (x.xid) Abilities.remove(key, x.xid);
+    delete Roller.st.swaps[key];
+    if (how === 'copy') { for (const u of (String(key).startsWith('c:') ? [c] : Tracker.monsters().filter((y) => y.eid === e.id))) if (u) u.eid = target.id; Tracker.save(); }
+    Roller.save();
+    toast(`Saved the swapped spells into “${target.name}”`, 'ok', 3000);
+    App.showDetail(target.id);
+  },
+  /** On the stat block: cross out swapped spells and show the new one. */
+  mark(el, c) {
+    const sw = Object.values(this.for(c));
+    if (!sw.length) return;
+    const sb = el.querySelector('.statblock');
+    if (!sb) return;
+    for (const x of sw) {
+      const to = App.entries.get(x.to);
+      if (!to) continue;
+      const a = [...sb.querySelectorAll('a.xref')].find((l) => l.dataset.open === x.fromId) || [...sb.querySelectorAll('a.xref')].find((l) => fold(l.textContent) === fold(x.from));
+      const html = `<s class="fv-swapped" title="Swapped out this fight">${esc(a ? a.textContent : x.from)}</s> <a class="xref fv-swapin" href="#/e/${encodeURIComponent(to.id)}" data-open="${esc(to.id)}" data-peek>${esc(to.name)}</a><span class="rr-fight fv-swaptag">swap</span>`;
+      if (a) a.outerHTML = html;
+    }
+  },
+};
 
 /** Remembers which <details data-keep="…"> are open. */
 const Keep = {
@@ -7245,7 +7371,15 @@ const FightView = {
     const grp = Tracker.chunk(c);
     const grpSeg = grp.length > 1 && c.cid === Tracker.st.turn ? `<span class="rr-seg rr-mini" role="group" aria-label="Roll for"><button data-fv="grp" data-v="one" class="${Tracker.st.groupRoll ? '' : 'on'}">This one</button><button data-fv="grp" data-v="all" class="${Tracker.st.groupRoll ? 'on' : ''}">All ${grp.length}</button></span>` : '';
     return `<div class="fv-bar"><div class="fv-ctl"><b class="fv-who">${c.cid === Tracker.st.turn ? '▶ ' : ''}${esc(Tracker.nameOf(c))}</b><span class="hint">${c.hp}/${c.max} HP</span>${tsel}${Roller.modeHtml(c.mode, `data-fv="mode" data-cid="${c.cid}"`)}${grpSeg}</div>`
-      + `<div class="fv-ctl">${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xadd">+ Add an ability, spell or power</button></div></div>`;
+      + `<div class="fv-ctl">${this.scopeHtml(c, 'data-fv')}<button class="linkish" data-fv="xadd">+ Add an ability, spell or power</button>${Abilities.known(e.id).length ? '<button class="linkish" data-fv="swap">⇄ Swap a spell</button>' : ''}</div>`
+      + this.swapsHtml(e, c) + '</div>';
+  },
+  swapsHtml(e, c) {
+    const rows = [['all', e.id, `every ${Tracker.baseName(c)}`], ['one', 'c:' + c.cid, Tracker.nameOf(c)]].flatMap(([, key, who]) => Object.values(Swaps.map(key)).map((x) => ({ key, who, x })));
+    if (!rows.length) return '';
+    const keys = [...new Set(rows.map((r) => r.key))];
+    return `<div class="fv-swaps"><span class="hint">Swapped spells:</span>${rows.map(({ key, who, x }) => `<span class="fv-sw">${esc(x.from)} → <b>${esc(App.entries.get(x.to)?.name || '?')}</b> <small>(${esc(who)})</small><button class="rr-x" data-fv="swapundo" data-key="${esc(key)}" data-from="${esc(x.from)}" aria-label="Undo">×</button></span>`).join('')}`
+      + keys.map((k) => `<button class="linkish" data-fv="swapkeep" data-key="${esc(k)}">Keep ${k.startsWith('c:') ? 'these for ' + esc(Tracker.nameOf(c)) : 'these'}</button>`).join('') + '</div>';
   },
   /** Abilities added for this fight, written into the right section of the stat block. */
   inject(el, e, c) {
@@ -7269,6 +7403,7 @@ const FightView = {
   enhance(el, e) {
     const c = this.focusFor(e), acts = Roller.actionsOf(e, c ? c.cid : null), owner = c ? c.cid : 'e:' + e.id;
     this.inject(el, e, c);
+    Swaps.mark(el, c);
     const SECT = { traits: 'Traits', actions: 'Actions', 'bonus actions': 'Bonus Actions', reactions: 'Reactions', 'legendary actions': 'Legendary Actions', 'mythic actions': 'Mythic Actions' };
     for (const b of el.querySelectorAll('.statblock .sb-item > b:first-child')) {
       const name = b.textContent.trim().replace(/\.$/, '');
@@ -7311,6 +7446,19 @@ const FightView = {
     if (a === 'scope') { this.scope = t.dataset.v; Tracker.render(); return this.refresh(); }
     if (a === 'mode' && c) { c.mode = t.dataset.m === 'normal' ? undefined : t.dataset.m; Tracker.save(); Tracker.render(); return this.refresh(); }
     if ((a === 'xlink' || a === 'xadd') && c) return this.addFor(c, false);
+    if (a === 'swap' && c) {
+      const known = Abilities.known(e.id), key = this.scope === 'all' ? e.id : 'c:' + c.cid;
+      let chosen = null;
+      const shown = ask('Swap which spell?', `<p class="hint">For ${esc(this.scope === 'all' ? 'every ' + Tracker.baseName(c) : Tracker.nameOf(c))} (change this with the Just / Every switch).</p><div class="abf-known">${known.map((x) => `<button type="button" class="chip" data-swf="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div>`, [{ label: 'Cancel', value: null }]);
+      $('#askBody').addEventListener('click', (ev) => { const b = ev.target.closest('[data-swf]'); if (b) { chosen = b.dataset.swf; $('#askDlg').close(); } });
+      await shown;
+      if (!chosen) return;
+      await new Promise((r) => setTimeout(r, 0));
+      await Swaps.pick(key, e.id, chosen);
+      Tracker.render(); return this.refresh();
+    }
+    if (a === 'swapundo') { Swaps.undo(t.dataset.key, t.dataset.from); Tracker.render(); return this.refresh(); }
+    if (a === 'swapkeep') { await Swaps.keep(t.dataset.key, c); Tracker.render(); return this.refresh(); }
     if (a === 'grp') { Tracker.st.groupRoll = t.dataset.v === 'all'; Tracker.save(); Tracker.render(); return this.refresh(); }
     if (a === 'xdel') { Abilities.remove(t.dataset.key, t.dataset.xid); Tracker.render(); return this.refresh(); }
     if (a === 'xkeep') { await this.keep(t.dataset.key, t.dataset.xid, t.dataset.cid); Tracker.render(); return this.refresh(); }
